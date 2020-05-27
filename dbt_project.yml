@@ -1,0 +1,12 @@
+config-version: 2
+
+name: 'stripe'
+version: '0.0.1'
+
+require-dbt-version: [">=0.17.0", "<0.18.0"]
+
+models:
+    github:
+        materialized: table
+        intermediate:
+            materialized: ephemeral
