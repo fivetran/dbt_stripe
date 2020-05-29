@@ -33,6 +33,11 @@ with balance_transaction as (
     select *
     from {{ ref('stg_stripe_payout')}}
 
+), refund as (
+
+    select *
+    from {{ ref('stg_stripe_refund')}}
+
 )
 
 select 
@@ -58,7 +63,7 @@ select
   case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
   balance_transaction.payout_id,
   date_add(date(balance_transaction.available_on), interval 1 day) as effective_at,
-  charge.customer_id,
+  coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
   charge.receipt_email,
   customer.description as customer_description,
   charge.charge_id,
@@ -73,7 +78,8 @@ select
   payout.status as payout_status,
   payout.type as payout_type,
   payout.description as payout_description,
-  payout.destination_bank_account_id as payout_destination_id
+  payout.destination_bank_account_id as payout_destination_id,
+  refund.reason as refund_reason
 from balance_transaction
 left join charge on charge.balance_transaction_id = balance_transaction.balance_trasnaction_id
 left join customer on charge.customer_id = customer.id
@@ -81,5 +87,7 @@ left join payment_intent on charge.payment_intent_id = payment_intent.id
 left join payment_method on payment_intent.payment_method_id = payment_method.id
 left join card on charge.card_id = card.id
 left join payout on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+left join refund on refund.balance_transaction_id = balance_transaction.balance_transaction_id
+left join charge as refund_charge on refund.charge_id = refund_charge.id
 order by created desc
 ;

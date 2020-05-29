@@ -2,6 +2,7 @@ with balance_transactions_joined as (
 
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
+
 )
 
 select 
@@ -35,5 +36,6 @@ select
   payout_status,
   payout_type,
   payout_description,
-  payout_destination_id
+  payout_destination_id,
+  refund_reason
 from balance_transaction_joined
