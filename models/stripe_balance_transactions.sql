@@ -1,4 +1,4 @@
-with balance_transactions_joined as (
+with balance_transaction_joined as (
 
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
@@ -19,7 +19,6 @@ select
   description,
   customer_facing_amount,
   customer_facing_currency,
-  payout_id,
   effective_at,
   customer_id,
   receipt_email,
@@ -31,11 +30,10 @@ select
   card_brand,
   card_funding,
   card_country,
-  paytout_id,
+  payout_id,
   payout_expeted_arrival_date,
   payout_status,
   payout_type,
   payout_description,
-  payout_destination_id,
   refund_reason
 from balance_transaction_joined

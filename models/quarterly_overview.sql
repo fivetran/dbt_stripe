@@ -1,4 +1,4 @@
-with balance_transactions_joined as (
+with balance_transaction_joined as (
 
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
@@ -6,7 +6,7 @@ with balance_transactions_joined as (
 ), quarterly_balance_transactions as (
 
   select
-    date_trunc(date(case when type = 'payout' then available_on else created end), quarter) as quarter,
+    date_trunc(date(case when type = 'payout' then available_on else created_at end), quarter) as quarter,
     sum(case when type in ('charge', 'payment') then amount else 0 end) as sales,
     sum(case when type in ('payment_refund', 'refund') then amount else 0 end) as refunds,
     sum(case when type = 'adjustment' then amount else 0 end) as adjustments,
@@ -35,7 +35,7 @@ select
   payout_fees/100.0 as payout_fees,
   gross_payouts/100.0 as gross_payouts,
   quarterly_net_activity/100.0 as quarterly_net_activity,
-  sum(quarterly_net_activity + gross_payouts) over(partition by currency order by quarter)/100.0 as quarterly_end_balance,
+  (quarterly_net_activity + gross_payouts)/100.0 as quarterly_end_balance,
   sales_count,
   payouts_count,
   adjustments_count

@@ -29,7 +29,7 @@ with balance_transaction_joined as (
     min(if(type in ('payment', 'charge'), date(created_at), null)) as first_sale_date,
     max(if(type in ('payment', 'charge'), date(created_at), null)) as most_recent_sale_date
   from balance_transaction_joined
-  group by 1, 2
+  group by 1
 
 )
 

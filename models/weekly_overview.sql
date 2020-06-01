@@ -1,4 +1,4 @@
-with balance_transactions_joined as (
+with balance_transaction_joined as (
 
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
@@ -6,7 +6,7 @@ with balance_transactions_joined as (
 ), weekly_balance_transactions as (
 
   select
-    date_trunc(date(case when type = 'payout' then available_on else created end), week) as week,
+    date_trunc(date(case when type = 'payout' then available_on else created_at end), week) as week,
     sum(case when type in ('charge', 'payment') then amount else 0 end) as sales,
     sum(case when type in ('payment_refund', 'refund') then amount else 0 end) as refunds,
     sum(case when type = 'adjustment' then amount else 0 end) as adjustments,
@@ -20,7 +20,7 @@ with balance_transactions_joined as (
     sum(if(type = 'payout', 1, 0)) as payouts_count,
     count(distinct case when type = 'adjustment' then source end) as adjustments_count
   from balance_transaction_joined
-  group by 1, 2
+  group by 1
 
 )
 
@@ -35,12 +35,11 @@ select
   payout_fees/100.0 as payout_fees,
   gross_payouts/100.0 as gross_payouts,
   weekly_net_activity/100.0 as weekly_net_activity,
-  sum(weekly_net_activity + gross_payouts) over(partition by currency order by week)/100.0 as weekly_end_balance, -- use SUM Window Function
+  (weekly_net_activity + gross_payouts)/100.0 as weekly_end_balance,
   sales_count,
   payouts_count,
   adjustments_count
 from weekly_balance_transactions
-where week < date_trunc(current_date(),week) -- exclude current, partial week
 order by 1 desc, 2
 
 
