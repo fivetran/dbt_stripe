@@ -6,8 +6,7 @@ with balance_transactions_joined as (
 ), weekly_balance_transactions as (
 
   select
-    date_trunc(date(case when type = 'payout' then available_on else created end), week) as week, -- payouts are considered when they are posted (available_on)
-    currency,
+    date_trunc(date(case when type = 'payout' then available_on else created end), week) as week,
     sum(case when type in ('charge', 'payment') then amount else 0 end) as sales,
     sum(case when type in ('payment_refund', 'refund') then amount else 0 end) as refunds,
     sum(case when type = 'adjustment' then amount else 0 end) as adjustments,
@@ -27,7 +26,6 @@ with balance_transactions_joined as (
 
 select
   week,
-  currency,
   sales/100.0 as sales,
   refunds/100.0 as refunds,
   adjustments/100.0 as adjustments,

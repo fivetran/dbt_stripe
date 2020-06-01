@@ -6,7 +6,9 @@ version: '0.0.1'
 require-dbt-version: [">=0.17.0", "<0.18.0"]
 
 models:
-    github:
+    stripe:
         materialized: table
         intermediate:
             materialized: ephemeral
+
+profile: dbt_test

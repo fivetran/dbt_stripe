@@ -1,4 +1,4 @@
-with balance_transactions_joined as (
+with balance_transaction_joined as (
 
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
@@ -6,8 +6,7 @@ with balance_transactions_joined as (
 ), daily_balance_transactions as (
 
   select
-    date(case when type = 'payout' then available_on else created end) as date, -- payouts are considered when they are posted (available_on)
-    currency,
+    date(case when type = 'payout' then available_on else created end) as date,
     sum(case when type in ('charge', 'payment') then amount else 0 end) as sales,
     sum(case when type in ('payment_refund', 'refund') then amount else 0 end) as refunds,
     sum(case when type = 'adjustment' then amount else 0 end) as adjustments,
@@ -21,13 +20,12 @@ with balance_transactions_joined as (
     sum(if(type = 'payout', 1, 0)) as payouts_count,
     count(distinct case when type = 'adjustment' then source end) as adjustments_count
   from balance_transaction_joined
-  group by 1, 2
+  group by 1
 
 )
 
 select
   date,
-  currency,
   sales/100.0 as sales,
   refunds/100.0 as refunds,
   adjustments/100.0 as adjustments,
@@ -37,13 +35,12 @@ select
   payout_fees/100.0 as payout_fees,
   gross_payouts/100.0 as gross_payouts,
   daily_net_activity/100.0 as daily_net_activity,
-  sum(daily_net_activity + gross_payouts) over(partition by currency order by date)/100.0 as daily_end_balance, -- use SUM Window Function
+  sum(daily_net_activity + gross_payouts) over(partition by currency order by date)/100.0 as daily_end_balance,
   sales_count,
   payouts_count,
   adjustments_count
 from daily_balance_transactions
-where date < current_date() -- exclude current, partial day
-order by 1 desc, 2
+order by 1 desc
 
 
 

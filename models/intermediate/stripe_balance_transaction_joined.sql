@@ -61,7 +61,6 @@ select
   balance_transaction.description,
   case when balance_transaction.type = 'charge' then charge.amount end as customer_facing_amount, --think this might be the charge amount/currency
   case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
-  balance_transaction.payout_id,
   date_add(date(balance_transaction.available_on), interval 1 day) as effective_at,
   coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
   charge.receipt_email,
@@ -78,7 +77,6 @@ select
   payout.status as payout_status,
   payout.type as payout_type,
   payout.description as payout_description,
-  payout.destination_bank_account_id as payout_destination_id,
   refund.reason as refund_reason
 from balance_transaction
 left join charge on charge.balance_transaction_id = balance_transaction.balance_trasnaction_id

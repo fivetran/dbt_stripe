@@ -6,8 +6,7 @@ with balance_transactions_joined as (
 ), monthly_balance_transactions as (
 
   select
-    date_trunc(date(case when type = 'payout' then available_on else created end), month) as month, -- payouts are considered when they are posted (available_on)
-    currency,
+    date_trunc(date(case when type = 'payout' then available_on else created end), month) as month,
     sum(case when type in ('charge', 'payment') then amount else 0 end) as sales,
     sum(case when type in ('payment_refund', 'refund') then amount else 0 end) as refunds,
     sum(case when type = 'adjustment' then amount else 0 end) as adjustments,
@@ -21,13 +20,12 @@ with balance_transactions_joined as (
     sum(if(type = 'payout', 1, 0)) as payouts_count,
     count(distinct case when type = 'adjustment' then source end) as adjustments_count
   from balance_transaction_joined
-  group by 1, 2
+  group by 1
 
 )
 
 select
   month,
-  currency,
   sales/100.0 as sales,
   refunds/100.0 as refunds,
   adjustments/100.0 as adjustments,
@@ -37,13 +35,12 @@ select
   payout_fees/100.0 as payout_fees,
   gross_payouts/100.0 as gross_payouts,
   monthly_net_activity/100.0 as monthly_net_activity,
-  sum(monthly_net_activity + gross_payouts) over(partition by currency order by month)/100.0 as month_end_balance, -- use SUM Window Function
+  sum(monthly_net_activity + gross_payouts) over(partition by currency order by month)/100.0 as month_end_balance,
   sales_count,
   payouts_count,
   adjustments_count
 from monthly_balance_transactions
-where month < date_trunc(current_date(),month) -- exclude current, partial month
-order by 1 desc, 2
+order by 1 desc
 
 
 

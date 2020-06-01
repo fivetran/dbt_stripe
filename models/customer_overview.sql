@@ -1,4 +1,4 @@
-with balance_transactions_joined as (
+with balance_transaction_joined as (
 
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
@@ -8,7 +8,7 @@ with balance_transactions_joined as (
     select *
     from {{ ref('stg_stripe_customer') }}  
 
-), transactions_grouped as (
+), transaction_grouped as (
  
   select
     customer_id,
@@ -28,7 +28,7 @@ with balance_transactions_joined as (
     sum(if(type in ('payment_refund', 'refund') and date_trunc(date(created_at), month) = date_trunc(current_date(), month) , 1, 0)) as refund_count_this_month,
     min(if(type in ('payment', 'charge'), date(created_at), null)) as first_sale_date,
     max(if(type in ('payment', 'charge'), date(created_at), null)) as most_recent_sale_date
-  from balance_transactions_joined
+  from balance_transaction_joined
   group by 1, 2
 
 )
@@ -64,6 +64,6 @@ select
   customer.shipping_address_country,
   customer.shipping_address_postal_code,
   customer.shipping_phone
-from transactions_grouped
-left join customer on transactions_grouped.customer_id = customer.customer_id
+from transaction_grouped
+left join customer on transaction_grouped.customer_id = customer.customer_id
 
