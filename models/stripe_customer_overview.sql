@@ -29,12 +29,14 @@ with balance_transaction_joined as (
     min(if(type in ('payment', 'charge'), date(created_at), null)) as first_sale_date,
     max(if(type in ('payment', 'charge'), date(created_at), null)) as most_recent_sale_date
   from balance_transaction_joined
+    where type in ('payment', 'charge', 'payment_refund', 'refund')
   group by 1
 
 )
 
 select
-  coalesce(customer.description, 'No associated customer') as customer_description,
+  coalesce(customer.description, customer.customer_id, 'No associated customer') as customer_description,
+  customer.email,
   customer.created_at as customer_created_at,
   customer.is_deliguent,
   total_sales/100.0 as total_sales,
@@ -55,7 +57,6 @@ select
   most_recent_sale_date,
   customer.currency as customer_currency,
   customer.default_card_id,
-  customer.email,
   customer.shipping_name,
   customer.shipping_address_line_1,
   customer.shipping_address_line_2,

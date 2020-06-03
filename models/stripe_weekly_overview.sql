@@ -18,7 +18,7 @@ with balance_transaction_joined as (
     sum(case when type = 'payout' or type like '%transfer%' then fee * -1.0 else net end) as weekly_net_activity,
     sum(if(type in ('payment', 'charge'), 1, 0)) as sales_count,
     sum(if(type = 'payout', 1, 0)) as payouts_count,
-    count(distinct case when type = 'adjustment' then source end) as adjustments_count
+    count(distinct case when type = 'adjustment' then coalesce(source, payout_id) end) as adjustments_count
   from balance_transaction_joined
   group by 1
 

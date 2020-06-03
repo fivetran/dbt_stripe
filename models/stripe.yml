@@ -68,6 +68,8 @@ models:
     columns:
       - name: customer_description 
         description: An arbitrary string attached to the object. Often useful for displaying to users.
+      - name: email 
+        description: Email address associated with the customer.
       - name: customer_created_at 
         description: Timestamp of when the customer emtry was created.
       - name: is_deliguent 
@@ -108,8 +110,6 @@ models:
         description: Currency used by the customer.
       - name: default_card_id
         description: ID of the default card used by the customer.
-      - name: email 
-        description: Email address associated with the customer.
       - name: shipping_name 
         description: Attribute of the cusotmer's shipping address.
       - name: shipping_address_line_1 
