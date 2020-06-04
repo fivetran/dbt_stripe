@@ -3,6 +3,11 @@ with balance_transaction_joined as (
     select *
     from {{ ref('stripe_balance_transaction_joined') }}  
 
+), incomplete_charges as (
+
+    select *
+    from {{ ref('stripe_incomplete_charges') }}  
+
 ), customer as (
 
     select *
@@ -32,6 +37,14 @@ with balance_transaction_joined as (
     where type in ('payment', 'charge', 'payment_refund', 'refund')
   group by 1
 
+), failed_charges_by_customer (
+
+    select
+      customer_id,
+      count(*) as number_failed_charges
+      sum(amount) as total_failed_charge_amount
+    from incomplete_charges
+
 )
 
 select
@@ -55,6 +68,8 @@ select
   refund_count_this_month,
   first_sale_date,
   most_recent_sale_date,
+  number_failed_charges,
+  total_failed_charge_amount/100 as total_failed_charge_amount,
   customer.currency as customer_currency,
   customer.default_card_id,
   customer.shipping_name,
@@ -65,6 +80,7 @@ select
   customer.shipping_address_country,
   customer.shipping_address_postal_code,
   customer.shipping_phone
-from transaction_grouped
-left join customer on transaction_grouped.customer_id = customer.customer_id
+from customer
+left join transaction_grouped on transaction_grouped.customer_id = customer.customer_id
+left join failed_charges_by_customer on customer.customer_id = failed_charges_by_customer.customer_id
 
