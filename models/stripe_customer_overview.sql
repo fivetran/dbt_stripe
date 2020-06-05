@@ -41,9 +41,9 @@ with balance_transaction_joined as (
 
     select
       customer_id,
-      count(*) as number_failed_charges,
+      count(*) as total_failed_charge_count,
       sum(amount) as total_failed_charge_amount,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), 1, 0)) as number_failed_charges_this_month,
+      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), 1, 0)) as failed_charge_count_this_month,
       sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as failed_charge_amount_this_month
     from incomplete_charges
     group by 1
@@ -71,9 +71,9 @@ select
   coalesce(transactions_grouped.refund_count_this_month, 0) as refund_count_this_month,
   transactions_grouped.first_sale_date,
   transactions_grouped.most_recent_sale_date,
-  coalesce(number_failed_charges, 0) as number_failed_charges,
+  coalesce(total_failed_charge_count, 0) as total_failed_charge_count,
   coalesce(total_failed_charge_amount/100, 0) as total_failed_charge_amount,
-  coalesce(number_failed_charges_this_month, 0) as number_failed_charges_this_month,
+  coalesce(failed_charge_count_this_month, 0) as failed_charge_count_this_month,
   coalesce(failed_charge_amount_this_month/100, 0) as failed_charge_amount_this_month,
   customer.currency as customer_currency,
   customer.default_card_id,

@@ -349,7 +349,7 @@ where not is_captured
     sum(case when type = 'payout' or type like '%transfer%' then amount else 0 end) as total_gross_payout_amount,
     sum(case when type = 'payout' or type like '%transfer%' then fee * -1.0 else net end) as quarterly_net_activity,
     sum(if(type in ('payment', 'charge'), 1, 0)) as total_sales_count,
-    sum(if(type = 'payout', 1, 0)) as payouts_count,
+    sum(if(type = 'payout', 1, 0)) as total_payout_count,
     count(distinct case when type = 'adjustment' then coalesce(source, payout_id) end) as total_adjustments_count
   from balance_transaction_joined
   group by 1
@@ -378,7 +378,7 @@ select
   quarterly_balance_transactions.quarterly_net_activity/100.0 as quarterly_net_activity,
   (quarterly_balance_transactions.quarterly_net_activity + quarterly_balance_transactions.total_gross_payout_amount)/100.0 as quarterly_end_balance,
   quarterly_balance_transactions.total_sales_count,
-  quarterly_balance_transactions.payouts_count,
+  quarterly_balance_transactions.total_payout_count,
   quarterly_balance_transactions.total_adjustments_count,
   coalesce(quarterly_failed_charges.total_failed_charge_count, 0) as total_failed_charge_count,
   coalesce(quarterly_failed_charges.total_failed_charge_amount/100, 0) as total_failed_charge_amount

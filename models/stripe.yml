@@ -30,7 +30,7 @@ models:
     - name: customer_facing_currency 
       description: Three-letter ISO currency code that the customer sees.
     - name: effective_at 
-      description: \? day after available_at
+      description: Calander day after available_at
     - name: customer_id 
       description: The customer associated with the balance transaction (based on charge or refund details)
     - name: receipt_email 
@@ -78,25 +78,25 @@ models:
         description: Sum of all charges made to this customer.
       - name: total_refunds 
         description: Sum of all refunds made to this customer.
-      - name: gross_transcations 
+      - name: total_gross_transcation_amount 
         description: Gross amount of all transactions made with this customer.
       - name: total_fees 
         description: Total fees charged on all transactions made with this customer.
-      - name: net_trasnactions 
+      - name: total_net_transaction_amount 
         description: Net amount of all transactions made with this customer.
-      - name: sales_count 
+      - name: total_sales_count 
         description: The total number of sales made to this customer.
-      - name: refund_count 
+      - name: total_refund_count 
         description: The total number of refunds made to this customer. 
       - name: sales_this_month 
         description: Sum of charges made to this customer this month.
       - name: refunds_this_month 
         description: Sum of refunds made to this customer this month.
-      - name: gross_transactions_this_month 
+      - name: gross_transaction_amount_this_month 
         description: Gross amount of transactions made with this customer this month.
       - name: fees_this_month 
         description: Total fees charged on transactions made with this customer this month.
-      - name: net_transactions_this_month 
+      - name: net_transaction_amount_this_month 
         description: Net amount of transactions made with this customer this month.
       - name: sales_count_this_month 
         description: The number of sales made to this customer this month.
@@ -106,6 +106,14 @@ models:
         description: Date of the first time this customer was charged.
       - name: most_recent_sale_date 
         description: Date of the most recent time this customer was charged.
+      - name: total_failed_charge_count
+        description: The total number of incomplete charges this customer has had.
+      - name: total_failed_charge_amount
+        description: The total amount from incomplete charges this customer has had.
+      - name: failed_charge_count_this_month
+        description: The number of incomplete charges this customer has had this month.
+      - name: failed_charge_amount_this_month
+        description: The amount from incomplete charges this customer has had this month.
       - name: customer_currency 
         description: Currency used by the customer.
       - name: default_card_id
@@ -131,122 +139,138 @@ models:
     columns:
       - name: date 
         description: The date associated with the transactions.  The available_at field is used for payouts, and the transaction created_at is used for all others.
-      - name: sales 
+      - name: total_sales 
         description: The sum of all sales during the reporting period.
-      - name: refunds 
+      - name: total_refunds 
         description: The sum of all refunds during the reporting period.
-      - name: adjustments 
+      - name: total_adjustments 
         description: The sum of all adjustments during the reporting period.
-      - name: other 
+      - name: total_other_transactions
         description: The sum of all other transactions during the reporting period.
-      - name: gross_transactions 
+      - name: total_gross_transaction_amount
         description: Gross amount of all transactions (excluding payouts and transfers)
-      - name: net_transactions 
+      - name: total_net_tranactions
         description: Net amount of all transactions (excluding payouts and transfers)
-      - name: payout_fees 
+      - name: total_payout_fees
         description: Fees associated with all payouts and transfers during the reporting period.
-      - name: gross_payouts 
+      - name: total_gross_payouts 
         description: Total amount of all payouts and transfers during the reporting period.
       - name: daily_net_activity 
         description: Total balance transaction activity during the reporting period.
       - name: daily_end_balance 
         description: Accout balance at the end of the reporting period.
-      - name: sales_count 
+      - name: total_sales_count 
         description: Number of sales transactions during the reporting period.
-      - name: payouts_count 
+      - name: total_payouts_count 
         description: Number of payouts made during the reporting period.
-      - name: adjustments_count
+      - name: total_adjustments_count
         description: Number of adjustments made during the reporting period.
+      - name: total_failed_charge_count
+        description: Number of incomplete charges during the reporting period.
+      - name: total_failed_charge_amount
+        description: Total amount from incomplete charges during the reporting period.
 
   - name: stripe_weekly_overview
     columns:
       - name: week 
         description: The first day fo the week associated with the transactions.  The available_at field is used for payouts, and the transaction created_at is used for all others.
-      - name: sales 
+      - name: total_sales 
         description: The sum of all sales during the reporting period.
-      - name: refunds 
+      - name: total_refunds 
         description: The sum of all refunds during the reporting period.
-      - name: adjustments 
+      - name: total_adjustments 
         description: The sum of all adjustments during the reporting period.
-      - name: other 
+      - name: total_other_transactions
         description: The sum of all other transactions during the reporting period.
-      - name: gross_transactions 
+      - name: total_gross_transaction_amount
         description: Gross amount of all transactions (excluding payouts and transfers)
-      - name: net_transactions 
+      - name: total_net_tranactions
         description: Net amount of all transactions (excluding payouts and transfers)
-      - name: payout_fees 
+      - name: total_payout_fees
         description: Fees associated with all payouts and transfers during the reporting period.
-      - name: gross_payouts 
+      - name: total_gross_payouts 
         description: Total amount of all payouts and transfers during the reporting period.
       - name: weekly_net_activity 
         description: Total balance transaction activity during the reporting period.
       - name: weekly_end_balance
         description: Accout balance at the end of the reporting period.
-      - name: sales_count 
+      - name: total_sales_count 
         description: Number of sales transactions during the reporting period.
-      - name: payouts_count 
+      - name: total_payouts_count 
         description: Number of payouts made during the reporting period.
-      - name: adjustments_count
+      - name: total_adjustments_count
         description: Number of adjustments made during the reporting period.
+      - name: total_failed_charge_count
+        description: Number of incomplete charges during the reporting period.
+      - name: total_failed_charge_amount
+        description: Total amount from incomplete charges during the reporting period.
  
   - name: stripe_monthly_overview
     columns:   
       - name: month 
         description: The first day fo the week associated with the transactions.  The available_at field is used for payouts, and the transaction created_at is used for all others.
-      - name: sales 
+      - name: total_sales 
         description: The sum of all sales during the reporting period.
-      - name: refunds 
+      - name: total_refunds 
         description: The sum of all refunds during the reporting period.
-      - name: adjustments 
+      - name: total_adjustments 
         description: The sum of all adjustments during the reporting period.
-      - name: other 
+      - name: total_other_transactions
         description: The sum of all other transactions during the reporting period.
-      - name: gross_transactions 
+      - name: total_gross_transaction_amount
         description: Gross amount of all transactions (excluding payouts and transfers)
-      - name: net_transactions 
+      - name: total_net_tranactions
         description: Net amount of all transactions (excluding payouts and transfers)
-      - name: payout_fees 
+      - name: total_payout_fees
         description: Fees associated with all payouts and transfers during the reporting period.
-      - name: gross_payouts 
+      - name: total_gross_payouts 
         description: Total amount of all payouts and transfers during the reporting period.
       - name: monthly_net_activity 
         description: Total balance transaction activity during the reporting period.
       - name: monthly_end_balance 
         description: Accout balance at the end of the reporting period.
-      - name: sales_count 
+      - name: total_sales_count 
         description: Number of sales transactions during the reporting period.
-      - name: payouts_count 
+      - name: total_payouts_count 
         description: Number of payouts made during the reporting period.
-      - name: adjustments_count
+      - name: total_adjustments_count
         description: Number of adjustments made during the reporting period.
+      - name: total_failed_charge_count
+        description: Number of incomplete charges during the reporting period.
+      - name: total_failed_charge_amount
+        description: Total amount from incomplete charges during the reporting period.
 
   - name: stripe_quarterly_overview
     columns: 
       - name: quarter 
         description: The calander quarter associated with the transactions.  The available_at field is used for payouts, and the transaction created_at is used for all others.
-      - name: sales 
+      - name: total_sales 
         description: The sum of all sales during the reporting period.
-      - name: refunds 
+      - name: total_refunds 
         description: The sum of all refunds during the reporting period.
-      - name: adjustments 
+      - name: total_adjustments 
         description: The sum of all adjustments during the reporting period.
-      - name: other 
+      - name: total_other_transactions
         description: The sum of all other transactions during the reporting period.
-      - name: gross_transactions 
+      - name: total_gross_transaction_amount
         description: Gross amount of all transactions (excluding payouts and transfers)
-      - name: net_transactions 
+      - name: total_net_tranactions
         description: Net amount of all transactions (excluding payouts and transfers)
-      - name: payout_fees 
+      - name: total_payout_fees
         description: Fees associated with all payouts and transfers during the reporting period.
-      - name: gross_payouts 
+      - name: total_gross_payouts 
         description: Total amount of all payouts and transfers during the reporting period.
       - name: quarterly_net_activity 
         description: Total balance transaction activity during the reporting period.
       - name: quarterly_end_balance 
         description: Accout balance at the end of the reporting period.
-      - name: sales_count 
+      - name: total_sales_count 
         description: Number of sales transactions during the reporting period.
-      - name: payouts_count 
+      - name: total_payouts_count 
         description: Number of payouts made during the reporting period.
-      - name: adjustments_count
+      - name: total_adjustments_count
         description: Number of adjustments made during the reporting period.
+      - name: total_failed_charge_count
+        description: Number of incomplete charges during the reporting period.
+      - name: total_failed_charge_amount
+        description: Total amount from incomplete charges during the reporting period.

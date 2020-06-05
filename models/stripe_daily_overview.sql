@@ -22,7 +22,7 @@ with balance_transaction_joined as (
     sum(case when type = 'payout' or type like '%transfer%' then amount else 0 end) as total_gross_payout_amount,
     sum(case when type = 'payout' or type like '%transfer%' then fee * -1.0 else net end) as daily_net_activity,
     sum(if(type in ('payment', 'charge'), 1, 0)) as total_sales_count,
-    sum(if(type = 'payout', 1, 0)) as payouts_count,
+    sum(if(type = 'payout', 1, 0)) as total_payouts_count,
     count(distinct case when type = 'adjustment' then coalesce(source, payout_id) end) as total_adjustments_count
   from balance_transaction_joined
   group by 1
@@ -51,7 +51,7 @@ select
   daily_balance_transactions.daily_net_activity/100.0 as daily_net_activity,
   (daily_balance_transactions.daily_net_activity + daily_balance_transactions.total_gross_payout_amount)/100.0 as daily_end_balance,
   daily_balance_transactions.total_sales_count,
-  daily_balance_transactions.payouts_count,
+  daily_balance_transactions.total_payouts_count,
   daily_balance_transactions.total_adjustments_count,
   coalesce(daily_failed_charges.total_failed_charge_count, 0) as total_failed_charge_count,
   coalesce(daily_failed_charges.total_failed_charge_amount/100, 0) as total_failed_charge_amount
