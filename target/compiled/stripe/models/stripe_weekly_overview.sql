@@ -51,7 +51,8 @@ with charge as (
       receipt_email,
       receipt_number,
       refunded as is_refunded,
-      status
+      status,
+      invoice_id
     from charge
     
 )

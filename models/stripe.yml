@@ -274,3 +274,7 @@ models:
         description: Number of incomplete charges during the reporting period.
       - name: total_failed_charge_amount
         description: Total amount from incomplete charges during the reporting period.
+
+
+  - name: stripe_invoice_details
+  - name: stripe_subscription_details
