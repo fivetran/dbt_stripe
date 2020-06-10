@@ -47,7 +47,6 @@ select
   charge.balance_transaction_id,
   charge.amount as charge_amount, 
   charge.status as charge_status,
-  charge.description as charge_desc,
   charge.created_at as charge_created_at,
   customer.description as customer_description,
   customer.email as customer_email,

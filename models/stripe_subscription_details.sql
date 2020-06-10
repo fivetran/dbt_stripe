@@ -45,7 +45,7 @@ with invoice as (
   select
     subscription_id,
     count(distinct invoice_id) as number_invoices_generated,
-    sum(amount_due) as total_amount_billing,
+    sum(amount_due) as total_amount_billed,
     sum(amount_paid) as total_amount_paid,
     sum(amount_remaining) total_amount_remaining,
     max(created_at) as most_recent_invoice_created_at,
@@ -76,7 +76,7 @@ select
   subscription.cancel_at_period_end,
   subscription.cancel_at,
   number_invoices_generated,
-  total_amount_billing,
+  total_amount_billed,
   total_amount_paid,
   total_amount_remaining,
   most_recent_invoice_created_at,
