@@ -7,9 +7,9 @@ Check [dbt Hub](https://hub.getdbt.com/fishtown-analytics/dbt_utils/latest/) for
 
 ## Macros
 ### Cross-database
-While these macros are cross database, they do not support all databases. 
-These macros are provided to make date calculations easier and are not a core part of dbt. 
-Most date macros are not supported on postgres. 
+While these macros are cross database, they do not support all databases.
+These macros are provided to make date calculations easier and are not a core part of dbt.
+Most date macros are not supported on postgres.
 
 #### current_timestamp ([source](macros/cross_db_utils/current_timestamp.sql))
 This macro returns the current timestamp.
@@ -249,6 +249,38 @@ models:
 
 ```
 
+#### unique_where ([source](macros/schema_tests/unique_where.sql))
+This test validates that there are no duplicate values present in a field for a subset of rows by specifying a `where` clause.
+
+Usage:
+```yaml
+version: 2
+
+models:
+  - name: my_model
+    columns:
+      - name: id
+        tests:
+          - dbt_utils.unique_where:
+              where: "_deleted = false"
+```
+
+#### not_null_where ([source](macros/schema_tests/not_null_where.sql))
+This test validates that there are no null values present in a column for a subset of rows by specifying a `where` clause.
+
+Usage:
+```yaml
+version: 2
+
+models:
+  - name: my_model
+    columns:
+      - name: id
+        tests:
+          - dbt_utils.not_null_where:
+              where: "_deleted = false"
+```
+
 #### relationships_where ([source](macros/schema_tests/relationships_where.sql))
 This test validates the referential integrity between two relations (same as the core relationships schema test) with an added predicate to filter out some rows from the test. This is useful to exclude records such as test entities, rows created in the last X minutes/hours to account for temporary gaps due to ETL limitations, etc.
 
@@ -436,6 +468,35 @@ handy paired with `union_relations`.
 * `database` (optional, default = `target.database`): The database to inspect
 for relations.
 
+#### get_relations_by_pattern
+> This was built from the get_relations_by_prefix macro.
+
+Returns a list of [Relations](https://docs.getdbt.com/docs/writing-code-in-dbt/class-reference/#relation)
+that match a given schema or table pattern and table/view name with an optional exclusion pattern. Like its cousin
+get_relations_by_prefix, it's particularly handy paired with `union_relations`.
+**Usage:**
+```
+-- Returns a list of relations that match schema%.table
+{% set relations = dbt_utils.get_relations_by_pattern('schema_pattern%', 'table_pattern') %}
+
+-- Returns a list of relations that match schema.table%
+{% set relations = dbt_utils.get_relations_by_pattern('schema_pattern', 'table_pattern%') %}
+
+-- Returns a list of relations as above, excluding any that end in `deprecated`
+{% set relations = dbt_utils.get_relations_by_pattern('schema_pattern', 'table_pattern%', '%deprecated') %}
+
+-- Example using the union_relations macro
+{% set event_relations = dbt_utils.get_relations_by_pattern('venue%', 'clicks') %}
+{{ dbt_utils.union_relations(relations = event_relations) }}
+```
+
+**Args:**
+* `schema_pattern` (required): The schema pattern to inspect for relations.
+* `table_pattern` (required): The name of the table/view (case insensitive).
+* `exclude` (optional): Exclude any relations that match this table pattern.
+* `database` (optional, default = `target.database`): The database to inspect
+for relations.
+
 #### group_by ([source](macros/sql/groupby.sql))
 This macro build a group by statement for fields 1...N
 
@@ -620,7 +681,7 @@ This macro extracts a page path from a column containing a url.
 
 Usage:
 ```
-{{ dbt_utils.get_url_host(field='page_url') }}
+{{ dbt_utils.get_url_path(field='page_url') }}
 ```
 
 ---

@@ -54,7 +54,7 @@ select
   coalesce(customer.description, customer.customer_id, 'No associated customer') as customer_description,
   customer.email,
   customer.created_at as customer_created_at,
-  customer.is_deliguent,
+  customer.is_delinquent,
   coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
   coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
   coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transcation_amount,

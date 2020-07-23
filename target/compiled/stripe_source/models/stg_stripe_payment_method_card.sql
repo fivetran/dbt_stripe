@@ -1,3 +1,5 @@
+
+
 with payment_method_card as (
 
     select *

@@ -13,11 +13,6 @@ with balance_transaction as (
     select *
     from {{ ref('stg_stripe_payment_intent')}}
 
-), payment_method as (
-
-    select *
-    from {{ ref('stg_stripe_payment_method')}}
-
 ), card as (
 
     select *
@@ -69,7 +64,6 @@ select
   charge.charge_id,
   charge.payment_intent_id,
   charge.created_at as charge_created_at,
-  payment_method.type as payment_method_type,
   card.brand as card_brand,
   card.funding as card_funding,
   card.country as card_country,
@@ -83,7 +77,6 @@ from balance_transaction
 left join charge on charge.balance_transaction_id = balance_transaction.balance_transaction_id
 left join customer on charge.customer_id = customer.customer_id
 left join payment_intent on charge.payment_intent_id = payment_intent.payment_intent_id
-left join payment_method on payment_intent.payment_method_id = payment_method.payment_method_id
 left join card on charge.card_id = card.card_id
 left join payout on payout.balance_transaction_id = balance_transaction.balance_transaction_id
 left join refund on refund.balance_transaction_id = balance_transaction.balance_transaction_id

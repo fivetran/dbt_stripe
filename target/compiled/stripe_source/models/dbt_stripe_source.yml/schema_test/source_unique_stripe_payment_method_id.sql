@@ -8,7 +8,7 @@ from (
     select
         id
 
-    from `dbt-package-testing`.`stripe`.`payment_method`
+    from "redshift-test-kristin"."stripe"."payment_method"
     where id is not null
     group by id
     having count(*) > 1

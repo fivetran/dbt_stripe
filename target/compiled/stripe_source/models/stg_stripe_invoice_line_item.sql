@@ -22,7 +22,7 @@ with invoice_line_item as (
       type,
       unique_id
     from invoice_line_item
-    where id not like 'sub%'
+    where id not like 'sub%' -- ids starting with 'sub' are temporary and are replaced by permanent ids starting with 'sli' 
 
 )
 

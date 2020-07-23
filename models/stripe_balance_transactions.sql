@@ -26,7 +26,7 @@ select
   charge_id,
   payment_intent_id,
   charge_created_at,
-  payment_method_type,
+  -- payment_method_type,
   card_brand,
   card_funding,
   card_country,
