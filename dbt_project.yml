@@ -9,6 +9,8 @@ models:
     stripe:
         materialized: table
         intermediate:
-            materialized: table #ephemeral
+            materialized: ephemeral
+    # stripe_source:
+    #     database: 'culdesac-labs'
 
 profile: integration_test

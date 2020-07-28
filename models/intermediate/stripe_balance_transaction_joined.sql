@@ -57,7 +57,7 @@ select
   balance_transaction.description,
   case when balance_transaction.type = 'charge' then charge.amount end as customer_facing_amount, --think this might be the charge amount/currency
   case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
-  date_add(date(balance_transaction.available_on), interval 1 day) as effective_at,
+  {{ dbt_utils.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
   coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
   charge.receipt_email,
   customer.description as customer_description,

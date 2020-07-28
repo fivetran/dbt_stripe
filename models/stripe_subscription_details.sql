@@ -1,4 +1,4 @@
-{{ config(enabled=var('using_invoices', True)) }}
+{{ config(enabled=enabled_vars(['using_invoices','using_subscriptions'])) }}
 
 with invoice as (
 
@@ -73,7 +73,7 @@ select
   subscription.current_period_start,
   subscription.current_period_end,
   subscription.days_until_due,
-  subscription.cancel_at_period_end,
+  subscription.is_cancel_at_period_end,
   subscription.cancel_at,
   number_invoices_generated,
   total_amount_billed,

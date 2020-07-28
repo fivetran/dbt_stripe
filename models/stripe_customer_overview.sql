@@ -17,24 +17,50 @@ with balance_transaction_joined as (
  
     select
       customer_id,
-      sum(if(type in ('charge', 'payment'), amount, 0)) as total_sales,
-      sum(if(type in ('payment_refund', 'refund'), amount, 0)) as total_refunds,
+      sum(case when type in ('charge', 'payment') then amount
+          else 0 end) as total_sales,
+      sum(case when type in ('payment_refund', 'refund') then amount
+          else 0 end) as total_refunds,    
       sum(amount) as total_gross_transaction_amount,
       sum(fee) as total_fees,
       sum(net) as total_net_transaction_amount,
-      sum(if(type in ('payment', 'charge'), 1, 0)) as total_sales_count,
-      sum(if(type in ('payment_refund', 'refund'), 1, 0)) as total_refund_count,    
-      sum(if(type in ('charge', 'payment') and date_trunc(date(created_at), month) = date_trunc(current_date(), month),amount, 0)) as sales_this_month,
-      sum(if(type in ('payment_refund', 'refund') and date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as refunds_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as gross_transaction_amount_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), fee, 0)) as fees_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), net, 0)) as net_transaction_amount_this_month,
-      sum(if(type in ('payment', 'charge') and date_trunc(date(created_at), month) = date_trunc(current_date(), month) , 1, 0)) as sales_count_this_month,
-      sum(if(type in ('payment_refund', 'refund') and date_trunc(date(created_at), month) = date_trunc(current_date(), month) , 1, 0)) as refund_count_this_month,
-      min(if(type in ('payment', 'charge'), date(created_at), null)) as first_sale_date,
-      max(if(type in ('payment', 'charge'), date(created_at), null)) as most_recent_sale_date
+      sum(case when type in ('charge', 'payment') then 1
+          else 0 end) as total_sales_count, 
+      sum(case when type in ('payment_refund', 'refund') then 1
+          else 0 end) as total_refund_count,   
+      sum(case when type in ('charge', 'payment') 
+              and {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then amount 
+          else 0 end) as sales_this_month,
+      sum(case when type in ('payment_refund', 'refund') 
+              and {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then amount 
+          else 0 end) as refunds_this_month,
+      sum(case when {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then amount 
+          else 0 end) as gross_transaction_amount_this_month,
+      sum(case when {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then fee 
+          else 0 end) as fees_this_month,
+      sum(case when {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then net 
+          else 0 end) as net_transaction_amount_this_month,
+      sum(case when type in ('charge', 'payment') 
+              and {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then 1 
+          else 0 end) as sales_count_this_month,
+      sum(case when type in ('payment_refund', 'refund') 
+              and {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+              then 1 
+          else 0 end) as refund_count_this_month,
+      min(case when type in ('charge', 'payment') 
+            then {{ dbt_utils.date_trunc('day', 'created_at') }}
+            else null end) as first_sale_date,
+      min(case when type in ('charge', 'payment') 
+            then {{ dbt_utils.date_trunc('day', 'created_at') }}
+            else null end) as most_recent_sale_date
     from balance_transaction_joined
-      where type in ('payment', 'charge', 'payment_refund', 'refund')
+    where type in ('payment', 'charge', 'payment_refund', 'refund')
     group by 1
 
 ), failed_charges_by_customer as (
@@ -43,8 +69,12 @@ with balance_transaction_joined as (
       customer_id,
       count(*) as total_failed_charge_count,
       sum(amount) as total_failed_charge_amount,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), 1, 0)) as failed_charge_count_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as failed_charge_amount_this_month
+      sum(case when {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+            then 1
+            else 0 end) as failed_charge_count_this_month,
+      sum(case when {{ dbt_utils.date_trunc('month', 'created_at') }} = {{ dbt_utils.date_trunc('month', dbt_utils.current_timestamp()) }}
+            then amount
+            else 0 end) as failed_charge_amount_this_month
     from incomplete_charges
     group by 1
 

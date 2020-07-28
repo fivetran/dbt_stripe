@@ -11,19 +11,45 @@ with balance_transaction_joined as (
 ), daily_balance_transactions as (
 
   select
-    date(case when type = 'payout' then available_on else created_at end) as date,
-    sum(case when type in ('charge', 'payment') then amount else 0 end) as total_sales,
-    sum(case when type in ('payment_refund', 'refund') then amount else 0 end) as total_refunds,
-    sum(case when type = 'adjustment' then amount else 0 end) as total_adjustments,
-    sum(case when type not in ('charge', 'payment', 'payment_refund', 'refund', 'adjustment', 'payout') and type not like '%transfer%' then amount else 0 end) as total_other_transactions,
-    sum(case when type <> 'payout' and type not like '%transfer%' then amount else 0 end) as total_gross_transaction_amount,
-    sum(case when type <> 'payout' and type not like '%transfer%' then net else 0 end) as total_net_tranactions,
-    sum(case when type = 'payout' or type like '%transfer%' then fee * -1.0 else 0 end) as total_payout_fees,
-    sum(case when type = 'payout' or type like '%transfer%' then amount else 0 end) as total_gross_payout_amount,
-    sum(case when type = 'payout' or type like '%transfer%' then fee * -1.0 else net end) as daily_net_activity,
-    sum(if(type in ('payment', 'charge'), 1, 0)) as total_sales_count,
-    sum(if(type = 'payout', 1, 0)) as total_payouts_count,
-    count(distinct case when type = 'adjustment' then coalesce(source, payout_id) end) as total_adjustments_count
+    date(case when type = 'payout' 
+          then available_on 
+          else created_at end) as date,
+    sum(case when type in ('charge', 'payment') 
+          then amount 
+          else 0 end) as total_sales,
+    sum(case when type in ('payment_refund', 'refund') 
+          then amount 
+          else 0 end) as total_refunds,
+    sum(case when type = 'adjustment' 
+          then amount 
+          else 0 end) as total_adjustments,
+    sum(case when type not in ('charge', 'payment', 'payment_refund', 'refund', 'adjustment', 'payout') and type not like '%transfer%' 
+          then amount 
+          else 0 end) as total_other_transactions,
+    sum(case when type <> 'payout' and type not like '%transfer%' 
+          then amount 
+          else 0 end) as total_gross_transaction_amount,
+    sum(case when type <> 'payout' and type not like '%transfer%' 
+          then net 
+          else 0 end) as total_net_tranactions,
+    sum(case when type = 'payout' or type like '%transfer%' 
+          then fee * -1.0
+          else 0 end) as total_payout_fees,
+    sum(case when type = 'payout' or type like '%transfer%' 
+          then amount 
+          else 0 end) as total_gross_payout_amount,
+    sum(case when type = 'payout' or type like '%transfer%' 
+          then fee * -1.0 
+          else net end) as daily_net_activity,
+    sum(case when type in ('payment', 'charge') 
+          then 1 
+          else 0 end) as total_sales_count,
+    sum(case when type = 'payout' 
+          then 1 
+          else 0 end) as total_payouts_count,
+    count(distinct case when type = 'adjustment' 
+            then coalesce(source, payout_id) 
+            else null end) as total_adjustments_count
   from balance_transaction_joined
   group by 1
 

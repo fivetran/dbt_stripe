@@ -20268,3 +20268,1248 @@ dbt.exceptions.DatabaseException: Database Error
 2020-07-23 16:34:10.950322 (MainThread): Connection 'generate_catalog' was left open.
 2020-07-23 16:34:10.950485 (MainThread): Connection 'dbt-package-testing.information_schema' was left open.
 2020-07-23 16:34:10.950576 (MainThread): Connection 'dbt-package-testing.information_schema' was left open.
+2020-07-23 18:07:55.660854 (MainThread): Running with dbt=0.17.0-rc1
+2020-07-23 18:07:56.043902 (MainThread): running dbt with arguments Namespace(cls=<class 'dbt.task.generate.GenerateTask'>, compile=True, debug=False, exclude=None, log_cache_events=False, log_format='default', models=None, partial_parse=None, profile=None, profiles_dir='/Users/kristin/.dbt', project_dir=None, record_timing_info=None, rpc_method='docs.generate', single_threaded=False, strict=False, target=None, test_new_parser=False, threads=None, use_cache=True, vars='{}', version_check=True, warn_error=False, which='generate', write_json=True)
+2020-07-23 18:07:56.045584 (MainThread): Tracking: tracking
+2020-07-23 18:07:56.055968 (MainThread): Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107bddfa0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107bc1fd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107bc1c40>]}
+2020-07-23 18:07:56.080942 (MainThread): Partial parsing not enabled
+2020-07-23 18:07:56.084107 (MainThread): Parsing macros/core.sql
+2020-07-23 18:07:56.090189 (MainThread): Parsing macros/materializations/helpers.sql
+2020-07-23 18:07:56.098880 (MainThread): Parsing macros/materializations/snapshot/snapshot_merge.sql
+2020-07-23 18:07:56.101464 (MainThread): Parsing macros/materializations/snapshot/strategies.sql
+2020-07-23 18:07:56.120045 (MainThread): Parsing macros/materializations/snapshot/snapshot.sql
+2020-07-23 18:07:56.150580 (MainThread): Parsing macros/materializations/seed/seed.sql
+2020-07-23 18:07:56.172399 (MainThread): Parsing macros/materializations/incremental/helpers.sql
+2020-07-23 18:07:56.174448 (MainThread): Parsing macros/materializations/incremental/incremental.sql
+2020-07-23 18:07:56.181040 (MainThread): Parsing macros/materializations/common/merge.sql
+2020-07-23 18:07:56.195015 (MainThread): Parsing macros/materializations/table/table.sql
+2020-07-23 18:07:56.201723 (MainThread): Parsing macros/materializations/view/view.sql
+2020-07-23 18:07:56.209859 (MainThread): Parsing macros/materializations/view/create_or_replace_view.sql
+2020-07-23 18:07:56.215033 (MainThread): Parsing macros/etc/get_custom_alias.sql
+2020-07-23 18:07:56.216137 (MainThread): Parsing macros/etc/query.sql
+2020-07-23 18:07:56.217306 (MainThread): Parsing macros/etc/is_incremental.sql
+2020-07-23 18:07:56.219048 (MainThread): Parsing macros/etc/datetime.sql
+2020-07-23 18:07:56.227622 (MainThread): Parsing macros/etc/get_custom_schema.sql
+2020-07-23 18:07:56.229601 (MainThread): Parsing macros/etc/get_custom_database.sql
+2020-07-23 18:07:56.231056 (MainThread): Parsing macros/adapters/common.sql
+2020-07-23 18:07:56.283750 (MainThread): Parsing macros/schema_tests/relationships.sql
+2020-07-23 18:07:56.285139 (MainThread): Parsing macros/schema_tests/not_null.sql
+2020-07-23 18:07:56.286416 (MainThread): Parsing macros/schema_tests/unique.sql
+2020-07-23 18:07:56.287759 (MainThread): Parsing macros/schema_tests/accepted_values.sql
+2020-07-23 18:07:56.290620 (MainThread): Parsing macros/etc.sql
+2020-07-23 18:07:56.291771 (MainThread): Parsing macros/catalog.sql
+2020-07-23 18:07:56.298849 (MainThread): Parsing macros/adapters.sql
+2020-07-23 18:07:56.315466 (MainThread): Parsing macros/materializations/seed.sql
+2020-07-23 18:07:56.317782 (MainThread): Parsing macros/materializations/view.sql
+2020-07-23 18:07:56.320464 (MainThread): Parsing macros/materializations/table.sql
+2020-07-23 18:07:56.330977 (MainThread): Parsing macros/materializations/incremental.sql
+2020-07-23 18:07:56.345345 (MainThread): Parsing macros/materializations/snapshot.sql
+2020-07-23 18:07:56.402855 (MainThread): Partial parsing not enabled
+2020-07-23 18:07:56.407208 (MainThread): Parsing macros/cross_db_utils/except.sql
+2020-07-23 18:07:56.408917 (MainThread): Parsing macros/cross_db_utils/replace.sql
+2020-07-23 18:07:56.410927 (MainThread): Parsing macros/cross_db_utils/concat.sql
+2020-07-23 18:07:56.413954 (MainThread): Parsing macros/cross_db_utils/datatypes.sql
+2020-07-23 18:07:56.420226 (MainThread): Parsing macros/cross_db_utils/_is_relation.sql
+2020-07-23 18:07:56.422288 (MainThread): Parsing macros/cross_db_utils/length.sql
+2020-07-23 18:07:56.423839 (MainThread): Parsing macros/cross_db_utils/dateadd.sql
+2020-07-23 18:07:56.426486 (MainThread): Parsing macros/cross_db_utils/intersect.sql
+2020-07-23 18:07:56.428261 (MainThread): Parsing macros/cross_db_utils/right.sql
+2020-07-23 18:07:56.431201 (MainThread): Parsing macros/cross_db_utils/datediff.sql
+2020-07-23 18:07:56.442148 (MainThread): Parsing macros/cross_db_utils/safe_cast.sql
+2020-07-23 18:07:56.444543 (MainThread): Parsing macros/cross_db_utils/hash.sql
+2020-07-23 18:07:56.446288 (MainThread): Parsing macros/cross_db_utils/identifier.sql
+2020-07-23 18:07:56.447844 (MainThread): Parsing macros/cross_db_utils/position.sql
+2020-07-23 18:07:56.449753 (MainThread): Parsing macros/cross_db_utils/literal.sql
+2020-07-23 18:07:56.451095 (MainThread): Parsing macros/cross_db_utils/current_timestamp.sql
+2020-07-23 18:07:56.482120 (MainThread): Parsing macros/cross_db_utils/width_bucket.sql
+2020-07-23 18:07:56.489636 (MainThread): Parsing macros/cross_db_utils/last_day.sql
+2020-07-23 18:07:56.493611 (MainThread): Parsing macros/cross_db_utils/split_part.sql
+2020-07-23 18:07:56.496145 (MainThread): Parsing macros/cross_db_utils/date_trunc.sql
+2020-07-23 18:07:56.498357 (MainThread): Parsing macros/cross_db_utils/_is_ephemeral.sql
+2020-07-23 18:07:56.500978 (MainThread): Parsing macros/materializations/insert_by_period_materialization.sql
+2020-07-23 18:07:56.529932 (MainThread): Parsing macros/logger/pretty_log_format.sql
+2020-07-23 18:07:56.530898 (MainThread): Parsing macros/logger/pretty_time.sql
+2020-07-23 18:07:56.531947 (MainThread): Parsing macros/logger/log_info.sql
+2020-07-23 18:07:56.532906 (MainThread): Parsing macros/datetime/date_spine.sql
+2020-07-23 18:07:56.537233 (MainThread): Parsing macros/web/get_url_host.sql
+2020-07-23 18:07:56.539158 (MainThread): Parsing macros/web/get_url_path.sql
+2020-07-23 18:07:56.541687 (MainThread): Parsing macros/web/get_url_parameter.sql
+2020-07-23 18:07:56.543137 (MainThread): Parsing macros/geo/haversine_distance.sql
+2020-07-23 18:07:56.544443 (MainThread): Parsing macros/schema_tests/equal_rowcount.sql
+2020-07-23 18:07:56.546154 (MainThread): Parsing macros/schema_tests/relationships_where.sql
+2020-07-23 18:07:56.548533 (MainThread): Parsing macros/schema_tests/recency.sql
+2020-07-23 18:07:56.549950 (MainThread): Parsing macros/schema_tests/not_constant.sql
+2020-07-23 18:07:56.551191 (MainThread): Parsing macros/schema_tests/test_unique_where.sql
+2020-07-23 18:07:56.553001 (MainThread): Parsing macros/schema_tests/at_least_one.sql
+2020-07-23 18:07:56.554134 (MainThread): Parsing macros/schema_tests/unique_combination_of_columns.sql
+2020-07-23 18:07:56.555608 (MainThread): Parsing macros/schema_tests/cardinality_equality.sql
+2020-07-23 18:07:56.557267 (MainThread): Parsing macros/schema_tests/expression_is_true.sql
+2020-07-23 18:07:56.558447 (MainThread): Parsing macros/schema_tests/test_not_null_where.sql
+2020-07-23 18:07:56.560139 (MainThread): Parsing macros/schema_tests/equality.sql
+2020-07-23 18:07:56.563387 (MainThread): Parsing macros/schema_tests/mutually_exclusive_ranges.sql
+2020-07-23 18:07:56.569187 (MainThread): Parsing macros/sql/nullcheck_table.sql
+2020-07-23 18:07:56.570424 (MainThread): Parsing macros/sql/get_relations_by_pattern.sql
+2020-07-23 18:07:56.573029 (MainThread): Parsing macros/sql/generate_series.sql
+2020-07-23 18:07:56.576600 (MainThread): Parsing macros/sql/get_relations_by_prefix.sql
+2020-07-23 18:07:56.580621 (MainThread): Parsing macros/sql/get_tables_by_prefix_sql.sql
+2020-07-23 18:07:56.583730 (MainThread): Parsing macros/sql/star.sql
+2020-07-23 18:07:56.586968 (MainThread): Parsing macros/sql/unpivot.sql
+2020-07-23 18:07:56.592637 (MainThread): Parsing macros/sql/union.sql
+2020-07-23 18:07:56.601388 (MainThread): Parsing macros/sql/groupby.sql
+2020-07-23 18:07:56.602483 (MainThread): Parsing macros/sql/get_tables_by_pattern.sql
+2020-07-23 18:07:56.603641 (MainThread): Parsing macros/sql/surrogate_key.sql
+2020-07-23 18:07:56.606416 (MainThread): Parsing macros/sql/safe_add.sql
+2020-07-23 18:07:56.607586 (MainThread): Parsing macros/sql/nullcheck.sql
+2020-07-23 18:07:56.608999 (MainThread): Parsing macros/sql/get_column_values.sql
+2020-07-23 18:07:56.612989 (MainThread): Parsing macros/sql/pivot.sql
+2020-07-23 18:07:56.615725 (MainThread): Parsing macros/sql/get_query_results_as_dict.sql
+2020-07-23 18:07:56.654429 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_weekly_overview".
+2020-07-23 18:07:56.654572 (MainThread): Opening a new connection, currently in state init
+2020-07-23 18:07:56.676076 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_daily_overview".
+2020-07-23 18:07:56.676203 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.688247 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_invoice_details".
+2020-07-23 18:07:56.688359 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.703851 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_customer_overview".
+2020-07-23 18:07:56.704106 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.717442 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_balance_transactions".
+2020-07-23 18:07:56.717587 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.727936 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_quarterly_overview".
+2020-07-23 18:07:56.728027 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.738537 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_monthly_overview".
+2020-07-23 18:07:56.738641 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.751387 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_subscription_details".
+2020-07-23 18:07:56.751516 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.766268 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_balance_transaction_joined".
+2020-07-23 18:07:56.766378 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:56.781891 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_incomplete_charges".
+2020-07-23 18:07:56.781995 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.099059 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_card".
+2020-07-23 18:07:57.099206 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.114836 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_invoice_line_item".
+2020-07-23 18:07:57.114949 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.132248 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_method_card".
+2020-07-23 18:07:57.132387 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.148509 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_charge".
+2020-07-23 18:07:57.148650 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.163653 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payout".
+2020-07-23 18:07:57.163800 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.178869 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_customer".
+2020-07-23 18:07:57.179014 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.193861 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_refund".
+2020-07-23 18:07:57.193996 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.209939 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_subscription".
+2020-07-23 18:07:57.210083 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.225750 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_method".
+2020-07-23 18:07:57.225880 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.241288 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_intent".
+2020-07-23 18:07:57.241436 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.256658 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_invoice".
+2020-07-23 18:07:57.256846 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.274475 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_fee".
+2020-07-23 18:07:57.274653 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:07:57.291553 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_balance_transaction".
+2020-07-23 18:07:57.291731 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:00.286668 (MainThread): WARNING: Found documentation for resource "payment_method_card" which was not found or is disabled
+2020-07-23 18:08:01.029046 (MainThread): Found 23 models, 34 tests, 0 snapshots, 0 analyses, 278 macros, 0 operations, 0 seed files, 13 sources
+2020-07-23 18:08:01.095144 (MainThread): 
+2020-07-23 18:08:01.095552 (MainThread): Acquiring new bigquery connection "master".
+2020-07-23 18:08:01.095657 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:01.134783 (ThreadPoolExecutor-0_0): Acquiring new bigquery connection "list_dbt-package-testing".
+2020-07-23 18:08:01.135061 (ThreadPoolExecutor-0_0): Opening a new connection, currently in state init
+2020-07-23 18:08:01.135674 (ThreadPoolExecutor-0_1): Acquiring new bigquery connection "list_culdesac-labs".
+2020-07-23 18:08:01.135962 (ThreadPoolExecutor-0_1): Opening a new connection, currently in state init
+2020-07-23 18:08:01.138123 (ThreadPoolExecutor-0_0): Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+2020-07-23 18:08:01.138284 (ThreadPoolExecutor-0_1): Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+2020-07-23 18:08:03.136703 (ThreadPoolExecutor-0_0): Acquiring new bigquery connection "create_culdesac-labs_dbt_kristin_2".
+2020-07-23 18:08:03.136950 (ThreadPoolExecutor-0_0): Re-using an available connection from the pool (formerly list_dbt-package-testing).
+2020-07-23 18:08:03.137071 (ThreadPoolExecutor-0_0): Creating schema "culdesac-labs.dbt_kristin_2".
+2020-07-23 18:08:03.137217 (ThreadPoolExecutor-0_0): Client.dataset is deprecated and will be removed in a future version. Use a string like 'my_project.my_dataset' or a cloud.google.bigquery.DatasetReference object, instead.
+2020-07-23 18:08:03.346274 (MainThread): Connection 'master' was properly closed.
+2020-07-23 18:08:03.346447 (MainThread): Connection 'create_culdesac-labs_dbt_kristin_2' was left open.
+2020-07-23 18:08:03.346536 (MainThread): Connection 'list_culdesac-labs' was left open.
+2020-07-23 18:08:03.346871 (MainThread): Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107fdb340>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1080049a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107cecf40>]}
+2020-07-23 18:08:03.347201 (MainThread): Flushing usage events
+2020-07-23 18:08:03.733512 (MainThread): Encountered an error:
+2020-07-23 18:08:03.733705 (MainThread): Database Error
+  Access Denied: Project culdesac-labs: User does not have bigquery.datasets.create permission in project culdesac-labs.
+2020-07-23 18:08:03.744933 (MainThread): Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 83, in exception_handler
+    yield
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 354, in _retry_and_handle
+    return retry.retry_target(
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/google/api_core/retry.py", line 184, in retry_target
+    return target()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 339, in fn
+    return client.create_dataset(dataset, exists_ok=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/google/cloud/bigquery/client.py", line 460, in create_dataset
+    api_response = self._call_api(
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/google/cloud/bigquery/client.py", line 556, in _call_api
+    return call()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/google/api_core/retry.py", line 281, in retry_wrapped_func
+    return retry_target(
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/google/api_core/retry.py", line 184, in retry_target
+    return target()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/google/cloud/_http.py", line 423, in api_request
+    raise exceptions.from_http_response(response)
+google.api_core.exceptions.Forbidden: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/culdesac-labs/datasets: Access Denied: Project culdesac-labs: User does not have bigquery.datasets.create permission in project culdesac-labs.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/main.py", line 81, in main
+    results, succeeded = handle_and_check(args)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/main.py", line 159, in handle_and_check
+    task, res = run_from_args(parsed)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/main.py", line 212, in run_from_args
+    results = task.run()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/task/generate.py", line 208, in run
+    compile_results = CompileTask.run(self)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/task/runnable.py", line 416, in run
+    result = self.execute_with_hooks(selected_uids)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/task/runnable.py", line 376, in execute_with_hooks
+    self.before_run(adapter, selected_uids)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/task/runnable.py", line 362, in before_run
+    self.create_schemas(adapter, selected_uids)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/task/runnable.py", line 515, in create_schemas
+    create_future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/concurrent/futures/_base.py", line 432, in result
+    return self.__get_result()
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/concurrent/futures/_base.py", line 388, in __get_result
+    raise self._exception
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/task/runnable.py", line 481, in create_schema
+    adapter.create_schema(relation)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/impl.py", line 266, in create_schema
+    self.connections.create_dataset(database, schema)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 340, in create_dataset
+    self._retry_and_handle(msg='create dataset', conn=conn, fn=fn)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 354, in _retry_and_handle
+    return retry.retry_target(
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/contextlib.py", line 131, in __exit__
+    self.gen.throw(type, value, traceback)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 91, in exception_handler
+    self.handle_error(e, message)
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/dbt/adapters/bigquery/connections.py", line 75, in handle_error
+    raise DatabaseException(error_msg)
+dbt.exceptions.DatabaseException: Database Error
+  Access Denied: Project culdesac-labs: User does not have bigquery.datasets.create permission in project culdesac-labs.
+
+2020-07-23 18:08:25.455807 (MainThread): Running with dbt=0.17.0-rc1
+2020-07-23 18:08:25.689799 (MainThread): running dbt with arguments Namespace(cls=<class 'dbt.task.generate.GenerateTask'>, compile=True, debug=False, exclude=None, log_cache_events=False, log_format='default', models=None, partial_parse=None, profile=None, profiles_dir='/Users/kristin/.dbt', project_dir=None, record_timing_info=None, rpc_method='docs.generate', single_threaded=False, strict=False, target=None, test_new_parser=False, threads=None, use_cache=True, vars='{}', version_check=True, warn_error=False, which='generate', write_json=True)
+2020-07-23 18:08:25.690867 (MainThread): Tracking: tracking
+2020-07-23 18:08:25.698522 (MainThread): Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10ae04310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b5eef10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b5e8d30>]}
+2020-07-23 18:08:25.719805 (MainThread): Partial parsing not enabled
+2020-07-23 18:08:25.721524 (MainThread): Parsing macros/core.sql
+2020-07-23 18:08:25.726334 (MainThread): Parsing macros/materializations/helpers.sql
+2020-07-23 18:08:25.734669 (MainThread): Parsing macros/materializations/snapshot/snapshot_merge.sql
+2020-07-23 18:08:25.736671 (MainThread): Parsing macros/materializations/snapshot/strategies.sql
+2020-07-23 18:08:25.753335 (MainThread): Parsing macros/materializations/snapshot/snapshot.sql
+2020-07-23 18:08:25.785517 (MainThread): Parsing macros/materializations/seed/seed.sql
+2020-07-23 18:08:25.806029 (MainThread): Parsing macros/materializations/incremental/helpers.sql
+2020-07-23 18:08:25.807859 (MainThread): Parsing macros/materializations/incremental/incremental.sql
+2020-07-23 18:08:25.814461 (MainThread): Parsing macros/materializations/common/merge.sql
+2020-07-23 18:08:25.829872 (MainThread): Parsing macros/materializations/table/table.sql
+2020-07-23 18:08:25.838875 (MainThread): Parsing macros/materializations/view/view.sql
+2020-07-23 18:08:25.845773 (MainThread): Parsing macros/materializations/view/create_or_replace_view.sql
+2020-07-23 18:08:25.851159 (MainThread): Parsing macros/etc/get_custom_alias.sql
+2020-07-23 18:08:25.852548 (MainThread): Parsing macros/etc/query.sql
+2020-07-23 18:08:25.853839 (MainThread): Parsing macros/etc/is_incremental.sql
+2020-07-23 18:08:25.855826 (MainThread): Parsing macros/etc/datetime.sql
+2020-07-23 18:08:25.866212 (MainThread): Parsing macros/etc/get_custom_schema.sql
+2020-07-23 18:08:25.868376 (MainThread): Parsing macros/etc/get_custom_database.sql
+2020-07-23 18:08:25.869574 (MainThread): Parsing macros/adapters/common.sql
+2020-07-23 18:08:25.921224 (MainThread): Parsing macros/schema_tests/relationships.sql
+2020-07-23 18:08:25.922300 (MainThread): Parsing macros/schema_tests/not_null.sql
+2020-07-23 18:08:25.923120 (MainThread): Parsing macros/schema_tests/unique.sql
+2020-07-23 18:08:25.924353 (MainThread): Parsing macros/schema_tests/accepted_values.sql
+2020-07-23 18:08:25.926969 (MainThread): Parsing macros/etc.sql
+2020-07-23 18:08:25.927624 (MainThread): Parsing macros/catalog.sql
+2020-07-23 18:08:25.934341 (MainThread): Parsing macros/adapters.sql
+2020-07-23 18:08:25.951737 (MainThread): Parsing macros/materializations/seed.sql
+2020-07-23 18:08:25.954317 (MainThread): Parsing macros/materializations/view.sql
+2020-07-23 18:08:25.957285 (MainThread): Parsing macros/materializations/table.sql
+2020-07-23 18:08:25.967998 (MainThread): Parsing macros/materializations/incremental.sql
+2020-07-23 18:08:25.982749 (MainThread): Parsing macros/materializations/snapshot.sql
+2020-07-23 18:08:26.043929 (MainThread): Partial parsing not enabled
+2020-07-23 18:08:26.046070 (MainThread): Parsing macros/cross_db_utils/except.sql
+2020-07-23 18:08:26.047094 (MainThread): Parsing macros/cross_db_utils/replace.sql
+2020-07-23 18:08:26.048426 (MainThread): Parsing macros/cross_db_utils/concat.sql
+2020-07-23 18:08:26.050509 (MainThread): Parsing macros/cross_db_utils/datatypes.sql
+2020-07-23 18:08:26.056271 (MainThread): Parsing macros/cross_db_utils/_is_relation.sql
+2020-07-23 18:08:26.057551 (MainThread): Parsing macros/cross_db_utils/length.sql
+2020-07-23 18:08:26.058793 (MainThread): Parsing macros/cross_db_utils/dateadd.sql
+2020-07-23 18:08:26.060921 (MainThread): Parsing macros/cross_db_utils/intersect.sql
+2020-07-23 18:08:26.061885 (MainThread): Parsing macros/cross_db_utils/right.sql
+2020-07-23 18:08:26.064466 (MainThread): Parsing macros/cross_db_utils/datediff.sql
+2020-07-23 18:08:26.076261 (MainThread): Parsing macros/cross_db_utils/safe_cast.sql
+2020-07-23 18:08:26.078171 (MainThread): Parsing macros/cross_db_utils/hash.sql
+2020-07-23 18:08:26.079695 (MainThread): Parsing macros/cross_db_utils/identifier.sql
+2020-07-23 18:08:26.081149 (MainThread): Parsing macros/cross_db_utils/position.sql
+2020-07-23 18:08:26.082617 (MainThread): Parsing macros/cross_db_utils/literal.sql
+2020-07-23 18:08:26.083440 (MainThread): Parsing macros/cross_db_utils/current_timestamp.sql
+2020-07-23 18:08:26.113151 (MainThread): Parsing macros/cross_db_utils/width_bucket.sql
+2020-07-23 18:08:26.120049 (MainThread): Parsing macros/cross_db_utils/last_day.sql
+2020-07-23 18:08:26.123629 (MainThread): Parsing macros/cross_db_utils/split_part.sql
+2020-07-23 18:08:26.126053 (MainThread): Parsing macros/cross_db_utils/date_trunc.sql
+2020-07-23 18:08:26.128008 (MainThread): Parsing macros/cross_db_utils/_is_ephemeral.sql
+2020-07-23 18:08:26.129763 (MainThread): Parsing macros/materializations/insert_by_period_materialization.sql
+2020-07-23 18:08:26.161892 (MainThread): Parsing macros/logger/pretty_log_format.sql
+2020-07-23 18:08:26.162913 (MainThread): Parsing macros/logger/pretty_time.sql
+2020-07-23 18:08:26.163990 (MainThread): Parsing macros/logger/log_info.sql
+2020-07-23 18:08:26.165124 (MainThread): Parsing macros/datetime/date_spine.sql
+2020-07-23 18:08:26.169615 (MainThread): Parsing macros/web/get_url_host.sql
+2020-07-23 18:08:26.171146 (MainThread): Parsing macros/web/get_url_path.sql
+2020-07-23 18:08:26.173070 (MainThread): Parsing macros/web/get_url_parameter.sql
+2020-07-23 18:08:26.174220 (MainThread): Parsing macros/geo/haversine_distance.sql
+2020-07-23 18:08:26.175297 (MainThread): Parsing macros/schema_tests/equal_rowcount.sql
+2020-07-23 18:08:26.177092 (MainThread): Parsing macros/schema_tests/relationships_where.sql
+2020-07-23 18:08:26.179561 (MainThread): Parsing macros/schema_tests/recency.sql
+2020-07-23 18:08:26.181123 (MainThread): Parsing macros/schema_tests/not_constant.sql
+2020-07-23 18:08:26.182325 (MainThread): Parsing macros/schema_tests/test_unique_where.sql
+2020-07-23 18:08:26.184257 (MainThread): Parsing macros/schema_tests/at_least_one.sql
+2020-07-23 18:08:26.185431 (MainThread): Parsing macros/schema_tests/unique_combination_of_columns.sql
+2020-07-23 18:08:26.186777 (MainThread): Parsing macros/schema_tests/cardinality_equality.sql
+2020-07-23 18:08:26.188737 (MainThread): Parsing macros/schema_tests/expression_is_true.sql
+2020-07-23 18:08:26.190020 (MainThread): Parsing macros/schema_tests/test_not_null_where.sql
+2020-07-23 18:08:26.191763 (MainThread): Parsing macros/schema_tests/equality.sql
+2020-07-23 18:08:26.195636 (MainThread): Parsing macros/schema_tests/mutually_exclusive_ranges.sql
+2020-07-23 18:08:26.202415 (MainThread): Parsing macros/sql/nullcheck_table.sql
+2020-07-23 18:08:26.203749 (MainThread): Parsing macros/sql/get_relations_by_pattern.sql
+2020-07-23 18:08:26.206560 (MainThread): Parsing macros/sql/generate_series.sql
+2020-07-23 18:08:26.210412 (MainThread): Parsing macros/sql/get_relations_by_prefix.sql
+2020-07-23 18:08:26.214290 (MainThread): Parsing macros/sql/get_tables_by_prefix_sql.sql
+2020-07-23 18:08:26.217303 (MainThread): Parsing macros/sql/star.sql
+2020-07-23 18:08:26.220430 (MainThread): Parsing macros/sql/unpivot.sql
+2020-07-23 18:08:26.227329 (MainThread): Parsing macros/sql/union.sql
+2020-07-23 18:08:26.238479 (MainThread): Parsing macros/sql/groupby.sql
+2020-07-23 18:08:26.239631 (MainThread): Parsing macros/sql/get_tables_by_pattern.sql
+2020-07-23 18:08:26.240581 (MainThread): Parsing macros/sql/surrogate_key.sql
+2020-07-23 18:08:26.243409 (MainThread): Parsing macros/sql/safe_add.sql
+2020-07-23 18:08:26.244543 (MainThread): Parsing macros/sql/nullcheck.sql
+2020-07-23 18:08:26.246029 (MainThread): Parsing macros/sql/get_column_values.sql
+2020-07-23 18:08:26.250519 (MainThread): Parsing macros/sql/pivot.sql
+2020-07-23 18:08:26.253059 (MainThread): Parsing macros/sql/get_query_results_as_dict.sql
+2020-07-23 18:08:26.290194 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_weekly_overview".
+2020-07-23 18:08:26.290313 (MainThread): Opening a new connection, currently in state init
+2020-07-23 18:08:26.308234 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_daily_overview".
+2020-07-23 18:08:26.308346 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.319974 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_invoice_details".
+2020-07-23 18:08:26.320087 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.334135 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_customer_overview".
+2020-07-23 18:08:26.334238 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.347195 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_balance_transactions".
+2020-07-23 18:08:26.347302 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.359155 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_quarterly_overview".
+2020-07-23 18:08:26.359321 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.371607 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_monthly_overview".
+2020-07-23 18:08:26.371739 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.384053 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_subscription_details".
+2020-07-23 18:08:26.384145 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.400584 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_balance_transaction_joined".
+2020-07-23 18:08:26.400722 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.417660 (MainThread): Acquiring new bigquery connection "model.stripe.stripe_incomplete_charges".
+2020-07-23 18:08:26.417764 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.735710 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_card".
+2020-07-23 18:08:26.735877 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.748881 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_invoice_line_item".
+2020-07-23 18:08:26.749039 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.765367 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_method_card".
+2020-07-23 18:08:26.765508 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.780717 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_charge".
+2020-07-23 18:08:26.780853 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.793758 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payout".
+2020-07-23 18:08:26.793872 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.806190 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_customer".
+2020-07-23 18:08:26.806302 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.818717 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_refund".
+2020-07-23 18:08:26.818851 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.830991 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_subscription".
+2020-07-23 18:08:26.831090 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.843549 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_method".
+2020-07-23 18:08:26.843663 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.856021 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_intent".
+2020-07-23 18:08:26.856200 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.868591 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_invoice".
+2020-07-23 18:08:26.868709 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.881193 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_fee".
+2020-07-23 18:08:26.881283 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:26.892448 (MainThread): Acquiring new bigquery connection "model.stripe_source.stg_stripe_balance_transaction".
+2020-07-23 18:08:26.892547 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:29.283606 (MainThread): WARNING: Found documentation for resource "payment_method_card" which was not found or is disabled
+2020-07-23 18:08:29.895575 (MainThread): Found 23 models, 34 tests, 0 snapshots, 0 analyses, 278 macros, 0 operations, 0 seed files, 13 sources
+2020-07-23 18:08:29.956511 (MainThread): 
+2020-07-23 18:08:29.956925 (MainThread): Acquiring new bigquery connection "master".
+2020-07-23 18:08:29.957006 (MainThread): Opening a new connection, currently in state closed
+2020-07-23 18:08:29.994574 (ThreadPoolExecutor-0_0): Acquiring new bigquery connection "list_dbt-package-testing".
+2020-07-23 18:08:29.994812 (ThreadPoolExecutor-0_0): Opening a new connection, currently in state init
+2020-07-23 18:08:29.996119 (ThreadPoolExecutor-0_0): Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+2020-07-23 18:08:31.573416 (ThreadPoolExecutor-1_0): Acquiring new bigquery connection "list_dbt-package-testing_dbt_kristin_2".
+2020-07-23 18:08:31.573623 (ThreadPoolExecutor-1_0): Re-using an available connection from the pool (formerly list_dbt-package-testing).
+2020-07-23 18:08:31.573745 (ThreadPoolExecutor-1_0): Client.dataset is deprecated and will be removed in a future version. Use a string like 'my_project.my_dataset' or a cloud.google.bigquery.DatasetReference object, instead.
+2020-07-23 18:08:31.810497 (MainThread): 11:08:31 | Concurrency: 4 threads (target='dev_bigquery_dbt_testing')
+2020-07-23 18:08:31.810714 (MainThread): 11:08:31 | 
+2020-07-23 18:08:31.816417 (Thread-1): Began running node model.stripe_source.stg_stripe_charge
+2020-07-23 18:08:31.816649 (Thread-2): Began running node model.stripe_source.stg_stripe_customer
+2020-07-23 18:08:31.817032 (Thread-1): Acquiring new bigquery connection "model.stripe_source.stg_stripe_charge".
+2020-07-23 18:08:31.817179 (Thread-3): Began running node model.stripe_source.stg_stripe_balance_transaction
+2020-07-23 18:08:31.817380 (Thread-4): Began running node model.stripe_source.stg_stripe_card
+2020-07-23 18:08:31.817686 (Thread-2): Acquiring new bigquery connection "model.stripe_source.stg_stripe_customer".
+2020-07-23 18:08:31.817809 (Thread-1): Re-using an available connection from the pool (formerly list_dbt-package-testing_dbt_kristin_2).
+2020-07-23 18:08:31.818219 (Thread-3): Acquiring new bigquery connection "model.stripe_source.stg_stripe_balance_transaction".
+2020-07-23 18:08:31.818590 (Thread-4): Acquiring new bigquery connection "model.stripe_source.stg_stripe_card".
+2020-07-23 18:08:31.818733 (Thread-2): Opening a new connection, currently in state init
+2020-07-23 18:08:31.818883 (Thread-1): Compiling model.stripe_source.stg_stripe_charge
+2020-07-23 18:08:31.818989 (Thread-3): Opening a new connection, currently in state init
+2020-07-23 18:08:31.819141 (Thread-4): Opening a new connection, currently in state init
+2020-07-23 18:08:31.819273 (Thread-2): Compiling model.stripe_source.stg_stripe_customer
+2020-07-23 18:08:31.831092 (Thread-3): Compiling model.stripe_source.stg_stripe_balance_transaction
+2020-07-23 18:08:31.848125 (Thread-4): Compiling model.stripe_source.stg_stripe_card
+2020-07-23 18:08:31.852507 (Thread-1): Writing injected SQL for node "model.stripe_source.stg_stripe_charge"
+2020-07-23 18:08:31.866756 (Thread-2): Writing injected SQL for node "model.stripe_source.stg_stripe_customer"
+2020-07-23 18:08:31.885245 (Thread-3): Writing injected SQL for node "model.stripe_source.stg_stripe_balance_transaction"
+2020-07-23 18:08:31.889221 (Thread-4): Writing injected SQL for node "model.stripe_source.stg_stripe_card"
+2020-07-23 18:08:31.891227 (Thread-1): finished collecting timing info
+2020-07-23 18:08:31.891540 (Thread-4): finished collecting timing info
+2020-07-23 18:08:31.891872 (Thread-3): finished collecting timing info
+2020-07-23 18:08:31.892117 (Thread-1): finished collecting timing info
+2020-07-23 18:08:31.892368 (Thread-2): finished collecting timing info
+2020-07-23 18:08:31.892581 (Thread-4): finished collecting timing info
+2020-07-23 18:08:31.892929 (Thread-3): finished collecting timing info
+2020-07-23 18:08:31.893352 (Thread-1): Finished running node model.stripe_source.stg_stripe_charge
+2020-07-23 18:08:31.893538 (Thread-2): finished collecting timing info
+2020-07-23 18:08:31.893930 (Thread-4): Finished running node model.stripe_source.stg_stripe_card
+2020-07-23 18:08:31.894187 (Thread-3): Finished running node model.stripe_source.stg_stripe_balance_transaction
+2020-07-23 18:08:31.894334 (Thread-1): Began running node model.stripe_source.stg_stripe_payment_intent
+2020-07-23 18:08:31.894656 (Thread-2): Finished running node model.stripe_source.stg_stripe_customer
+2020-07-23 18:08:31.895080 (Thread-4): Began running node model.stripe_source.stg_stripe_payout
+2020-07-23 18:08:31.895227 (Thread-3): Began running node model.stripe_source.stg_stripe_refund
+2020-07-23 18:08:31.895625 (Thread-1): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_intent".
+2020-07-23 18:08:31.895861 (Thread-2): Began running node model.stripe_source.stg_stripe_invoice
+2020-07-23 18:08:31.896198 (Thread-4): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payout".
+2020-07-23 18:08:31.896506 (Thread-3): Acquiring new bigquery connection "model.stripe_source.stg_stripe_refund".
+2020-07-23 18:08:31.896605 (Thread-1): Re-using an available connection from the pool (formerly model.stripe_source.stg_stripe_charge).
+2020-07-23 18:08:31.896878 (Thread-2): Acquiring new bigquery connection "model.stripe_source.stg_stripe_invoice".
+2020-07-23 18:08:31.897004 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:31.897096 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:31.897202 (Thread-1): Compiling model.stripe_source.stg_stripe_payment_intent
+2020-07-23 18:08:31.897293 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:31.897385 (Thread-4): Compiling model.stripe_source.stg_stripe_payout
+2020-07-23 18:08:31.897472 (Thread-3): Compiling model.stripe_source.stg_stripe_refund
+2020-07-23 18:08:31.910684 (Thread-1): Writing injected SQL for node "model.stripe_source.stg_stripe_payment_intent"
+2020-07-23 18:08:31.910784 (Thread-2): Compiling model.stripe_source.stg_stripe_invoice
+2020-07-23 18:08:31.921384 (Thread-4): Writing injected SQL for node "model.stripe_source.stg_stripe_payout"
+2020-07-23 18:08:31.930607 (Thread-3): Writing injected SQL for node "model.stripe_source.stg_stripe_refund"
+2020-07-23 18:08:31.944135 (Thread-2): Writing injected SQL for node "model.stripe_source.stg_stripe_invoice"
+2020-07-23 18:08:31.944416 (Thread-1): finished collecting timing info
+2020-07-23 18:08:31.944866 (Thread-1): finished collecting timing info
+2020-07-23 18:08:31.945184 (Thread-1): Finished running node model.stripe_source.stg_stripe_payment_intent
+2020-07-23 18:08:31.945293 (Thread-1): Began running node model.stripe_source.stg_stripe_invoice_line_item
+2020-07-23 18:08:31.945656 (Thread-1): Acquiring new bigquery connection "model.stripe_source.stg_stripe_invoice_line_item".
+2020-07-23 18:08:31.945741 (Thread-1): Re-using an available connection from the pool (formerly model.stripe_source.stg_stripe_payment_intent).
+2020-07-23 18:08:31.945814 (Thread-1): Compiling model.stripe_source.stg_stripe_invoice_line_item
+2020-07-23 18:08:31.951352 (Thread-2): finished collecting timing info
+2020-07-23 18:08:31.956461 (Thread-1): Writing injected SQL for node "model.stripe_source.stg_stripe_invoice_line_item"
+2020-07-23 18:08:31.956901 (Thread-2): finished collecting timing info
+2020-07-23 18:08:31.957093 (Thread-4): finished collecting timing info
+2020-07-23 18:08:31.957231 (Thread-3): finished collecting timing info
+2020-07-23 18:08:31.957614 (Thread-2): Finished running node model.stripe_source.stg_stripe_invoice
+2020-07-23 18:08:31.957725 (Thread-4): finished collecting timing info
+2020-07-23 18:08:31.958007 (Thread-3): finished collecting timing info
+2020-07-23 18:08:31.958242 (Thread-2): Began running node model.stripe_source.stg_stripe_subscription
+2020-07-23 18:08:31.958523 (Thread-4): Finished running node model.stripe_source.stg_stripe_payout
+2020-07-23 18:08:31.958962 (Thread-3): Finished running node model.stripe_source.stg_stripe_refund
+2020-07-23 18:08:31.959118 (Thread-1): finished collecting timing info
+2020-07-23 18:08:31.959604 (Thread-2): Acquiring new bigquery connection "model.stripe_source.stg_stripe_subscription".
+2020-07-23 18:08:31.959876 (Thread-4): Began running node model.stripe_source.stg_stripe_fee
+2020-07-23 18:08:31.960254 (Thread-3): Began running node model.stripe_source.stg_stripe_payment_method
+2020-07-23 18:08:31.960464 (Thread-1): finished collecting timing info
+2020-07-23 18:08:31.960930 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:31.961137 (Thread-4): Acquiring new bigquery connection "model.stripe_source.stg_stripe_fee".
+2020-07-23 18:08:31.961322 (Thread-3): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_method".
+2020-07-23 18:08:31.961520 (Thread-1): Finished running node model.stripe_source.stg_stripe_invoice_line_item
+2020-07-23 18:08:31.961655 (Thread-2): Compiling model.stripe_source.stg_stripe_subscription
+2020-07-23 18:08:31.961735 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:31.961803 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:31.961902 (Thread-1): Began running node model.stripe_source.stg_stripe_payment_method_card
+2020-07-23 18:08:31.973282 (Thread-4): Compiling model.stripe_source.stg_stripe_fee
+2020-07-23 18:08:31.974287 (Thread-2): Writing injected SQL for node "model.stripe_source.stg_stripe_subscription"
+2020-07-23 18:08:31.974390 (Thread-3): Compiling model.stripe_source.stg_stripe_payment_method
+2020-07-23 18:08:31.974635 (Thread-1): Acquiring new bigquery connection "model.stripe_source.stg_stripe_payment_method_card".
+2020-07-23 18:08:31.985214 (Thread-4): Writing injected SQL for node "model.stripe_source.stg_stripe_fee"
+2020-07-23 18:08:31.994687 (Thread-3): Writing injected SQL for node "model.stripe_source.stg_stripe_payment_method"
+2020-07-23 18:08:31.994869 (Thread-1): Re-using an available connection from the pool (formerly model.stripe_source.stg_stripe_invoice_line_item).
+2020-07-23 18:08:31.994995 (Thread-2): finished collecting timing info
+2020-07-23 18:08:31.995357 (Thread-1): Compiling model.stripe_source.stg_stripe_payment_method_card
+2020-07-23 18:08:31.995494 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.003523 (Thread-1): Writing injected SQL for node "model.stripe_source.stg_stripe_payment_method_card"
+2020-07-23 18:08:32.003937 (Thread-2): Finished running node model.stripe_source.stg_stripe_subscription
+2020-07-23 18:08:32.004198 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.004387 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.004756 (Thread-2): Began running node test.stripe_source.source_not_null_stripe_balance_transaction_id
+2020-07-23 18:08:32.005236 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.005450 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.005662 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.006134 (Thread-2): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_balance_transaction_id".
+2020-07-23 18:08:32.006265 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.006612 (Thread-4): Finished running node model.stripe_source.stg_stripe_fee
+2020-07-23 18:08:32.006858 (Thread-3): Finished running node model.stripe_source.stg_stripe_payment_method
+2020-07-23 18:08:32.006961 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.007187 (Thread-1): Finished running node model.stripe_source.stg_stripe_payment_method_card
+2020-07-23 18:08:32.007340 (Thread-4): Began running node test.stripe_source.source_not_null_stripe_card_id
+2020-07-23 18:08:32.007544 (Thread-3): Began running node test.stripe_source.source_not_null_stripe_charge_id
+2020-07-23 18:08:32.007664 (Thread-2): Compiling test.stripe_source.source_not_null_stripe_balance_transaction_id
+2020-07-23 18:08:32.007840 (Thread-1): Began running node test.stripe_source.source_not_null_stripe_customer_id
+2020-07-23 18:08:32.008236 (Thread-4): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_card_id".
+2020-07-23 18:08:32.008478 (Thread-3): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_charge_id".
+2020-07-23 18:08:32.020449 (Thread-1): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_customer_id".
+2020-07-23 18:08:32.023243 (Thread-2): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_balance_transaction_id"
+2020-07-23 18:08:32.023351 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.023464 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.023547 (Thread-1): Re-using an available connection from the pool (formerly model.stripe_source.stg_stripe_payment_method_card).
+2020-07-23 18:08:32.023755 (Thread-4): Compiling test.stripe_source.source_not_null_stripe_card_id
+2020-07-23 18:08:32.023863 (Thread-3): Compiling test.stripe_source.source_not_null_stripe_charge_id
+2020-07-23 18:08:32.023952 (Thread-1): Compiling test.stripe_source.source_not_null_stripe_customer_id
+2020-07-23 18:08:32.032181 (Thread-4): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_card_id"
+2020-07-23 18:08:32.039847 (Thread-3): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_charge_id"
+2020-07-23 18:08:32.045895 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.048038 (Thread-1): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_customer_id"
+2020-07-23 18:08:32.048183 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.048419 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.048642 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.048876 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.049199 (Thread-2): Finished running node test.stripe_source.source_not_null_stripe_balance_transaction_id
+2020-07-23 18:08:32.049301 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.049576 (Thread-4): Finished running node test.stripe_source.source_not_null_stripe_card_id
+2020-07-23 18:08:32.049742 (Thread-2): Began running node test.stripe_source.source_not_null_stripe_payment_intent_id
+2020-07-23 18:08:32.050013 (Thread-3): Finished running node test.stripe_source.source_not_null_stripe_charge_id
+2020-07-23 18:08:32.050187 (Thread-4): Began running node test.stripe_source.source_not_null_stripe_payout_id
+2020-07-23 18:08:32.050255 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.050547 (Thread-2): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_payment_intent_id".
+2020-07-23 18:08:32.050705 (Thread-3): Began running node test.stripe_source.source_not_null_stripe_refund_id
+2020-07-23 18:08:32.050900 (Thread-4): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_payout_id".
+2020-07-23 18:08:32.051040 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.051203 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.051445 (Thread-3): Acquiring new bigquery connection "test.stripe_source.source_not_null_stripe_refund_id".
+2020-07-23 18:08:32.051552 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.051752 (Thread-1): Finished running node test.stripe_source.source_not_null_stripe_customer_id
+2020-07-23 18:08:32.051848 (Thread-2): Compiling test.stripe_source.source_not_null_stripe_payment_intent_id
+2020-07-23 18:08:32.051921 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.051993 (Thread-4): Compiling test.stripe_source.source_not_null_stripe_payout_id
+2020-07-23 18:08:32.052082 (Thread-1): Began running node test.stripe_source.source_unique_stripe_balance_transaction_id
+2020-07-23 18:08:32.060659 (Thread-2): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_payment_intent_id"
+2020-07-23 18:08:32.060803 (Thread-3): Compiling test.stripe_source.source_not_null_stripe_refund_id
+2020-07-23 18:08:32.069444 (Thread-4): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_payout_id"
+2020-07-23 18:08:32.069763 (Thread-1): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_balance_transaction_id".
+2020-07-23 18:08:32.078361 (Thread-3): Writing injected SQL for node "test.stripe_source.source_not_null_stripe_refund_id"
+2020-07-23 18:08:32.078482 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.source_not_null_stripe_customer_id).
+2020-07-23 18:08:32.078594 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.079013 (Thread-1): Compiling test.stripe_source.source_unique_stripe_balance_transaction_id
+2020-07-23 18:08:32.079144 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.079455 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.088542 (Thread-1): Writing injected SQL for node "test.stripe_source.source_unique_stripe_balance_transaction_id"
+2020-07-23 18:08:32.088957 (Thread-2): Finished running node test.stripe_source.source_not_null_stripe_payment_intent_id
+2020-07-23 18:08:32.089067 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.089331 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.089735 (Thread-2): Began running node test.stripe_source.source_unique_stripe_card_id
+2020-07-23 18:08:32.090198 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.090636 (Thread-4): Finished running node test.stripe_source.source_not_null_stripe_payout_id
+2020-07-23 18:08:32.090962 (Thread-2): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_card_id".
+2020-07-23 18:08:32.091084 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.091428 (Thread-3): Finished running node test.stripe_source.source_not_null_stripe_refund_id
+2020-07-23 18:08:32.091565 (Thread-4): Began running node test.stripe_source.source_unique_stripe_charge_id
+2020-07-23 18:08:32.091739 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.091843 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.092060 (Thread-3): Began running node test.stripe_source.source_unique_stripe_customer_id
+2020-07-23 18:08:32.092329 (Thread-4): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_charge_id".
+2020-07-23 18:08:32.092523 (Thread-2): Compiling test.stripe_source.source_unique_stripe_card_id
+2020-07-23 18:08:32.092762 (Thread-1): Finished running node test.stripe_source.source_unique_stripe_balance_transaction_id
+2020-07-23 18:08:32.092990 (Thread-3): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_customer_id".
+2020-07-23 18:08:32.093086 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.102522 (Thread-2): Writing injected SQL for node "test.stripe_source.source_unique_stripe_card_id"
+2020-07-23 18:08:32.102718 (Thread-1): Began running node test.stripe_source.source_unique_stripe_payment_intent_id
+2020-07-23 18:08:32.103003 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.103129 (Thread-4): Compiling test.stripe_source.source_unique_stripe_charge_id
+2020-07-23 18:08:32.103533 (Thread-1): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_payment_intent_id".
+2020-07-23 18:08:32.103657 (Thread-3): Compiling test.stripe_source.source_unique_stripe_customer_id
+2020-07-23 18:08:32.113324 (Thread-4): Writing injected SQL for node "test.stripe_source.source_unique_stripe_charge_id"
+2020-07-23 18:08:32.113521 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.source_unique_stripe_balance_transaction_id).
+2020-07-23 18:08:32.118903 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.123170 (Thread-3): Writing injected SQL for node "test.stripe_source.source_unique_stripe_customer_id"
+2020-07-23 18:08:32.123463 (Thread-1): Compiling test.stripe_source.source_unique_stripe_payment_intent_id
+2020-07-23 18:08:32.123678 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.123957 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.132628 (Thread-1): Writing injected SQL for node "test.stripe_source.source_unique_stripe_payment_intent_id"
+2020-07-23 18:08:32.133160 (Thread-2): Finished running node test.stripe_source.source_unique_stripe_card_id
+2020-07-23 18:08:32.133445 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.133712 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.134031 (Thread-2): Began running node test.stripe_source.source_unique_stripe_payout_id
+2020-07-23 18:08:32.134393 (Thread-4): Finished running node test.stripe_source.source_unique_stripe_charge_id
+2020-07-23 18:08:32.134746 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.135273 (Thread-2): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_payout_id".
+2020-07-23 18:08:32.135420 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.135653 (Thread-4): Began running node test.stripe_source.source_unique_stripe_refund_id
+2020-07-23 18:08:32.136055 (Thread-3): Finished running node test.stripe_source.source_unique_stripe_customer_id
+2020-07-23 18:08:32.136215 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.136349 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.136850 (Thread-4): Acquiring new bigquery connection "test.stripe_source.source_unique_stripe_refund_id".
+2020-07-23 18:08:32.137013 (Thread-3): Began running node model.stripe.stripe_incomplete_charges
+2020-07-23 18:08:32.137147 (Thread-2): Compiling test.stripe_source.source_unique_stripe_payout_id
+2020-07-23 18:08:32.137477 (Thread-1): Finished running node test.stripe_source.source_unique_stripe_payment_intent_id
+2020-07-23 18:08:32.137583 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.137837 (Thread-3): Acquiring new bigquery connection "model.stripe.stripe_incomplete_charges".
+2020-07-23 18:08:32.147522 (Thread-2): Writing injected SQL for node "test.stripe_source.source_unique_stripe_payout_id"
+2020-07-23 18:08:32.147671 (Thread-1): Began running node test.stripe_source.not_null_stg_stripe_charge_charge_id
+2020-07-23 18:08:32.147921 (Thread-4): Compiling test.stripe_source.source_unique_stripe_refund_id
+2020-07-23 18:08:32.148033 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.148434 (Thread-1): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_charge_charge_id".
+2020-07-23 18:08:32.154642 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.158905 (Thread-4): Writing injected SQL for node "test.stripe_source.source_unique_stripe_refund_id"
+2020-07-23 18:08:32.159046 (Thread-3): Compiling model.stripe.stripe_incomplete_charges
+2020-07-23 18:08:32.159142 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.source_unique_stripe_payment_intent_id).
+2020-07-23 18:08:32.159261 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.166714 (Thread-3): Writing injected SQL for node "model.stripe.stripe_incomplete_charges"
+2020-07-23 18:08:32.166886 (Thread-1): Compiling test.stripe_source.not_null_stg_stripe_charge_charge_id
+2020-07-23 18:08:32.167341 (Thread-2): Finished running node test.stripe_source.source_unique_stripe_payout_id
+2020-07-23 18:08:32.167512 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.176871 (Thread-1): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_charge_charge_id"
+2020-07-23 18:08:32.177075 (Thread-2): Began running node test.stripe_source.unique_stg_stripe_charge_charge_id
+2020-07-23 18:08:32.177349 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.177589 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.178140 (Thread-2): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_charge_charge_id".
+2020-07-23 18:08:32.178565 (Thread-4): Finished running node test.stripe_source.source_unique_stripe_refund_id
+2020-07-23 18:08:32.178785 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.179162 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.179301 (Thread-4): Began running node test.stripe_source.not_null_stg_stripe_balance_transaction_balance_transaction_id
+2020-07-23 18:08:32.179390 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.179761 (Thread-3): Finished running node model.stripe.stripe_incomplete_charges
+2020-07-23 18:08:32.179962 (Thread-2): Compiling test.stripe_source.unique_stg_stripe_charge_charge_id
+2020-07-23 18:08:32.180198 (Thread-4): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_balance_transaction_balance_transaction_id".
+2020-07-23 18:08:32.180322 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.180555 (Thread-3): Began running node test.stripe_source.not_null_stg_stripe_card_card_id
+2020-07-23 18:08:32.192782 (Thread-2): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_charge_charge_id"
+2020-07-23 18:08:32.192960 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.193330 (Thread-1): Finished running node test.stripe_source.not_null_stg_stripe_charge_charge_id
+2020-07-23 18:08:32.193626 (Thread-3): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_card_card_id".
+2020-07-23 18:08:32.193872 (Thread-4): Compiling test.stripe_source.not_null_stg_stripe_balance_transaction_balance_transaction_id
+2020-07-23 18:08:32.194091 (Thread-1): Began running node test.stripe_source.unique_stg_stripe_balance_transaction_balance_transaction_id
+2020-07-23 18:08:32.194329 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.200170 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.204341 (Thread-4): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_balance_transaction_balance_transaction_id"
+2020-07-23 18:08:32.204747 (Thread-1): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_balance_transaction_balance_transaction_id".
+2020-07-23 18:08:32.204944 (Thread-3): Compiling test.stripe_source.not_null_stg_stripe_card_card_id
+2020-07-23 18:08:32.205085 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.205434 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.not_null_stg_stripe_charge_charge_id).
+2020-07-23 18:08:32.214452 (Thread-3): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_card_card_id"
+2020-07-23 18:08:32.214877 (Thread-2): Finished running node test.stripe_source.unique_stg_stripe_charge_charge_id
+2020-07-23 18:08:32.215059 (Thread-1): Compiling test.stripe_source.unique_stg_stripe_balance_transaction_balance_transaction_id
+2020-07-23 18:08:32.215210 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.215559 (Thread-2): Began running node test.stripe_source.unique_stg_stripe_card_card_id
+2020-07-23 18:08:32.224507 (Thread-1): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_balance_transaction_balance_transaction_id"
+2020-07-23 18:08:32.224744 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.225299 (Thread-2): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_card_card_id".
+2020-07-23 18:08:32.225447 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.225987 (Thread-4): Finished running node test.stripe_source.not_null_stg_stripe_balance_transaction_balance_transaction_id
+2020-07-23 18:08:32.226139 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.226332 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.226553 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.226787 (Thread-4): Began running node test.stripe_source.not_null_stg_stripe_customer_id
+2020-07-23 18:08:32.227013 (Thread-2): Compiling test.stripe_source.unique_stg_stripe_card_card_id
+2020-07-23 18:08:32.227284 (Thread-3): Finished running node test.stripe_source.not_null_stg_stripe_card_card_id
+2020-07-23 18:08:32.227428 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.227847 (Thread-4): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_customer_id".
+2020-07-23 18:08:32.236669 (Thread-2): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_card_card_id"
+2020-07-23 18:08:32.236836 (Thread-3): Began running node test.stripe_source.unique_stg_stripe_customer_id
+2020-07-23 18:08:32.237255 (Thread-1): Finished running node test.stripe_source.unique_stg_stripe_balance_transaction_balance_transaction_id
+2020-07-23 18:08:32.237374 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.237696 (Thread-3): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_customer_id".
+2020-07-23 18:08:32.237888 (Thread-1): Began running node test.stripe_source.not_null_stg_stripe_payment_intent_payment_intent_id
+2020-07-23 18:08:32.238027 (Thread-4): Compiling test.stripe_source.not_null_stg_stripe_customer_id
+2020-07-23 18:08:32.238170 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.238395 (Thread-1): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_payment_intent_payment_intent_id".
+2020-07-23 18:08:32.247088 (Thread-4): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_customer_id"
+2020-07-23 18:08:32.247244 (Thread-3): Compiling test.stripe_source.unique_stg_stripe_customer_id
+2020-07-23 18:08:32.247344 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.unique_stg_stripe_balance_transaction_balance_transaction_id).
+2020-07-23 18:08:32.247463 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.257249 (Thread-3): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_customer_id"
+2020-07-23 18:08:32.257359 (Thread-1): Compiling test.stripe_source.not_null_stg_stripe_payment_intent_payment_intent_id
+2020-07-23 18:08:32.257565 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.257891 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.265802 (Thread-1): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_payment_intent_payment_intent_id"
+2020-07-23 18:08:32.266235 (Thread-2): Finished running node test.stripe_source.unique_stg_stripe_card_card_id
+2020-07-23 18:08:32.266465 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.266707 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.267011 (Thread-2): Began running node test.stripe_source.unique_stg_stripe_payment_intent_payment_intent_id
+2020-07-23 18:08:32.267459 (Thread-4): Finished running node test.stripe_source.not_null_stg_stripe_customer_id
+2020-07-23 18:08:32.267637 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.268019 (Thread-2): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_payment_intent_payment_intent_id".
+2020-07-23 18:08:32.268104 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.268339 (Thread-4): Began running node test.stripe_source.not_null_stg_stripe_invoice_invoice_id
+2020-07-23 18:08:32.268759 (Thread-3): Finished running node test.stripe_source.unique_stg_stripe_customer_id
+2020-07-23 18:08:32.268883 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.269005 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.269363 (Thread-4): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_invoice_invoice_id".
+2020-07-23 18:08:32.269511 (Thread-3): Began running node test.stripe_source.unique_stg_stripe_invoice_invoice_id
+2020-07-23 18:08:32.269751 (Thread-2): Compiling test.stripe_source.unique_stg_stripe_payment_intent_payment_intent_id
+2020-07-23 18:08:32.270022 (Thread-1): Finished running node test.stripe_source.not_null_stg_stripe_payment_intent_payment_intent_id
+2020-07-23 18:08:32.270150 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.270466 (Thread-3): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_invoice_invoice_id".
+2020-07-23 18:08:32.279186 (Thread-2): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_payment_intent_payment_intent_id"
+2020-07-23 18:08:32.279367 (Thread-1): Began running node test.stripe_source.not_null_stg_stripe_payout_payout_id
+2020-07-23 18:08:32.279612 (Thread-4): Compiling test.stripe_source.not_null_stg_stripe_invoice_invoice_id
+2020-07-23 18:08:32.279712 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.280072 (Thread-1): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_payout_payout_id".
+2020-07-23 18:08:32.288131 (Thread-4): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_invoice_invoice_id"
+2020-07-23 18:08:32.288332 (Thread-3): Compiling test.stripe_source.unique_stg_stripe_invoice_invoice_id
+2020-07-23 18:08:32.288436 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.not_null_stg_stripe_payment_intent_payment_intent_id).
+2020-07-23 18:08:32.297673 (Thread-3): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_invoice_invoice_id"
+2020-07-23 18:08:32.297862 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.298194 (Thread-1): Compiling test.stripe_source.not_null_stg_stripe_payout_payout_id
+2020-07-23 18:08:32.298429 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.298682 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.304550 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.307151 (Thread-1): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_payout_payout_id"
+2020-07-23 18:08:32.307300 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.307677 (Thread-2): Finished running node test.stripe_source.unique_stg_stripe_payment_intent_payment_intent_id
+2020-07-23 18:08:32.307802 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.308275 (Thread-4): Finished running node test.stripe_source.not_null_stg_stripe_invoice_invoice_id
+2020-07-23 18:08:32.308488 (Thread-2): Began running node test.stripe_source.unique_stg_stripe_payout_payout_id
+2020-07-23 18:08:32.308720 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.309030 (Thread-3): Finished running node test.stripe_source.unique_stg_stripe_invoice_invoice_id
+2020-07-23 18:08:32.309165 (Thread-4): Began running node model.stripe.stripe_balance_transaction_joined
+2020-07-23 18:08:32.309542 (Thread-2): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_payout_payout_id".
+2020-07-23 18:08:32.309685 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.309924 (Thread-3): Began running node test.stripe_source.not_null_stg_stripe_refund_refund_id
+2020-07-23 18:08:32.310253 (Thread-4): Acquiring new bigquery connection "model.stripe.stripe_balance_transaction_joined".
+2020-07-23 18:08:32.310364 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.310659 (Thread-1): Finished running node test.stripe_source.not_null_stg_stripe_payout_payout_id
+2020-07-23 18:08:32.310911 (Thread-3): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_refund_refund_id".
+2020-07-23 18:08:32.311010 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.311110 (Thread-2): Compiling test.stripe_source.unique_stg_stripe_payout_payout_id
+2020-07-23 18:08:32.311231 (Thread-1): Began running node test.stripe_source.unique_stg_stripe_refund_refund_id
+2020-07-23 18:08:32.311436 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.311572 (Thread-4): Compiling model.stripe.stripe_balance_transaction_joined
+2020-07-23 18:08:32.320922 (Thread-2): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_payout_payout_id"
+2020-07-23 18:08:32.321188 (Thread-1): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_refund_refund_id".
+2020-07-23 18:08:32.321325 (Thread-3): Compiling test.stripe_source.not_null_stg_stripe_refund_refund_id
+2020-07-23 18:08:32.333794 (Thread-4): Writing injected SQL for node "model.stripe.stripe_balance_transaction_joined"
+2020-07-23 18:08:32.333872 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.not_null_stg_stripe_payout_payout_id).
+2020-07-23 18:08:32.342105 (Thread-3): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_refund_refund_id"
+2020-07-23 18:08:32.342286 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.342569 (Thread-1): Compiling test.stripe_source.unique_stg_stripe_refund_refund_id
+2020-07-23 18:08:32.342840 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.350515 (Thread-1): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_refund_refund_id"
+2020-07-23 18:08:32.350618 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.350791 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.351117 (Thread-2): Finished running node test.stripe_source.unique_stg_stripe_payout_payout_id
+2020-07-23 18:08:32.351497 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.351774 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.352057 (Thread-2): Began running node test.stripe_source.not_null_stg_stripe_invoice_line_item_unique_id
+2020-07-23 18:08:32.352393 (Thread-4): Finished running node model.stripe.stripe_balance_transaction_joined
+2020-07-23 18:08:32.352479 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.352876 (Thread-3): Finished running node test.stripe_source.not_null_stg_stripe_refund_refund_id
+2020-07-23 18:08:32.353099 (Thread-2): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_invoice_line_item_unique_id".
+2020-07-23 18:08:32.353219 (Thread-4): Began running node test.stripe_source.unique_stg_stripe_invoice_line_item_unique_id
+2020-07-23 18:08:32.353338 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.353887 (Thread-3): Began running node model.stripe.stripe_invoice_details
+2020-07-23 18:08:32.355580 (Thread-3): Acquiring new bigquery connection "model.stripe.stripe_invoice_details".
+2020-07-23 18:08:32.354474 (Thread-4): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_invoice_line_item_unique_id".
+2020-07-23 18:08:32.354925 (Thread-1): Finished running node test.stripe_source.unique_stg_stripe_refund_refund_id
+2020-07-23 18:08:32.354137 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.356914 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.357125 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.357399 (Thread-1): Began running node model.stripe.stripe_subscription_details
+2020-07-23 18:08:32.357689 (Thread-2): Compiling test.stripe_source.not_null_stg_stripe_invoice_line_item_unique_id
+2020-07-23 18:08:32.357826 (Thread-3): Compiling model.stripe.stripe_invoice_details
+2020-07-23 18:08:32.357942 (Thread-4): Compiling test.stripe_source.unique_stg_stripe_invoice_line_item_unique_id
+2020-07-23 18:08:32.358256 (Thread-1): Acquiring new bigquery connection "model.stripe.stripe_subscription_details".
+2020-07-23 18:08:32.368077 (Thread-2): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_invoice_line_item_unique_id"
+2020-07-23 18:08:32.396411 (Thread-4): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_invoice_line_item_unique_id"
+2020-07-23 18:08:32.399139 (Thread-3): Writing injected SQL for node "model.stripe.stripe_invoice_details"
+2020-07-23 18:08:32.399363 (Thread-1): Re-using an available connection from the pool (formerly test.stripe_source.unique_stg_stripe_refund_refund_id).
+2020-07-23 18:08:32.399971 (Thread-1): Compiling model.stripe.stripe_subscription_details
+2020-07-23 18:08:32.412880 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.418269 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.418623 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.423435 (Thread-1): Writing injected SQL for node "model.stripe.stripe_subscription_details"
+2020-07-23 18:08:32.423633 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.423879 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.424283 (Thread-2): Finished running node test.stripe_source.not_null_stg_stripe_invoice_line_item_unique_id
+2020-07-23 18:08:32.424683 (Thread-4): Finished running node test.stripe_source.unique_stg_stripe_invoice_line_item_unique_id
+2020-07-23 18:08:32.424932 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.425189 (Thread-2): Began running node test.stripe_source.not_null_stg_stripe_payment_method_payment_method_id
+2020-07-23 18:08:32.425279 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.425503 (Thread-4): Began running node test.stripe_source.unique_stg_stripe_payment_method_payment_method_id
+2020-07-23 18:08:32.425863 (Thread-3): Finished running node model.stripe.stripe_invoice_details
+2020-07-23 18:08:32.426307 (Thread-2): Acquiring new bigquery connection "test.stripe_source.not_null_stg_stripe_payment_method_payment_method_id".
+2020-07-23 18:08:32.426557 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.427727 (Thread-4): Acquiring new bigquery connection "test.stripe_source.unique_stg_stripe_payment_method_payment_method_id".
+2020-07-23 18:08:32.428211 (Thread-3): Began running node model.stripe.stripe_balance_transactions
+2020-07-23 18:08:32.428702 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.429276 (Thread-1): Finished running node model.stripe.stripe_subscription_details
+2020-07-23 18:08:32.429507 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.429995 (Thread-3): Acquiring new bigquery connection "model.stripe.stripe_balance_transactions".
+2020-07-23 18:08:32.430234 (Thread-2): Compiling test.stripe_source.not_null_stg_stripe_payment_method_payment_method_id
+2020-07-23 18:08:32.430436 (Thread-1): Began running node model.stripe.stripe_customer_overview
+2020-07-23 18:08:32.430680 (Thread-4): Compiling test.stripe_source.unique_stg_stripe_payment_method_payment_method_id
+2020-07-23 18:08:32.430811 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.443952 (Thread-2): Writing injected SQL for node "test.stripe_source.not_null_stg_stripe_payment_method_payment_method_id"
+2020-07-23 18:08:32.444454 (Thread-1): Acquiring new bigquery connection "model.stripe.stripe_customer_overview".
+2020-07-23 18:08:32.456654 (Thread-4): Writing injected SQL for node "test.stripe_source.unique_stg_stripe_payment_method_payment_method_id"
+2020-07-23 18:08:32.456971 (Thread-3): Compiling model.stripe.stripe_balance_transactions
+2020-07-23 18:08:32.457292 (Thread-1): Re-using an available connection from the pool (formerly model.stripe.stripe_subscription_details).
+2020-07-23 18:08:32.468992 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.474918 (Thread-1): Compiling model.stripe.stripe_customer_overview
+2020-07-23 18:08:32.485270 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.487466 (Thread-3): Writing injected SQL for node "model.stripe.stripe_balance_transactions"
+2020-07-23 18:08:32.488259 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.499929 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.512316 (Thread-2): Finished running node test.stripe_source.not_null_stg_stripe_payment_method_payment_method_id
+2020-07-23 18:08:32.519402 (Thread-4): Finished running node test.stripe_source.unique_stg_stripe_payment_method_payment_method_id
+2020-07-23 18:08:32.523154 (Thread-1): Writing injected SQL for node "model.stripe.stripe_customer_overview"
+2020-07-23 18:08:32.523390 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.523747 (Thread-2): Began running node model.stripe.stripe_daily_overview
+2020-07-23 18:08:32.524018 (Thread-4): Began running node model.stripe.stripe_monthly_overview
+2020-07-23 18:08:32.524648 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.525416 (Thread-2): Acquiring new bigquery connection "model.stripe.stripe_daily_overview".
+2020-07-23 18:08:32.525710 (Thread-4): Acquiring new bigquery connection "model.stripe.stripe_monthly_overview".
+2020-07-23 18:08:32.526172 (Thread-3): Finished running node model.stripe.stripe_balance_transactions
+2020-07-23 18:08:32.526366 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.526671 (Thread-2): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.526810 (Thread-4): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.527008 (Thread-3): Began running node model.stripe.stripe_quarterly_overview
+2020-07-23 18:08:32.527201 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.527729 (Thread-2): Compiling model.stripe.stripe_daily_overview
+2020-07-23 18:08:32.527886 (Thread-4): Compiling model.stripe.stripe_monthly_overview
+2020-07-23 18:08:32.528270 (Thread-3): Acquiring new bigquery connection "model.stripe.stripe_quarterly_overview".
+2020-07-23 18:08:32.528628 (Thread-1): Finished running node model.stripe.stripe_customer_overview
+2020-07-23 18:08:32.557841 (Thread-3): Opening a new connection, currently in state closed
+2020-07-23 18:08:32.566890 (Thread-4): Writing injected SQL for node "model.stripe.stripe_monthly_overview"
+2020-07-23 18:08:32.572406 (Thread-2): Writing injected SQL for node "model.stripe.stripe_daily_overview"
+2020-07-23 18:08:32.572729 (Thread-1): Began running node model.stripe.stripe_weekly_overview
+2020-07-23 18:08:32.573037 (Thread-3): Compiling model.stripe.stripe_quarterly_overview
+2020-07-23 18:08:32.573683 (Thread-1): Acquiring new bigquery connection "model.stripe.stripe_weekly_overview".
+2020-07-23 18:08:32.584642 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.592914 (Thread-3): Writing injected SQL for node "model.stripe.stripe_quarterly_overview"
+2020-07-23 18:08:32.593148 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.593437 (Thread-1): Re-using an available connection from the pool (formerly model.stripe.stripe_customer_overview).
+2020-07-23 18:08:32.593611 (Thread-2): finished collecting timing info
+2020-07-23 18:08:32.593998 (Thread-4): finished collecting timing info
+2020-07-23 18:08:32.594274 (Thread-1): Compiling model.stripe.stripe_weekly_overview
+2020-07-23 18:08:32.594800 (Thread-2): Finished running node model.stripe.stripe_daily_overview
+2020-07-23 18:08:32.595239 (Thread-4): Finished running node model.stripe.stripe_monthly_overview
+2020-07-23 18:08:32.595331 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.613474 (Thread-1): Writing injected SQL for node "model.stripe.stripe_weekly_overview"
+2020-07-23 18:08:32.613641 (Thread-3): finished collecting timing info
+2020-07-23 18:08:32.614232 (Thread-3): Finished running node model.stripe.stripe_quarterly_overview
+2020-07-23 18:08:32.614730 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.614986 (Thread-1): finished collecting timing info
+2020-07-23 18:08:32.615388 (Thread-1): Finished running node model.stripe.stripe_weekly_overview
+2020-07-23 18:08:32.616353 (MainThread): Connection 'master' was properly closed.
+2020-07-23 18:08:32.616471 (MainThread): Connection 'model.stripe.stripe_weekly_overview' was left open.
+2020-07-23 18:08:32.616560 (MainThread): Connection 'model.stripe.stripe_daily_overview' was properly closed.
+2020-07-23 18:08:32.616642 (MainThread): Connection 'model.stripe.stripe_quarterly_overview' was properly closed.
+2020-07-23 18:08:32.616725 (MainThread): Connection 'model.stripe.stripe_monthly_overview' was properly closed.
+2020-07-23 18:08:32.783763 (MainThread): 11:08:32 | Done.
+2020-07-23 18:08:32.787230 (MainThread): Acquiring new bigquery connection "generate_catalog".
+2020-07-23 18:08:32.787357 (MainThread): Opening a new connection, currently in state init
+2020-07-23 18:08:32.787455 (MainThread): 11:08:32 | Building catalog
+2020-07-23 18:08:32.932340 (MainThread): Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+2020-07-23 18:08:34.463069 (ThreadPoolExecutor-2_0): Acquiring new bigquery connection "dbt-package-testing.information_schema".
+2020-07-23 18:08:34.463587 (ThreadPoolExecutor-2_1): Acquiring new bigquery connection "dbt-package-testing.information_schema".
+2020-07-23 18:08:34.463682 (ThreadPoolExecutor-2_0): Opening a new connection, currently in state init
+2020-07-23 18:08:34.463877 (ThreadPoolExecutor-2_1): Opening a new connection, currently in state init
+2020-07-23 18:08:34.513460 (ThreadPoolExecutor-2_1): Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+2020-07-23 18:08:34.513750 (ThreadPoolExecutor-2_0): Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+2020-07-23 18:08:35.659900 (ThreadPoolExecutor-2_0): On dbt-package-testing.information_schema: /* {"app": "dbt", "dbt_version": "0.17.0rc1", "profile_name": "integration_test", "target_name": "dev_bigquery_dbt_testing", "connection_name": "dbt-package-testing.information_schema"} */
+
+    with tables as (
+        select
+            project_id as table_database,
+            dataset_id as table_schema,
+            table_id as original_table_name,
+
+            concat(project_id, '.', dataset_id, '.', table_id) as relation_id,
+
+            row_count,
+            size_bytes as size_bytes,
+            case
+                when type = 1 then 'table'
+                when type = 2 then 'view'
+                else 'external'
+            end as table_type,
+
+            REGEXP_CONTAINS(table_id, '^.+[0-9]{8}$') and coalesce(type, 0) = 1 as is_date_shard,
+            REGEXP_EXTRACT(table_id, '^(.+)[0-9]{8}$') as shard_base_name,
+            REGEXP_EXTRACT(table_id, '^.+([0-9]{8})$') as shard_name
+
+        from `dbt-package-testing`.`dbt_kristin_2`.__TABLES__
+        where (upper(dataset_id) = upper('dbt_kristin_2'))
+    ),
+
+    extracted as (
+
+        select *,
+            case
+                when is_date_shard then shard_base_name
+                else original_table_name
+            end as table_name
+
+        from tables
+
+    ),
+
+    unsharded_tables as (
+
+        select
+            table_database,
+            table_schema,
+            table_name,
+            coalesce(table_type, 'external') as table_type,
+            is_date_shard,
+
+            struct(
+                min(shard_name) as shard_min,
+                max(shard_name) as shard_max,
+                count(*) as shard_count
+            ) as table_shards,
+
+            sum(size_bytes) as size_bytes,
+            sum(row_count) as row_count,
+
+            max(relation_id) as relation_id
+
+        from extracted
+        group by 1,2,3,4,5
+
+    ),
+
+    info_schema_columns as (
+
+        select
+            concat(table_catalog, '.', table_schema, '.', table_name) as relation_id,
+            table_catalog as table_database,
+            table_schema,
+            table_name,
+
+            -- use the "real" column name from the paths query below
+            column_name as base_column_name,
+            ordinal_position as column_index,
+            cast(null as string) as column_comment,
+
+            is_partitioning_column,
+            clustering_ordinal_position
+
+        from `dbt-package-testing`.`dbt_kristin_2`.INFORMATION_SCHEMA.COLUMNS
+        where ordinal_position is not null
+
+    ),
+
+    info_schema_column_paths as (
+
+        select
+            concat(table_catalog, '.', table_schema, '.', table_name) as relation_id,
+            field_path as column_name,
+            data_type as column_type,
+            column_name as base_column_name
+
+        from `dbt-package-testing`.`dbt_kristin_2`.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+        where data_type not like 'STRUCT%'
+
+    ),
+
+    columns as (
+
+        select * except (base_column_name)
+        from info_schema_columns
+        join info_schema_column_paths using (relation_id, base_column_name)
+
+    ),
+
+    column_stats as (
+
+        select
+            table_database,
+            table_schema,
+            table_name,
+            max(relation_id) as relation_id,
+            max(case when is_partitioning_column = 'YES' then 1 else 0 end) = 1 as is_partitioned,
+            max(case when is_partitioning_column = 'YES' then column_name else null end) as partition_column,
+            max(case when clustering_ordinal_position is not null then 1 else 0 end) = 1 as is_clustered,
+            array_to_string(
+                array_agg(
+                    case
+                        when clustering_ordinal_position is not null then column_name
+                        else null
+                    end ignore nulls
+                    order by clustering_ordinal_position
+                ), ', '
+            ) as clustering_columns
+
+        from columns
+        group by 1,2,3
+
+    )
+
+    select
+        unsharded_tables.table_database,
+        unsharded_tables.table_schema,
+        case
+            when is_date_shard then concat(unsharded_tables.table_name, '*')
+            else unsharded_tables.table_name
+        end as table_name,
+        unsharded_tables.table_type,
+
+        -- coalesce name and type for External tables - these columns are not
+        -- present in the COLUMN_FIELD_PATHS resultset
+        coalesce(columns.column_name, '<unknown>') as column_name,
+        -- invent a row number to account for nested fields -- BQ does
+        -- not treat these nested properties as independent fields
+        row_number() over (
+            partition by relation_id
+            order by columns.column_index, columns.column_name
+        ) as column_index,
+        coalesce(columns.column_type, '<unknown>') as column_type,
+        columns.column_comment,
+
+        'Shard count' as `stats__date_shards__label`,
+        table_shards.shard_count as `stats__date_shards__value`,
+        'The number of date shards in this table' as `stats__date_shards__description`,
+        is_date_shard as `stats__date_shards__include`,
+
+        'Shard (min)' as `stats__date_shard_min__label`,
+        table_shards.shard_min as `stats__date_shard_min__value`,
+        'The first date shard in this table' as `stats__date_shard_min__description`,
+        is_date_shard as `stats__date_shard_min__include`,
+
+        'Shard (max)' as `stats__date_shard_max__label`,
+        table_shards.shard_max as `stats__date_shard_max__value`,
+        'The last date shard in this table' as `stats__date_shard_max__description`,
+        is_date_shard as `stats__date_shard_max__include`,
+
+        '# Rows' as `stats__num_rows__label`,
+        row_count as `stats__num_rows__value`,
+        'Approximate count of rows in this table' as `stats__num_rows__description`,
+        (unsharded_tables.table_type = 'table') as `stats__num_rows__include`,
+
+        'Approximate Size' as `stats__num_bytes__label`,
+        size_bytes as `stats__num_bytes__value`,
+        'Approximate size of table as reported by BigQuery' as `stats__num_bytes__description`,
+        (unsharded_tables.table_type = 'table') as `stats__num_bytes__include`,
+
+        'Partitioned By' as `stats__partitioning_type__label`,
+        partition_column as `stats__partitioning_type__value`,
+        'The partitioning column for this table' as `stats__partitioning_type__description`,
+        is_partitioned as `stats__partitioning_type__include`,
+
+        'Clustered By' as `stats__clustering_fields__label`,
+        clustering_columns as `stats__clustering_fields__value`,
+        'The clustering columns for this table' as `stats__clustering_fields__description`,
+        is_clustered as `stats__clustering_fields__include`
+
+    -- join using relation_id (an actual relation, not a shard prefix) to make
+    -- sure that column metadata is picked up through the join. This will only
+    -- return the column information for the "max" table in a date-sharded table set
+    from unsharded_tables
+    left join columns using (relation_id)
+    left join column_stats using (relation_id)
+  
+2020-07-23 18:08:35.744604 (ThreadPoolExecutor-2_1): On dbt-package-testing.information_schema: /* {"app": "dbt", "dbt_version": "0.17.0rc1", "profile_name": "integration_test", "target_name": "dev_bigquery_dbt_testing", "connection_name": "dbt-package-testing.information_schema"} */
+
+    with tables as (
+        select
+            project_id as table_database,
+            dataset_id as table_schema,
+            table_id as original_table_name,
+
+            concat(project_id, '.', dataset_id, '.', table_id) as relation_id,
+
+            row_count,
+            size_bytes as size_bytes,
+            case
+                when type = 1 then 'table'
+                when type = 2 then 'view'
+                else 'external'
+            end as table_type,
+
+            REGEXP_CONTAINS(table_id, '^.+[0-9]{8}$') and coalesce(type, 0) = 1 as is_date_shard,
+            REGEXP_EXTRACT(table_id, '^(.+)[0-9]{8}$') as shard_base_name,
+            REGEXP_EXTRACT(table_id, '^.+([0-9]{8})$') as shard_name
+
+        from `dbt-package-testing`.`stripe`.__TABLES__
+        where (upper(dataset_id) = upper('stripe'))
+    ),
+
+    extracted as (
+
+        select *,
+            case
+                when is_date_shard then shard_base_name
+                else original_table_name
+            end as table_name
+
+        from tables
+
+    ),
+
+    unsharded_tables as (
+
+        select
+            table_database,
+            table_schema,
+            table_name,
+            coalesce(table_type, 'external') as table_type,
+            is_date_shard,
+
+            struct(
+                min(shard_name) as shard_min,
+                max(shard_name) as shard_max,
+                count(*) as shard_count
+            ) as table_shards,
+
+            sum(size_bytes) as size_bytes,
+            sum(row_count) as row_count,
+
+            max(relation_id) as relation_id
+
+        from extracted
+        group by 1,2,3,4,5
+
+    ),
+
+    info_schema_columns as (
+
+        select
+            concat(table_catalog, '.', table_schema, '.', table_name) as relation_id,
+            table_catalog as table_database,
+            table_schema,
+            table_name,
+
+            -- use the "real" column name from the paths query below
+            column_name as base_column_name,
+            ordinal_position as column_index,
+            cast(null as string) as column_comment,
+
+            is_partitioning_column,
+            clustering_ordinal_position
+
+        from `dbt-package-testing`.`stripe`.INFORMATION_SCHEMA.COLUMNS
+        where ordinal_position is not null
+
+    ),
+
+    info_schema_column_paths as (
+
+        select
+            concat(table_catalog, '.', table_schema, '.', table_name) as relation_id,
+            field_path as column_name,
+            data_type as column_type,
+            column_name as base_column_name
+
+        from `dbt-package-testing`.`stripe`.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+        where data_type not like 'STRUCT%'
+
+    ),
+
+    columns as (
+
+        select * except (base_column_name)
+        from info_schema_columns
+        join info_schema_column_paths using (relation_id, base_column_name)
+
+    ),
+
+    column_stats as (
+
+        select
+            table_database,
+            table_schema,
+            table_name,
+            max(relation_id) as relation_id,
+            max(case when is_partitioning_column = 'YES' then 1 else 0 end) = 1 as is_partitioned,
+            max(case when is_partitioning_column = 'YES' then column_name else null end) as partition_column,
+            max(case when clustering_ordinal_position is not null then 1 else 0 end) = 1 as is_clustered,
+            array_to_string(
+                array_agg(
+                    case
+                        when clustering_ordinal_position is not null then column_name
+                        else null
+                    end ignore nulls
+                    order by clustering_ordinal_position
+                ), ', '
+            ) as clustering_columns
+
+        from columns
+        group by 1,2,3
+
+    )
+
+    select
+        unsharded_tables.table_database,
+        unsharded_tables.table_schema,
+        case
+            when is_date_shard then concat(unsharded_tables.table_name, '*')
+            else unsharded_tables.table_name
+        end as table_name,
+        unsharded_tables.table_type,
+
+        -- coalesce name and type for External tables - these columns are not
+        -- present in the COLUMN_FIELD_PATHS resultset
+        coalesce(columns.column_name, '<unknown>') as column_name,
+        -- invent a row number to account for nested fields -- BQ does
+        -- not treat these nested properties as independent fields
+        row_number() over (
+            partition by relation_id
+            order by columns.column_index, columns.column_name
+        ) as column_index,
+        coalesce(columns.column_type, '<unknown>') as column_type,
+        columns.column_comment,
+
+        'Shard count' as `stats__date_shards__label`,
+        table_shards.shard_count as `stats__date_shards__value`,
+        'The number of date shards in this table' as `stats__date_shards__description`,
+        is_date_shard as `stats__date_shards__include`,
+
+        'Shard (min)' as `stats__date_shard_min__label`,
+        table_shards.shard_min as `stats__date_shard_min__value`,
+        'The first date shard in this table' as `stats__date_shard_min__description`,
+        is_date_shard as `stats__date_shard_min__include`,
+
+        'Shard (max)' as `stats__date_shard_max__label`,
+        table_shards.shard_max as `stats__date_shard_max__value`,
+        'The last date shard in this table' as `stats__date_shard_max__description`,
+        is_date_shard as `stats__date_shard_max__include`,
+
+        '# Rows' as `stats__num_rows__label`,
+        row_count as `stats__num_rows__value`,
+        'Approximate count of rows in this table' as `stats__num_rows__description`,
+        (unsharded_tables.table_type = 'table') as `stats__num_rows__include`,
+
+        'Approximate Size' as `stats__num_bytes__label`,
+        size_bytes as `stats__num_bytes__value`,
+        'Approximate size of table as reported by BigQuery' as `stats__num_bytes__description`,
+        (unsharded_tables.table_type = 'table') as `stats__num_bytes__include`,
+
+        'Partitioned By' as `stats__partitioning_type__label`,
+        partition_column as `stats__partitioning_type__value`,
+        'The partitioning column for this table' as `stats__partitioning_type__description`,
+        is_partitioned as `stats__partitioning_type__include`,
+
+        'Clustered By' as `stats__clustering_fields__label`,
+        clustering_columns as `stats__clustering_fields__value`,
+        'The clustering columns for this table' as `stats__clustering_fields__description`,
+        is_clustered as `stats__clustering_fields__include`
+
+    -- join using relation_id (an actual relation, not a shard prefix) to make
+    -- sure that column metadata is picked up through the join. This will only
+    -- return the column information for the "max" table in a date-sharded table set
+    from unsharded_tables
+    left join columns using (relation_id)
+    left join column_stats using (relation_id)
+  
+2020-07-23 18:08:40.712874 (MainThread): 11:08:40 | Catalog written to /Users/kristin/Documents/Github/dbt_stripe/target/catalog.json
+2020-07-23 18:08:40.713645 (MainThread): Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10ae04310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b7149d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b9f8220>]}
+2020-07-23 18:08:40.713854 (MainThread): Flushing usage events
+2020-07-23 18:08:41.059632 (MainThread): Connection 'generate_catalog' was left open.
+2020-07-23 18:08:41.059838 (MainThread): Connection 'dbt-package-testing.information_schema' was left open.
+2020-07-23 18:08:41.059938 (MainThread): Connection 'dbt-package-testing.information_schema' was left open.
