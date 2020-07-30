@@ -13,7 +13,7 @@ with subscription as (
       billing,
       billing_cycle_anchor,
       cancel_at,
-      cancel_at_period_end,
+      cancel_at_period_end as is_cancel_at_period_end,
       canceled_at,
       created as created_at,
       current_period_start,

@@ -276,10 +276,10 @@ models:
         description: Total amount from incomplete charges during the reporting period.
 
 
-  - name: stripe_invoice_details
+  - name: stripe_invoice_line_items
     columns:
       - name: invoice_id 
-        description: The unique Identifier of the invoice object
+        description: The unique Identifier of the invoice object. Note invoices can have many line items, so this is value can appear multiple times.
       - name: number 
         description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
       - name: invoice_created_at 
@@ -304,6 +304,10 @@ models:
         description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
       - name: invoice_memo 
         description: An arbitrary string attached to the object. Often useful for displaying to users.
+      - name: invoice_line_item_id 
+        description: The unique Identifier of the invoice line object.
+        tests:
+          - unique
       - name: line_item_desc 
         description: The discription of the invoice line item
       - name: line_item_amount 

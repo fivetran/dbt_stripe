@@ -48,6 +48,7 @@ select
   invoice.amount_remaining,
   invoice.attempt_count,
   invoice.description as invoice_memo,
+  invoice_line_item.invoice_line_item_id as invoice_line_item_id,
   invoice_line_item.description as line_item_desc,
   invoice_line_item.amount as line_item_amount,
   invoice_line_item.quantity,
@@ -95,6 +96,7 @@ select
   invoice.amount_remaining,
   invoice.attempt_count,
   invoice.description as invoice_memo,
+  invoice_line_item.invoice_line_item_id as invoice_line_item_id,
   invoice_line_item.description as line_item_desc,
   invoice_line_item.amount as line_item_amount,
   invoice_line_item.quantity,
@@ -102,6 +104,7 @@ select
   charge.amount as charge_amount, 
   charge.status as charge_status,
   charge.created_at as charge_created_at,
+  customer.customer_id as customer_id,
   customer.description as customer_description,
   customer.email as customer_email
 

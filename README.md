@@ -1,28 +1,29 @@
 # Stripe 
 
-This package models Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe). It uses data in the format described by [this ERD](https://docs.google.com/presentation/d/1DgcGgNNcH8KPiAjaFNkvT6nEpY6hJd6DZ7ux_CdIF8A/edit).
+This package models Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe). It uses data in the format described by [this ERD](https://docs.google.com/presentation/d/1nqPBWtH_h_8iVjF9-GselWhIyfLH7dgEk7P92s66eEc).
 
 This package enables you to better understand your Stripe transactions. The main focus is to enhance the balance transaction entries with useful fields from related tables. Additionally, the metrics tables allow you to better understand your account activity over time or at a customer level. These time based metrics are available on a daily, weekly, monthly and quarterly level.
 
+## Models
 
-### Models
 This package contains transformation models, designed to work simultaneously with our [Stripe source package](https://github.com/fivetran/dbt_stripe_source). A depenedency on the source package is declared in this package's packages.yml file, so it will automatically download when you run dbt deps. The primary outputs of this package are described below. Intermediate models are used to create these output models.
-| **model**                  | **description**                                                                                                                                               |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| stripe\_balance\_transactions             | Each record represents a change to your account balance, enriched with data about the transaction                                             |
-| stripe\_customer\_overview     | Each record represents a customer, enriched with associated data about metrics of it's purchases. |
-| stripe\_daily\_overview     | Each record represents a single day, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                              |
-| stripe\_weekly\_overview    | Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                               |
-| stripe\_monthly\_overview   | Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                             |
-| stripe\_quarterly\_overview | Each record represents a single quarter, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                           |
-
-
-
+| **model**                          | **description**                                                                                                                                                                                                                              |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| stripe_balance_transactions    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
+| stripe_invoice_line_items      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and plan.                                                                                                        |
+| stripe_subscription_line_items | Each record represents a subscription invoice line item, enriched with details about the associated charge, customer, subscription, and plan. Use this table as the starting point for your company-specific churn and MRR calculations. |
+| stripe_customer_overview       | Each record represents a customer, enriched with metrics about their associated transactions.                                                                                                                                            |
+| stripe_daily_overview          | Each record represents a single day, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                           |
+| stripe_weekly_overview         | Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                          |
+| stripe_monthly_overview        | Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                         |
+| stripe_quarterly_overview      | Each record represents a single quarter, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                       |
 
 ## Installation Instructions
+
 Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions, or [read the docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 
 ## Configuration
+
 By default this package will look for your Hubspot data in the `stripe` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Stripe data is, please add the following configuration to your `dbt_project.yml` file:
 
 ```yml
@@ -51,20 +52,20 @@ config-version: 2
 
 vars:
   stripe:
-    using_subscriptions: false
-    using_invoices: false
-    using_payment_method: false
+    using_subscriptions: false          # disable if you do not have the subscription table
+    using_invoices: false               # disable if you do not have the invoices table
+    using_payment_method: false         # disable if you do not have the payment_method and payment_method_card source tables
 ```
 
-
-### Contributions ###
+### Contributions
 
 Additional contributions to this package are very welcome! Please create issues
 or open PRs against `master`. Check out 
 [this post](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) 
 on the best workflow for contributing to a package.
 
-### Resources:
+### Resources
+
 - Learn more about Fivetran [here](https://fivetran.com/docs)
 - Check out [Fivetran's blog](https://fivetran.com/blog)
 - Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
@@ -72,4 +73,3 @@ on the best workflow for contributing to a package.
 - Join the [chat](http://slack.getdbt.com/) on Slack for live discussions and support
 - Find [dbt events](https://events.getdbt.com) near you
 - Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
-

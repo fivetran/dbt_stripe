@@ -5,7 +5,16 @@ with balance_transaction_joined as (
 
 )
 
+{% if var('using_payment_method', True) %}
+
 select 
+  *
+from balance_transaction_joined
+
+{% else %}
+
+select 
+
   balance_transaction_id,
   created_at,
   available_on,
@@ -26,7 +35,6 @@ select
   charge_id,
   payment_intent_id,
   charge_created_at,
-  -- payment_method_type,
   card_brand,
   card_funding,
   card_country,
@@ -34,6 +42,8 @@ select
   payout_expeted_arrival_date,
   payout_status,
   payout_type,
-  payout_description,
-  refund_reason
+  payout_description
+
 from balance_transaction_joined
+
+{% endif %}

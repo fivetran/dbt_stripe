@@ -1,12 +1,120 @@
-with balance_transaction_joined as (
+with  __dbt__CTE__stripe_balance_transaction_joined as (
+with balance_transaction as (
 
     select *
-    from `dbt-package-testing`.`dbt_kristin_2`.`stripe_balance_transaction_joined`  
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_balance_transaction`
+  
+), charge as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_charge`
+
+), payment_intent as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_payment_intent`
+
+), card as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_card`
+
+), payout as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_payout`
+
+), refund as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_refund`
+
+), customer as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_customer`
+
+
+)
+
+select 
+  balance_transaction.balance_transaction_id,
+  balance_transaction.created_at,
+  balance_transaction.available_on,
+  balance_transaction.currency,
+  balance_transaction.amount,
+  balance_transaction.fee,
+  balance_transaction.net,
+  balance_transaction.type,
+  case
+    when balance_transaction.type in ('charge', 'payment') then 'charge'
+    when balance_transaction.type in ('refund', 'payment_refund') then 'refund'
+    when balance_transaction.type in ('payout_cancel', 'payout_failure')	then 'payout_reversal'
+    when balance_transaction.type in ('transfer', 'recipient_transfer') then	'transfer'
+    when balance_transaction.type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
+    else balance_transaction.type
+  end as reporting_category,
+  balance_transaction.source,
+  balance_transaction.description,
+  case when balance_transaction.type = 'charge' then charge.amount end as customer_facing_amount, --think this might be the charge amount/currency
+  case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
+  
+  
+
+        datetime_add(
+            cast( balance_transaction.available_on as datetime),
+        interval 1 day
+        )
+
+
+ as effective_at,
+  coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
+  charge.receipt_email,
+  customer.description as customer_description,
+  charge.charge_id,
+  charge.payment_intent_id,
+  charge.created_at as charge_created_at,
+  card.brand as card_brand,
+  card.funding as card_funding,
+  card.country as card_country,
+  payout.payout_id,
+  payout.arrival_date as payout_expeted_arrival_date,
+  payout.status as payout_status,
+  payout.type as payout_type,
+  payout.description as payout_description,
+  refund.reason as refund_reason
+from balance_transaction
+left join charge on charge.balance_transaction_id = balance_transaction.balance_transaction_id
+left join customer on charge.customer_id = customer.customer_id
+left join payment_intent on charge.payment_intent_id = payment_intent.payment_intent_id
+left join card on charge.card_id = card.card_id
+left join payout on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+left join refund on refund.balance_transaction_id = balance_transaction.balance_transaction_id
+left join charge as refund_charge on refund.charge_id = refund_charge.charge_id
+order by created_at desc
+),  __dbt__CTE__stripe_incomplete_charges as (
+with charge as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_charge`
+
+)
+
+select 
+  created_at,
+  customer_id,
+  amount
+from charge
+where not is_captured
+),balance_transaction_joined as (
+
+    select *
+    from __dbt__CTE__stripe_balance_transaction_joined  
 
 ), incomplete_charges as (
 
     select *
-    from `dbt-package-testing`.`dbt_kristin_2`.`stripe_incomplete_charges`  
+    from __dbt__CTE__stripe_incomplete_charges  
 
 ), customer as (
 
@@ -17,24 +125,160 @@ with balance_transaction_joined as (
  
     select
       customer_id,
-      sum(if(type in ('charge', 'payment'), amount, 0)) as total_sales,
-      sum(if(type in ('payment_refund', 'refund'), amount, 0)) as total_refunds,
+      sum(case when type in ('charge', 'payment') then amount
+          else 0 end) as total_sales,
+      sum(case when type in ('payment_refund', 'refund') then amount
+          else 0 end) as total_refunds,    
       sum(amount) as total_gross_transaction_amount,
       sum(fee) as total_fees,
       sum(net) as total_net_transaction_amount,
-      sum(if(type in ('payment', 'charge'), 1, 0)) as total_sales_count,
-      sum(if(type in ('payment_refund', 'refund'), 1, 0)) as total_refund_count,    
-      sum(if(type in ('charge', 'payment') and date_trunc(date(created_at), month) = date_trunc(current_date(), month),amount, 0)) as sales_this_month,
-      sum(if(type in ('payment_refund', 'refund') and date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as refunds_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as gross_transaction_amount_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), fee, 0)) as fees_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), net, 0)) as net_transaction_amount_this_month,
-      sum(if(type in ('payment', 'charge') and date_trunc(date(created_at), month) = date_trunc(current_date(), month) , 1, 0)) as sales_count_this_month,
-      sum(if(type in ('payment_refund', 'refund') and date_trunc(date(created_at), month) = date_trunc(current_date(), month) , 1, 0)) as refund_count_this_month,
-      min(if(type in ('payment', 'charge'), date(created_at), null)) as first_sale_date,
-      max(if(type in ('payment', 'charge'), date(created_at), null)) as most_recent_sale_date
+      sum(case when type in ('charge', 'payment') then 1
+          else 0 end) as total_sales_count, 
+      sum(case when type in ('payment_refund', 'refund') then 1
+          else 0 end) as total_refund_count,   
+      sum(case when type in ('charge', 'payment') 
+              and 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then amount 
+          else 0 end) as sales_this_month,
+      sum(case when type in ('payment_refund', 'refund') 
+              and 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then amount 
+          else 0 end) as refunds_this_month,
+      sum(case when 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then amount 
+          else 0 end) as gross_transaction_amount_this_month,
+      sum(case when 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then fee 
+          else 0 end) as fees_this_month,
+      sum(case when 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then net 
+          else 0 end) as net_transaction_amount_this_month,
+      sum(case when type in ('charge', 'payment') 
+              and 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then 1 
+          else 0 end) as sales_count_this_month,
+      sum(case when type in ('payment_refund', 'refund') 
+              and 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+              then 1 
+          else 0 end) as refund_count_this_month,
+      min(case when type in ('charge', 'payment') 
+            then 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        day
+    )
+
+
+            else null end) as first_sale_date,
+      min(case when type in ('charge', 'payment') 
+            then 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        day
+    )
+
+
+            else null end) as most_recent_sale_date
     from balance_transaction_joined
-      where type in ('payment', 'charge', 'payment_refund', 'refund')
+    where type in ('payment', 'charge', 'payment_refund', 'refund')
     group by 1
 
 ), failed_charges_by_customer as (
@@ -43,8 +287,40 @@ with balance_transaction_joined as (
       customer_id,
       count(*) as total_failed_charge_count,
       sum(amount) as total_failed_charge_amount,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), 1, 0)) as failed_charge_count_this_month,
-      sum(if(date_trunc(date(created_at), month) = date_trunc(current_date(), month), amount, 0)) as failed_charge_amount_this_month
+      sum(case when 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+            then 1
+            else 0 end) as failed_charge_count_this_month,
+      sum(case when 
+    timestamp_trunc(
+        cast(created_at as timestamp),
+        month
+    )
+
+ = 
+    timestamp_trunc(
+        cast(
+    current_timestamp
+ as timestamp),
+        month
+    )
+
+
+            then amount
+            else 0 end) as failed_charge_amount_this_month
     from incomplete_charges
     group by 1
 

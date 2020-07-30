@@ -15,15 +15,22 @@ with invoice as (
     select *
     from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_invoice_line_item`  
 
+), customer as (
+
+    select *
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_customer`  
+
+
+
 ), subscription as (
 
     select *
     from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_subscription`  
 
-), customer as (
+), plan as (
 
     select *
-    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_customer`  
+    from `dbt-package-testing`.`dbt_kristin_2`.`stg_stripe_plan`  
 
 )
 
@@ -53,10 +60,20 @@ select
   subscription.subscription_id,
   subscription.billing as subcription_billing,
   subscription.start_date as subscription_start_date,
-  subscription.ended_at as subscription_ended_at
+  subscription.ended_at as subscription_ended_at,
+  plan.plan_id,
+  plan.is_active as plan_is_active,
+  plan.amount as plan_amount,
+  plan.plan_interval as plan_interval,
+  plan.interval_count as plan_interval_count,
+  plan.nickname as plan_nickname,
+  plan.product_id as plan_product_id
+
 from invoice
 left join charge on charge.charge_id = invoice.charge_id
 left join invoice_line_item on invoice.invoice_id = invoice_line_item.invoice_id
 left join subscription on invoice_line_item.subscription_id = subscription.subscription_id
 left join customer on invoice.customer_id = customer.customer_id
+left join plan on invoice_line_item.plan_id = plan.plan_id
 order by invoice.created_at desc
+
