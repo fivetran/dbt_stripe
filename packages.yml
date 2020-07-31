@@ -1,3 +1,4 @@
 packages:
 
-  - local: ~/Documents/Github/dbt_stripe_source
+  - package: fivetran/stripe_source
+    version: 0.1.0
