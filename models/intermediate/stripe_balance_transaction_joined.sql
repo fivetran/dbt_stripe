@@ -41,6 +41,11 @@ with balance_transaction as (
     select *
     from {{ ref('stg_stripe_payment_method_card')}}
 
+), refund as (
+
+    select *
+    from {{ ref('stg_stripe_refund')}}
+
 )
 
 select 
