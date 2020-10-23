@@ -9,16 +9,16 @@ This package enables you to better understand your Stripe transactions. Its main
 This package contains transformation models, designed to work simultaneously with our [Stripe source package](https://github.com/fivetran/dbt_stripe_source). A dependency on the source package is declared in this package's `packages.yml` file, so it will automatically download when you run `dbt deps`. The primary outputs of this package are described below. Intermediate models are used to create these output models.
 
 | **model**                          | **description**                                                                                                                                                                                                                              |
-|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| stripe_balance_transactions    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
-| stripe_invoice_line_items      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and plan.                                                                                                        |
-| stripe_subscription_details    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
-| stripe_subscription_line_items | Each record represents a subscription invoice line item, enriched with details about the associated charge, customer, subscription, and plan. Use this table as the starting point for your company-specific churn and MRR calculations. |
-| stripe_customer_overview       | Each record represents a customer, enriched with metrics about their associated transactions.                                                                                                                                            |
-| stripe_daily_overview          | Each record represents a single day, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                           |
-| stripe_weekly_overview         | Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                          |
-| stripe_monthly_overview        | Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                         |
-| stripe_quarterly_overview      | Each record represents a single quarter, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                       |
+|-------------------------q-------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| stripe__balance_transactions    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
+| stripe__invoice_line_items      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and plan.                                                                                                        |
+| stripe__subscription_details    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
+| stripe__subscription_line_items | Each record represents a subscription invoice line item, enriched with details about the associated charge, customer, subscription, and plan. Use this table as the starting point for your company-specific churn and MRR calculations. |
+| stripe__customer_overview       | Each record represents a customer, enriched with metrics about their associated transactions.                                                                                                                                            |
+| stripe__daily_overview          | Each record represents a single day, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                           |
+| stripe__weekly_overview         | Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                          |
+| stripe__monthly_overview        | Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                         |
+| stripe__quarterly_overview      | Each record represents a single quarter, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                       |
 
 ## Installation Instructions
 
@@ -59,19 +59,22 @@ vars:
     using_payment_method: false         # disable if you do not have the payment_method and payment_method_card source tables
 ```
 
-### Contributions
 
+
+## Contributions
 Additional contributions to this package are very welcome! Please create issues
 or open PRs against `master`. Check out 
 [this post](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) 
 on the best workflow for contributing to a package.
 
-### Resources
-
-- Learn more about Fivetran [here](https://fivetran.com/docs)
+## Resources:
+- Provide [feedback](https://www.surveymonkey.com/r/DQ7K7WW) on our existing dbt packages or what you'd like to see next
+- Have questions or feedback, or need help? Book a time during our office hours [here](https://calendly.com/fivetran-solutions-team/fivetran-solutions-team-office-hours)!
+- Find all of Fivetran's pre-built dbt packages in our [dbt hub](https://hub.getdbt.com/fivetran/)
+- Learn more about Fivetran [in the Fivetran docs](https://fivetran.com/docs)
 - Check out [Fivetran's blog](https://fivetran.com/blog)
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
+- Learn more about dbt [in the dbt docs](https://docs.getdbt.com/docs/introduction)
 - Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
 - Join the [chat](http://slack.getdbt.com/) on Slack for live discussions and support
 - Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+- Check out [the dbt blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices

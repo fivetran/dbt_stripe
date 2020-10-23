@@ -1,29 +1,29 @@
-{{ config(enabled=enabled_vars(['using_invoices','using_subscriptions'])) }}
+{{ config(enabled=fivetran_utils.enabled_vars(['using_invoices','using_subscriptions'])) }}
 
 with invoice as (
 
     select *
-    from {{ ref('stg_stripe_invoice') }}  
+    from {{ ref('stg_stripe__invoice') }}  
 
 ), charge as (
 
     select *
-    from {{ ref('stg_stripe_charge') }}  
+    from {{ ref('stg_stripe__charge') }}  
 
 ), invoice_line_item as (
 
     select *
-    from {{ ref('stg_stripe_invoice_line_item') }}  
+    from {{ ref('stg_stripe__invoice_line_item') }}  
 
 ), subscription as (
 
     select *
-    from {{ ref('stg_stripe_subscription') }}  
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), customer as (
 
     select *
-    from {{ ref('stg_stripe_customer') }}  
+    from {{ ref('stg_stripe__customer') }}  
 
 ), line_items_groups as (
 

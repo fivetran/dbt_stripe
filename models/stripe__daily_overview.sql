@@ -1,12 +1,12 @@
 with balance_transaction_joined as (
 
     select *
-    from {{ ref('stripe_balance_transaction_joined') }}  
+    from {{ ref('stripe__balance_transaction_joined') }}  
 
 ), incomplete_charges as (
 
     select *
-    from {{ ref('stripe_incomplete_charges') }}  
+    from {{ ref('stripe__incomplete_charges') }}  
 
 ), daily_balance_transactions as (
 

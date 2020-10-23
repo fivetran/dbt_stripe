@@ -1,12 +1,12 @@
 with daily_overview as (
 
     select *
-    from {{ ref('stripe_daily_overview') }}  
+    from {{ ref('stripe__daily_overview') }}  
 
 )
 
 select
-      {{ dbt_utils.date_trunc('week', 'date')}} as week,
+      {{ dbt_utils.date_trunc('quarter', 'date')}} as quarter,
       sum(total_sales) as total_sales,
       sum(total_refunds) as total_refunds,
       sum(total_adjustments) as total_adjustments,
@@ -15,7 +15,7 @@ select
       sum(total_net_tranactions) as total_net_tranactions,
       sum(total_payout_fees) as total_payout_fees,
       sum(total_gross_payout_amount) as total_gross_payout_amount,
-      sum(daily_net_activity) as weekly_net_activity,
+      sum(daily_net_activity) as quarterly_net_activity,
       sum(total_sales_count) as total_sales_count,
       sum(total_payouts_count) as total_payouts_count,
       sum(total_adjustments_count) as total_adjustments_count,

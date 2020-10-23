@@ -1,7 +1,7 @@
 with balance_transaction_joined as (
 
     select *
-    from {{ ref('stripe_balance_transaction_joined') }}  
+    from {{ ref('stripe__balance_transaction_joined') }}  
 
 )
 

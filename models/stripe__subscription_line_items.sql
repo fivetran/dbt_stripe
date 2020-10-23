@@ -4,7 +4,7 @@
 with line_items as (
 
     select *
-    from {{ ref('stripe_invoice_line_items') }}  
+    from {{ ref('stripe__invoice_line_items') }}  
     where subscription_id is not null
 
 )

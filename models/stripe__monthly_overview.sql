@@ -1,7 +1,7 @@
 with daily_overview as (
 
     select *
-    from {{ ref('stripe_daily_overview') }}  
+    from {{ ref('stripe__daily_overview') }}  
 
 )
 

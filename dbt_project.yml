@@ -1,12 +1,26 @@
 config-version: 2
 
 name: 'stripe'
-version: '0.0.1'
-
-require-dbt-version: ">=0.17.0"
+version: '0.1.0'
+require-dbt-version: [">=0.18.0", "<0.19.0"]
 
 models:
     stripe:
         materialized: table
         intermediate:
             materialized: ephemeral
+
+vars:
+    dbt_utils_dispatch_list:
+        - fivetran_utils
+        - dbt_utils
+
+
+to do:
+- staging models - done
+- passthrough columns
+- cross db testing (make sure staging columns are set up correctly)
+- Update README with Netlify link
+
+
+- double check stripe_invoice logic
