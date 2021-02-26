@@ -39,7 +39,7 @@ select
   card_funding,
   card_country,
   payout_id,
-  payout_expeted_arrival_date,
+  payout_expected_arrival_date,
   payout_status,
   payout_type,
   payout_description
