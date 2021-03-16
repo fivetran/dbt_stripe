@@ -1,4 +1,8 @@
 packages:
+  # - package: fivetran/stripe_source
+  #   version: [">=0.3.0", "<0.4.0"]
 
-  - package: fivetran/stripe_source
-    version: [">=0.2.0", "<0.3.0"]
+  #To be removed prior to merge
+  - git: https://github.com/fivetran/dbt_stripe_source.git
+    revision: transform-updates
+    warn-unpinned: false
