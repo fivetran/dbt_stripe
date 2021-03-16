@@ -54,7 +54,7 @@ models:
       description: The country the card was issued in.
     - name: paytout_id 
       description: ID for the payout associated with this balance transaction 
-    - name: payout_expeted_arrival_date 
+    - name: payout_expected_arrival_date
       description: Date the payout is expected to arrive in the bank. This factors in delays like weekends or bank holidays.
     - name: payout_status 
       description: Current status of the payout.  Can be paid, pending, in_transit, canceled or failed.
