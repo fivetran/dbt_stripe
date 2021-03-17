@@ -1,12 +1,39 @@
 config-version: 2
 
 name: 'stripe'
-version: '0.0.1'
+version: '0.3.0'
 
 require-dbt-version: [">=0.18.0", "<0.20.0"]
 
 models:
     stripe:
+        +schema: stripe
         materialized: table
         intermediate:
             materialized: ephemeral
+
+vars:
+    stripe:        
+        balance_transaction:  "{{ ref('stg_zendesk__balance_transaction) }}"
+        card:                 "{{ ref('stg_zendesk__card) }}"
+        charge:               "{{ ref('stg_zendesk__charge) }}"
+        customer:             "{{ ref('stg_zendesk__customer) }}"
+        fee:                  "{{ ref('stg_zendesk__fee) }}"
+        invoice:              "{{ ref('stg_zendesk__invoice) }}"
+        invoice_line_item:    "{{ ref('stg_zendesk__invoice_line_item) }}"
+        payment_intent:       "{{ ref('stg_zendesk__payment_intent) }}"
+        payment_method_card:  "{{ ref('stg_zendesk__payment_method_card) }}"
+        payment_method:       "{{ ref('stg_zendesk__payment_method) }}"
+        payout:               "{{ ref('stg_zendesk__payout) }}"
+        plan:                 "{{ ref('stg_zendesk__plan) }}"
+        refund:               "{{ ref('stg_zendesk__refund) }}"
+        subscription:         "{{ ref('stg_zendesk__subscription) }}"
+        
+        #Variables to enable or disable models if you do not have the respective table.
+        using_invoices:         True
+        using_payment_method:   True
+        using_subscriptions:    True
+
+        dbt_utils_dispatch_list:
+            - fivetran_utils
+            - dbt_utils

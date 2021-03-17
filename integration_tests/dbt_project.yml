@@ -1,0 +1,67 @@
+config-version: 2
+
+name: 'stripe_integration_tests'
+version: '0.3.0'
+
+require-dbt-version: [">=0.18.0", "<0.20.0"]
+profile: 'integration_tests'
+
+vars:
+  stripe_schema: stripe_integration_tests
+  stripe:
+    group:                  "{{ ref('stg_stripe__group') }}"
+    balance_transaction:    "{{ ref('stg_stripe__balance_transaction') }}"
+    card:                   "{{ ref('stg_stripe__card') }}"
+    charge:                 "{{ ref('stg_stripe__charge') }}"
+    customer:               "{{ ref('stg_stripe__customer') }}"
+    fee:                    "{{ ref('stg_stripe__fee') }}"
+    invoice:                "{{ ref('stg_stripe__invoice') }}"
+    invoice_line_item:      "{{ ref('stg_stripe__invoice_line_item') }}"
+    payment_intent:         "{{ ref('stg_stripe__payment_intent') }}"
+    payment_method_card:    "{{ ref('stg_stripe__payment_method_card') }}"
+    payment_method:         "{{ ref('stg_stripe__payment_method') }}"
+    payout:                 "{{ ref('stg_stripe__payout') }}"
+    plan:                   "{{ ref('stg_stripe__plan') }}"
+    refund:                 "{{ ref('stg_stripe__refund') }}"
+    subscription:           "{{ ref('stg_stripe__subscription') }}"
+  stripe_source:
+    group:                  "{{ ref('group_data') }}"
+    balance_transaction:    "{{ ref('balance_transaction_data') }}"
+    card:                   "{{ ref('card_data') }}"
+    charge:                 "{{ ref('charge_data') }}"
+    customer:               "{{ ref('customer_data') }}"
+    fee:                    "{{ ref('fee_data') }}"
+    invoice:                "{{ ref('invoice_data') }}"
+    invoice_line_item:      "{{ ref('invoice_line_item_data') }}"
+    payment_intent:         "{{ ref('payment_intent_data') }}"
+    payment_method_card:    "{{ ref('payment_method_card_data') }}"
+    payment_method:         "{{ ref('payment_method_data') }}"
+    payout:                 "{{ ref('payout_data') }}"
+    plan:                   "{{ ref('plan_data') }}"
+    refund:                 "{{ ref('refund_data') }}"
+    subscription:           "{{ ref('subscription_data') }}"
+    
+seeds:
+  +quote_columns: "{{ true if target.type == 'redshift' else false }}"
+  stripe_integration_tests:
+    +column_types:
+      _fivetran_synced: timestamp
+    group_data:
+    balance_transaction_data:
+    card_data:
+    charge_data:
+      +column_types:
+        balance_transaction_id: "{{ 'varchar(250)'  if target.type == 'redshift' else 'string'}}"
+    customer_data:
+      +column_types:
+        description: "{{ 'varchar(500)'  if target.type == 'redshift' else 'string'}}"
+    fee_data:
+    invoice_data:
+    invoice_line_item_data:
+    payment_intent_data:
+    payment_method_card_data:
+    payment_method_data:
+    payout_data:
+    plan_data:
+    refund_data:
+    subscription_data:
