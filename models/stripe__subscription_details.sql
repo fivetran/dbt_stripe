@@ -41,7 +41,7 @@ with invoice as (
     on invoice.invoice_id = invoice_line_item.invoice_id
   group by 1, 2, 3, 4, 5
 
-), grouped_by_subcription as (
+), grouped_by_subscription as (
 
   select
     subscription_id,
@@ -85,8 +85,8 @@ select
   average_line_item_amount,
   avg_num_invoice_items
 from subscription
-left join grouped_by_subcription 
-  on subscription.subscription_id = grouped_by_subcription.subscription_id
+left join grouped_by_subscription 
+  on subscription.subscription_id = grouped_by_subscription.subscription_id
 left join customer 
   on subscription.customer_id = customer.customer_id
 order by subscription.created_at desc
