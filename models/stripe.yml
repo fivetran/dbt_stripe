@@ -86,7 +86,7 @@ models:
         description: Sum of all charges made to this customer.
       - name: total_refunds 
         description: Sum of all refunds made to this customer.
-      - name: total_gross_transcation_amount 
+      - name: total_gross_transaction_amount
         description: Gross amount of all transactions made with this customer.
       - name: total_fees 
         description: Total fees charged on all transactions made with this customer.
@@ -416,7 +416,7 @@ models:
         description: Email of the customer.
       - name: subscription_id 
         description: ID of the subscription this invoice relates to.
-      - name: subcription_billing 
+      - name: subscription_billing 
         description: How the subscription is billed
       - name: subscription_start_date 
         description: The start date of the subscription
