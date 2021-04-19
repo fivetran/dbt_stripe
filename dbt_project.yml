@@ -1,16 +1,16 @@
 config-version: 2
 
 name: 'stripe'
-version: '0.3.0'
+version: '0.3.1'
 
 require-dbt-version: [">=0.18.0", "<0.20.0"]
 
 models:
     stripe:
         +schema: stripe
-        materialized: table
+        +materialized: table
         intermediate:
-            materialized: ephemeral
+            +materialized: ephemeral
 
 vars:
     stripe:        

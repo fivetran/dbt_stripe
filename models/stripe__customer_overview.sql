@@ -102,7 +102,7 @@ select
   customer.is_delinquent,
   coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
   coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
-  coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transcation_amount,
+  coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
   coalesce(transactions_grouped.total_fees/100.0, 0) as total_fees,
   coalesce(transactions_grouped.total_net_transaction_amount/100.0, 0) as total_net_transaction_amount,
   coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,

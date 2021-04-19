@@ -52,11 +52,10 @@ vars:
     using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
     using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
     using_subscriptions:   False  #Disable if you are not using the subscription and plan tables.
-
 ```
 
 ### Changing the Build Schema
-By default this package will build the Stripe final models within a schema titled (<target_schema> + `_stripe`). If this is not where you would like your Stripe final models to be written to, add the following configuration to your `dbt_project.yml` file:
+By default this package will build the Stripe staging models within a schema titled (<target_schema> + `_stg_stripe`) and the Stripe final models within a schema titled (<target_schema> + `_stripe`) in your target database. If this is not where you would like your modeled Stripe data to be written to, add the following configuration to your `dbt_project.yml` file:
 
 ```yml
 # dbt_project.yml
@@ -64,8 +63,9 @@ By default this package will build the Stripe final models within a schema title
 ...
 models:
   stripe:
-    +schema: my_new_final_models_schema # leave blank for just the target_schema
-
+    +schema: my_new_schema_name # leave blank for just the target_schema
+  stripe_source:
+    +schema: my_new_schema_name # leave blank for just the target_schema
 ```
 
 *Read more about using custom schemas in dbt [here](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/using-custom-schemas).*
