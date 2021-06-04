@@ -11,7 +11,7 @@ with balance_transaction_joined as (
 ), customer as (
 
     select *
-    from {{ ref('stg_stripe__customer') }}  
+    from {{ var('customer') }}  
 
 ), transactions_grouped as (
  

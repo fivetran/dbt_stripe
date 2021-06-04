@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe'
-version: '0.4.0'
+version: '0.4.1'
 
 require-dbt-version: [">=0.18.0", "<0.20.0"]
 
@@ -14,20 +14,20 @@ models:
 
 vars:
     stripe:        
-        balance_transaction:  "{{ ref('stg_zendesk__balance_transaction) }}"
-        card:                 "{{ ref('stg_zendesk__card) }}"
-        charge:               "{{ ref('stg_zendesk__charge) }}"
-        customer:             "{{ ref('stg_zendesk__customer) }}"
-        fee:                  "{{ ref('stg_zendesk__fee) }}"
-        invoice:              "{{ ref('stg_zendesk__invoice) }}"
-        invoice_line_item:    "{{ ref('stg_zendesk__invoice_line_item) }}"
-        payment_intent:       "{{ ref('stg_zendesk__payment_intent) }}"
-        payment_method_card:  "{{ ref('stg_zendesk__payment_method_card) }}"
-        payment_method:       "{{ ref('stg_zendesk__payment_method) }}"
-        payout:               "{{ ref('stg_zendesk__payout) }}"
-        plan:                 "{{ ref('stg_zendesk__plan) }}"
-        refund:               "{{ ref('stg_zendesk__refund) }}"
-        subscription:         "{{ ref('stg_zendesk__subscription) }}"
+        balance_transaction:  "{{ ref('stg_stripe__balance_transaction') }}"
+        card:                 "{{ ref('stg_stripe__card') }}"
+        charge:               "{{ ref('stg_stripe__charge') }}"
+        customer:             "{{ ref('stg_stripe__customer') }}"
+        fee:                  "{{ ref('stg_stripe__fee') }}"
+        invoice:              "{{ ref('stg_stripe__invoice') }}"
+        invoice_line_item:    "{{ ref('stg_stripe__invoice_line_item') }}"
+        payment_intent:       "{{ ref('stg_stripe__payment_intent') }}"
+        payment_method_card:  "{{ ref('stg_stripe__payment_method_card') }}"
+        payment_method:       "{{ ref('stg_stripe__payment_method') }}"
+        payout:               "{{ ref('stg_stripe__payout') }}"
+        plan:                 "{{ ref('stg_stripe__plan') }}"
+        refund:               "{{ ref('stg_stripe__refund') }}"
+        subscription:         "{{ ref('stg_stripe__subscription') }}"
         
         #Variables to enable or disable models if you do not have the respective table.
         using_invoices:         True
