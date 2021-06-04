@@ -3,34 +3,34 @@
 with invoice as (
 
     select *
-    from {{ ref('stg_stripe__invoice') }}  
+    from {{ var('invoice') }}  
 
 ), charge as (
 
     select *
-    from {{ ref('stg_stripe__charge') }}  
+    from {{ var('charge') }}  
 
 ), invoice_line_item as (
 
     select *
-    from {{ ref('stg_stripe__invoice_line_item') }}  
+    from {{ var('invoice_line_item') }}  
 
 ), customer as (
 
     select *
-    from {{ ref('stg_stripe__customer') }}  
+    from {{ var('customer') }}  
 
 {% if var('using_subscriptions', True) %}
 
 ), subscription as (
 
     select *
-    from {{ ref('stg_stripe__subscription') }}  
+    from {{ var('subscription') }}  
 
 ), plan as (
 
     select *
-    from {{ ref('stg_stripe__plan') }}  
+    from {{ var('plan') }}  
 
 {% endif %}
 )

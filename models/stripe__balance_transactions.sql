@@ -1,52 +1,52 @@
 with balance_transaction as (
 
     select *
-    from {{ ref('stg_stripe__balance_transaction') }}
-  
+    from {{ var('balance_transaction') }}
+
 ), charge as (
 
     select *
-    from {{ ref('stg_stripe__charge')}}
+    from {{ var('charge')}}
 
 ), payment_intent as (
 
     select *
-    from {{ ref('stg_stripe__payment_intent')}}
+    from {{ var('payment_intent')}}
 
 ), cards as (
 
     select *
-    from {{ ref('stg_stripe__card')}}
+    from {{ var('card')}}
 
 ), payout as (
 
     select *
-    from {{ ref('stg_stripe__payout')}}
+    from {{ var('payout')}}
 
 
 ), customer as (
 
     select *
-    from {{ ref('stg_stripe__customer')}}
+    from {{ var('customer')}}
 
 {% if var('using_payment_method', True) %}
 
 ), payment_method as (
 
     select *
-    from {{ ref('stg_stripe__payment_method')}}
+    from {{ var('payment_method')}}
 
 ), payment_method_card as (
 
     select *
-    from {{ ref('stg_stripe__payment_method_card')}}
+    from {{ var('payment_method_card')}}
 
 {% endif %}
 
 ), refund as (
 
     select *
-    from {{ ref('stg_stripe__refund')}}
+    from {{ var('refund')}}
 
 )
 
