@@ -93,5 +93,3 @@ left join plan
 
 left join customer 
     on invoice.customer_id = customer.customer_id
-
-order by invoice.created_at desc

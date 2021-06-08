@@ -89,4 +89,3 @@ left join grouped_by_subscription
   on subscription.subscription_id = grouped_by_subscription.subscription_id
 left join customer 
   on subscription.customer_id = customer.customer_id
-order by subscription.created_at desc

@@ -23,4 +23,3 @@ select
     sum(total_failed_charge_amount) as total_failed_charge_amount
 from daily_overview
 group by 1
-order by 1 desc
