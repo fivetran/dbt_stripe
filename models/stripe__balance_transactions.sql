@@ -118,5 +118,3 @@ left join refund
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
-    
-order by created_at desc
