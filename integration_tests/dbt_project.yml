@@ -48,10 +48,14 @@ seeds:
       _fivetran_synced: timestamp
     group_data:
     balance_transaction_data:
+      +column_types:
+        created: timestamp
+        available_on: timestamp
     card_data:
     charge_data:
       +column_types:
         balance_transaction_id: "{{ 'varchar(250)'  if target.type == 'redshift' else 'string'}}"
+        created: timestamp
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)'  if target.type == 'redshift' else 'string'}}"
