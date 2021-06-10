@@ -70,6 +70,20 @@ models:
 
 *Read more about using custom schemas in dbt [here](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/using-custom-schemas).*
 
+### Setting your timezone
+
+This packages leaves all timestamp columns in the UTC timezone. However, there are certain instances, such in the daily overview model, that timestamps have to be converted to dates. As a result, the timezone used for the timestamp becomes relevant. 
+
+By default, this package will use the UTC timezone when converting to date, but if you want to set the timezone to the time in your Stripe reports, add the following configuration to your `dbt_project.yml`:
+
+```yml
+# dbt_project.yml
+
+...
+vars:
+  stripe_timezone: "America/New_York" # Replace with your timezone
+```
+
 ### Contributions
 
 Additional contributions to this package are very welcome! Please create issues
