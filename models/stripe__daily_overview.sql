@@ -11,9 +11,11 @@ with balance_transaction_joined as (
 ), daily_balance_transactions as (
 
   select
-      date(case when type = 'payout' 
-          then available_on 
-          else created_at end) as date,
+      case 
+            when type = 'payout' 
+            then {{ date_timezone('available_on') }}  
+            else {{ date_timezone('created_at') }} 
+      end as date,
     sum(case when type in ('charge', 'payment') 
           then amount 
           else 0 end) as total_sales,
@@ -56,7 +58,7 @@ with balance_transaction_joined as (
 ), daily_failed_charges as (
 
     select
-      date(created_at) as date,
+      {{ date_timezone('created_at') }} as date,
       count(*) as total_failed_charge_count,
       sum(amount) as total_failed_charge_amount
     from incomplete_charges

@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.4.2' 
+version: '0.4.2'
 
 require-dbt-version: [">=0.18.0", "<0.20.0"]
 profile: 'integration_tests'
@@ -48,10 +48,14 @@ seeds:
       _fivetran_synced: timestamp
     group_data:
     balance_transaction_data:
+      +column_types:
+        created: timestamp
+        available_on: timestamp
     card_data:
     charge_data:
       +column_types:
         balance_transaction_id: "{{ 'varchar(250)'  if target.type == 'redshift' else 'string'}}"
+        created: timestamp
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)'  if target.type == 'redshift' else 'string'}}"
