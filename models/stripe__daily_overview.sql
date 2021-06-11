@@ -87,5 +87,3 @@ from daily_balance_transactions
 
 left join daily_failed_charges 
       on daily_balance_transactions.date = daily_failed_charges.date
-      
-order by 1 desc
