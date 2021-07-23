@@ -2,8 +2,6 @@ config-version: 2
 
 name: 'stripe_integration_tests'
 version: '0.4.2'
-
-require-dbt-version: [">=0.18.0", "<0.20.0"]
 profile: 'integration_tests'
 
 vars:
