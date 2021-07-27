@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.4.2'
+version: '0.5.0'
 profile: 'integration_tests'
 
 vars:
@@ -57,13 +57,4 @@ seeds:
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)'  if target.type == 'redshift' else 'string'}}"
-    fee_data:
-    invoice_data:
-    invoice_line_item_data:
-    payment_intent_data:
-    payment_method_card_data:
-    payment_method_data:
-    payout_data:
-    plan_data:
-    refund_data:
-    subscription_data:
+
