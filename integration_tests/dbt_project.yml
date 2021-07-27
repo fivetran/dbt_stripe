@@ -40,8 +40,8 @@ vars:
     subscription:           "{{ ref('subscription_data') }}"
     
 seeds:
-  +quote_columns: "{{ true if target.type == 'redshift' else false }}"
   stripe_integration_tests:
+    +quote_columns: "{{ true if target.type == 'redshift' else false }}"
     +column_types:
       _fivetran_synced: timestamp
     group_data:
