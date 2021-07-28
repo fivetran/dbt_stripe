@@ -1,6 +1,6 @@
 {% macro date_timezone(column) -%}
 
-{{ adapter.dispatch('date_timezone', packages=fivetran_utils._get_utils_namespaces()+['stripe'])(column)  }}
+{{ adapter.dispatch('date_timezone', 'stripe')(column)  }}
 
 {%- endmacro %}
 

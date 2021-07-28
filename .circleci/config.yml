@@ -29,6 +29,7 @@ jobs:
             echo `pwd`
             cd integration_tests
             dbt deps
+            dbt seed --target redshift --full-refresh
             dbt run --target redshift --full-refresh
             dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target redshift
             dbt test --target redshift
