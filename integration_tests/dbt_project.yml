@@ -1,9 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.4.2'
-
-require-dbt-version: [">=0.18.0", "<0.20.0"]
+version: '0.5.0'
 profile: 'integration_tests'
 
 vars:
@@ -42,30 +40,19 @@ vars:
     subscription:           "{{ ref('subscription_data') }}"
     
 seeds:
-  +quote_columns: "{{ true if target.type == 'redshift' else false }}"
   stripe_integration_tests:
+    +quote_columns: "{{ true if target.type == 'redshift' else false }}"
     +column_types:
       _fivetran_synced: timestamp
-    group_data:
     balance_transaction_data:
       +column_types:
         created: timestamp
         available_on: timestamp
-    card_data:
     charge_data:
       +column_types:
-        balance_transaction_id: "{{ 'varchar(250)'  if target.type == 'redshift' else 'string'}}"
+        balance_transaction_id: "{{ 'varchar(250)' if target.type == 'redshift' else 'string'}}"
         created: timestamp
     customer_data:
       +column_types:
-        description: "{{ 'varchar(500)'  if target.type == 'redshift' else 'string'}}"
-    fee_data:
-    invoice_data:
-    invoice_line_item_data:
-    payment_intent_data:
-    payment_method_card_data:
-    payment_method_data:
-    payout_data:
-    plan_data:
-    refund_data:
-    subscription_data:
+        description: "{{ 'varchar(500)' if target.type == 'redshift' else 'string'}}"
+
