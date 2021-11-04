@@ -130,6 +130,13 @@ select
   customer.shipping_address_country,
   customer.shipping_address_postal_code,
   customer.shipping_phone
+
+  {% if var('stripe__customer_metadata',[]) %}
+    {% for metadata in var('stripe__customer_metadata') %}
+        ,customer.{{ metadata }}
+    {% endfor %}
+  {% endif %}
+  
 from customer
 left join transactions_grouped 
     on transactions_grouped.customer_id = customer.customer_id
