@@ -1,7 +1,7 @@
 config-version: 2
 name: 'stripe'
-version: '0.5.1'
-require-dbt-version: [">=0.20.0"]
+version: '0.6.0'
+require-dbt-version: [">=1.0.0", "<2.0.0"]
 models:
   stripe:
     +schema: stripe
