@@ -68,7 +68,7 @@ with balance_transaction_joined as (
         then {{ date_timezone('created_at') }}
         else null 
             end) as first_sale_date,
-      min(case when type in ('charge', 'payment') 
+      max(case when type in ('charge', 'payment') 
         then {{ date_timezone('created_at') }}
         else null 
             end) as most_recent_sale_date
@@ -137,8 +137,8 @@ select
     {% endfor %}
   {% endif %}
   
-from customer
-left join transactions_grouped 
+from transactions_grouped
+left join customer 
     on transactions_grouped.customer_id = customer.customer_id
 left join failed_charges_by_customer 
     on customer.customer_id = failed_charges_by_customer.customer_id
