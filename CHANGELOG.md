@@ -1,8 +1,9 @@
 # dbt_stripe v0.6.1
 ## 🐞 Bug Fixes 🐞
 - [#25](https://github.com/fivetran/dbt_stripe/issues/25): Updating docs to add `dbt_stripe` documentation in addition to `dbt_stripe_source` documentation.
-- [#27](https://github.com/fivetran/dbt_stripe/issues/27): Updating `models/stripe__customer_overview.sql` to use `max` instead of `min` for calculating `most_recent_sale_date. 
+- [#27](https://github.com/fivetran/dbt_stripe/issues/27): Updating `models/stripe__customer_overview.sql` to use `max` instead of `min` for calculating `most_recent_sale_date`. 
 - [#28](https://github.com/fivetran/dbt_stripe/issues/28): Updating `models/stripe__customer_overview.sql` to include "No Associated Customer" records.
+
 # dbt_stripe v0.6.0
 🎉 dbt v1.0.0 Compatibility 🎉
 ## 🚨 Breaking Changes 🚨
