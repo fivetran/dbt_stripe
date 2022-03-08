@@ -96,7 +96,7 @@ with balance_transaction_joined as (
 ), transactions_not_associated_with_customer as (
 
     select
-      "No Associated Customer" as customer_description,
+      'No Associated Customer' as customer_description,
       customer.email,
       customer.created_at as customer_created_at,
       customer.is_delinquent,
