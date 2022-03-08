@@ -2,7 +2,9 @@
 ## 🐞 Bug Fixes 🐞
 - [#25](https://github.com/fivetran/dbt_stripe/issues/25): Updating docs to add `dbt_stripe` documentation in addition to `dbt_stripe_source` documentation.
 - [#27](https://github.com/fivetran/dbt_stripe/issues/27): Updating `models/stripe__customer_overview.sql` to use `max` instead of `min` for calculating `most_recent_sale_date`. 
-- [#28](https://github.com/fivetran/dbt_stripe/issues/28): Updating `models/stripe__customer_overview.sql` to include "No Associated Customer" records.
+- [#28](https://github.com/fivetran/dbt_stripe/issues/28): Updating `models/stripe__customer_overview.sql` to include "No Associated Customer" records. 
+  - This PR accounts for when a transaction may be tied to a customer_id that has not yet synced into the customers table due primarily due to a sync lapse between the tables; in which case, the customer_description field will be "No Associated Customer". 
+  - Each "No Associated Customers" record will be an individual row, since we can not predictably do any group bys due to the `stripe__customer_metadata` variable being unpredictable in both datatype and number of metadata fields.
 
 # dbt_stripe v0.6.0
 🎉 dbt v1.0.0 Compatibility 🎉

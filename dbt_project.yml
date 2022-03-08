@@ -4,7 +4,7 @@ version: '0.6.1'
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 models:
   stripe:
-    +schema: stripe
+    +schema: stripe_bugfix
     +materialized: table
     intermediate:
       +materialized: ephemeral
