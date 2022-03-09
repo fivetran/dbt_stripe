@@ -140,7 +140,7 @@ with balance_transaction_joined as (
     from transactions_grouped
     left join customer 
         on transactions_grouped.customer_id = customer.customer_id
-    where customer.customer_id is null or customer.description is null
+    where customer.customer_id is null and customer.description is null
 
 
 ), customer_transactions_overview as (
