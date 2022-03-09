@@ -68,7 +68,7 @@ with balance_transaction_joined as (
         then {{ date_timezone('created_at') }}
         else null 
             end) as first_sale_date,
-      min(case when type in ('charge', 'payment') 
+      max(case when type in ('charge', 'payment') 
         then {{ date_timezone('created_at') }}
         else null 
             end) as most_recent_sale_date
@@ -93,53 +93,109 @@ with balance_transaction_joined as (
     from incomplete_charges
     group by 1
 
+), transactions_not_associated_with_customer as (
+
+    select
+      'No Associated Customer' as customer_description,
+      customer.email,
+      customer.created_at as customer_created_at,
+      customer.is_delinquent,
+      coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
+      coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
+      coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
+      coalesce(transactions_grouped.total_fees/100.0, 0) as total_fees,
+      coalesce(transactions_grouped.total_net_transaction_amount/100.0, 0) as total_net_transaction_amount,
+      coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,
+      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,    
+      coalesce(transactions_grouped.sales_this_month/100.0, 0) as sales_this_month,
+      coalesce(transactions_grouped.refunds_this_month/100.0, 0) as refunds_this_month,
+      coalesce(transactions_grouped.gross_transaction_amount_this_month/100.0, 0) as gross_transaction_amount_this_month,
+      coalesce(transactions_grouped.fees_this_month/100.0, 0) as fees_this_month,
+      coalesce(transactions_grouped.net_transaction_amount_this_month/100.0, 0) as net_transaction_amount_this_month,
+      coalesce(transactions_grouped.sales_count_this_month, 0) as sales_count_this_month,
+      coalesce(transactions_grouped.refund_count_this_month, 0) as refund_count_this_month,
+      transactions_grouped.first_sale_date,
+      transactions_grouped.most_recent_sale_date,
+      0 as total_failed_charge_count,
+      0 as total_failed_charge_amount,
+      0 as failed_charge_count_this_month,
+      0 as failed_charge_amount_this_month,
+      customer.currency as customer_currency,
+      customer.default_card_id,
+      customer.shipping_name,
+      customer.shipping_address_line_1,
+      customer.shipping_address_line_2,
+      customer.shipping_address_city,
+      customer.shipping_address_state,
+      customer.shipping_address_country,
+      customer.shipping_address_postal_code,
+      customer.shipping_phone
+
+      {% if var('stripe__customer_metadata',[]) %}
+        {% for metadata in var('stripe__customer_metadata') %}
+            ,customer.{{ metadata }}
+        {% endfor %}
+      {% endif %}
+      
+    from transactions_grouped
+    left join customer 
+        on transactions_grouped.customer_id = customer.customer_id
+    where customer.customer_id is null and customer.description is null
+
+
+), customer_transactions_overview as (
+
+    select
+      coalesce(customer.description, customer.customer_id) as customer_description,
+      customer.email,
+      customer.created_at as customer_created_at,
+      customer.is_delinquent,
+      coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
+      coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
+      coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
+      coalesce(transactions_grouped.total_fees/100.0, 0) as total_fees,
+      coalesce(transactions_grouped.total_net_transaction_amount/100.0, 0) as total_net_transaction_amount,
+      coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,
+      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,    
+      coalesce(transactions_grouped.sales_this_month/100.0, 0) as sales_this_month,
+      coalesce(transactions_grouped.refunds_this_month/100.0, 0) as refunds_this_month,
+      coalesce(transactions_grouped.gross_transaction_amount_this_month/100.0, 0) as gross_transaction_amount_this_month,
+      coalesce(transactions_grouped.fees_this_month/100.0, 0) as fees_this_month,
+      coalesce(transactions_grouped.net_transaction_amount_this_month/100.0, 0) as net_transaction_amount_this_month,
+      coalesce(transactions_grouped.sales_count_this_month, 0) as sales_count_this_month,
+      coalesce(transactions_grouped.refund_count_this_month, 0) as refund_count_this_month,
+      transactions_grouped.first_sale_date,
+      transactions_grouped.most_recent_sale_date,
+      coalesce(failed_charges_by_customer.total_failed_charge_count, 0) as total_failed_charge_count,
+      coalesce(failed_charges_by_customer.total_failed_charge_amount/100, 0) as total_failed_charge_amount,
+      coalesce(failed_charges_by_customer.failed_charge_count_this_month, 0) as failed_charge_count_this_month,
+      coalesce(failed_charges_by_customer.failed_charge_amount_this_month/100, 0) as failed_charge_amount_this_month,
+      customer.currency as customer_currency,
+      customer.default_card_id,
+      customer.shipping_name,
+      customer.shipping_address_line_1,
+      customer.shipping_address_line_2,
+      customer.shipping_address_city,
+      customer.shipping_address_state,
+      customer.shipping_address_country,
+      customer.shipping_address_postal_code,
+      customer.shipping_phone
+
+      {% if var('stripe__customer_metadata',[]) %}
+        {% for metadata in var('stripe__customer_metadata') %}
+            ,customer.{{ metadata }}
+        {% endfor %}
+      {% endif %}
+      
+    from customer
+    left join transactions_grouped
+        on customer.customer_id = transactions_grouped.customer_id
+    left join failed_charges_by_customer 
+        on customer.customer_id = failed_charges_by_customer.customer_id
 )
 
-select
-  coalesce(customer.description, customer.customer_id, 'No associated customer') as customer_description,
-  customer.email,
-  customer.created_at as customer_created_at,
-  customer.is_delinquent,
-  coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
-  coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
-  coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
-  coalesce(transactions_grouped.total_fees/100.0, 0) as total_fees,
-  coalesce(transactions_grouped.total_net_transaction_amount/100.0, 0) as total_net_transaction_amount,
-  coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,
-  coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,    
-  coalesce(transactions_grouped.sales_this_month/100.0, 0) as sales_this_month,
-  coalesce(transactions_grouped.refunds_this_month/100.0, 0) as refunds_this_month,
-  coalesce(transactions_grouped.gross_transaction_amount_this_month/100.0, 0) as gross_transaction_amount_this_month,
-  coalesce(transactions_grouped.fees_this_month/100.0, 0) as fees_this_month,
-  coalesce(transactions_grouped.net_transaction_amount_this_month/100.0, 0) as net_transaction_amount_this_month,
-  coalesce(transactions_grouped.sales_count_this_month, 0) as sales_count_this_month,
-  coalesce(transactions_grouped.refund_count_this_month, 0) as refund_count_this_month,
-  transactions_grouped.first_sale_date,
-  transactions_grouped.most_recent_sale_date,
-  coalesce(total_failed_charge_count, 0) as total_failed_charge_count,
-  coalesce(total_failed_charge_amount/100, 0) as total_failed_charge_amount,
-  coalesce(failed_charge_count_this_month, 0) as failed_charge_count_this_month,
-  coalesce(failed_charge_amount_this_month/100, 0) as failed_charge_amount_this_month,
-  customer.currency as customer_currency,
-  customer.default_card_id,
-  customer.shipping_name,
-  customer.shipping_address_line_1,
-  customer.shipping_address_line_2,
-  customer.shipping_address_city,
-  customer.shipping_address_state,
-  customer.shipping_address_country,
-  customer.shipping_address_postal_code,
-  customer.shipping_phone
-
-  {% if var('stripe__customer_metadata',[]) %}
-    {% for metadata in var('stripe__customer_metadata') %}
-        ,customer.{{ metadata }}
-    {% endfor %}
-  {% endif %}
-  
-from customer
-left join transactions_grouped 
-    on transactions_grouped.customer_id = customer.customer_id
-left join failed_charges_by_customer 
-    on customer.customer_id = failed_charges_by_customer.customer_id
-
+select *
+from transactions_not_associated_with_customer
+union all 
+select * 
+from customer_transactions_overview
