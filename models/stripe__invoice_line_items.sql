@@ -25,7 +25,7 @@ with invoice as (
 ), subscription as (
 
     select *
-    from {{ var('subscription') }}  
+    from {{ var('subscription_history') }}  
 
 ), plan as (
 
