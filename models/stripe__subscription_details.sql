@@ -18,7 +18,7 @@ with invoice as (
 ), subscription as (
 
     select *
-    from {{ var('subscription_history') }}  
+    from {{ var('subscription') }}  
 
 ), customer as (
 

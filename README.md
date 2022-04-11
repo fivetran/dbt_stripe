@@ -30,7 +30,7 @@ Include in your `packages.yml`
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.6.0", "<0.7.0"]
+    version: [">=0.7.0", "<0.8.0"]
 ```
 
 ## Configuration
@@ -62,7 +62,15 @@ vars:
     using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
     using_subscriptions:   False  #Disable if you are not using the subscription and plan tables.
 ```
+### Disabling Subscription History
+By default this package filters out the inactive subscription data within your `subscription_history` source table and only retains the most recent record. If you would like to retain these historical records in the downstream subscription models then you may leverage the `stripe__keep_subscription_history` variable in your dbt_project.yml.
+```yml
+# dbt_project.yml
 
+...
+vars:
+    stripe__keep_subscription_history: True  # False by default. Set to True if you would like to retain historical subscription data in your package models. 
+```
 ### Changing the Build Schema
 By default this package will build the Stripe staging models within a schema titled (<target_schema> + `_stg_stripe`) and the Stripe final models within a schema titled (<target_schema> + `_stripe`) in your target database. If this is not where you would like your modeled Stripe data to be written to, add the following configuration to your `dbt_project.yml` file:
 
