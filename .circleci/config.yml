@@ -31,7 +31,7 @@ jobs:
             dbt deps
             dbt seed --target redshift --full-refresh
             dbt run --target redshift --full-refresh
-            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target redshift
+            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__keep_subscription_history: true}' --target redshift
             dbt test --target redshift
       - run:
           name: "Run Tests - Snowflake"
@@ -42,7 +42,7 @@ jobs:
             dbt deps
             dbt seed --target snowflake --full-refresh
             dbt run --target snowflake --full-refresh
-            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target snowflake
+            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__keep_subscription_history: true}' --target snowflake
             dbt test --target snowflake
       - run:
           name: "Run Tests - BigQuery"
@@ -56,7 +56,7 @@ jobs:
             dbt deps
             dbt seed --target bigquery --full-refresh
             dbt run --target bigquery --full-refresh
-            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target bigquery
+            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__keep_subscription_history: true}' --target bigquery
             dbt test --target bigquery
       - save_cache:
           key: deps2-{{ .Branch }}

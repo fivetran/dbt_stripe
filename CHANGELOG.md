@@ -1,6 +1,11 @@
-# dbt_stripe v0.6.2
-## 🐞 Bug Fixes 🐞
-- [#31](https://github.com/fivetran/dbt_stripe/issues/31): Update subscription model to subscription_history to match new ERD.
+# dbt_stripe v0.7.0
+## 🚨 Breaking Changes 🚨
+- Bug fix within the `dbt_stripe_source` package where the `subscription` source table didn't match the most recent [Stripe ERD](https://docs.google.com/presentation/d/1zyxgbaOjgBt3NsY0OfsiGsWDIefcBc-R1lHWlMltCYU/edit#slide=id.gd0264d4694_14_1). The table and relevant tests/project information have now been updated to reference the new `subscription_history` source table. Before upgrading, please ensure your Stripe connector includes the `subscription_history` table. ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
+  - This package now points to the latest `dbt_stripe_source` package version which accounts for the above bug. ([#33](https://github.com/fivetran/dbt_stripe/pull/33) and [#34](https://github.com/fivetran/dbt_stripe/pull/34))
+## Features
+- Includes a new variable `stripe__keep_subscription_history` which allows users to enable or disable the historical records within the `subscription` models. By default this variable is set to `false` and will only include active records within your downstream subscription models. ([#38](https://github.com/fivetran/dbt_stripe_source/pull/38))
+## Contributors
+- [nachimehta](https://github.com/nachimehta) ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
 
 # dbt_stripe v0.6.1
 ## 🐞 Bug Fixes 🐞
