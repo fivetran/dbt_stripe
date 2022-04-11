@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.6.1'
+version: '0.6.2'
 profile: 'integration_tests'
 
 vars:
@@ -37,8 +37,8 @@ vars:
     payout:                 "{{ ref('payout_data') }}"
     plan:                   "{{ ref('plan_data') }}"
     refund:                 "{{ ref('refund_data') }}"
-    subscription:           "{{ ref('subscription_data') }}"
-    
+    subscription_history:   "{{ ref('subscription_history_data') }}"
+
 seeds:
   stripe_integration_tests:
     +quote_columns: "{{ true if target.type == 'redshift' else false }}"

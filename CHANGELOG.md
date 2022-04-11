@@ -1,3 +1,7 @@
+# dbt_stripe v0.6.2
+## 🐞 Bug Fixes 🐞
+- [#31](https://github.com/fivetran/dbt_stripe/issues/31): Update subscription model to subscription_history to match new ERD.
+
 # dbt_stripe v0.6.1
 ## 🐞 Bug Fixes 🐞
 - [#24](https://github.com/fivetran/dbt_stripe/issues/24): Updating docs to add `dbt_stripe` documentation in addition to `dbt_stripe_source` documentation.
