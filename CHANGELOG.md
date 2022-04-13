@@ -1,9 +1,10 @@
 # dbt_stripe v0.7.0
 ## 🚨 Breaking Changes 🚨
-- Bug fix within the `dbt_stripe_source` package where the `subscription` source table didn't match the most recent [Stripe ERD](https://docs.google.com/presentation/d/1zyxgbaOjgBt3NsY0OfsiGsWDIefcBc-R1lHWlMltCYU/edit#slide=id.gd0264d4694_14_1). The table and relevant tests/project information have now been updated to reference the new `subscription_history` source table. Before upgrading, please ensure your Stripe connector includes the `subscription_history` table. ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
-  - This package now points to the latest `dbt_stripe_source` package version which accounts for the above bug. ([#33](https://github.com/fivetran/dbt_stripe/pull/33) and [#34](https://github.com/fivetran/dbt_stripe/pull/34))
-## Features
-- Includes a new variable `stripe__keep_subscription_history` which allows users to enable or disable the historical records within the `subscription` models. By default this variable is set to `false` and will only include active records within your downstream subscription models. ([#38](https://github.com/fivetran/dbt_stripe_source/pull/38))
+- Stripe connectors set up after February 09, 2022 no longer sync the `subscription` table; however, a newer `subscription_history` table is synced. To account for this change a variable `stripe__subscription_history` has been added to the package project to allow for users to define if their source contains the `subscription_history` table. ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
+  - By default this variable is set to `false`. If you still have the `subscription` table, then there is no adjustment needed on your end. If you do have the `subscription_history` table then you will want to set the variable to `true`. 
+  - Similarly, if you have both tables, then I highly encourage you start leveraging the `subscription_history` source table in your package.
+  - This package now points to the latest `dbt_stripe_source` package version which accounts for the above update. ([#33](https://github.com/fivetran/dbt_stripe/pull/33) and [#34](https://github.com/fivetran/dbt_stripe/pull/34))
+
 ## Contributors
 - [nachimehta](https://github.com/nachimehta) ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
 

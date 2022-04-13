@@ -22,6 +22,9 @@ vars:
     plan:                   "{{ ref('plan_data') }}"
     refund:                 "{{ ref('refund_data') }}"
     subscription_history:   "{{ ref('subscription_history_data') }}"
+    subscription:           "{{ ref('subscription_data') }}"
+
+    stripe__subscription_history: false
 
 seeds:
   stripe_integration_tests:

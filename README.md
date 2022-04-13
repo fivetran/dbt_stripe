@@ -62,14 +62,15 @@ vars:
     using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
     using_subscriptions:   False  #Disable if you are not using the subscription and plan tables.
 ```
-### Disabling Subscription History
-By default this package filters out the inactive subscription data within your `subscription_history` source table and only retains the most recent record. If you would like to retain these historical records in the downstream subscription models then you may leverage the `stripe__keep_subscription_history` variable in your dbt_project.yml.
+### Leveraging Subscription Vs Subscription History Sources
+For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription` source table. However, if you have a newer connector then you must leverage the `stripe__subscription_history` to have the package use the `subscription_history` source rather than the `subscription` table.
+> **Please note that if you have `stripe__subscription_history` enabled then the package will filter for only active records.**
 ```yml
 # dbt_project.yml
 
 ...
 vars:
-    stripe__keep_subscription_history: True  # False by default. Set to True if you would like to retain historical subscription data in your package models. 
+    stripe__subscription_history: True  # False by default. Set to True if your connector syncs the `subscription_history` table. 
 ```
 ### Changing the Build Schema
 By default this package will build the Stripe staging models within a schema titled (<target_schema> + `_stg_stripe`) and the Stripe final models within a schema titled (<target_schema> + `_stripe`) in your target database. If this is not where you would like your modeled Stripe data to be written to, add the following configuration to your `dbt_project.yml` file:
