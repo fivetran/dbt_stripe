@@ -1,3 +1,5 @@
 packages:
-- package: fivetran/stripe_source
-  version: [">=0.5.0", "<0.6.0"]
+# - package: fivetran/stripe_source
+#   version: [">=0.5.0", "<0.6.0"]
+
+  - local: ../dbt_stripe_source

@@ -140,7 +140,7 @@ or open PRs against `main`. Check out
 on the best workflow for contributing to a package.
 
 ## Database support
-This package has been tested on BigQuery, Snowflake, and Redshift.
+This package has been tested on BigQuery, Snowflake, Postgres, and Redshift.
 
 ### Resources:
 - Provide [feedback](https://www.surveymonkey.com/r/DQ7K7WW) on our existing dbt packages or what you'd like to see next
