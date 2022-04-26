@@ -40,7 +40,7 @@ integration_tests:
       host: "{{ env_var('CI_POSTGRES_DBT_HOST') }}"
       user: "{{ env_var('CI_POSTGRES_DBT_USER') }}"
       pass: "{{ env_var('CI_POSTGRES_DBT_PASS') }}"
-      dbname: "{{ env_var('CI_POSTGRES_DBT_DBNAME') }}"
+      dbname: "{{ env_var('CI_POSTGRES_DBT_DATABASE') }}"
       port: 5432
       schema: stripe_integration_tests
       threads: 8
