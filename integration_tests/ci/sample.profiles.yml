@@ -35,3 +35,14 @@ integration_tests:
       warehouse: "{{ env_var('CI_SNOWFLAKE_DBT_WAREHOUSE') }}"
       schema: stripe_integration_tests
       threads: 8
+    postgres:
+      type: postgres
+      host: "{{ env_var('CI_POSTGRES_DBT_HOST') }}"
+      user: "{{ env_var('CI_POSTGRES_DBT_USER') }}"
+      password: "{{ env_var('CI_POSTGRES_DBT_PASS') }}"
+      port: 5432
+      dbname: "{{ env_var('CI_POSTGRES_DBT_DATABASE') }}"
+      schema: stripe_integration_tests
+      threads: 8
+      keepalives_idle: 0
+      sslmode: prefer
