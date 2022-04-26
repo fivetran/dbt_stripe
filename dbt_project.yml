@@ -27,4 +27,4 @@ vars:
     using_invoices: true
     using_payment_method: true
     using_subscriptions: true
-    stripe_timezone: "America/New_York" 
+    

@@ -34,6 +34,17 @@ jobs:
             dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target redshift
             dbt test --target redshift
       - run:
+          name: "Run Tests - Postgres"
+          command: |
+            . venv/bin/activate
+            echo `pwd`
+            cd integration_tests
+            dbt deps
+            dbt seed --target postgres --full-refresh
+            dbt run --target postgres --full-refresh
+            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target postgres
+            dbt test --target postgres
+      - run:
           name: "Run Tests - Snowflake"
           command: |
             . venv/bin/activate
