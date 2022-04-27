@@ -33,7 +33,7 @@ integration_tests:
       role: "{{ env_var('CI_SNOWFLAKE_DBT_ROLE') }}"
       database: "{{ env_var('CI_SNOWFLAKE_DBT_DATABASE') }}"
       warehouse: "{{ env_var('CI_SNOWFLAKE_DBT_WAREHOUSE') }}"
-      schema: stripe_integration_tests
+      schema: stripe_integration_tests_2
       threads: 8
     postgres:
       type: postgres
