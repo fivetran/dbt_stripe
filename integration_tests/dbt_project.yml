@@ -2,6 +2,7 @@ config-version: 2
 
 name: 'stripe_integration_tests'
 version: '0.7.0'
+
 profile: 'integration_tests'
 
 vars:
@@ -28,7 +29,7 @@ vars:
 
 seeds:
   stripe_integration_tests:
-    +quote_columns: "{{ true if target.type == 'redshift' else false }}"
+    +quote_columns: "{{ true if target.type in ('redshift','postgres') else false }}"
     +column_types:
       _fivetran_synced: timestamp
     balance_transaction_data:
@@ -37,9 +38,9 @@ seeds:
         available_on: timestamp
     charge_data:
       +column_types:
-        balance_transaction_id: "{{ 'varchar(250)' if target.type == 'redshift' else 'string'}}"
+        balance_transaction_id: "{{ 'varchar(250)' if target.type in ('redshift','postgres') else 'string'}}"
         created: timestamp
     customer_data:
       +column_types:
-        description: "{{ 'varchar(500)' if target.type == 'redshift' else 'string'}}"
+        description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
 

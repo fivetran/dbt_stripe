@@ -5,6 +5,11 @@
   - Similarly, if you have both tables, then I highly encourage you start leveraging the `subscription_history` source table in your package.
   - This package now points to the latest `dbt_stripe_source` package version which accounts for the above update. ([#33](https://github.com/fivetran/dbt_stripe/pull/33) and [#34](https://github.com/fivetran/dbt_stripe/pull/34))
 
+## 🐞 Bug Fixes 🐞
+- [#35](https://github.com/fivetran/dbt_stripe/issues/35): Fix issue with timezone conversion on postgres. [@johnf](https://github.com/johnf)
+- Added Postgres support for the Stripe package. 
+- [#37](https://github.com/fivetran/dbt_stripe/pull/37)
+
 ## Contributors
 - [nachimehta](https://github.com/nachimehta) ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
 
