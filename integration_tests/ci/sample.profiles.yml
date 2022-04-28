@@ -23,7 +23,7 @@ integration_tests:
       method: service-account
       keyfile: "{{ env_var('GCLOUD_SERVICE_KEY_PATH') }}"
       project: 'dbt-package-testing'
-      schema: stripe_integration_tests
+      schema: stripe_integration_test
       threads: 8
     snowflake:
       type: snowflake
