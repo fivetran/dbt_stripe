@@ -33,5 +33,14 @@ integration_tests:
       role: "{{ env_var('CI_SNOWFLAKE_DBT_ROLE') }}"
       database: "{{ env_var('CI_SNOWFLAKE_DBT_DATABASE') }}"
       warehouse: "{{ env_var('CI_SNOWFLAKE_DBT_WAREHOUSE') }}"
+      schema: stripe_integration_tests_2
+      threads: 8
+    postgres:
+      type: postgres
+      host: "{{ env_var('CI_POSTGRES_DBT_HOST') }}"
+      user: "{{ env_var('CI_POSTGRES_DBT_USER') }}"
+      pass: "{{ env_var('CI_POSTGRES_DBT_PASS') }}"
+      dbname: "{{ env_var('CI_POSTGRES_DBT_DATABASE') }}"
+      port: 5432
       schema: stripe_integration_tests
       threads: 8
