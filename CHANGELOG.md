@@ -1,7 +1,8 @@
 # dbt_stripe v0.6.2
 ## 🐞 Bug Fixes 🐞
-- [#35](https://github.com/fivetran/dbt_stripe/issues/35): Fix issue with timezone conversion on postgres. @ https://github.com/johnf
+- [#35](https://github.com/fivetran/dbt_stripe/issues/35): Fix issue with timezone conversion on postgres. [@johnf](https://github.com/johnf)
 - Added Postgres support for the Stripe package. 
+- [#37](https://github.com/fivetran/dbt_stripe/pull/37)
 
 # dbt_stripe v0.6.1
 ## 🐞 Bug Fixes 🐞
