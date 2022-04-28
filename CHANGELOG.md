@@ -1,8 +1,17 @@
-# dbt_stripe v0.6.2
+# dbt_stripe v0.7.0
+## 🚨 Breaking Changes 🚨
+- Stripe connectors set up after February 09, 2022 no longer sync the `subscription` table; however, a newer `subscription_history` table is synced. To account for this change a variable `stripe__subscription_history` has been added to the package project to allow for users to define if their source contains the `subscription_history` table. ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
+  - By default this variable is set to `false`. If you still have the `subscription` table, then there is no adjustment needed on your end. If you do have the `subscription_history` table then you will want to set the variable to `true`. 
+  - Similarly, if you have both tables, then I highly encourage you start leveraging the `subscription_history` source table in your package.
+  - This package now points to the latest `dbt_stripe_source` package version which accounts for the above update. ([#33](https://github.com/fivetran/dbt_stripe/pull/33) and [#34](https://github.com/fivetran/dbt_stripe/pull/34))
+
 ## 🐞 Bug Fixes 🐞
 - [#35](https://github.com/fivetran/dbt_stripe/issues/35): Fix issue with timezone conversion in postgres by updating the `date_timezone` macro with postgres functionality. [@johnf](https://github.com/johnf)
 - Added Postgres support for the Stripe package. 
 - [See PR #37](https://github.com/fivetran/dbt_stripe/pull/37)
+
+## Contributors
+- [nachimehta](https://github.com/nachimehta) ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
 
 # dbt_stripe v0.6.1
 ## 🐞 Bug Fixes 🐞

@@ -1,6 +1,7 @@
 config-version: 2
 name: 'stripe'
-version: '0.6.2'
+version: '0.7.0'
+
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 models:
   stripe:
@@ -27,4 +28,3 @@ vars:
     using_invoices: true
     using_payment_method: true
     using_subscriptions: true
-    
