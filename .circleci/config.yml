@@ -23,17 +23,6 @@ jobs:
             mkdir -p ~/.dbt
             cp integration_tests/ci/sample.profiles.yml ~/.dbt/profiles.yml
       - run:
-          name: "Run Tests - Redshift"
-          command: |
-            . venv/bin/activate
-            echo `pwd`
-            cd integration_tests
-            dbt deps
-            dbt seed --target redshift --full-refresh
-            dbt run --target redshift --full-refresh
-            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__subscription_history: true}' --target redshift
-            dbt test --target redshift
-      - run:
           name: "Run Tests - Postgres"
           command: |
             . venv/bin/activate
@@ -44,6 +33,17 @@ jobs:
             dbt run --target postgres --full-refresh
             dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target postgres
             dbt test --target postgres
+      - run:
+          name: "Run Tests - Redshift"
+          command: |
+            . venv/bin/activate
+            echo `pwd`
+            cd integration_tests
+            dbt deps
+            dbt seed --target redshift --full-refresh
+            dbt run --target redshift --full-refresh
+            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__subscription_history: true}' --target redshift
+            dbt test --target redshift
       - run:
           name: "Run Tests - Snowflake"
           command: |

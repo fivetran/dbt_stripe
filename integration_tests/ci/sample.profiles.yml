@@ -23,7 +23,7 @@ integration_tests:
       method: service-account
       keyfile: "{{ env_var('GCLOUD_SERVICE_KEY_PATH') }}"
       project: 'dbt-package-testing'
-      schema: stripe_integration_test
+      schema: stripe_integration_tests
       threads: 8
     snowflake:
       type: snowflake
@@ -33,7 +33,7 @@ integration_tests:
       role: "{{ env_var('CI_SNOWFLAKE_DBT_ROLE') }}"
       database: "{{ env_var('CI_SNOWFLAKE_DBT_DATABASE') }}"
       warehouse: "{{ env_var('CI_SNOWFLAKE_DBT_WAREHOUSE') }}"
-      schema: stripe_integration_tests_2
+      schema: stripe_integration_tests
       threads: 8
     postgres:
       type: postgres

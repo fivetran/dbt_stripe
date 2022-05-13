@@ -1,29 +1,31 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.7.0'
+version: '0.8.0'
 
 profile: 'integration_tests'
 
 vars:
   stripe_schema: stripe_integration_tests
   stripe_source:
-    group:                  "{{ ref('group_data') }}"
-    balance_transaction:    "{{ ref('balance_transaction_data') }}"
-    card:                   "{{ ref('card_data') }}"
-    charge:                 "{{ ref('charge_data') }}"
-    customer:               "{{ ref('customer_data') }}"
-    fee:                    "{{ ref('fee_data') }}"
-    invoice:                "{{ ref('invoice_data') }}"
-    invoice_line_item:      "{{ ref('invoice_line_item_data') }}"
-    payment_intent:         "{{ ref('payment_intent_data') }}"
-    payment_method_card:    "{{ ref('payment_method_card_data') }}"
-    payment_method:         "{{ ref('payment_method_data') }}"
-    payout:                 "{{ ref('payout_data') }}"
-    plan:                   "{{ ref('plan_data') }}"
-    refund:                 "{{ ref('refund_data') }}"
-    subscription_history:   "{{ ref('subscription_history_data') }}"
-    subscription:           "{{ ref('subscription_data') }}"
+    stripe_group_identifier:                  "group_data"
+    stripe_balance_transaction_identifier:    "balance_transaction_data"
+    stripe_card_identifier:                   "card_data"
+    stripe_charge_identifier:                 "charge_data"
+    stripe_customer_identifier:               "customer_data"
+    stripe_fee_identifier:                    "fee_data"
+    stripe_invoice_identifier:                "invoice_data"
+    stripe_invoice_line_item_identifier:      "invoice_line_item_data"
+    stripe_payment_intent_identifier:         "payment_intent_data"
+    stripe_payment_method_card_identifier:    "payment_method_card_data"
+    stripe_payment_method_identifier:         "payment_method_data"
+    stripe_payout_identifier:                 "payout_data"
+    stripe_plan_identifier:                   "plan_data"
+    stripe_refund_identifier:                 "refund_data"
+    stripe_subscription_history_identifier:   "subscription_history_data"
+    stripe_subscription_identifier:           "subscription_data"
+    stripe_credit_note_identifier:            "credit_note_data"
+    stripe_credit_note_line_item_identifier:  "credit_note_line_item_data"
 
     stripe__subscription_history: false
 
