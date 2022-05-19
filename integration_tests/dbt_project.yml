@@ -6,7 +6,7 @@ version: '0.8.0'
 profile: 'integration_tests'
 
 vars:
-  stripe_schema: stripe_integration_tests
+  stripe_schema: stripe_integration_tests_updates
   stripe_source:
     stripe_group_identifier:                  "group_data"
     stripe_balance_transaction_identifier:    "balance_transaction_data"
