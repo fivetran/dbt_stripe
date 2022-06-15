@@ -33,13 +33,13 @@ with invoice as (
     invoice.amount_paid,
     invoice.amount_remaining,
     invoice.created_at,
-    max(invoice_line_item.subscription_id) as subscription_id,
+    ifnull(max(invoice_line_item.subscription_id), invoice.subscription_id) as subscription_id,
     sum(invoice_line_item.amount) as total_item_amount,
     count(distinct invoice_line_item.unique_id) as number_line_items
   from invoice_line_item
   join invoice 
     on invoice.invoice_id = invoice_line_item.invoice_id
-  group by 1, 2, 3, 4, 5
+  group by 1, 2, 3, 4, 5, invoice.subscription_id
 
 ), grouped_by_subscription as (
 

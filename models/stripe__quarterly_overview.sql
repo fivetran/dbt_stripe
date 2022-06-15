@@ -20,6 +20,15 @@ select
     sum(total_payouts_count) as total_payouts_count,
     sum(total_adjustments_count) as total_adjustments_count,
     sum(total_failed_charge_count) as total_failed_charge_count,
-    sum(total_failed_charge_amount) as total_failed_charge_amount
+    sum(total_failed_charge_amount) as total_failed_charge_amount,
+    sum(total_sales_b2b) as total_sales_b2b,
+    sum(total_refunds_b2b) as total_refunds_b2b,
+    sum(total_adjustments_b2b) as total_adjustments_b2b,
+    sum(total_sales_b2c) as total_sales_b2c,
+    sum(total_refunds_b2c) as total_refunds_b2c,
+    sum(total_adjustments_b2c) as total_adjustments_b2c,
+    sum(total_sales_unattributed) as total_sales_unattributed,
+    sum(total_refunds_unattributed) as total_refunds_unattributed,
+    sum(total_adjustments_unattributed) as total_adjustments_unattributed
 from daily_overview
 group by 1

@@ -86,7 +86,7 @@ left join invoice_line_item
 
 {% if var('using_subscriptions', True) %}
 left join subscription 
-    on invoice_line_item.subscription_id = subscription.subscription_id
+    on ifnull(invoice_line_item.subscription_id, invoice.subscription_id) = subscription.subscription_id
 left join plan 
     on invoice_line_item.plan_id = plan.plan_id
 {% endif %}

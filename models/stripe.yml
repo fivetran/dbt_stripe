@@ -178,6 +178,25 @@ models:
         description: Number of incomplete charges during the reporting period.
       - name: total_failed_charge_amount
         description: Total amount from incomplete charges during the reporting period.
+      - name: total_sales_b2b
+        description: The sum of all sales during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_sales_b2c
+        description: The sum of all sales during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_sales_unattributed
+        description: The sum of all sales during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_refunds_b2b
+        description: The sum of all refunds during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_refunds_b2c
+        description: The sum of all refunds during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_refunds_unattributed
+        description: The sum of all refunds during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_adjustments_b2b
+        description: The sum of all adjustments during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_adjustments_b2c
+        description: The sum of all adjustments during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_adjustments_unattributed
+        description: The sum of all adjustments during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+
 
   - name: stripe__weekly_overview
     description: Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.
@@ -212,6 +231,25 @@ models:
         description: Number of incomplete charges during the reporting period.
       - name: total_failed_charge_amount
         description: Total amount from incomplete charges during the reporting period.
+      - name: total_sales_b2b
+        description: The sum of all sales during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_sales_b2c
+        description: The sum of all sales during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_sales_unattributed
+        description: The sum of all sales during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_refunds_b2b
+        description: The sum of all refunds during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_refunds_b2c
+        description: The sum of all refunds during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_refunds_unattributed
+        description: The sum of all refunds during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_adjustments_b2b
+        description: The sum of all adjustments during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_adjustments_b2c
+        description: The sum of all adjustments during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_adjustments_unattributed
+        description: The sum of all adjustments during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+
  
   - name: stripe__monthly_overview
     description: Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.
@@ -246,6 +284,25 @@ models:
         description: Number of incomplete charges during the reporting period.
       - name: total_failed_charge_amount
         description: Total amount from incomplete charges during the reporting period.
+      - name: total_sales_b2b
+        description: The sum of all sales during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_sales_b2c
+        description: The sum of all sales during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_sales_unattributed
+        description: The sum of all sales during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_refunds_b2b
+        description: The sum of all refunds during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_refunds_b2c
+        description: The sum of all refunds during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_refunds_unattributed
+        description: The sum of all refunds during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_adjustments_b2b
+        description: The sum of all adjustments during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_adjustments_b2c
+        description: The sum of all adjustments during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_adjustments_unattributed
+        description: The sum of all adjustments during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+
 
   - name: stripe__quarterly_overview
     description: Each record represents a single quarter, enriched with metrics about balances, payments, refunds, payouts, and other transactions.
@@ -280,6 +337,24 @@ models:
         description: Number of incomplete charges during the reporting period.
       - name: total_failed_charge_amount
         description: Total amount from incomplete charges during the reporting period.
+      - name: total_sales_b2b
+        description: The sum of all sales during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_sales_b2c
+        description: The sum of all sales during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_sales_unattributed
+        description: The sum of all sales during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_refunds_b2b
+        description: The sum of all refunds during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_refunds_b2c
+        description: The sum of all refunds during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_refunds_unattributed
+        description: The sum of all refunds during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
+      - name: total_adjustments_b2b
+        description: The sum of all adjustments during the reporting period. The B2B part is defined by plan seat sales. includes all plan from TAP (Workforce, VIP, Gold and Platinium) and DM2 Plans (dmef1t, dmpro2, dmpro2d2a, dmvip )
+      - name: total_adjustments_b2c
+        description: The sum of all adjustments during the reporting period. The B2C part is defined by plan seat sales. DM2 Plans (dmbb2, dmaa1b2, TMO32020, dmpro1, dmcabeta11, dmuk01, dmwfc, DemoPlan221) 
+      - name: total_adjustments_unattributed
+        description: The sum of all adjustments during the reporting period. The unattributed part is defined by plan seat sales that are not associated with a subscription when generating an invoice.
 
 
   - name: stripe__invoice_line_items

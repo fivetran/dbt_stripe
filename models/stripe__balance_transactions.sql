@@ -24,10 +24,17 @@ with balance_transaction as (
     from {{ var('payout')}}
 
 
+), customer_type as (
+    
+    select customer_id, case when max(B2B_Seats) > 0 then 1 else 0 end as is_b2b_customer
+    from {{ ref('subscription_plan_seats') }}
+    group by 1
+
 ), customer as (
 
-    select *
-    from {{ var('customer')}}
+    select c.*, case when ct.is_b2b_customer is null then -1 else ct.is_b2b_customer end as customer_type
+    from {{ var('customer')}} c
+    left join customer_type ct on ct.customer_id = c.customer_id
 
 {% if var('using_payment_method', True) %}
 
@@ -75,7 +82,8 @@ select
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.description as customer_description, 
-
+    customer.customer_type,
+    
     {% if var('using_payment_method', True) %}
     payment_method.type as payment_method_type,
     payment_method_card.brand as payment_method_brand,
