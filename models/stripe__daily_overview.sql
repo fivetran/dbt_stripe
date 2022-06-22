@@ -11,11 +11,14 @@ with balance_transaction_joined as (
 ), daily_balance_transactions as (
 
   select
+  date_trunc(day, CONVERT_TIMEZONE('America/New_York',
       case 
             when type = 'payout' 
-            then {{ date_timezone('available_on') }}  
+            then {{ date_timezone('available_on') }} 
+            when type in ('charge', 'payment')
+            then {{ date_timezone('revenue_recognition_date') }} 
             else {{ date_timezone('created_at') }} 
-      end as date,
+      end)::TIMESTAMP_NTZ) as date,
     sum(case when type in ('charge', 'payment') 
           then amount 
           else 0 end) as total_sales,
@@ -94,7 +97,7 @@ with balance_transaction_joined as (
 )
 
 select
-      daily_balance_transactions.date,
+      daily_balance_transactions.date as date,
       daily_balance_transactions.total_sales/100.0 as total_sales,
       daily_balance_transactions.total_refunds/100.0 as total_refunds,
       daily_balance_transactions.total_adjustments/100.0 as total_adjustments,
