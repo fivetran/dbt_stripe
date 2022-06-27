@@ -10,6 +10,9 @@ models:
     intermediate:
       +materialized: ephemeral
 vars:
+  stripe_source:
+    stripe_database: defaultdb
+    stripe_schema: ft_stripe_us
   stripe:
     balance_transaction: "{{ ref('stg_stripe__balance_transaction') }}"
     card: "{{ ref('stg_stripe__card') }}"
