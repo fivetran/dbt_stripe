@@ -1,3 +1,6 @@
+# dbt_stripe v0.7.1
+Updating the package dependency to reference the new 0.7.1 source version.
+
 # dbt_stripe v0.7.0
 ## 🚨 Breaking Changes 🚨
 - Stripe connectors set up after February 09, 2022 no longer sync the `subscription` table; however, a newer `subscription_history` table is synced. To account for this change a variable `stripe__subscription_history` has been added to the package project to allow for users to define if their source contains the `subscription_history` table. ([#37](https://github.com/fivetran/dbt_stripe_source/pull/37))
