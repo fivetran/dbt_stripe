@@ -29,6 +29,13 @@ vars:
     plan: "{{ ref('stg_stripe__plan') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"
+    subscription_item: "{{ var('stripe_schema') }}.subscription_item"
+    price: "{{ var('stripe_schema') }}.price"
+    product: "{{ var('stripe_schema') }}.product"
+    coupon: "{{ var('stripe_schema') }}.coupon"
+    customer_discount: "{{ var('stripe_schema') }}.customer_discount"
+    subscription_discount: "{{ var('stripe_schema') }}.subscription_discount"
+    stripe_schema: ft_stripe_us
     using_invoices: true
     using_payment_method: true
     using_subscriptions: true

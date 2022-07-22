@@ -53,6 +53,6 @@ where
     subscription_id IS NOT NULL AND 
     prorated_service_period <> 0 AND
     status IN ('open', 'paid') AND
-    amount_due > 0
-
+    amount_due > 0 and
+    estimated_service_start < date_trunc('month', current_date) -- we dont want current month invoices
 {% endif %}
