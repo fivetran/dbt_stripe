@@ -31,7 +31,8 @@ select
         when 'week' then recurring_interval_count * 4
         when 'month' then recurring_interval_count
         when 'year' then recurring_interval_count / 12.0
-    end as mrr
+    end as mrr,
+    subscription.stripe_account
 from subscription
 left join subscription_item
     on subscription.subscription_id = subscription_item.subscription_id

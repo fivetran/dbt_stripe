@@ -18,7 +18,7 @@ with invoice as (
 ), customer as (
 
     select *
-    from {{ var('customer') }}
+    from {{ ref('stripe__customer') }}
 
 {% if var('using_subscriptions', True) %}
 
@@ -101,7 +101,8 @@ select
     plan.plan_interval as plan_interval,
     plan.interval_count as plan_interval_count,
     plan.nickname as plan_nickname,
-    plan.product_id as plan_product_id
+    plan.product_id as plan_product_id,
+    customer.stripe_account
     {% endif %}
 
 from invoice

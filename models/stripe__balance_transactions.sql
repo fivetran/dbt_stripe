@@ -27,7 +27,7 @@ with balance_transaction as (
 ), customer as (
 
     select *
-    from {{ var('customer')}}
+    from {{ ref('stripe__customer') }}
 
 {% if var('using_payment_method', True) %}
 
