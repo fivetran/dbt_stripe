@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: dbt_stripe_account_src
+    tables:
+      - name: customer
+      - name: invoice
+      - name: subscription_history      

@@ -23,7 +23,7 @@ with invoice as (
 ), customer as (
 
     select *
-    from {{ var('customer') }}  
+    from {{ ref('stripe__customer') }}  
 
 ), line_items_groups as (
 
@@ -83,7 +83,8 @@ select
   most_recent_invoice_created_at,
   average_invoice_amount,
   average_line_item_amount,
-  avg_num_invoice_items
+  avg_num_invoice_items,
+  customer.stripe_account
 from subscription
 left join grouped_by_subscription 
   on subscription.subscription_id = grouped_by_subscription.subscription_id

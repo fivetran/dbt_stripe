@@ -12,7 +12,7 @@ models:
 vars:
   stripe_source:
     stripe_database: defaultdb
-    stripe_schema: ft_stripe_us
+    stripe_schema: dbt_stripe_account_src
     stripe__subscription_history: true
   stripe:
     balance_transaction: "{{ ref('stg_stripe__balance_transaction') }}"
@@ -35,7 +35,7 @@ vars:
     coupon: "{{ var('stripe_schema') }}.coupon"
     customer_discount: "{{ var('stripe_schema') }}.customer_discount"
     subscription_discount: "{{ var('stripe_schema') }}.subscription_discount"
-    stripe_schema: ft_stripe_us
+    stripe_schema: dbt_stripe_account_src
     using_invoices: true
     using_payment_method: true
     using_subscriptions: true

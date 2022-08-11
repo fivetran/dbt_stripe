@@ -44,7 +44,8 @@ select
     subscription_ended_at,
     plan_id,
     plan_interval,
-    plan_interval_count
+    plan_interval_count,
+    invoice_line_item.stripe_account
 
 from invoice_line_item
 left join invoice_discount
