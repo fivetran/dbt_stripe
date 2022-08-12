@@ -16,9 +16,9 @@ product as (
 
 select 
     subscription.subscription_id,
-    subscription_item.quantity * price.unit_amount as line_item_amount,
+    subscription_item.quantity * COALESCE(price.unit_amount::FLOAT,price.unit_amount_decimal::FLOAT) as line_item_amount,
     coalesce(discount_factor, 1) as discount_factor,
-    subscription_item.quantity * price.unit_amount * coalesce(discount_factor, 1) as line_item_amount_with_discount,
+    subscription_item.quantity * COALESCE(price.unit_amount::FLOAT,price.unit_amount_decimal::FLOAT) * coalesce(discount_factor, 1) as line_item_amount_with_discount,
     customer_description,
     customer_email,
     customer_id,
@@ -27,9 +27,9 @@ select
         when 'month' then recurring_interval_count
         when 'year' then recurring_interval_count / 12.0
     end as subscription_duration_ratio,
-    subscription_item.quantity * price.unit_amount * coalesce(discount_factor, 1) * case recurring_interval
+    subscription_item.quantity * COALESCE(price.unit_amount::FLOAT,price.unit_amount_decimal::FLOAT) * coalesce(discount_factor, 1) * case recurring_interval
         when 'week' then recurring_interval_count * 4
-        when 'month' then recurring_interval_count
+        when 'month' then (1::FLOAT/recurring_interval_count::FLOAT)
         when 'year' then recurring_interval_count / 12.0
     end as mrr,
     subscription.stripe_account
