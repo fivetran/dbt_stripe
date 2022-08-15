@@ -15,6 +15,11 @@ with invoice as (
     select *
     from {{ var('invoice_line_item') }}
 
+),invoice_src as (
+
+    select *
+    from {{ source('dbt_stripe_account_src', 'invoice') }}
+
 ), customer as (
 
     select *
@@ -102,7 +107,7 @@ select
     plan.interval_count as plan_interval_count,
     plan.nickname as plan_nickname,
     plan.product_id as plan_product_id,
-    customer.stripe_account
+    invoice_src.stripe_account
     {% endif %}
 
 from invoice
@@ -119,6 +124,8 @@ left join plan
 {% endif %}
 left join customer
     on invoice.customer_id = customer.customer_id
+left join invoice_src
+    on invoice.invoice_id = invoice_src.id
 
 {% if var('using_subscriptions', True) %}
 where
