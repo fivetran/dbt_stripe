@@ -26,6 +26,24 @@ percent_discount as ( --manually including products with percent discount
             left join {{source('dbt_stripe_account_src', 'subscription_history')}} sh on si.subscription_id = sh.id and sh._fivetran_active = True
         where sh.customer_id in ('cus_K6uy58bqmGY6g5', 'cus_KvDyLIIG3dablw', 'cus_JosSmyQjnn4z42', 'cus_JRAn4goXgWi8Y2', 
         'cus_JlgKKwOhoOzmLX', 'cus_KYmetKpcVBLju8')),
+percent_discount_br as ( --manually including products with percent discount
+        SELECT  sh.customer_id,
+        si.subscription_id,
+        c.id as coupon_id,
+        (si.quantity * p.unit_amount) as amount,
+        CASE WHEN si.plan_id in ('price_1LPTHtJfthNLcfkY7m3sqL8z', 'price_1LPSchJfthNLcfkYcv1l39CE', 'price_1JpTIcJfthNLcfkY1G1lox2o', 
+        'price_1JDBoJJfthNLcfkYgxTd9aKk', 'price_1IzmPkJfthNLcfkYvfdjsOet', 'price_1Iw67SJfthNLcfkYwX3N8U0j', 'price_1Iw66vJfthNLcfkYcLKkZL9A', 
+        'price_1Iw66aJfthNLcfkYwubMfFAf') and sh.customer_id in ('cus_K9wVZNk1alpUA5') THEN ((si.quantity * p.unit_amount) * (c.percent_off/100))
+        END as amount_discount,
+        c.percent_off
+
+FROM  {{ var('subscription_item') }} si
+            left join subscription_discount sd using(subscription_id)
+            left join coupon c on sd.coupon_id = c.id
+            left join {{ var('price') }} p on p.id = si.plan_id
+            left join {{source('dbt_stripe_account_src', 'subscription_history')}} sh on si.subscription_id = sh.id and sh._fivetran_active = True
+
+where sh.customer_id in ('cus_K9wVZNk1alpUA5')),
 subscription_percent_discount as ( --manually including subscriptions with percent discount
         SELECT  sh.customer_id,
         si.subscription_id,
@@ -42,6 +60,21 @@ FROM  {{ var('subscription_item') }} si
   left join {{ var('price') }} p on p.id = si.plan_id
   left join {{source('dbt_stripe_account_src', 'subscription_history')}} sh on si.subscription_id = sh.id and sh._fivetran_active = True
 where si.subscription_id in ('sub_1L3U5HLpWuMxVFxQZzQyemiW', 'sub_1LAeagLpWuMxVFxQysPmXxs1', 'sub_1K8raJLpWuMxVFxQqPp36E0V')),
+subscription_percent_discount_br as ( --manually including products with percent discount
+        SELECT  sh.customer_id,
+        si.subscription_id,
+        c.id as coupon_id,
+        (si.quantity * p.unit_amount) as amount,
+        CASE WHEN si.subscription_id in ('sub_K4lfA8dEpFj3EF') 
+        THEN ((si.quantity * p.unit_amount) * (c.percent_off/100))
+        END as amount_discount,
+        c.percent_off
+FROM  {{ var('subscription_item') }} si
+  left join subscription_discount sd using(subscription_id)
+  left join coupon c on sd.coupon_id = c.id
+  left join {{ var('price') }} p on p.id = si.plan_id
+  left join {{source('dbt_stripe_account_src', 'subscription_history')}} sh on si.subscription_id = sh.id and sh._fivetran_active = True
+where si.subscription_id in ('sub_K4lfA8dEpFj3EF') ),
 laine_referral_discount as ( --manually including products with percent discount
     SELECT  sh.customer_id,
         si.subscription_id,
@@ -90,7 +123,7 @@ from
         subscription_id,
         amount_off
     from subscription_discount
-    inner join ft_stripe_us.coupon
+    inner join coupon
         on subscription_discount.coupon_id = coupon.id
     where 
         amount_off > 0 and
@@ -107,7 +140,21 @@ from
     union
 
     SELECT coupon_id, subscription_id, sum(amount_discount) as amount_off
+    from percent_discount_br
+    where amount_discount > 0
+    group by 1,2
+
+    union
+
+    SELECT coupon_id, subscription_id, sum(amount_discount) as amount_off
     from subscription_percent_discount
+    where amount_discount > 0
+    group by 1,2
+
+    union
+
+    SELECT coupon_id, subscription_id, sum(amount_discount) as amount_off
+    from subscription_percent_discount_br
     where amount_discount > 0
     group by 1,2
 
