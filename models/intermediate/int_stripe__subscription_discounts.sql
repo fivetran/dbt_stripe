@@ -113,8 +113,7 @@ from
         on customer_discount.coupon_id = coupon.id
     where 
         amount_off > 0 and
-        is_deleted = false and 
-        valid = true 
+        is_deleted = false
 
     union
 
@@ -127,8 +126,7 @@ from
         on subscription_discount.coupon_id = coupon.id
     where 
         amount_off > 0 and
-        is_deleted = false and 
-        valid = true 
+        is_deleted = false
 
     union
 
