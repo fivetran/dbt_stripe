@@ -5,4 +5,9 @@ sources:
     tables:
       - name: customer
       - name: invoice
-      - name: subscription_history      
+      - name: subscription_history 
+
+  - name: ft_netbox_public
+    tables:
+      - name: dcim_site
+      - name: dcim_device  
