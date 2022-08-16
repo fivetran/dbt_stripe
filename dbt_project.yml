@@ -9,9 +9,6 @@ models:
     +materialized: table
     intermediate:
       +materialized: ephemeral
-  mart:
-    +schema: data_mart
-    +materialized: view
 vars:
   stripe_source:
     stripe_database: defaultdb
