@@ -6,8 +6,9 @@ select
 from
 	{{source('dbt_stripe_account_src', 'product')}}
 where
-	active = true),
- device as (
+	active = true
+),
+device as (
 select 
 	json_extract_path_text(custom_field_data,
 	'subscription_item_id') as item_id,
