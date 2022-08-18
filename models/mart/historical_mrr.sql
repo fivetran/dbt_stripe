@@ -86,7 +86,8 @@ left join product p on
 left join {{source('dbt_stripe_account_src', 'price')}} price on plan.id = price.id
 left join price_location pl on pl.id = silim.plan_id
 order by
-	invoice_date desc)
+	invoice_date desc
+)
 select 
 	"name",
 	product_name,
