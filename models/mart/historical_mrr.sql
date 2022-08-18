@@ -55,7 +55,8 @@ price_location as (select distinct id, nickname,
 		when lower(nickname) ilike '%new york%' then 'United States'
 		when lower(nickname) ilike '%united-kingdom%' then 'United Kingdom'
 	end as price_local
-from {{source('dbt_stripe_account_src', 'price')}}),
+from {{source('dbt_stripe_account_src', 'price')}}
+),
 mrr as (
 select 
 	silim.invoice_id,
