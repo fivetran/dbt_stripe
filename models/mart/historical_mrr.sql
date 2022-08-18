@@ -21,8 +21,9 @@ order by
 	'subscription_item_id'),
 	created desc) rn
 from
-	{{source('ft_netbox_public', 'dcim_device')}}),
-	item_info as (
+	{{source('ft_netbox_public', 'dcim_device')}}
+),
+item_info as (
 select
 	ili.invoice_id,
 	ili.unique_id item_id,
