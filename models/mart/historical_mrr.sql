@@ -89,7 +89,9 @@ order by
 	invoice_date desc
 )
 select 
+	customer_id,
 	"name",
+	invoice_id,
 	product_name,
 	site_name,
 	date_trunc('month', invoice_date)::date as "date",
@@ -98,6 +100,6 @@ select
 from
 	mrr
 group by
-	1,2,3,4,6
+	1,2,3,4,5,6,8
 order by
 	"date" desc
