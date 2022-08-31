@@ -11,5 +11,5 @@ select
   max(subtotal) as subtotal, 
   max(total)::decimal / max(subtotal) as discount_factor
 from invoice_line_item
-where amount_due > 0
+where subtotal <> 0
 group by invoice_line_item.invoice_id

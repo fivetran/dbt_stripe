@@ -73,7 +73,7 @@ select
     ,invoice_line_item.proration,
     case plan.plan_interval
         when 'week' then plan.interval_count * 4
-        when 'month' then plan.interval_count
+        when 'month' then (1::FLOAT/plan.interval_count::FLOAT)
         when 'year' then plan.interval_count / 12.0
     end as subscription_duration_ratio,
     case

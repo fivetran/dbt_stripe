@@ -32,6 +32,8 @@ select
     prorated_service_period,
     estimated_full_service_period / prorated_service_period as prorate_factor,
     case 
+        when proration and 
+	    date_trunc('MONTH', estimated_service_start)::date <> date_trunc('MONTH', period_start)::date then 0 --Stripe does not include this movements in MRR
         when proration
         then
             -- we dont apply discounts on prorated items
@@ -51,9 +53,9 @@ from invoice_line_item
 left join invoice_discount
     on invoice_line_item.invoice_id = invoice_discount.invoice_id
 where
-    subscription_id IS NOT NULL AND 
-    prorated_service_period <> 0 AND
-    status IN ('open', 'paid') AND
-    amount_due > 0 and
-    estimated_service_start < date_trunc('month', current_date) -- we dont want current month invoices
+    subscription_id IS NOT NULL 
+    AND customer_id IS NOT NULL
+    AND prorated_service_period <> 0 
+    AND status IN ('open', 'paid')     
+    AND estimated_service_start < date_trunc('month', current_date) -- we dont want current month invoices
 {% endif %}
