@@ -1,5 +1,9 @@
 # dbt_stripe v0.7.1
-Updating the package dependency to reference the new 0.7.1 source version.
+## Feature Updates 🎉
+- README updates for easier package navigation and understanding. ([#41](https://github.com/fivetran/dbt_stripe/pull/41))
+## Under the Hood
+- Updating the package dependency to reference the proper [">=0.7.0", "<0.8.0"] version range of `dbt_stripe_source`. ([#41](https://github.com/fivetran/dbt_stripe/pull/41))
+
 
 # dbt_stripe v0.7.0
 ## 🚨 Breaking Changes 🚨
