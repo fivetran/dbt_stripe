@@ -46,3 +46,6 @@ seeds:
       +column_types:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
 
+dispatch:
+  - macro_namespace: dbt_utils
+    search_order: ['spark_utils', 'dbt_utils']
