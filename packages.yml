@@ -1,3 +1,7 @@
 packages:
- - package: fivetran/stripe_source
-   version: [">=0.7.0", "<0.8.0"] 
+#  - package: fivetran/stripe_source
+#    version: [">=0.7.0", "<0.8.0"] 
+
+  - git: https://github.com/fivetran/dbt_stripe_source.git
+    revision: feature/databricks-compatibility
+    warn-unpinned: false
