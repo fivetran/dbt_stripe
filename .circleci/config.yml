@@ -45,6 +45,17 @@ jobs:
             dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target postgres
             dbt test --target postgres
       - run:
+          name: "Run Tests - Spark"
+          command: |
+            . venv/bin/activate
+            echo `pwd`
+            cd integration_tests
+            dbt deps
+            dbt seed --target spark --full-refresh
+            dbt run --target spark --full-refresh
+            dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York"}' --target spark
+            dbt test --target spark
+      - run:
           name: "Run Tests - Snowflake"
           command: |
             . venv/bin/activate
