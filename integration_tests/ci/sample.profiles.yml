@@ -16,14 +16,14 @@ integration_tests:
       pass: "{{ env_var('CI_REDSHIFT_DBT_PASS') }}"
       dbname: "{{ env_var('CI_REDSHIFT_DBT_DBNAME') }}"
       port: 5439
-      schema: stripe_integration_tests
+      schema: stripe_integrations_tests
       threads: 8
     bigquery:
       type: bigquery
       method: service-account
       keyfile: "{{ env_var('GCLOUD_SERVICE_KEY_PATH') }}"
       project: 'dbt-package-testing'
-      schema: stripe_integration_test
+      schema: stripe_integrations_tests
       threads: 8
     snowflake:
       type: snowflake
@@ -33,7 +33,7 @@ integration_tests:
       role: "{{ env_var('CI_SNOWFLAKE_DBT_ROLE') }}"
       database: "{{ env_var('CI_SNOWFLAKE_DBT_DATABASE') }}"
       warehouse: "{{ env_var('CI_SNOWFLAKE_DBT_WAREHOUSE') }}"
-      schema: stripe_integration_tests_2
+      schema: stripe_integrations_tests
       threads: 8
     postgres:
       type: postgres
@@ -42,5 +42,17 @@ integration_tests:
       pass: "{{ env_var('CI_POSTGRES_DBT_PASS') }}"
       dbname: "{{ env_var('CI_POSTGRES_DBT_DATABASE') }}"
       port: 5432
-      schema: stripe_integration_tests
+      schema: stripe_integrations_tests
+      threads: 8
+    spark:
+      type: spark
+      method: http
+      schema: stripe_integrations_tests
+      host: "{{ env_var('CI_SPARK_DBT_HOST') }}"
+      organization: "{{ env_var('CI_SPARK_DBT_ORGANIZATION') }}"
+      token: "{{ env_var('CI_SPARK_DBT_TOKEN') }}"
+      cluster: "{{ env_var('CI_SPARK_DBT_CLUSTER') }}"
+      port: 443
+      connect_timeout: 60
+      connect_retries: 5
       threads: 8
