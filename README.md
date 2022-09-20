@@ -1,7 +1,7 @@
 [![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 # DBT Stripe 
 
-This DBT project aims to calculate important financial metrics, such as the MRR, from Stripe data. For such, It utilizes a Stripe DBT package from Fivetran as described below
+This DBT project aims to calculate important financial metrics, such as MRR, from Stripe data. This project is a fork of [fivetran/dbt_stripe](https://github.com/fivetran/dbt_stripe). Calculation of metrics is highly opinionated but it can hopefully serve as a starting point for other implementations.
 
 # Stripe Package
 
