@@ -85,7 +85,7 @@ select
             partition by customer_id
             order by
                 mrr_day asc
-        ) = 'Churn'
+        ) = 'churn'
         and mrr_day <> lag(mrr_day) over (
             partition by customer_id
             order by
