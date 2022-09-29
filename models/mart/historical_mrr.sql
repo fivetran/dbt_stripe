@@ -68,7 +68,7 @@ select
 	product_name,
 	price.nickname,
 	coalesce(site_name,pl.price_local) as site_name,
-	silim.invoice_created_at as invoice_date,
+	silim.estimated_service_start as invoice_date,
 	CASE WHEN silim.stripe_account = 'us' THEN (silim.mrr/100)
 	ELSE silim.mrr
 	END as mrr,

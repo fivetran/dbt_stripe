@@ -3,11 +3,12 @@ with mrr_sum as
 		row_number() over( partition by customer_id order by estimated_service_start ASC) as mn,
 		customer_id,
 		date_trunc('day', estimated_service_start)::date as mrr_day,
-		(SUM(mrr)/100) as mrr,
+		CASE WHEN stripe_account = 'us' THEN (mrr/100)
+			ELSE mrr
+			END as mrr,
 		stripe_account 
 	from {{ref('stripe__invoice_line_items_mrr')}} 
 	where mrr <> 0
-	group by estimated_service_start, 2,3, stripe_account
 	order by 2 asc),
 
 mrr_movements as (
@@ -21,18 +22,26 @@ mrr_movements as (
 		stripe_account
 	from mrr_sum)
 
-select  mm.customer_id,
-		c."name",
-		mrr_day,
-		starting_mrr,
-		mrr_change,
-		ending_mrr,
-		case
-			when mn = 1 then 'New'
-			when mrr_change > 0 then 'Upgrade'
-			when mrr_change < 0 then 'Downgrade'
-		end as event_type,
-		mm.stripe_account
+select
+	mm.customer_id,
+	c."name",
+	mm.mrr_day,
+	starting_mrr,
+	mrr_change,
+	ending_mrr,
+	case
+		when mm.mrr_day = churn.mrr_day then churn.event_type
+		when mn = 1 then 'New'
+		when mrr_change > 0 then 'Upgrade'
+		when mrr_change < 0 then 'Downgrade'
+	end as event_type,
+	mm.stripe_account
 from mrr_movements mm
 	left join {{ source('dbt_stripe_account_src', 'customer') }} c on mm.customer_id = c.id and mm.stripe_account = c.stripe_account 
-order by mrr_day asc
+	left join {{ref('mrr_churn')}} churn on churn.customer_id = mm.customer_id
+		and churn.mrr_day = mm.mrr_day
+		and churn.stripe_account = mm.stripe_account
+		and churn.event_type is not null
+order by
+	mm.customer_id,
+	mm.mrr_day asc
