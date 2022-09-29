@@ -112,8 +112,7 @@ from
     inner join coupon
         on customer_discount.coupon_id = coupon.id
     where 
-        amount_off > 0 and
-        is_deleted = false
+        amount_off > 0
 
     union
 
@@ -125,8 +124,7 @@ from
     inner join coupon
         on subscription_discount.coupon_id = coupon.id
     where 
-        amount_off > 0 and
-        is_deleted = false
+        amount_off > 0
 
     union
 
