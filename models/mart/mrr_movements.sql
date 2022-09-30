@@ -3,9 +3,7 @@ with mrr_sum as
 		row_number() over( partition by customer_id order by estimated_service_start ASC) as mn,
 		customer_id,
 		date_trunc('day', estimated_service_start)::date as mrr_day,
-		CASE WHEN stripe_account = 'us' THEN (mrr/100)
-			ELSE mrr
-			END as mrr,
+		mrr as mrr,
 		stripe_account 
 	from {{ref('stripe__invoice_line_items_mrr')}} 
 	where mrr <> 0
