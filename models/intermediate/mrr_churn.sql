@@ -7,9 +7,7 @@ with mrr_calc as (
         ) as mn,
         silim.customer_id,
         date_trunc('day', silim.estimated_service_start) :: date as mrr_day,
-        CASE WHEN silim.stripe_account = 'us' THEN (mrr/100)
-			ELSE mrr
-			END as mrr,
+        mrr as mrr,
         case
             p."interval"
             when 'week' then p.interval_count * 7

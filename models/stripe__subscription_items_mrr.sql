@@ -32,6 +32,7 @@ select
         when 'month' then (1::FLOAT/recurring_interval_count::FLOAT)
         when 'year' then recurring_interval_count / 12.0
     end as mrr,
+    product.id as product_id,
     subscription.stripe_account
 from subscription
 left join subscription_item
@@ -40,5 +41,7 @@ left join subscription_discounts
     on subscription.subscription_id = subscription_discounts.subscription_id
 left join price
     on subscription_item.plan_id = price.id
+left join product
+    on price.product_id = product.id
 where 
     subscription.status IN ('active', 'past_due')
