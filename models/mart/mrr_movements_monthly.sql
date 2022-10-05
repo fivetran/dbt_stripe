@@ -31,7 +31,8 @@ churn as (
 		select customer_id
 		from dbt_data_marts.mrr_movements
 		where event_type IN ('churn'))
-	and lower(event_type) in ('reactivation', 'churn')),
+	and lower(event_type) in ('reactivation', 'churn')
+),
 mrr_movement as (
 	select
 		mc.customer_id,
