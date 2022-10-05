@@ -9,7 +9,8 @@ with mrr_calc as (
 			stripe_account
 	from {{ref('mrr_movements')}}
 	group by customer_id, "name", stripe_account, mrr_month
-	order by customer_id, 3),
+	order by customer_id, 3
+),
 event_new as (
 	select distinct
 		customer_id,
