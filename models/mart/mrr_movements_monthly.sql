@@ -56,5 +56,7 @@ mrr_movement as (
 		left join event_new "new" on "new".customer_id = mc.customer_id 
 			and "new".mrr_month = mc.mrr_month
 			and "new".stripe_account = mc.stripe_account
-			and "new".event_new is not null)
+			and "new".event_new is not null
+)
+
 select * from mrr_movement
