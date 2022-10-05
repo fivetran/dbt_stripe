@@ -18,7 +18,8 @@ event_new as (
 		event_type as event_new,
 		stripe_account
 	from  {{ref('mrr_movements')}}
-	where event_type = 'New'),
+	where event_type = 'New'
+),
 churn as (
 	select distinct 
 		customer_id,
