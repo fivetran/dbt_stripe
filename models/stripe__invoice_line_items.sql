@@ -41,6 +41,7 @@ select
     invoice.created_at as invoice_created_at,
     invoice.status,
     invoice.due_date,
+    invoice.currency,
     invoice.amount_due,
     invoice.subtotal,
     invoice.tax,
