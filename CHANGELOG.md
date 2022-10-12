@@ -5,7 +5,7 @@
 
 # dbt_stripe v0.7.3
 ## 🎉 Feature Updates
-- `currency` field addition to `stripe__invoice_line_items` 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/45))
+- `currency` field addition to `stripe__invoice_line_items` 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
 
 # dbt_stripe v0.7.1
 ## Feature Updates 🎉
