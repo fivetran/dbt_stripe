@@ -3,7 +3,7 @@
 ## 🎉 Feature Updates
 - Databricks compatibility 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/44))
 
-# dbt_stripe v0.7.2
+# dbt_stripe v0.7.3
 ## 🎉 Feature Updates
 - `currency` field addition to `stripe__invoice_line_items` 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/45))
 
