@@ -3,10 +3,11 @@ with mrr_sum as
 		row_number() over( partition by customer_id order by estimated_service_start ASC) as mn,
 		customer_id,
 		date_trunc('day', estimated_service_start)::date as mrr_day,
-		mrr as mrr,
+		sum(mrr) as mrr,
 		stripe_account 
 	from {{ref('stripe__invoice_line_items_mrr')}} 
 	where mrr <> 0
+	group by 2,3,stripe_account, estimated_service_start
 	order by 2 asc),
 
 mrr_movements as (
