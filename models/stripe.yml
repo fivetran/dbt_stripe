@@ -295,6 +295,8 @@ models:
         description: Current status of the invoice.
       - name: due_date 
         description: Date when payment for the invoice is due.
+      - name: currency 
+        description: The currency that the invoice is in. Three-letter ISO currency code, in lowercase.        
       - name: amount_due 
         description: The amount that the invoice is for. Because this query includes line item details, this amount may be repeated.
       - name: subtotal 

@@ -1,7 +1,17 @@
+# dbt_stripe v0.7.3
+## 🎉 Feature Updates
+- Included the `currency` field within the `stripe__invoice_line_items` model. ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
+
+## Contributors
+- [ccbrandenburg](https://github.com/ccbrandenburg) ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
+
+
 # dbt_stripe_source v0.7.2
 
 ## 🎉 Feature Updates
 - Databricks compatibility 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/44))
+
+
 # dbt_stripe v0.7.1
 ## Feature Updates 🎉
 - README updates for easier package navigation and understanding. ([#41](https://github.com/fivetran/dbt_stripe/pull/41))
