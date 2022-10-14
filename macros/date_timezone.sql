@@ -25,7 +25,7 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -42,7 +42,7 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -59,11 +59,11 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
-{% macro spark__date_timezone(column) -%}
+{% macro !!!!!!! REPLACE 'spark' WITH 'spark','databricks' OR EQUIV !!!!!!!__date_timezone(column) -%}
 
 {% set converted_date %}
 
@@ -75,6 +75,6 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}

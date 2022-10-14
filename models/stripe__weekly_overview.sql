@@ -6,7 +6,7 @@ with daily_overview as (
 )
 
 select
-    {{ dbt_utils.date_trunc('week', 'date')}} as week,
+    {{ dbt.date_trunc('week', 'date')}} as week,
     sum(total_sales) as total_sales,
     sum(total_refunds) as total_refunds,
     sum(total_adjustments) as total_adjustments,
