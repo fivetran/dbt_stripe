@@ -63,7 +63,7 @@ date(
 
 {%- endmacro %}
 
-{% macro !!!!!!! REPLACE 'spark' WITH 'spark','databricks' OR EQUIV !!!!!!!__date_timezone(column) -%}
+{% macro spark__date_timezone(column) -%}
 
 {% set converted_date %}
 
