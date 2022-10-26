@@ -17,7 +17,5 @@ dbt deps
 dbt seed --target "$db" --full-refresh
 dbt run --target "$db" --full-refresh
 dbt test --target "$db"
-## UPDATE FOR VARS HERE, IF NO VARS, PLEASE REMOVE
-dbt run --vars '{apple_search_ads__using_search_terms: True}' --target "$db" --full-refresh
+dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__subscription_history: true}' --target "$db"
 dbt test --target "$db"
-### END VARS CHUNK, REMOVE IF NOT USING
