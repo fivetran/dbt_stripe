@@ -27,10 +27,13 @@ select
         when 'month' then recurring_interval_count
         when 'year' then recurring_interval_count / 12.0
     end as subscription_duration_ratio,
+    case
+        when subscription.status NOT IN ('active', 'past_due') THEN 0 ELSE
     subscription_item.quantity * COALESCE(price.unit_amount::FLOAT,price.unit_amount_decimal::FLOAT) * coalesce(discount_factor, 1) * case recurring_interval
         when 'week' then recurring_interval_count * 4
         when 'month' then (1::FLOAT/recurring_interval_count::FLOAT)
         when 'year' then recurring_interval_count / 12.0
+    end 
     end as mrr,
     product.id as product_id,
     subscription.stripe_account
@@ -43,5 +46,4 @@ left join price
     on subscription_item.plan_id = price.id
 left join product
     on price.product_id = product.id
-where 
-    subscription.status IN ('active', 'past_due')
+

@@ -86,12 +86,22 @@ mrr as (
         left join price_location pl on pl.id = silim.plan_id
     order by
         invoice_date desc
+),
+negative_mrr as (
+    select  customer_id, 
+            date_trunc('month', estimated_service_start)::date as mrr_month, 
+            sum(mrr) as mrr_sum, 
+            stripe_account
+    from {{ref('stripe__invoice_line_items_mrr')}} silim
+    group by 1,2,4
+    order by 2
 )
 select
     customer_id,
     "name",
     invoice_id,
     product_name,
+    plan_id,
     product_class,
     site_name,
     date_trunc('month', invoice_date) :: date as "date",
@@ -99,14 +109,14 @@ select
     stripe_account
 from
     mrr
+where not exists (
+    select customer_id , mrr_month
+    from negative_mrr nm
+        where mrr.customer_id = nm.customer_id 
+            and date_trunc('month', mrr.invoice_date)::date = nm.mrr_month
+            and nm.mrr_sum < 0
+            and nm.stripe_account = mrr.stripe_account)
 group by
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    9
+    1,2,3,4,5,6,7,8,10
 order by
     "date" desc

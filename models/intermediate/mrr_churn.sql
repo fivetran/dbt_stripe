@@ -3,11 +3,11 @@ with mrr_calc as (
         row_number() over(
             partition by customer_id
             order by
-                estimated_service_start desc
+                "date" desc
         ) as mn,
         silim.customer_id,
-        date_trunc('day', silim.estimated_service_start) :: date as mrr_day,
-        mrr as mrr,
+        date_trunc('day', silim."date") :: date as mrr_day,
+        round(sum(mrr)::numeric, 2) as mrr,
         case
             p."interval"
             when 'week' then p.interval_count * 7
@@ -16,10 +16,11 @@ with mrr_calc as (
         end as plan_period_in_days,
         silim.stripe_account
     from
-        {{ref('stripe__invoice_line_items_mrr')}}  silim
+         {{ref('historical_mrr')}} silim
         left join {{ source('dbt_stripe_account_src', 'plan') }} p on silim.plan_id = p.id
     where
         mrr <> 0
+       group by 2,3,5,6,"date"
     order by
         2 asc,
         3 asc
@@ -50,18 +51,18 @@ churn as (
                 partition by customer_id
                 order by
                     mrr_day asc
-            ) - mrr_day > plan_period_in_days + 30 then 'churn'
+            ) - mrr_day > plan_period_in_days + 30 then 'Churn'
             when lead(mrr_day) over (
                 partition by customer_id
                 order by
                     mrr_day asc
-            ) = null
-            and date_trunc('month', mrr_day) <> '2022-08-01' then 'churn'
+            ) is null
+            and date_trunc('month', mrr_day) <> date_trunc('month', current_date + interval '-1' month)::date then 'Churn'
             when mn = 1 then case
                 when date_trunc('month', current_date + interval '-1' month) :: date - date_trunc(
                     'month',
                     max(mrr_day) over (partition by customer_id)
-                ) :: date > plan_period_in_days + 30 then 'churn'
+                ) :: date > plan_period_in_days + 30 then 'Churn'
             end
         end as churn_event,
         plan_period_in_days,
@@ -74,7 +75,8 @@ churn as (
         customer_id asc,
         mrr_day asc,
         churn_event desc
-)
+),
+final as (
 select
     distinct customer_id,
     mrr_day,
@@ -83,7 +85,7 @@ select
             partition by customer_id
             order by
                 mrr_day asc
-        ) = 'churn'
+        ) = 'Churn'
         and mrr_day <> lag(mrr_day) over (
             partition by customer_id
             order by
@@ -91,9 +93,21 @@ select
         ) then 'Reactivation'
         else churn_event
     end as event_type,
-    stripe_account
+    stripe_account,
+    mn
 from
     churn
 order by
     customer_id asc,
-    mrr_day asc
+    mrr_day asc)
+select 
+	customer_id, 
+	case
+		when event_type = 'Churn' then (mrr_day+ INTERVAL '1 month')::date
+		else mrr_day::date
+	end as mrr_day,
+	event_type,
+	stripe_account,
+	mn
+from final
+where event_type is not null
