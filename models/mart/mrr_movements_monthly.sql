@@ -7,7 +7,7 @@ with mrr_calc as (
 			SUM(mrr_change) as mrr_change,
 			SUM(ending_mrr) as ending_mrr,
 			stripe_account
-	from {{ref('mrr_movements')}}
+	from {{ref('stripe__mrr_movements')}}
 	where (event_type <> 'Churn' or event_type is null)
 	group by customer_id, "name", stripe_account, mrr_month
 	order by customer_id, 3
@@ -18,7 +18,7 @@ event_new as (
 		date_trunc('month', mrr_day)::date as mrr_month,
 		event_type as event_new,
 		stripe_account
-	from  {{ref('mrr_movements')}}
+	from  {{ref('stripe__mrr_movements')}}
 	where event_type = 'New'
 ),
 churn as (
@@ -27,10 +27,10 @@ churn as (
 		date_trunc('month', mrr_day)::date as mrr_month,
 		event_type as churn_event,
 		stripe_account
-	from  {{ref('mrr_movements')}}
+	from  {{ref('stripe__mrr_movements')}}
 	where customer_id in (
 		select customer_id
-		from {{ref('mrr_movements')}}
+		from {{ref('stripe__mrr_movements')}}
 		where event_type = ('Churn'))
 	and lower(event_type) in ('reactivation', 'Churn')
 ),
@@ -74,7 +74,7 @@ mrr_movement as (
 		ending_mrr,
 		event_type,
 		stripe_account
-	from {{ref('mrr_movements')}}
+	from {{ref('stripe__mrr_movements')}}
 	where event_type = 'Churn'
 )
 select * from mrr_movement
