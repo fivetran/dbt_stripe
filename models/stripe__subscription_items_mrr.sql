@@ -46,5 +46,4 @@ left join price
     on subscription_item.plan_id = price.id
 left join product
     on price.product_id = product.id
---where 
-    --subscription.status IN ('active', 'past_due')
+

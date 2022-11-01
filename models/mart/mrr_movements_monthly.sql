@@ -27,7 +27,7 @@ churn as (
 		date_trunc('month', mrr_day)::date as mrr_month,
 		event_type as churn_event,
 		stripe_account
-	from  "defaultdb"."dbt_aoliveira_data_marts"."mrr_movements"
+	from  {{ref('mrr_movements')}}
 	where customer_id in (
 		select customer_id
 		from {{ref('mrr_movements')}}
