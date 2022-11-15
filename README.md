@@ -125,6 +125,25 @@ vars:
     stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
     stripe__customer_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
+**Note** If you happen to be using a reserved word as a field in your metadata, similarly incompatible name, or just wish to rename your field, we have updated our variables to be able to accept a dictionary in addition to strings, via using aliases. Below is an example using `stripe__plan_metadata` of how you would add the respective variables to your root `dbt_project.yml` file. Please note you must have at least fivetran_utils v0.4.0 or higher. 
+
+```yml
+packages:
+- package: fivetran/fivetran_utils
+  version: ">0.4.0"
+```
+
+```yml
+vars: 
+  stripe__plan_metadata:
+    - limit
+    - version
+    - name: incompatible.word
+      alias: rename_incompatible_word
+    - name: reserved_word
+      alias: reserved_word_xyz
+```
+
 
 ### Change the build schema
 By default, this package builds the stripe staging models within a schema titled (`<target_schema>` + `_stg_stripe`) in your destination. If this is not where you would like your stripe staging data to be written to, add the following configuration to your root `dbt_project.yml` file:
