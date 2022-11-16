@@ -31,8 +31,8 @@ general_average as (
 account_average as (
 	select
 		ms.mrr_month,
-		ms.mrr/customers as average_revenue,
-		customers,
+		ms.mrr/customers_count as average_revenue,
+		customers_count,
 		ms.stripe_account
 		from mrr_sum ms
 			left join customer_count cc on ms.mrr_month = cc.mrr_month
