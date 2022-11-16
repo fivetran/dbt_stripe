@@ -25,7 +25,7 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -42,7 +42,7 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -59,7 +59,7 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -75,6 +75,6 @@ date(
 
 {% endset %}
 
-{{ dbt_utils.date_trunc('day',converted_date) }}
+{{ dbt.date_trunc('day',converted_date) }}
 
 {%- endmacro %}

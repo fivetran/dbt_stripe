@@ -1,8 +1,6 @@
 config-version: 2
 
-name: 'stripe_integration_tests'
-version: '0.7.4'
-
+version: '0.8.0'
 profile: 'integration_tests'
 
 vars:
