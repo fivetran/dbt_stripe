@@ -1,3 +1,5 @@
+# dbt_stripe v0.7.4
+- Updated README to include instructions on how to use metadata variable in cases of dictionary arguments. ([#51](https://github.com/fivetran/dbt_stripe/pull/51))
 # dbt_stripe v0.7.3
 ## 🎉 Feature Updates
 - Included the `currency` field within the `stripe__invoice_line_items` model. ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
