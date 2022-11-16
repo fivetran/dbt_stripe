@@ -1,7 +1,8 @@
 with customer_count as (
 	select 
 		date_trunc('month', "date")::date as mrr_month, 
-		count(distinct customer_id) as customers,
+		count(distinct customer_id) as customers_count,
+
 		stripe_account 
 	from {{ref('historical_mrr')}} 
 	where mrr > 0
