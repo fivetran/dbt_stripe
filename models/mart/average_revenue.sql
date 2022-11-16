@@ -20,8 +20,8 @@ mrr_sum as (
 general_average as (
 	select
 		ms.mrr_month,
-		sum(ms.mrr)/sum(customers) as average_revenue,
-		sum(customers) as customers,
+		sum(ms.mrr)/sum(customers_count) as average_revenue,
+		sum(customers_count) as customers_count,
 		'All' as stripe_account 
 		from mrr_sum ms
 			left join customer_count cc on ms.mrr_month = cc.mrr_month
