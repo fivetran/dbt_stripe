@@ -1,5 +1,5 @@
-with customer_count as 
-	(select 
+with customer_count as (
+	select 
 		date_trunc('month', "date")::date as mrr_month, 
 		count(distinct customer_id) as customers,
 		stripe_account 
