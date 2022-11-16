@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 with mrr_calc as (
 	select	
 			customer_id,
