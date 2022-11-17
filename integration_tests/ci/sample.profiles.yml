@@ -1,5 +1,5 @@
 
-# HEY! This file is used in the stripe integrations tests with CircleCI.
+# HEY! This file is used in the dbt package integrations tests with CircleCI.
 # You should __NEVER__ check credentials into version control. Thanks for reading :)
 
 config:
@@ -7,7 +7,7 @@ config:
     use_colors: True
 
 integration_tests:
-  target: snowflake
+  target: redshift
   outputs:
     redshift:
       type: redshift
@@ -20,11 +20,11 @@ integration_tests:
       threads: 8
     bigquery:
       type: bigquery
-      method: service-account
-      keyfile: "{{ env_var('GCLOUD_SERVICE_KEY_PATH') }}"
+      method: service-account-json
       project: 'dbt-package-testing'
       schema: stripe_integrations_tests
       threads: 8
+      keyfile_json: "{{ env_var('GCLOUD_SERVICE_KEY') | as_native }}"
     snowflake:
       type: snowflake
       account: "{{ env_var('CI_SNOWFLAKE_DBT_ACCOUNT') }}"
@@ -40,19 +40,15 @@ integration_tests:
       host: "{{ env_var('CI_POSTGRES_DBT_HOST') }}"
       user: "{{ env_var('CI_POSTGRES_DBT_USER') }}"
       pass: "{{ env_var('CI_POSTGRES_DBT_PASS') }}"
-      dbname: "{{ env_var('CI_POSTGRES_DBT_DATABASE') }}"
+      dbname: "{{ env_var('CI_POSTGRES_DBT_DBNAME') }}"
       port: 5432
       schema: stripe_integrations_tests
       threads: 8
-    spark:
-      type: spark
-      method: http
+    databricks:
+      catalog: null
+      host: "{{ env_var('CI_DATABRICKS_DBT_HOST') }}"
+      http_path: "{{ env_var('CI_DATABRICKS_DBT_HTTP_PATH') }}"
       schema: stripe_integrations_tests
-      host: "{{ env_var('CI_SPARK_DBT_HOST') }}"
-      organization: "{{ env_var('CI_SPARK_DBT_ORGANIZATION') }}"
-      token: "{{ env_var('CI_SPARK_DBT_TOKEN') }}"
-      cluster: "{{ env_var('CI_SPARK_DBT_CLUSTER') }}"
-      port: 443
-      connect_timeout: 60
-      connect_retries: 5
-      threads: 8
+      threads: 2
+      token: "{{ env_var('CI_DATABRICKS_DBT_TOKEN') }}"
+      type: databricks
