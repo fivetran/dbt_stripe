@@ -66,6 +66,7 @@ select
 
     {% if var('using_subscriptions', True) %}
     ,subscription.subscription_id,
+    invoice_line_item.subscription_item_id,
     subscription.billing as subscription_billing,
     subscription.start_date as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
