@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo
 
 # Export secrets for Docker containers.
 # Restrict exposing secrets only to the steps that need them
