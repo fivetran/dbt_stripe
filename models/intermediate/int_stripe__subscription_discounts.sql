@@ -21,7 +21,7 @@ price as (
 		c.percent_off,
 		c.applies_to,
 		p.stripe_account
-	from dbt_stripe_account_src.price p 
+	from {{ var('price') }} p 
 		join coupon c on p.product_id = c.applies_to and c.stripe_account = p.stripe_account
 	where c.applies_to is not null
 	and c.percent_off is not null
@@ -35,11 +35,12 @@ products_percent_discount as (
         ((si.quantity * p.unit_amount) * (p.percent_off/100)) as amount_discount,
         p.percent_off,
         si.stripe_account 
-    from dbt_stripe_account_src.subscription_item si 
-        left join dbt_stripe_account_src.subscription_discount sd using(subscription_id)
+    from {{ var('subscription_item') }} si 
+        left join subscription_discount sd using(subscription_id)
         left join price p on p.price_id = si.plan_id and p.coupon_id = sd.coupon_id
     where p.coupon_id is not null
     order by 1),
+
 subscription_percent_discount as (
     select
         si.subscription_id,
@@ -47,10 +48,10 @@ subscription_percent_discount as (
         (si.quantity * p.unit_amount) as amount,
 		((si.quantity * p.unit_amount) * (c.percent_off/100)) as amount_discount,
         c.percent_off
-    from dbt_stripe_account_src.subscription_item si 
-        left join dbt_stripe_account_src.subscription_discount sd using(subscription_id)
+    from {{ var('subscription_item') }} si 
+        left join subscription_discount sd using(subscription_id)
         left join coupon c on sd.coupon_id = c.id
-        left join dbt_stripe_account_src.price p on p.id = si.plan_id
+        left join {{ var('price') }} p on p.id = si.plan_id
     where c.id is not null
         and c.percent_off is not null
         and c.applies_to is null
