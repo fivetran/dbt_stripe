@@ -109,37 +109,47 @@ vars:
         using_invoice_line_sub_filter: false # Default = true
 ```
 
+
 ### Pivoting out Metadata Properties
-By default, this package selects the `metadata` JSON field within the `customer`, `charge`, `invoice`, `payment_intent`, `payment_method`, `payout`, `plan`, `refund`, and `subscription` source tables. However, you likely have properties within the `metadata` JSON field you would like to pivot out and include in the respective downstream staging model.
+Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package pivot out fields into their own columns. The metadata variables accept dictionaries in addition to strings.
 
-If there are properties in the `metadata` JSON field that you'd like to pivot out into columns, add the respective variable(s) to your root `dbt_project.yml` file:
-```yml
-vars:
-    stripe__charge_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__invoice_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__payment_intent_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__payment_method_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__payout_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__plan_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__refund_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__customer_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-```
-**Note** 
+Additionally, if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field, Below are examples of how you would add the respective fields.
 
-Alternatively, if you happen to be using a reserved word as a field in your metadata, similarly incompatible name, or just wish to rename your field, we have updated our variables to be able to accept a dictionary in addition to strings. Below is an example using `stripe__plan_metadata` of how you would add the respective fields to your root `dbt_project.yml` file.
+The `metadata` JSON field is present within the `customer`, `charge`, `invoice`, `payment_intent`, `payment_method`, `payout`, `plan`, `refund`, and `subscription` source tables. To pivot these fields out and include in the respective downstream staging model, add the respective variable(s) to your root `dbt_project.yml` file like below.
 
 ```yml
 vars: 
-  stripe__plan_metadata:
+  stripe__charge_metadata:
     - metadata_field_1
+  stripe__invoice_metadata: 
     - metadata_field_2
+  stripe__payment_intent_metadata:
     - name: incompatible.field
       alias: rename_incompatible_field
+  stripe__payment_method_metadata:
     - name: field_is_reserved_word
       alias: field_is_reserved_word_xyz
+  stripe__payout_metadata:
     - name: 123
       alias: one_two_three
+  stripe__plan_metadata:
+    - name: rename
+    - alias: renamed_field
+  stripe__refund_metadata:
+    - metadata_field_3
+    - metadata_field_4
+  stripe__subscription_metadata:
+    - metadata_field_5
+  stripe__customer_metadata:
+    - metadata_field_6
+
+```
+
+Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following configuration as well. 
+
+```yml
+vars:
+    stripe__plan_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
 ### Change the build schema
