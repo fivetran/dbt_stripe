@@ -138,8 +138,9 @@ vars:
       alias: rename_incompatible_field
     - name: field_is_reserved_word
       alias: field_is_reserved_word_xyz
+    - name: 123
+      alias: one_two_three
 ```
-
 
 ### Change the build schema
 By default, this package builds the stripe staging models within a schema titled (`<target_schema>` + `_stg_stripe`) in your destination. If this is not where you would like your stripe staging data to be written to, add the following configuration to your root `dbt_project.yml` file:
