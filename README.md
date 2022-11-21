@@ -127,17 +127,17 @@ vars:
 ```
 **Note** 
 
-If you happen to be using a reserved word as a field in your metadata, similarly incompatible name, or just wish to rename your field, we have updated our variables to be able to accept a dictionary in addition to strings, via using aliases. Below is an example using `stripe__plan_metadata` of how you would add the respective variables to your root `dbt_project.yml` file. 
+Alternatively, if you happen to be using a reserved word as a field in your metadata, similarly incompatible name, or just wish to rename your field, we have updated our variables to be able to accept a dictionary in addition to strings. Below is an example using `stripe__plan_metadata` of how you would add the respective fields to your root `dbt_project.yml` file.
 
 ```yml
 vars: 
   stripe__plan_metadata:
-    - limit
-    - version
-    - name: incompatible.word
-      alias: rename_incompatible_word
-    - name: reserved_word
-      alias: reserved_word_xyz
+    - metadata_field_1
+    - metadata_field_2
+    - name: incompatible.field
+      alias: rename_incompatible_field
+    - name: field_is_reserved_word
+      alias: field_is_reserved_word_xyz
 ```
 
 
