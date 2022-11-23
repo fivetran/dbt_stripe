@@ -120,9 +120,9 @@ The `metadata` JSON field is present within the `customer`, `charge`, `invoice`,
 ```yml
 vars: 
   stripe__charge_metadata:
-    - metadata_field_1
+    - name: metadata_field_1
   stripe__invoice_metadata: 
-    - metadata_field_2
+    - name: metadata_field_2
   stripe__payment_intent_metadata:
     - name: incompatible.field
       alias: rename_incompatible_field
@@ -136,12 +136,12 @@ vars:
     - name: rename
     - alias: renamed_field
   stripe__refund_metadata:
-    - metadata_field_3
-    - metadata_field_4
+    - name: metadata_field_3
+    - name: metadata_field_4
   stripe__subscription_metadata:
-    - metadata_field_5
+    - name: metadata_field_5
   stripe__customer_metadata:
-    - metadata_field_6
+    - name: metadata_field_6
 
 ```
 
