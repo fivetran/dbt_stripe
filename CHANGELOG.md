@@ -1,3 +1,11 @@
+# dbt_stripe v0.7.4
+## 🎉 Feature Updates
+- Included the `subscription_item_id` field within the `stripe__invoice_line_items` model. ([#50](https://github.com/fivetran/dbt_stripe/pull/50))
+- BuildKite testing has been added. ([#52](https://github.com/fivetran/dbt_stripe/pull/52))
+
+## Contributors
+- [LewisDavies](https://github.com/LewisDavies) ([#50](https://github.com/fivetran/dbt_stripe/pull/50))
+
 # dbt_stripe v0.7.3
 ## 🎉 Feature Updates
 - Included the `currency` field within the `stripe__invoice_line_items` model. ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
@@ -6,7 +14,7 @@
 - [ccbrandenburg](https://github.com/ccbrandenburg) ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
 
 
-# dbt_stripe_source v0.7.2
+# dbt_stripe v0.7.2
 
 ## 🎉 Feature Updates
 - Databricks compatibility 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/44))
