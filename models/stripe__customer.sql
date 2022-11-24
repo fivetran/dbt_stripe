@@ -26,6 +26,7 @@ select
 	end as rn
 from
 	{{ source('dbt_stripe_account_src', 'customer') }}
+	where is_deleted = false
 --when we have duplicated account ids we consider the one from Stripe Us, except for these tow ID's
 except
 select
