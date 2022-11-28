@@ -36,6 +36,7 @@
     - `dbt.current_timestamp_backcompat`
     - `dbt.current_timestamp_in_utc_backcompat`
 - Dependencies on `fivetran/fivetran_utils` have been upgraded, previously `[">=0.3.0", "<0.4.0"]` now `[">=0.4.0", "<0.5.0"]`.
+- Updated README to include instructions on how to use metadata variable in cases of dictionary arguments. ([#51](https://github.com/fivetran/dbt_stripe/pull/51))
 
 # dbt_stripe v0.7.3
 ## 🎉 Feature Updates
