@@ -34,7 +34,8 @@ general_calc as (
 		sum(c.churn_customers) / sum(customer_count) as churn_rate
 	from active_customers ac
 		left join general_churn c on c.churn_month = ac.m_month
-    group by 1),
+    group by 1
+),
 us_calc as (
 	select 
         m_month,
