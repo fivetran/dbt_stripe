@@ -14,6 +14,7 @@ active_customers as (
         stripe_account 
 	from {{ref('historical_mrr')}}  hm 
 	where mrr <> 0 
+		-- Removing test accounts
 		and customer_id NOT IN ('cus_MVjwgFklliUF9p','cus_J8IS1IGMxzZLzR')
 	group by 1,3
 	order by 1
