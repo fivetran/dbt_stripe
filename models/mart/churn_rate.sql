@@ -43,7 +43,8 @@ us_calc as (
 	from active_customers ac
 		left join general_churn c on c.churn_month = ac.m_month and ac.stripe_account = c.stripe_account
 	where ac.stripe_account = 'us'
-    group by 1),
+    group by 1
+),
 br_calc as (
 	select 
         m_month,
