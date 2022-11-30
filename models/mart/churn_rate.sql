@@ -27,7 +27,7 @@ general_churn as (
 	from churn_count
 	group by 1,3
 	order by 1	
-		),
+),
 general_calc as (
 	select 
         m_month,
