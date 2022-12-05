@@ -29,7 +29,7 @@ with balance_transaction as (
     select *
     from {{ var('customer')}}
 
-{% if var('using_payment_method', True) %}
+{% if var('stripe__using_payment_method', True) %}
 
 ), payment_method as (
 
@@ -80,7 +80,7 @@ select
     charge.receipt_email,
     customer.description as customer_description, 
 
-    {% if var('using_payment_method', True) %}
+    {% if var('stripe__using_payment_method', True) %}
     payment_method.type as payment_method_type,
     payment_method_card.brand as payment_method_brand,
     payment_method_card.funding as payment_method_funding,
@@ -111,7 +111,7 @@ left join payment_intent
     on charge.payment_intent_id = payment_intent.payment_intent_id
     and charge.source_relation = balance_transaction.source_relation
 
-{% if var('using_payment_method', True) %}
+{% if var('stripe__using_payment_method', True) %}
 left join payment_method 
     on payment_intent.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = balance_transaction.source_relation
