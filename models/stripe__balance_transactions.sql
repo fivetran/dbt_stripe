@@ -93,28 +93,38 @@ select
     payout.status as payout_status,
     payout.type as payout_type,
     payout.description as payout_description,
-    refund.reason as refund_reason
+    refund.reason as refund_reason,
+    balance_transaction.source_relation
 from balance_transaction
 
 left join charge 
     on charge.balance_transaction_id = balance_transaction.balance_transaction_id
+    and charge.source_relation = balance_transaction.source_relation
 left join customer 
     on charge.customer_id = customer.customer_id
+    and charge.source_relation = balance_transaction.source_relation
 left join payment_intent 
     on charge.payment_intent_id = payment_intent.payment_intent_id
+    and charge.source_relation = balance_transaction.source_relation
 
 {% if var('using_payment_method', True) %}
 left join payment_method 
     on payment_intent.payment_method_id = payment_method.payment_method_id
+    and charge.source_relation = balance_transaction.source_relation
 left join payment_method_card 
     on payment_method_card.payment_method_id = payment_method.payment_method_id
+    and charge.source_relation = balance_transaction.source_relation
 {% endif %}
 
 left join cards 
     on charge.card_id = cards.card_id
+    and charge.source_relation = balance_transaction.source_relation
 left join payout 
     on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+    and charge.source_relation = balance_transaction.source_relation
 left join refund 
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
+    and charge.source_relation = balance_transaction.source_relation
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
+    and charge.source_relation = balance_transaction.source_relation

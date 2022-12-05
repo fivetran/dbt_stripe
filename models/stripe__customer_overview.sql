@@ -14,7 +14,7 @@ with balance_transaction_joined as (
     from {{ var('customer') }}  
 
 ), transactions_grouped as (
- 
+
     select
       customer_id,
       sum(case when type in ('charge', 'payment') 
@@ -71,7 +71,8 @@ with balance_transaction_joined as (
       max(case when type in ('charge', 'payment') 
         then {{ date_timezone('created_at') }}
         else null 
-            end) as most_recent_sale_date
+            end) as most_recent_sale_date,
+      source_relation
     from balance_transaction_joined
     where type in ('payment', 'charge', 'payment_refund', 'refund')
     group by 1
@@ -89,7 +90,8 @@ with balance_transaction_joined as (
       sum(case when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
         then amount
         else 0 
-            end) as failed_charge_amount_this_month
+            end) as failed_charge_amount_this_month,
+      source_relation
     from incomplete_charges
     group by 1
 
@@ -129,7 +131,8 @@ with balance_transaction_joined as (
       customer.shipping_address_state,
       customer.shipping_address_country,
       customer.shipping_address_postal_code,
-      customer.shipping_phone
+      customer.shipping_phone,
+      source_relation
 
       {% if var('stripe__customer_metadata',[]) %}
         {% for metadata in var('stripe__customer_metadata') %}
@@ -140,6 +143,7 @@ with balance_transaction_joined as (
     from transactions_grouped
     left join customer 
         on transactions_grouped.customer_id = customer.customer_id
+        and transactions_grouped.source_relation = customer.source_relation
     where customer.customer_id is null and customer.description is null
 
 
@@ -179,7 +183,8 @@ with balance_transaction_joined as (
       customer.shipping_address_state,
       customer.shipping_address_country,
       customer.shipping_address_postal_code,
-      customer.shipping_phone
+      customer.shipping_phone,
+      customer.source_relation
 
       {% if var('stripe__customer_metadata',[]) %}
         {% for metadata in var('stripe__customer_metadata') %}
@@ -190,8 +195,10 @@ with balance_transaction_joined as (
     from customer
     left join transactions_grouped
         on customer.customer_id = transactions_grouped.customer_id
+        and customer.source_relation = transactions_grouped.source_relation
     left join failed_charges_by_customer 
         on customer.customer_id = failed_charges_by_customer.customer_id
+        and customer.source_relation = failed_charges_by_customer.source_relation
 )
 
 select *
