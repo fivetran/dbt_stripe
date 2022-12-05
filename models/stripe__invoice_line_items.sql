@@ -62,10 +62,10 @@ select
     charge.created_at as charge_created_at,
     customer.description as customer_description,
     customer.email as customer_email,
-    customer.customer_id
+    customer.customer_id,
 
     {% if var('using_subscriptions', True) %}
-    ,subscription.subscription_id,
+    subscription.subscription_id,
     subscription.billing as subscription_billing,
     subscription.start_date as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
@@ -75,22 +75,29 @@ select
     plan.plan_interval as plan_interval,
     plan.interval_count as plan_interval_count,
     plan.nickname as plan_nickname,
-    plan.product_id as plan_product_id
+    plan.product_id as plan_product_id,
     {% endif %}
+
+    source_relation
     
 from invoice
 
 left join charge 
     on charge.charge_id = invoice.charge_id
+    and charge.source_relation = invoice.source_relation
 left join invoice_line_item 
     on invoice.invoice_id = invoice_line_item.invoice_id
+    and invoice.source_relation = invoice_line_item.source_relation
 
 {% if var('using_subscriptions', True) %}
 left join subscription 
     on invoice_line_item.subscription_id = subscription.subscription_id
+    and invoice_line_item.source_relation = subscription.source_relation
 left join plan 
     on invoice_line_item.plan_id = plan.plan_id
+    and invoice_line_item.source_relation = plan.source_relation
 {% endif %}
 
 left join customer 
     on invoice.customer_id = customer.customer_id
+    and invoice.source_relation = customer.source_relation
