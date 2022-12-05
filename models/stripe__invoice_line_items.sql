@@ -1,4 +1,4 @@
-{{ config(enabled=var('using_invoices', True)) }}
+{{ config(enabled=var('stripe__using_invoices', True)) }}
 
 with invoice as (
 
@@ -20,17 +20,17 @@ with invoice as (
     select *
     from {{ var('customer') }}  
 
-{% if var('using_subscriptions', True) %}
+{% if var('stripe__using_subscriptions', True) %}
 
 ), subscription as (
 
     select *
     from {{ var('subscription') }}  
 
-), plan as (
+), pricing as (
 
     select *
-    from {{ var('plan') }}  
+    from {{ var('pricing') }}  
 
 {% endif %}
 )
@@ -64,18 +64,25 @@ select
     customer.email as customer_email,
     customer.customer_id,
 
-    {% if var('using_subscriptions', True) %}
+    {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
     subscription.billing as subscription_billing,
     subscription.start_date as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
-    plan.plan_id,
-    plan.is_active as plan_is_active,
-    plan.amount as plan_amount,
-    plan.plan_interval as plan_interval,
-    plan.interval_count as plan_interval_count,
-    plan.nickname as plan_nickname,
-    plan.product_id as plan_product_id,
+
+    {% if var('stripe__price', does_table_exist('price')) %}
+    pricing.price_id,
+    
+    {% else %}
+    pricing.plan_id,
+
+    {% endif %}
+    pricing.is_active as plan_is_active,
+    pricing.amount as plan_amount,
+    pricing.plan_interval as plan_interval,
+    pricing.interval_count as plan_interval_count,
+    pricing.nickname as plan_nickname,
+    pricing.product_id as plan_product_id,
     {% endif %}
 
     source_relation
@@ -89,13 +96,20 @@ left join invoice_line_item
     on invoice.invoice_id = invoice_line_item.invoice_id
     and invoice.source_relation = invoice_line_item.source_relation
 
-{% if var('using_subscriptions', True) %}
+{% if var('stripe__using_subscriptions', True) %}
 left join subscription 
     on invoice_line_item.subscription_id = subscription.subscription_id
     and invoice_line_item.source_relation = subscription.source_relation
-left join plan 
-    on invoice_line_item.plan_id = plan.plan_id
-    and invoice_line_item.source_relation = plan.source_relation
+left join pricing 
+    {% if var('stripe__price', does_table_exist('price')) %}
+    on invoice_line_item.price_id = pricing.price_id
+
+    {% else %}
+    on invoice_line_item.plan_id = pricing.plan_id
+
+    {% endif %}
+    and invoice_line_item.source_relation = pricing.source_relation
+
 {% endif %}
 
 left join customer 
