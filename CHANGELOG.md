@@ -1,3 +1,7 @@
+# dbt_stripe v0.9.0
+
+FINISH
+[#55](https://github.com/fivetran/dbt_stripe/pull/55)
 # dbt_stripe v0.8.0
 
 ## 🚨 Breaking Changes 🚨:
