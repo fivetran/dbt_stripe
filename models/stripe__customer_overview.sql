@@ -177,7 +177,7 @@ with balance_transaction_joined as (
       customer.shipping_address_country,
       customer.shipping_address_postal_code,
       customer.shipping_phone,
-      source_relation
+      transactions_grouped.source_relation
 
       {% if var('stripe__customer_metadata',[]) %}
         {% for metadata in var('stripe__customer_metadata') %}

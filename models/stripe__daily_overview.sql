@@ -97,7 +97,7 @@ select
       daily_balance_transactions.total_payouts_count,
       daily_balance_transactions.total_adjustments_count,
       coalesce(daily_failed_charges.total_failed_charge_count, 0) as total_failed_charge_count,
-      coalesce(daily_failed_charges.total_failed_charge_amount/100, 0) as total_failed_charge_amount.
+      coalesce(daily_failed_charges.total_failed_charge_amount/100, 0) as total_failed_charge_amount,
       source_relation
 from daily_balance_transactions
 
