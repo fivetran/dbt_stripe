@@ -72,7 +72,7 @@ select
     case when balance_transaction.type = 'charge' then charge.amount end as customer_facing_amount, 
     case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
     {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
-    coalesce(balance_transaction.connected_account_id, cards.account_id) as account_id, 
+    coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as account_id, 
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.description as customer_description, 

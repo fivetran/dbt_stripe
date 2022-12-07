@@ -500,3 +500,6 @@ models:
         description: The average sum of the line items for invoices generated for this subscription
       - name: avg_num_invoice_items 
         description: The average number of line items for invoices generated for this subscription   
+
+- name: stripe__account_daily_overview
+  description: Each record represents, per account per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions).
