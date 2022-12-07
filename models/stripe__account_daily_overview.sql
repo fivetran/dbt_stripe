@@ -22,7 +22,7 @@ account_rolling_totals as (
 select
     account.account_id,
     account_rolling_totals.date_day,
-    {{ dbt_utils.surrogate_key(['account.account_id','account_rolling_totals.date_day']) }} as account_daily_id,
+    {{ dbt_utils.generate_surrogate_key(['account.account_id','account_rolling_totals.date_day']) }} as account_daily_id,
     reporting_category,
     sum(amount)
 
