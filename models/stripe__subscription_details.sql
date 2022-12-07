@@ -33,7 +33,7 @@ with invoice as (
     invoice.amount_paid,
     invoice.amount_remaining,
     invoice.created_at,
-    source_relation,
+    invoice.source_relation,
     max(invoice_line_item.subscription_id) as subscription_id,
     sum(invoice_line_item.amount) as total_item_amount,
     count(distinct invoice_line_item.unique_id) as number_line_items

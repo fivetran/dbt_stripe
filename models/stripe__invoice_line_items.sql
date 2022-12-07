@@ -67,7 +67,7 @@ select
     {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
     subscription.billing as subscription_billing,
-    subscription.start_date as subscription_start_date,
+    subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
 
     {% if var('stripe__price', does_table_exist('price')) %}

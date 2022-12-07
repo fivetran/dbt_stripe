@@ -73,7 +73,7 @@ with balance_transaction_joined as (
 
     select
       {{ date_timezone('created_at') }} as date,
-      source_relation
+      source_relation,
       count(*) as total_failed_charge_count,
       sum(amount) as total_failed_charge_amount
     from incomplete_charges
