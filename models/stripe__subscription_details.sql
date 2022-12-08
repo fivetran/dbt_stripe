@@ -67,7 +67,7 @@ select
   customer.description as customer_description,
   customer.email as customer_email,
   subscription.status,
-  subscription.start_date,
+  subscription.start_date_at,
   subscription.ended_at,
   subscription.billing,
   subscription.billing_cycle_anchor,

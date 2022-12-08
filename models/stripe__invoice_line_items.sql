@@ -77,12 +77,12 @@ select
     pricing.plan_id,
 
     {% endif %}
-    pricing.is_active as plan_is_active,
-    pricing.amount as plan_amount,
-    pricing.plan_interval as plan_interval,
-    pricing.interval_count as plan_interval_count,
-    pricing.nickname as plan_nickname,
-    pricing.product_id as plan_product_id,
+    pricing.is_active as pricing_is_active,
+    pricing.amount as pricing_amount,
+    pricing.recurring_interval as pricing_interval,
+    pricing.recurring_interval_count as pricing_interval_count,
+    pricing.nickname as pricing_nickname,
+    pricing.product_id as pricing_product_id,
     {% endif %}
 
     source_relation
