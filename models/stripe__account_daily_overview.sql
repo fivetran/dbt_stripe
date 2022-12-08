@@ -1,18 +1,15 @@
--- {% set fields = ['rolling_daily_amount','rolling_daily_charge_amount','rolling_daily_refund_amount','rolling_daily_payout_reversal_amount','rolling_daily_transfer_count','rolling_daily_transfer_reversal_amount','rolling_daily_other_amount'] %}
-
 {% set fields = ['rolling_total_daily_sales_amount', 'rolling_total_daily_refunds_amount', 'rolling_total_daily_adjustments_amount', 'rolling_total_daily_other_transactions_amount', 'rolling_total_daily_gross_transaction_amount', 'rolling_total_daily_net_transactions_amount', 'rolling_total_daily_payout_fee_amount', 'rolling_total_daily_gross_payout_amount', 'rolling_daily_net_activity_amount', 'rolling_daily_end_balance_amount', 'rolling_total_daily_sales_count', 'rolling_total_daily_payouts_count', 'rolling_total_daily_adjustments_count', 'rolling_total_daily_failed_charge_count', 'rolling_total_daily_failed_charge_amount'] %}
 
 with date_spine as (
 
     select * 
     from {{ ref('int_stripe__date_spine') }}
-),
 
-account_daily_balances_by_type as (
+), account_daily_balances_by_type as (
 
     select * 
     from {{ ref('int_stripe__account_daily')}}
-),
+
     -- select 
     --     account_id,
     --     date_day,
@@ -45,7 +42,7 @@ account_daily_balances_by_type as (
     -- group by 1, 2
 -- ),
 
-account_rolling_totals as (
+), account_rolling_totals as (
 
     select
         *,
@@ -75,9 +72,8 @@ account_rolling_totals as (
         -- sum(daily_other_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_daily_other_amount
     
     from account_daily_balances_by_type
-),
 
-final as (
+), final as (
 
     select
         coalesce(account_rolling_totals.account_id, balance_transaction_periods.account_id) as account_id,

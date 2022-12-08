@@ -46,7 +46,7 @@ with spine as (
     {{ dbt_utils.date_spine(
         datepart="day",
         start_date=first_date_adjust,
-        end_date=dbt_utils.dateadd("day", 1, last_date_adjust)
+        end_date=dbt.dateadd("day", 1, last_date_adjust)
         )
     }}
 ),
@@ -66,11 +66,11 @@ account as (
 date_spine as (
 
     select
-        cast({{ dbt_utils.date_trunc("day", "date_day") }} as date) as date_day, 
-        cast({{ dbt_utils.date_trunc("week", "date_day") }} as date) as date_week, 
-        cast({{ dbt_utils.date_trunc("month", "date_day") }} as date) as date_month,
-        cast({{ dbt_utils.date_trunc("year", "date_day") }} as date) as date_year,  
-        row_number() over (order by cast({{ dbt_utils.date_trunc("day", "date_day") }} as date)) as date_index
+        cast({{ dbt.date_trunc("day", "date_day") }} as date) as date_day, 
+        cast({{ dbt.date_trunc("week", "date_day") }} as date) as date_week, 
+        cast({{ dbt.date_trunc("month", "date_day") }} as date) as date_month,
+        cast({{ dbt.date_trunc("year", "date_day") }} as date) as date_year,  
+        row_number() over (order by cast({{ dbt.date_trunc("day", "date_day") }} as date)) as date_index
     from spine
 ),
 

@@ -9,7 +9,7 @@ with date_spine as (
         case 
             when type = 'payout' 
             then {{ date_timezone('available_on') }}  
-            else {{ date_timezone('created_at') }} 
+            else {{ date_timezone('created_at') }}
         end as date
     from {{ ref('stripe__balance_transactions') }}
 
@@ -62,7 +62,7 @@ with date_spine as (
     from balance_transaction
     left join date_spine 
         on balance_transaction.account_id = date_spine.account_id
-        and balance_transaction.date = date_spine.date_day
+        and cast({{ dbt.date_trunc("day", "balance_transaction.date") }}) as date = date_spine.date_day
     group by 1, 2
 
 ), daily_failed_charges as (
@@ -78,6 +78,7 @@ with date_spine as (
 
 select
     daily_account_balance_transactions.date_day,
+    daily_account_balance_transactions.account_id,
     daily_account_balance_transactions.total_daily_sales_amount/100.0 as total_daily_sales_amount,
     daily_account_balance_transactions.total_daily_refunds_amount/100.0 as total_daily_refunds_amount,
     daily_account_balance_transactions.total_daily_adjustments_amount/100.0 as total_daily_adjustments_amount,

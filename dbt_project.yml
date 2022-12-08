@@ -11,6 +11,7 @@ models:
       +materialized: ephemeral
 vars:
   stripe:
+    account: "{{ ref('stg_stripe__account') }}"
     balance_transaction: "{{ ref('stg_stripe__balance_transaction') }}"
     card: "{{ ref('stg_stripe__card') }}"
     charge: "{{ ref('stg_stripe__charge') }}"
@@ -22,7 +23,7 @@ vars:
     payment_method_card: "{{ ref('stg_stripe__payment_method_card') }}"
     payment_method: "{{ ref('stg_stripe__payment_method') }}"
     payout: "{{ ref('stg_stripe__payout') }}"
-    plan: "{{ ref('stg_stripe__plan') }}"
+    pricing: "{{ ref('stg_stripe__pricing') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"
     using_invoices: true
