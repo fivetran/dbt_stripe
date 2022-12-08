@@ -78,7 +78,7 @@ select
 
     {% endif %}
     pricing.is_active as pricing_is_active,
-    pricing.amount as pricing_amount,
+    pricing.unit_amount as pricing_amount,
     pricing.recurring_interval as pricing_interval,
     pricing.recurring_interval_count as pricing_interval_count,
     pricing.nickname as pricing_nickname,

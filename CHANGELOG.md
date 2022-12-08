@@ -1,6 +1,19 @@
 # dbt_stripe v0.9.0
 
-FINISH
+
+Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API, the following columns in `stripe__invoice_line_items` have been updated:
+
+| **Old**                          | **New**                                                                                                                                                                                                                              |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| plan_is_active    | pricing_is_active
+| plan_amount    | pricing_amount
+| plan_interval    | pricing_interval
+| plan_interval_count    | pricing_interval_count
+| plan_nickname    | pricing_nickname
+| plan_product_id    | pricing_product_id                                                                                                       |
+
+For more information please refer to the [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
+
 [#54](https://github.com/fivetran/dbt_stripe/pull/54)
 
 # dbt_stripe v0.8.0
