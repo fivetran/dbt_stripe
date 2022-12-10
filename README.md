@@ -71,9 +71,9 @@ vars:
 This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, or `subscription` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true`. Add variables for only the tables you want to disable within your root `dbt_project.yml`:
 ```yml
 vars:
-    using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
-    using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
-    using_subscriptions:   False  #Disable if you are not using the subscription and plan tables.
+    stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
+    stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
+    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan tables.
 ```
 ## Step 5: Leveraging Subscription Vs Subscription History Sources
 For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription` source table. However, if you have a newer connector then you must leverage the `stripe__subscription_history` to have the package use the `subscription_history` source rather than the `subscription` table.
