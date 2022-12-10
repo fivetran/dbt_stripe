@@ -8,6 +8,7 @@ profile: 'integration_tests'
 vars:
   stripe_schema: stripe_integrations_tests
   stripe_source:
+    stripe_account_identifier:                "account_data" 
     stripe_group_identifier:                  "group_data"
     stripe_balance_transaction_identifier:    "balance_transaction_data"
     stripe_card_identifier:                   "card_data"
@@ -21,6 +22,7 @@ vars:
     stripe_payment_method_identifier:         "payment_method_data"
     stripe_payout_identifier:                 "payout_data"
     stripe_plan_identifier:                   "plan_data"
+    stripe_price_identifier:                  "price_data"
     stripe_refund_identifier:                 "refund_data"
     stripe_subscription_history_identifier:   "subscription_history_data"
     stripe_subscription_identifier:           "subscription_data"
