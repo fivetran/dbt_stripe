@@ -1,7 +1,7 @@
 config-version: 2
 name: 'stripe'
 
-version: '0.8.0'
+version: '0.9.0'
 require-dbt-version: [">=1.3.0", "<2.0.0"]
 models:
   stripe:
@@ -26,6 +26,6 @@ vars:
     pricing: "{{ ref('stg_stripe__pricing') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"
-    using_invoices: true
-    using_payment_method: true
-    using_subscriptions: true
+    stripe__using_invoices: true
+    stripe__using_payment_method: true
+    stripe__using_subscriptions: true
