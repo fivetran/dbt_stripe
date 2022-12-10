@@ -37,6 +37,7 @@ seeds:
     +column_types:
       _fivetran_synced: timestamp
       created: timestamp
+      canceled_at: timestamp
     balance_transaction_data:
       +column_types:
         available_on: timestamp
