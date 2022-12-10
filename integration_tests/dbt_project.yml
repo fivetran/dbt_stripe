@@ -39,13 +39,14 @@ seeds:
       created: timestamp
       voided_at: timestamp
       canceled_at: timestamp
+      invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     balance_transaction_data:
       +column_types:
         created: timestamp
         available_on: timestamp
     charge_data:
       +column_types:
-        balance_transaction_id: "{{ 'varchar(250)' if target.type in ('redshift','postgres') else 'string'}}"
+        balance_transaction_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         created: timestamp
     customer_data:
       +column_types:
