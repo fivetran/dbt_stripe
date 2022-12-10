@@ -98,25 +98,3 @@ from daily_account_balance_transactions
 left join daily_failed_charges 
     on daily_account_balance_transactions.date_day = daily_failed_charges.date
     and daily_account_balance_transactions.account_id = daily_failed_charges.connected_account_id
-
-
-
-
--- final as (
-
---     select
---         account_id,
---         balance_transaction.type,
---         reporting_category,
---         cast( {{dbt.date_trunc("day", "created_at") }} as date) as date_day,
---         count(distinct balance_transaction_id) as daily_transaction_count,
---         sum(amount) as daily_amount,
---         sum(fee) as daily_fee_amount,
---         sum(net) as dailt_net_amount,
---     from balance_transaction
---     {{ dbt_utils.group_by(4) }}
-
--- )
-
--- select * 
--- from final

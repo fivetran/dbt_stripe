@@ -34,6 +34,9 @@ seeds:
     +quote_columns: "{{ true if target.type in ('redshift','postgres') else false }}"
     +column_types:
       _fivetran_synced: timestamp
+      created: timestamp
+      voided_at: timestamp
+      canceled_at: timestamp
     balance_transaction_data:
       +column_types:
         created: timestamp
