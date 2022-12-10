@@ -76,8 +76,8 @@ with date_spine as (
 ), final as (
 
     select
-        coalesce(account_rolling_totals.account_id, balance_transaction_periods.account_id) as account_id,
-        coalesce(account_rolling_totals.date_day, balance_transaction_periods.date_day) as date_day,
+        coalesce(account_rolling_totals.account_id, date_spine.account_id) as account_id,
+        coalesce(account_rolling_totals.date_day, date_spine.date_day) as date_day,
         account_rolling_totals.total_daily_sales_amount,
         account_rolling_totals.total_daily_refunds_amount,
         account_rolling_totals.total_daily_adjustments_amount,
@@ -109,12 +109,12 @@ with date_spine as (
             end as {{ f }},
         {% endfor %}
 
-        balance_transaction_periods.date_index
-    from balance_transaction_periods
+        date_spine.date_index
 
+    from date_spine
     left join account_rolling_totals
-        on account_rolling_totals.account_id = balance_transaction_periods.account_id 
-        and account_rolling_totals.date_day = balance_transaction_periods.date_day
+        on account_rolling_totals.account_id = date_spine.account_id 
+        and account_rolling_totals.date_day = date_spine.date_day
 )
 
 select * 

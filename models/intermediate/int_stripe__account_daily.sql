@@ -62,7 +62,7 @@ with date_spine as (
     from balance_transaction
     left join date_spine 
         on balance_transaction.account_id = date_spine.account_id
-        and cast({{ dbt.date_trunc("day", "balance_transaction.date") }}) as date = date_spine.date_day
+        and cast({{ dbt.date_trunc('day', 'balance_transaction.date') }} as date) = date_spine.date_day
     group by 1, 2
 
 ), daily_failed_charges as (
