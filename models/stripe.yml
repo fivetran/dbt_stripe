@@ -214,7 +214,7 @@ models:
         description: Number of incomplete charges during the reporting period.
       - name: total_failed_charge_amount
         description: Total amount from incomplete charges during the reporting period.
- 
+
   - name: stripe__monthly_overview
     description: Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.
     columns:   
@@ -285,10 +285,9 @@ models:
 
 
   - name: stripe__invoice_details
-  # UPDATE BELOW
-    description: Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and plan.
+    description: Each record represents an invoice, enriched with details about the associated charge, customer, subscription, and pricing.
     columns:
-      - name: invoice_id 
+      - name: invoice_id
         description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
         tests:
           - unique
@@ -351,19 +350,21 @@ models:
       - name: customer_id
         description: The associated customer reference.
       - name: plan_id
-        description: The ID of the plan of the subscription, if the line item is a subscription or a proration.
-      - name: plan_is_active
-        description: Boolean indicating if the plan is active (true) or in-active (false).
-      - name: plan_amount
+        description: The ID of the plan of the subscription, if you are using the Plan API and the invoice is a subscription or a proration.
+      - name: price_id
+        description: The ID of the price of the subscription, if you are using the Price API.
+      - name: pricing_is_active
+        description: Boolean indicating if the plan or price is active (true) or in-active (false).
+      - name: pricing_amount
         description: The unit amount in cents to be charged, represented as a whole integer if possible.
-      - name: plan_interval
+      - name: pricing_interval
         description: The frequency at which a subscription is billed. One of day, week, month or year.
-      - name: plan_interval_count
+      - name: pricing_interval_count
         description: The number of intervals between subscription billings. For example, interval_count=3 bills every 3 months.
-      - name: plan_nickname
-        description: A brief description of the plan, hidden from customers.
-      - name: plan_product_id
-        description: Reference to the product whose pricing this plan determines.
+      - name: pricing_nickname
+        description: A brief description of the plan or price, hidden from customers.
+      - name: pricing_product_id
+        description: Reference to the product whose pricing this price or plan determines.
 
 
   - name: stripe__subscription_line_items
