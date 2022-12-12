@@ -285,7 +285,7 @@ models:
 
 
   - name: stripe__invoice_details
-    description: Each record represents an invoice, enriched with details about the associated charge, customer, subscription, and pricing.
+    description: Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.
     columns:
       - name: invoice_id
         description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
@@ -295,34 +295,38 @@ models:
         description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
       - name: invoice_created_at 
         description: Timestamp of when the invoice was created.
+      - name: period_start
+        description: Timestamp of the start of the period.
+      - name: period_end
+        description: Timestamp of the end of the period.
       - name: status 
         description: Current status of the invoice.
       - name: due_date 
         description: Date when payment for the invoice is due.
       - name: currency 
-        description: The currency that the invoice is in. Three-letter ISO currency code, in lowercase.        
+        description: The currency that the invoice is in. Three-letter ISO currency code, in lowercase.
       - name: amount_due 
-        description: The amount that the invoice is for. Because this query includes line item details, this amount may be repeated.
+        description: The amount, if any, that the customer has paid on the invoice
+      - name: amount_paid 
+        description: The amount, if any, that the customer has paid on the invoice
+      - name: amount_due 
+        description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
       - name: subtotal 
         description: The amount of the invoice before discounts and taxes.
       - name: tax 
         description: The amount of tax being charged in the invoice.
       - name: total 
         description: The Total after discounts and taxes.
-      - name: amount_paid 
-        description: The amount, if any, that the customer has paid on the invoice
       - name: amount_remaining 
         description: The amount of the invoice remaining to be paid.
       - name: attempt_count 
         description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
       - name: invoice_memo 
         description: An arbitrary string attached to the object. Often useful for displaying to users.
-      - name: line_item_desc 
-        description: The description of the invoice line item
-      - name: line_item_amount 
-        description: The amount for the line item.
-      - name: quantity 
-        description: The quantity of the line item.
+      - name: number_of_line_items
+        description: Number of line item records for this invoice.
+      - name: total_quantity 
+        description: The total quantity of items for this invoice.
       - name: balance_transaction_id 
         description: The ID of the balance transaction object representing payment
       - name: charge_amount 
@@ -331,8 +335,20 @@ models:
         description: The status of the charge for the invoice.
       - name: charge_created_at 
         description: When the charge for the invoice was created.
+      - name: charge_is_refunded 
+        description: Whether the charge has been fully refunded. If the charge is only partially refunded, this attribute will still be false.
+      - name: connected_account_id
+        description: The ID of the account connected to the charge.
+      - name: customer_id
+        description: The associated customer reference.
       - name: customer_description 
         description: Description of the customer.
+      - name: customer_account_balance 
+        description: Current balance, if any, being stored on the customer. If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice.
+      - name: customer_currency 
+        description: Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
+      - name: customer_is_delinquent 
+        description: When the customer’s latest invoice is billed by charging automatically, delinquent is true if the invoice’s latest charge is failed. When the customer’s latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
       - name: customer_email 
         description: Email of the customer.
       - name: subscription_id 
@@ -343,16 +359,68 @@ models:
         description: The start date of the subscription
       - name: subscription_ended_at 
         description: The end date of the subscription
+
+  - name: stripe__invoice_line_items
+    description: Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.
+    columns:
+      - name: invoice_line_item_id 
+        description: The unique Identifier of the invoice line object.
+        tests:
+          - unique
+      - name: invoice_id 
+        description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
+      - name: invoice_item_id 
+        description: The ID of the invoice item this item is a part of
+      - name: invoice_line_item_amount
+        description: Amount for this line item.
+      - name: currency
+        description: Currency of this line item.
+      - name: invoice_line_item_memo
+        description: Description for this line item.
+      - name: is_discountable
+        description: Whether this line item is discountable.
+      - name: proration
+        description: Whether this is a proration.
+      - name: quantity
+        description: The quantity of the subscription, if the line item is a subscription or a proration.
+      - name: subscription_id
+        description: The ID of the subscription that the invoice item pertains to, if any.
+      - name: subscription_item_id
+        description: The subscription item that generated this invoice item. Left empty if the line item is not an explicit result of a subscription.
+      - name: type
+        description: A string identifying the type of the source of this line item, either an invoice item or a subscription.
+      - name: unique_id
+        description: A unique id generated for old invoice ID's from a past version of the API
       - name: period_start
-        description: Timestamp of the start of the period.
+        description: Start of the usage period during which invoice items were added to this invoice.
       - name: period_end
-        description: Timestamp of the end of the period.
+        description: End of the usage period during which invoice items were added to this invoice.
+      - name: invoice_created_at 
+        description: Timestamp of when the invoice was created.
+      - name: invoice_status 
+        description: Current status of the invoice.
+      - name: invoice_due_date 
+        description: Date when payment for the invoice is due.
+      - name: invoice_amount_due
+        description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
+      - name: invoice_amount_paid 
+        description: The amount, if any, that the customer has paid on the invoice
+      - name: invoice_subtotal 
+        description: The amount of the invoice before discounts and taxes.
+      - name: invoice_tax 
+        description: The amount of tax being charged in the invoice.
+      - name: invoice_total 
+        description: The total of the invoice after discounts and taxes.
+      - name: connected_account_id
+        description: The ID of the account connected to the charge.
       - name: customer_id
         description: The associated customer reference.
-      - name: plan_id
-        description: The ID of the plan of the subscription, if you are using the Plan API and the invoice is a subscription or a proration.
-      - name: price_id
-        description: The ID of the price of the subscription, if you are using the Price API.
+      - name: subscription_billing 
+        description: How the subscription is billed
+      - name: subscription_start_date 
+        description: The start date of the subscription
+      - name: subscription_ended_at 
+        description: The end date of the subscription
       - name: pricing_is_active
         description: Boolean indicating if the plan or price is active (true) or in-active (false).
       - name: pricing_amount
@@ -365,7 +433,6 @@ models:
         description: A brief description of the plan or price, hidden from customers.
       - name: pricing_product_id
         description: Reference to the product whose pricing this price or plan determines.
-
 
   - name: stripe__subscription_line_items
     description: Each record represents a subscription invoice line item, enriched with details about the associated charge, customer, subscription, and plan. Use this table as the starting point for your company-specific churn and MRR calculations.

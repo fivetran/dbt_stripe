@@ -45,7 +45,7 @@ with invoice as (
 
 select 
     invoice.invoice_id,
-    invoice.number,
+    invoice.number as invoice_number,
     invoice.created_at as invoice_created_at,
     invoice.period_start,
     invoice.period_end,
