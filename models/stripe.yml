@@ -436,83 +436,83 @@ models:
       - name: pricing_product_id
         description: Reference to the product whose pricing this price or plan determines.
 
-  - name: stripe__subscription_line_items
-    description: Each record represents a subscription invoice line item, enriched with details about the associated charge, customer, subscription, and plan. Use this table as the starting point for your company-specific churn and MRR calculations.
-    columns:
-      - name: invoice_id 
-        description: The unique Identifier of the invoice object. 
-        tests:
-          - unique
-      - name: number 
-        description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
-      - name: invoice_created_at 
-        description: Timestamp of when the invoice was created.
-      - name: status 
-        description: Current status of the invoice.
-      - name: due_date 
-        description: Date when payment for the invoice is due.
-      - name: amount_due 
-        description: The amount that the invoice is for. Because this query includes line item details, this amount may be repeated.
-      - name: subtotal 
-        description: The amount of the invoice before discounts and taxes.
-      - name: tax 
-        description: The amount of tax being charged in the invoice.
-      - name: total 
-        description: The Total after discounts and taxes.
-      - name: amount_paid 
-        description: The amount, if any, that the customer has paid on the invoice
-      - name: amount_remaining 
-        description: The amount of the invoice remaining to be paid.
-      - name: attempt_count 
-        description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
-      - name: invoice_memo 
-        description: An arbitrary string attached to the object. Often useful for displaying to users.
-      - name: line_item_desc 
-        description: The description of the invoice line item
-      - name: line_item_amount 
-        description: The amount for the line item.
-      - name: quantity 
-        description: The quantity of the line item.
-      - name: balance_transaction_id 
-        description: The ID of the balance transaction object representing payment
-      - name: charge_amount 
-        description: The amount charged to the customer.
-      - name: charge_status 
-        description: The status of the charge for the invoice.
-      - name: charge_created_at 
-        description: When the charge for the invoice was created.
-      - name: customer_description 
-        description: Description of the customer.
-      - name: customer_email 
-        description: Email of the customer.
-      - name: subscription_id 
-        description: ID of the subscription this invoice relates to.
-      - name: subscription_billing 
-        description: How the subscription is billed
-      - name: subscription_start_date 
-        description: The start date of the subscription
-      - name: subscription_ended_at 
-        description: The end date of the subscription
-      - name: period_start
-        description: Timestamp of the start of the period.
-      - name: period_end
-        description: Timestamp of the end of the period.
-      - name: customer_id
-        description: The associated customer reference.
-      - name: plan_id
-        description: The ID of the plan of the subscription, if the line item is a subscription or a proration.
-      - name: plan_is_active
-        description: Boolean indicating if the plan is active (true) or in-active (false).
-      - name: plan_amount
-        description: The unit amount in cents to be charged, represented as a whole integer if possible.
-      - name: plan_interval
-        description: The frequency at which a subscription is billed. One of day, week, month or year.
-      - name: plan_interval_count
-        description: The number of intervals between subscription billings. For example, interval_count=3 bills every 3 months.
-      - name: plan_nickname
-        description: A brief description of the plan, hidden from customers.
-      - name: plan_product_id
-        description: Reference to the product whose pricing this plan determines.
+  # - name: stripe__subscription_line_items
+  #   description: Each record represents a subscription invoice line item, enriched with details about the associated charge, customer, subscription, and plan. Use this table as the starting point for your company-specific churn and MRR calculations.
+  #   columns:
+  #     - name: invoice_id 
+  #       description: The unique Identifier of the invoice object. 
+  #       tests:
+  #         - unique
+  #     - name: number 
+  #       description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
+  #     - name: invoice_created_at 
+  #       description: Timestamp of when the invoice was created.
+  #     - name: status 
+  #       description: Current status of the invoice.
+  #     - name: due_date 
+  #       description: Date when payment for the invoice is due.
+  #     - name: amount_due 
+  #       description: The amount that the invoice is for. Because this query includes line item details, this amount may be repeated.
+  #     - name: subtotal 
+  #       description: The amount of the invoice before discounts and taxes.
+  #     - name: tax 
+  #       description: The amount of tax being charged in the invoice.
+  #     - name: total 
+  #       description: The Total after discounts and taxes.
+  #     - name: amount_paid 
+  #       description: The amount, if any, that the customer has paid on the invoice
+  #     - name: amount_remaining 
+  #       description: The amount of the invoice remaining to be paid.
+  #     - name: attempt_count 
+  #       description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
+  #     - name: invoice_memo 
+  #       description: An arbitrary string attached to the object. Often useful for displaying to users.
+  #     - name: line_item_desc 
+  #       description: The description of the invoice line item
+  #     - name: line_item_amount 
+  #       description: The amount for the line item.
+  #     - name: quantity 
+  #       description: The quantity of the line item.
+  #     - name: balance_transaction_id 
+  #       description: The ID of the balance transaction object representing payment
+  #     - name: charge_amount 
+  #       description: The amount charged to the customer.
+  #     - name: charge_status 
+  #       description: The status of the charge for the invoice.
+  #     - name: charge_created_at 
+  #       description: When the charge for the invoice was created.
+  #     - name: customer_description 
+  #       description: Description of the customer.
+  #     - name: customer_email 
+  #       description: Email of the customer.
+  #     - name: subscription_id 
+  #       description: ID of the subscription this invoice relates to.
+  #     - name: subscription_billing 
+  #       description: How the subscription is billed
+  #     - name: subscription_start_date 
+  #       description: The start date of the subscription
+  #     - name: subscription_ended_at 
+  #       description: The end date of the subscription
+  #     - name: period_start
+  #       description: Timestamp of the start of the period.
+  #     - name: period_end
+  #       description: Timestamp of the end of the period.
+  #     - name: customer_id
+  #       description: The associated customer reference.
+  #     - name: plan_id
+  #       description: The ID of the plan of the subscription, if the line item is a subscription or a proration.
+  #     - name: plan_is_active
+  #       description: Boolean indicating if the plan is active (true) or in-active (false).
+  #     - name: plan_amount
+  #       description: The unit amount in cents to be charged, represented as a whole integer if possible.
+  #     - name: plan_interval
+  #       description: The frequency at which a subscription is billed. One of day, week, month or year.
+  #     - name: plan_interval_count
+  #       description: The number of intervals between subscription billings. For example, interval_count=3 bills every 3 months.
+  #     - name: plan_nickname
+  #       description: A brief description of the plan, hidden from customers.
+  #     - name: plan_product_id
+  #       description: Reference to the product whose pricing this plan determines.
 
   - name: stripe__subscription_details
     description: Each record represents a subscription, enriched with customer details and payment aggregations.
