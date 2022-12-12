@@ -284,7 +284,8 @@ models:
         description: Total amount from incomplete charges during the reporting period.
 
 
-  - name: stripe__invoice_line_items
+  - name: stripe__invoice_details
+  # UPDATE BELOW
     description: Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and plan.
     columns:
       - name: invoice_id 
