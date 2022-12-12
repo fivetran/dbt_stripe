@@ -53,10 +53,10 @@ select
     invoice.due_date,
     invoice.currency,
     invoice.amount_due,
+    invoice.amount_paid,
     invoice.subtotal,
     invoice.tax,
     invoice.total,
-    invoice.amount_paid,
     invoice.amount_remaining,
     invoice.attempt_count,
     invoice.description as invoice_memo,
@@ -81,19 +81,6 @@ select
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
 
-    {% if var('stripe__price', does_table_exist('price')) %}
-    pricing.price_id,
-
-    {% else %}
-    pricing.plan_id,
-
-    {% endif %}
-    pricing.is_active as pricing_is_active,
-    pricing.unit_amount as pricing_amount,
-    pricing.recurring_interval as pricing_interval,
-    pricing.recurring_interval_count as pricing_interval_count,
-    pricing.nickname as pricing_nickname,
-    pricing.product_id as pricing_product_id,
     {% endif %}
 
     {% if var('stripe__invoice_metadata',[]) %}
@@ -117,16 +104,6 @@ left join charge
 left join subscription
     on invoice.subscription_id = subscription.subscription_id
     and invoice.source_relation = subscription.source_relation
-
-left join pricing 
-    {% if var('stripe__price', does_table_exist('price')) %}
-    on invoice_line_item.price_id = pricing.price_id
-
-    {% else %}
-    on invoice_line_item.plan_id = pricing.plan_id
-
-    {% endif %}
-    and invoice_line_item.source_relation = pricing.source_relation
 
 {% endif %}
 
