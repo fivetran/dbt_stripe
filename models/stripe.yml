@@ -36,6 +36,8 @@ models:
       description: Three-letter ISO currency code that the customer sees.
     - name: effective_at 
       description: calendar day after available_at
+    - name: account_id
+      description: Account ID associated with this transaction
     - name: customer_id 
       description: The customer associated with the balance transaction (based on charge or refund details)
     - name: receipt_email 
@@ -527,7 +529,7 @@ models:
         description: Email of the customer who owns the subscription.
       - name: status 
         description: Possible values are incomplete, incomplete_expired, trialing, active, past_due, canceled, or unpaid.
-      - name: start_date 
+      - name: start_date_at 
         description: Date when the subscription was first created. The date might differ from the created date due to backdating.
       - name: ended_at 
         description: If the subscription has ended, the date the subscription ended.
@@ -568,3 +570,4 @@ models:
 
   - name: stripe__account_daily_overview
     description: Each record represents, per account per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions).
+      # holding off on columns until finalized 

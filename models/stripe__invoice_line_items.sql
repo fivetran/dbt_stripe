@@ -1,4 +1,4 @@
-{{ config(enabled=var('using_invoices', True)) }}
+{{ config(enabled=var('stripe__using_invoices', True)) }}
 
 with invoice_line_item as (
 
@@ -15,7 +15,7 @@ with invoice_line_item as (
     select *
     from {{ var('subscription') }}  
 
-{% if var('using_subscriptions', True) %}
+{% if var('stripe__using_subscriptions', True) %}
 ), pricing as (
 
     select *
