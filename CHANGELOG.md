@@ -2,6 +2,8 @@
 
 FINISH
 [#55](https://github.com/fivetran/dbt_stripe/pull/55)
+
+stripe__using_subscription_history
 # dbt_stripe v0.8.0
 
 ## 🚨 Breaking Changes 🚨:

@@ -69,19 +69,22 @@ vars:
 ```
 
 ## Step 4: Disable models for non-existent sources
-This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, or `subscription` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true`. Add variables for only the tables you want to disable within your root `dbt_project.yml`:
+This package takes into consideration that not every Stripe account utilizes the **invoices**, **payment method**, and **subscription** features. Therefore we allow you to configure the following variables below, which will then disable the corresponding related tables: `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, or `subscription`. The `plan` and `price` tables are toggled automatically (see *Step 6: Leveraging Plan vs Price Sources*)
+
+By default, all variables' values are assumed to be `true`. Only add variables within your root `dbt_project.yml` for only the tables you would want to disable:
+
 ```yml
 vars:
     stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
     stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
-    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan tables.
+    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan/pricing tables.
 ```
 ## Step 5: Leveraging Subscription Vs Subscription History Sources
-For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have a older connector then you must leverage the `stripe__subscription` to have the package use the `subscription` source rather than the `subscription_history` table.
+For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have a older connector then you must leverage the `stripe__using_subscription_history` toggle to have the package use the `subscription` source rather than the `subscription_history` table.
 > **Please note that if you have `stripe__subscription_history` enabled then the package will filter for only active records.**
 ```yml
 vars:
-    stripe__subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
+    stripe__usingsubscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
 ```
 ## Step 6: Leveraging Plan vs Price Sources
 
