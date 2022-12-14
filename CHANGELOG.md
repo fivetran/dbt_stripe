@@ -15,7 +15,7 @@
 
 - Variables have been prefixed with "stripe__" so they can be used globally.
 
-- `start_date` in the `stripe__subscription_details` model has been changed to `start_date_at` to follow our standard naming practices.
+- In the `stripe__subscription_details` model `start_date` has been updated to `start_date_at` to follow our standard naming practices.
 
 For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
 
