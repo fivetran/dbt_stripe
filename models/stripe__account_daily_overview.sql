@@ -17,10 +17,10 @@ with date_spine as (
         *,
 
         {% for t in total_fields %}
-        sum{{ t }} over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_{{ t }},
+        sum({{ t }}) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_{{ t }},
         {% endfor %}
 
-        source_relation
+        -- source_relation # add this in upon union_feature merge
 
         -- sum(total_daily_sales_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_sales_amount,
         -- sum(total_daily_refunds_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_refunds_amount,
@@ -73,7 +73,7 @@ with date_spine as (
         {% endfor %}
 
         date_spine.date_index,
-        source_relation
+        -- source_relation # add later!
 
     from date_spine
     left join account_rolling_totals

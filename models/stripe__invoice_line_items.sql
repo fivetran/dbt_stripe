@@ -10,12 +10,12 @@ with invoice_line_item as (
     select *
     from {{ ref('stripe__invoice_details') }}
 
+{% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
 
     select *
     from {{ var('subscription') }}  
 
-{% if var('stripe__using_subscriptions', True) %}
 ), pricing as (
 
     select *
