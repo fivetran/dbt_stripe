@@ -1,5 +1,6 @@
 # dbt_stripe v0.9.0
 
+[PR #54](https://github.com/fivetran/dbt_stripe/pull/54):
 ## 🚨 Breaking Changes 🚨:
 - Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API, the following columns in `stripe__invoice_line_items` have been updated:
 
@@ -19,8 +20,6 @@
 - We have introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
 
 For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
-
-[#54](https://github.com/fivetran/dbt_stripe/pull/54)
 
 # dbt_stripe v0.8.0
 
