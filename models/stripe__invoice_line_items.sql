@@ -101,7 +101,7 @@ left join subscription
     on invoice_line_item.subscription_id = subscription.subscription_id
     and invoice_line_item.source_relation = subscription.source_relation
 left join pricing 
-    {% if var('stripe__price', does_table_exist('price')) %}
+    {% if var('stripe__using_price', does_table_exist('price')) %}
     on invoice_line_item.price_id = pricing.price_id
 
     {% else %}
