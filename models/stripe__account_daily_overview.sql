@@ -22,22 +22,6 @@ with date_spine as (
 
         -- , source_relation # add this in upon union_feature merge
 
-        -- sum(total_daily_sales_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_sales_amount,
-        -- sum(total_daily_refunds_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_refunds_amount,
-        -- sum(total_daily_adjustments_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_adjustments_amount,
-        -- sum(total_daily_other_transactions_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_other_transactions_amount,
-        -- sum(total_daily_gross_transaction_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_gross_transaction_amount,
-        -- sum(total_daily_net_transactions_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_net_transactions_amount,
-        -- sum(total_daily_payout_fee_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_payout_fee_amount,
-        -- sum(total_daily_gross_payout_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_gross_payout_amount,
-        -- sum(daily_net_activity_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_daily_net_activity_amount,
-        -- sum(daily_end_balance_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_daily_end_balance_amount,
-        -- sum(total_daily_sales_count) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_sales_count,
-        -- sum(total_daily_payouts_count) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_payouts_count,
-        -- sum(total_daily_adjustments_count) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_adjustments_count,
-        -- sum(total_daily_failed_charge_count) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_failed_charge_count,
-        -- sum(total_daily_failed_charge_amount) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_total_daily_failed_charge_amount
-
     from account_daily_balances_by_type
 
 ), final as (
@@ -45,21 +29,6 @@ with date_spine as (
     select
         coalesce(account_rolling_totals.account_id, date_spine.account_id) as account_id,
         coalesce(account_rolling_totals.date_day, date_spine.date_day) as date_day,
-        -- account_rolling_totals.total_daily_sales_amount,
-        -- account_rolling_totals.total_daily_refunds_amount,
-        -- account_rolling_totals.total_daily_adjustments_amount,
-        -- account_rolling_totals.total_daily_other_transactions_amount,
-        -- account_rolling_totals.total_daily_gross_transaction_amount,
-        -- account_rolling_totals.total_daily_net_transactions_amount,
-        -- account_rolling_totals.total_daily_payout_fee_amount,
-        -- account_rolling_totals.total_daily_gross_payout_amount,
-        -- account_rolling_totals.daily_net_activity_amount,
-        -- account_rolling_totals.daily_end_balance_amount,
-        -- account_rolling_totals.total_daily_sales_count,
-        -- account_rolling_totals.total_daily_payouts_count,
-        -- account_rolling_totals.total_daily_adjustments_count,
-        -- account_rolling_totals.total_daily_failed_charge_count,
-        -- account_rolling_totals.total_daily_failed_charge_amount,
 
         {% for t in total_fields %}
         account_rolling_totals.{{ t }},
