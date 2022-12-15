@@ -70,7 +70,7 @@ select
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
 
-    {% if var('stripe__price', does_table_exist('price')) %}
+    {% if var('stripe__using_price', does_table_exist('price')) %}
     pricing.price_id,
     
     {% else %}
