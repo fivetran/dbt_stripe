@@ -14,7 +14,7 @@ with balance_transaction_joined as (
     from {{ var('customer') }}  
 
 ), transactions_grouped as (
- 
+
     select
       customer_id,
       sum(case when type in ('charge', 'payment') 

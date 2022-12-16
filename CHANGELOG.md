@@ -1,3 +1,15 @@
+# dbt_stripe v0.9.0
+
+
+[PR #55](https://github.com/fivetran/dbt_stripe/pull/55): 
+## 🎉 Feature Updates
+- New models `stripe__account_daily_overview` and `stripe__invoice_details` have been added.
+- `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
+
+## 🚨 Breaking Changes 🚨:
+- `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
+
+
 # dbt_stripe v0.8.0
 
 ## 🚨 Breaking Changes 🚨:

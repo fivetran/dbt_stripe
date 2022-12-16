@@ -1,96 +1,91 @@
-{{ config(enabled=var('using_invoices', True)) }}
+{{ config(enabled=var('stripe__using_invoices', True)) }}
 
-with invoice as (
-
-    select *
-    from {{ var('invoice') }}  
-
-), charge as (
+with invoice_line_item as (
 
     select *
-    from {{ var('charge') }}  
+    from {{ var('invoice_line_item') }} 
 
-), invoice_line_item as (
-
-    select *
-    from {{ var('invoice_line_item') }}  
-
-), customer as (
+), invoice_details as (
 
     select *
-    from {{ var('customer') }}  
+    from {{ ref('stripe__invoice_details') }}
 
-{% if var('using_subscriptions', True) %}
-
+{% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
 
     select *
     from {{ var('subscription') }}  
 
-), plan as (
+), pricing as (
 
     select *
-    from {{ var('plan') }}  
+    from {{ var('pricing') }}  
 
 {% endif %}
 )
 
 select 
-    invoice.invoice_id,
-    invoice.number,
-    invoice.created_at as invoice_created_at,
-    invoice.status,
-    invoice.due_date,
-    invoice.currency,
-    invoice.amount_due,
-    invoice.subtotal,
-    invoice.tax,
-    invoice.total,
-    invoice.amount_paid,
-    invoice.amount_remaining,
-    invoice.attempt_count,
-    invoice.description as invoice_memo,
-    invoice_line_item.unique_id  as invoice_line_item_id,
-    invoice_line_item.description as line_item_desc,
-    invoice_line_item.amount as line_item_amount,
+    invoice_line_item.invoice_line_item_id,
+    invoice_line_item.invoice_id,
+    invoice_line_item.invoice_item_id,
+    invoice_line_item.amount as invoice_line_item_amount,
+    invoice_line_item.currency,
+    invoice_line_item.description as invoice_line_item_memo,
+    invoice_line_item.is_discountable,
+    invoice_line_item.plan_id,
+    invoice_line_item.price_id,
+    invoice_line_item.proration,
     invoice_line_item.quantity,
+    invoice_line_item.subscription_id,
+    invoice_line_item.subscription_item_id,
+    invoice_line_item.type,
+    invoice_line_item.unique_id,
     invoice_line_item.period_start,
     invoice_line_item.period_end,
-    charge.balance_transaction_id,
-    charge.amount as charge_amount, 
-    charge.status as charge_status,
-    charge.created_at as charge_created_at,
-    customer.description as customer_description,
-    customer.email as customer_email,
-    customer.customer_id
+    invoice_details.invoice_created_at,
+    invoice_details.status as invoice_status,
+    invoice_details.due_date as invoice_due_date,
+    invoice_details.amount_due as invoice_amount_due,
+    invoice_details.amount_paid as invoice_amount_paid,
+    invoice_details.subtotal as invoice_subtotal,
+    invoice_details.tax as invoice_tax,
+    invoice_details.total as invoice_total,
+    invoice_details.connected_account_id as connected_account_id,
+    invoice_details.customer_id as customer_id
 
-    {% if var('using_subscriptions', True) %}
-    ,subscription.subscription_id,
+    {% if var('stripe__using_subscriptions', True) %}
+    ,
     subscription.billing as subscription_billing,
-    subscription.start_date as subscription_start_date,
+    subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
-    plan.plan_id,
-    plan.is_active as plan_is_active,
-    plan.amount as plan_amount,
-    plan.plan_interval as plan_interval,
-    plan.interval_count as plan_interval_count,
-    plan.nickname as plan_nickname,
-    plan.product_id as plan_product_id
+    pricing.is_active as pricing_is_active,
+    pricing.unit_amount as pricing_amount,
+    pricing.recurring_interval as pricing_interval,
+    pricing.recurring_interval_count as pricing_interval_count,
+    pricing.nickname as pricing_nickname,
+    pricing.product_id as pricing_product_id
     {% endif %}
     
-from invoice
+from invoice_line_item
 
-left join charge 
-    on charge.charge_id = invoice.charge_id
-left join invoice_line_item 
-    on invoice.invoice_id = invoice_line_item.invoice_id
+left join invoice_details 
+    on invoice_line_item.invoice_id = invoice_details.invoice_id
+    and invoice_line_item.source_relation = invoice_details.source_relation
 
-{% if var('using_subscriptions', True) %}
-left join subscription 
+{% if var('stripe__using_subscriptions', True) %}
+
+left join subscription
     on invoice_line_item.subscription_id = subscription.subscription_id
-left join plan 
-    on invoice_line_item.plan_id = plan.plan_id
-{% endif %}
+    and invoice_line_item.source_relation = subscription.source_relation
 
-left join customer 
-    on invoice.customer_id = customer.customer_id
+left join pricing 
+    {% if var('stripe__using_price', does_table_exist('price')) %}
+    on invoice_line_item.price_id = pricing.price_id
+
+    {% else %}
+    on invoice_line_item.plan_id = pricing.plan_id
+
+    {% endif %}
+    and invoice_line_item.source_relation = pricing.source_relation
+
+{% endif %}

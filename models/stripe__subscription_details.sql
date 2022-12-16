@@ -1,4 +1,4 @@
-{{ config(enabled=fivetran_utils.enabled_vars(['using_invoices','using_subscriptions'])) }}
+{{ config(enabled=fivetran_utils.enabled_vars(['stripe__using_invoices','stripe__using_subscriptions'])) }}
 
 with invoice as (
 
@@ -65,7 +65,7 @@ select
   customer.description as customer_description,
   customer.email as customer_email,
   subscription.status,
-  subscription.start_date,
+  subscription.start_date_at,
   subscription.ended_at,
   subscription.billing,
   subscription.billing_cycle_anchor,

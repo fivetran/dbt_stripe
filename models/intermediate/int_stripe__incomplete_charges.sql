@@ -8,6 +8,7 @@ with charge as (
 select 
   created_at,
   customer_id,
+  connected_account_id,
   amount
 from charge
 where not is_captured

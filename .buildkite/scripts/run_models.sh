@@ -19,5 +19,5 @@ dbt deps
 dbt seed --target "$db" --full-refresh
 dbt run --target "$db" --full-refresh
 dbt test --target "$db"
-dbt run --vars '{using_invoices: false, using_payment_method: false, using_subscriptions: false, stripe_timezone: "America/New_York", stripe__subscription_history: true}' --target "$db"
+dbt run --vars '{stripe__using_invoices: false, stripe__using_payment_method: false, stripe__using_subscriptions: false, stripe_timezone: "America/New_York", stripe__using_subscription_history: false, stripe__using_price: false}' --target "$db"
 dbt test --target "$db"

@@ -29,7 +29,7 @@ with balance_transaction as (
     select *
     from {{ var('customer')}}
 
-{% if var('using_payment_method', True) %}
+{% if var('stripe__using_payment_method', True) %}
 
 ), payment_method as (
 
@@ -72,11 +72,12 @@ select
     case when balance_transaction.type = 'charge' then charge.amount end as customer_facing_amount, 
     case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
     {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
+    coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as account_id, 
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.description as customer_description, 
 
-    {% if var('using_payment_method', True) %}
+    {% if var('stripe__using_payment_method', True) %}
     payment_method.type as payment_method_type,
     payment_method_card.brand as payment_method_brand,
     payment_method_card.funding as payment_method_funding,
@@ -96,14 +97,14 @@ select
     refund.reason as refund_reason
 from balance_transaction
 
-left join charge 
+left join charge
     on charge.balance_transaction_id = balance_transaction.balance_transaction_id
 left join customer 
     on charge.customer_id = customer.customer_id
 left join payment_intent 
     on charge.payment_intent_id = payment_intent.payment_intent_id
 
-{% if var('using_payment_method', True) %}
+{% if var('stripe__using_payment_method', True) %}
 left join payment_method 
     on payment_intent.payment_method_id = payment_method.payment_method_id
 left join payment_method_card 

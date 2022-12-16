@@ -6,8 +6,9 @@ version: '0.8.0'
 profile: 'integration_tests'
 
 vars:
-  stripe_schema: stripe_integrations_tests
+  stripe_schema: stripe_integrations_tests_2
   stripe_source:
+    stripe_account_identifier:                "account_data" 
     stripe_group_identifier:                  "group_data"
     stripe_balance_transaction_identifier:    "balance_transaction_data"
     stripe_card_identifier:                   "card_data"
@@ -21,6 +22,7 @@ vars:
     stripe_payment_method_identifier:         "payment_method_data"
     stripe_payout_identifier:                 "payout_data"
     stripe_plan_identifier:                   "plan_data"
+    stripe_price_identifier:                  "price_data"
     stripe_refund_identifier:                 "refund_data"
     stripe_subscription_history_identifier:   "subscription_history_data"
     stripe_subscription_identifier:           "subscription_data"
@@ -34,13 +36,17 @@ seeds:
     +quote_columns: "{{ true if target.type in ('redshift','postgres') else false }}"
     +column_types:
       _fivetran_synced: timestamp
+      created: timestamp
+      voided_at: timestamp
+      canceled_at: timestamp
+      invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     balance_transaction_data:
       +column_types:
         created: timestamp
         available_on: timestamp
     charge_data:
       +column_types:
-        balance_transaction_id: "{{ 'varchar(250)' if target.type in ('redshift','postgres') else 'string'}}"
+        balance_transaction_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         created: timestamp
     customer_data:
       +column_types:
