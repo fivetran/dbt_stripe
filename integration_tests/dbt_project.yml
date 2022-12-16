@@ -6,15 +6,9 @@ version: '0.9.0'
 profile: 'integration_tests'
 
 vars:
-<<<<<<< HEAD
-  stripe_schema: stripe_integrations_tests_4
+  stripe_schema: stripe_integrations_tests_6
   stripe_source:
     stripe_account_identifier:                "account_data"
-=======
-  stripe_schema: stripe_integrations_tests_2
-  stripe_source:
-    stripe_account_identifier:                "account_data" 
->>>>>>> f6314d74332f11d38790bb5bb4ecfe734736f63f
     stripe_group_identifier:                  "group_data"
     stripe_balance_transaction_identifier:    "balance_transaction_data"
     stripe_card_identifier:                   "card_data"
