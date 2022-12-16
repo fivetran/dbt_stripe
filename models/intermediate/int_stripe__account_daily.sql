@@ -23,6 +23,7 @@ with date_spine as (
     select
         date_spine.date_day,
         balance_transaction.account_id,
+        balance_transaction.source_relation,
         sum(case when balance_transaction.type in ('charge', 'payment') 
             then balance_transaction.amount
             else 0 end) as total_daily_sales_amount,
@@ -62,23 +63,26 @@ with date_spine as (
     from balance_transaction
     left join date_spine 
         on balance_transaction.account_id = date_spine.account_id
+        and balance_transaction.source_relation = date_spine.source_relation
         and cast({{ dbt.date_trunc('day', 'balance_transaction.date') }} as date) = date_spine.date_day
-    group by 1, 2
+    group by 1,2,3
 
 ), daily_failed_charges as (
 
     select
         {{ date_timezone('created_at') }} as date,
         connected_account_id,
+        source_relation,
         count(*) as total_daily_failed_charge_count,
         sum(amount) as total_daily_failed_charge_amount
     from incomplete_charges
-    group by 1, 2
+    group by 1,2,3
 )
 
 select
     daily_account_balance_transactions.date_day,
     daily_account_balance_transactions.account_id,
+    daily_account_balance_transactions.source_relation,
     daily_account_balance_transactions.total_daily_sales_amount/100.0 as total_daily_sales_amount,
     daily_account_balance_transactions.total_daily_refunds_amount/100.0 as total_daily_refunds_amount,
     daily_account_balance_transactions.total_daily_adjustments_amount/100.0 as total_daily_adjustments_amount,
@@ -94,7 +98,9 @@ select
     daily_account_balance_transactions.total_daily_adjustments_count,
     coalesce(daily_failed_charges.total_daily_failed_charge_count, 0) as total_daily_failed_charge_count,
     coalesce(daily_failed_charges.total_daily_failed_charge_amount/100, 0) as total_daily_failed_charge_amount
+
 from daily_account_balance_transactions
-left join daily_failed_charges 
+left join daily_failed_charges
     on daily_account_balance_transactions.date_day = daily_failed_charges.date
     and daily_account_balance_transactions.account_id = daily_failed_charges.connected_account_id
+    and daily_account_balance_transactions.source_relation = daily_failed_charges.source_relation

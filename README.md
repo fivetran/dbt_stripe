@@ -113,7 +113,34 @@ vars:
     stripe_union_schemas: ['stripe_us','stripe_mx'] # use this if the data is in different schemas/datasets of the same database/project
     stripe_union_databases: ['stripe_db_1','stripe_db_2'] # use this if the data is in different databases/projects but uses the same schema name
 ```
+## Step 6: Leveraging Plan vs Price Sources
 
+Customers using Fivetran with the newest Stripe pricing model will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. While the default is to use the `price` table if it exists, you may add the following to your `dbt_project.yml` to override using the macro. 
+
+```yml
+# dbt_project.yml
+
+...
+config-version: 2
+
+vars:
+  stripe:
+    stripe__using_price: false #  If true, will look `price` table. If false, will look for the `plan` table. 
+```
+
+## Step 7: Unioning Multiple Stripe Connectors
+If you have multiple Stripe connectors you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connectors will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
+
+```yml
+# dbt_project.yml
+
+...
+config-version: 2
+
+vars:
+    stripe_union_schemas: ['stripe_us','stripe_mx'] # use this if the data is in different schemas/datasets of the same database/project
+    stripe_union_databases: ['stripe_db_1','stripe_db_2'] # use this if the data is in different databases/projects but uses the same schema name
+```
 ## (Optional) Step 8: Additional configurations
 <details><summary>Expand for configurations</summary>
 

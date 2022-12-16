@@ -78,6 +78,7 @@ final as (
 
     select distinct
         account.account_id,
+        account.source_relation,
         date_spine.date_day,
         date_spine.date_week,
         date_spine.date_month,

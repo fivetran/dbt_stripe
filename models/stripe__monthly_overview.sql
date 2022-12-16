@@ -7,6 +7,7 @@ with daily_overview as (
 
 select
     {{ dbt.date_trunc('month', 'date')}} as month,
+    source_relation,
     sum(total_sales) as total_sales,
     sum(total_refunds) as total_refunds,
     sum(total_adjustments) as total_adjustments,
@@ -22,4 +23,4 @@ select
     sum(total_failed_charge_count) as total_failed_charge_count,
     sum(total_failed_charge_amount) as total_failed_charge_amount
 from daily_overview
-group by 1
+group by 1,2

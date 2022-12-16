@@ -51,10 +51,10 @@ select
     invoice_details.tax as invoice_tax,
     invoice_details.total as invoice_total,
     invoice_details.connected_account_id as connected_account_id,
-    invoice_details.customer_id as customer_id
+    invoice_details.customer_id as customer_id,
 
     {% if var('stripe__using_subscriptions', True) %}
-    ,
+
     subscription.billing as subscription_billing,
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
@@ -63,8 +63,10 @@ select
     pricing.recurring_interval as pricing_interval,
     pricing.recurring_interval_count as pricing_interval_count,
     pricing.nickname as pricing_nickname,
-    pricing.product_id as pricing_product_id
+    pricing.product_id as pricing_product_id,
     {% endif %}
+
+    invoice_line_item.source_relation
     
 from invoice_line_item
 

@@ -1,14 +1,14 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.8.0'
+version: '0.9.0'
 
 profile: 'integration_tests'
 
 vars:
-  stripe_schema: stripe_integrations_tests_2
+  stripe_schema: stripe_integrations_tests_6
   stripe_source:
-    stripe_account_identifier:                "account_data" 
+    stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
     stripe_balance_transaction_identifier:    "balance_transaction_data"
     stripe_card_identifier:                   "card_data"
@@ -37,12 +37,12 @@ seeds:
     +column_types:
       _fivetran_synced: timestamp
       created: timestamp
+      canceled_at: timestamp
       voided_at: timestamp
       canceled_at: timestamp
       invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     balance_transaction_data:
       +column_types:
-        created: timestamp
         available_on: timestamp
     charge_data:
       +column_types:

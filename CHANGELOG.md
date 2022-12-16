@@ -9,6 +9,27 @@
 ## 🚨 Breaking Changes 🚨:
 - `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
 
+[PR #54](https://github.com/fivetran/dbt_stripe/pull/54):
+
+- Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API, the following columns in `stripe__invoice_line_items` have been updated:
+
+| **Old**                          | **New**                                                                                                                                                                                                                              |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| plan_is_active    | pricing_is_active
+| plan_amount    | pricing_amount
+| plan_interval    | pricing_interval
+| plan_interval_count    | pricing_interval_count
+| plan_nickname    | pricing_nickname
+| plan_product_id    | pricing_product_id                                                                                                       |
+
+- Variables have been prefixed with "stripe__" so they can be used globally.
+
+- In the `stripe__subscription_details` model `start_date` has been updated to `start_date_at` to follow our standard naming practices.
+
+- We have introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
+
+For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
+
 
 # dbt_stripe v0.8.0
 

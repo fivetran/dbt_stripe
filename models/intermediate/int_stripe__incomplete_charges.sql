@@ -9,6 +9,7 @@ select
   created_at,
   customer_id,
   connected_account_id,
-  amount
+  amount,
+  source_relation
 from charge
 where not is_captured
