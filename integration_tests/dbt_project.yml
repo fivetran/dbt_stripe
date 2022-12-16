@@ -37,24 +37,17 @@ seeds:
     +column_types:
       _fivetran_synced: timestamp
       created: timestamp
-<<<<<<< HEAD
       canceled_at: timestamp
-=======
       voided_at: timestamp
       canceled_at: timestamp
       invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
->>>>>>> f6314d74332f11d38790bb5bb4ecfe734736f63f
     balance_transaction_data:
       +column_types:
         available_on: timestamp
     charge_data:
       +column_types:
-<<<<<<< HEAD
-        balance_transaction_id: "{{ 'varchar(250)' if target.type in ('redshift','postgres') else 'string'}}"
-=======
         balance_transaction_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         created: timestamp
->>>>>>> f6314d74332f11d38790bb5bb4ecfe734736f63f
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
