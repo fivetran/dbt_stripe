@@ -66,7 +66,7 @@ select
     pricing.product_id as pricing_product_id,
     {% endif %}
 
-    invoice.source_relation
+    invoice_line_item.source_relation
     
 from invoice_line_item
 
