@@ -8,6 +8,7 @@ with charge as (
 select 
   created_at,
   customer_id,
+  connected_account_id,
   amount,
   source_relation
 from charge
