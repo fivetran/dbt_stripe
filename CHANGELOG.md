@@ -1,16 +1,12 @@
 # dbt_stripe v0.9.0
 
-
-[PR #55](https://github.com/fivetran/dbt_stripe/pull/55): 
-## 🎉 Feature Updates
-- New models `stripe__account_daily_overview` and `stripe__invoice_details` have been added.
+## 🎉 Feature Updates 🎉
+- Introducing the new models `stripe__account_daily_overview` and `stripe__invoice_details`
 - `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
+- We have also introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
 
 ## 🚨 Breaking Changes 🚨:
 - `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
-
-[PR #54](https://github.com/fivetran/dbt_stripe/pull/54):
-
 - Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API, the following columns in `stripe__invoice_line_items` have been updated:
 
 | **Old**                          | **New**                                                                                                                                                                                                                              |
@@ -26,10 +22,9 @@
 
 - In the `stripe__subscription_details` model `start_date` has been updated to `start_date_at` to follow our standard naming practices.
 
-- We have introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
-
 For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
 
+[#56](https://github.com/fivetran/dbt_stripe/pull/56)
 
 # dbt_stripe v0.8.0
 
