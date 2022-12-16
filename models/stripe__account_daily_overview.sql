@@ -20,7 +20,7 @@ with date_spine as (
         , sum({{ t }}) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_{{ t }}
         {% endfor %}
 
-        -- , source_relation # add this in upon union_feature merge
+        , source_relation
 
     from account_daily_balances_by_type
 
@@ -41,14 +41,14 @@ with date_spine as (
             end as {{ f }},
         {% endfor %}
 
-        date_spine.date_index
-        -- ,
-        -- source_relation # add later!
+        date_spine.date_index,
+        account_rolling_totals.source_relation
 
     from date_spine
     left join account_rolling_totals
         on account_rolling_totals.account_id = date_spine.account_id 
         and account_rolling_totals.date_day = date_spine.date_day
+        and account_rolling_totals.source_relation = date_spine.source_relation
 )
 
 select * 
