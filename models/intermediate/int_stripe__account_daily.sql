@@ -74,7 +74,7 @@ with date_spine as (
         connected_account_id,
         source_relation,
         count(*) as total_daily_failed_charge_count,
-        sum(amount) as total_daily_failed_charge_amount,
+        sum(amount) as total_daily_failed_charge_amount
     from incomplete_charges
     group by 1,2,3
 )
