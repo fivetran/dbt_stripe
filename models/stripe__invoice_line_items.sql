@@ -91,7 +91,3 @@ left join pricing
     and invoice_line_item.source_relation = pricing.source_relation
 
 {% endif %}
-
-left join customer 
-    on invoice.customer_id = customer.customer_id
-    and invoice.source_relation = customer.source_relation

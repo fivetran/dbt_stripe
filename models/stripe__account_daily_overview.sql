@@ -20,8 +20,6 @@ with date_spine as (
         , sum({{ t }}) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_{{ t }}
         {% endfor %}
 
-        , source_relation
-
     from account_daily_balances_by_type
 
 ), final as (
