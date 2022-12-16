@@ -518,62 +518,62 @@ models:
       - name: source_relation
         description: 
       - name: total_daily_sales_amount
-        description: 
+        description: Total amount for when transaction type is a charge or payment.
       - name: total_daily_refunds_amount
-        description:
+        description: Total amount for when transaction type is payment_refund or refund.
       - name: total_daily_adjustments_amount
-        description:
+        description: Total amount for when transaction type is adjustment
       - name: total_daily_other_transactions_amount
-        description:
+        description: Total amount for when transaction type is not of the prior types.
       - name: total_daily_gross_transaction_amount
-        description:
+        description: Total amount for when transaction type is not payout or transfer
       - name: total_daily_net_transactions_amount
-        description:
+        description: Total net for when transaction type is not payout or transfer.
       - name: total_daily_payout_fee_amount
-        description:
+        description: Total fee for when transaction type is payout or transfer.
       - name: total_daily_gross_payout_amount
-        description:
+        description: Total amount for when transaction type is payout or transfer.
       - name: daily_net_activity_amount
-        description:
+        description: Total fee for when transaction type is payout or transfer.
       - name: daily_end_balance_amount
-        description:
+        description: daily_net_activity_amount + total_daily_gross_payout_amount
       - name: total_daily_sales_count
-        description:
+        description: Count of total balance transactions where type is payment or charge.
       - name: total_daily_payouts_count
-        description:
+        description: Count of total balance transactions where type is payout.
       - name: total_daily_adjustments_count
-        description:
+        description: Count of total balance transactions where type is adjustment.
       - name: total_daily_failed_charge_count
-        description:
-      - name: total_daily_failed_charge_amou
-        description:
+        description: Count of incomplete charges.
+      - name: total_daily_failed_charge_amount
+        description: Total amount of incomplete charges.
       - name: rolling_total_daily_sales_amount
-        description:
+        description: Rolling total of total_daily_sales_amount
       - name: rolling_total_daily_refunds_amount
-        description:
+        description: Rolling total of total_daily_refunds_amount
       - name: rolling_total_daily_adjustments_amount
-        description:
-      - name: rolling_total_daily_other_transactions_amoun
-        description:
+        description: Rolling total of total_daily_adjustments_amount
+      - name: rolling_total_daily_other_transactions_amount
+        description: Rolling total of total_daily_other_transactions_amount
       - name: rolling_total_daily_gross_transaction_amount
-        description:
+        description: Rolling total of total_daily_gross_transaction_amount
       - name: rolling_total_daily_net_transactions_amount
-        description:
+        description: Rolling total of total_daily_net_transactions_amount
       - name: rolling_total_daily_payout_fee_amount
-        description:
-      - name: rolling_total_daily_gross_payout_amoun
-        description:
-      - name: rolling_daily_net_activity_amoun
-        description:
+        description: Rolling total of total_daily_payout_fee_amount
+      - name: rolling_total_daily_gross_payout_amount
+        description: Rolling total of total_daily_gross_payout_amount
+      - name: rolling_daily_net_activity_amount
+        description: Rolling total of daily_net_activity_amount
       - name: rolling_daily_end_balance_amount
-        description:
+        description: Rolling total of daily_end_balance_amount
       - name: rolling_total_daily_sales_count
-        description:
+        description: Rolling total of total_daily_sales_count
       - name: rolling_total_daily_payouts_count
-        description:
+        description: Rolling total of total_daily_payouts_count
       - name: rolling_total_daily_adjustments_count
-        description:
+        description: Rolling total of total_daily_adjustments_count
       - name: rolling_total_daily_failed_charge_count
-        description:
-      - name: rolling_total_daily_failed_charge_amoun
-        description:
+        description: Rolling total of total_daily_failed_charge_count
+      - name: rolling_total_daily_failed_charge_amount
+        description: Rolling total of total_daily_failed_charge_amount
