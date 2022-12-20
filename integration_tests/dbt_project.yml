@@ -1,12 +1,12 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.7.4'
+version: '0.8.0'
 
 profile: 'integration_tests'
 
 vars:
-  stripe_schema: stripe_integrations_tests
+  stripe_schema: stripe_integrations_tests_11
   stripe_source:
     stripe_group_identifier:                  "group_data"
     stripe_balance_transaction_identifier:    "balance_transaction_data"

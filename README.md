@@ -3,7 +3,7 @@
         href="https://github.com/fivetran/dbt_stripe/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
     <a alt="dbt-core">
-        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.0.0_,<2.0.0-orange.svg" /></a>
+        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.3.0_,<2.0.0-orange.svg" /></a>
     <a alt="Maintained?">
         <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" /></a>
     <a alt="PRs">
@@ -55,7 +55,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.7.0", "<0.8.0"]
+    version: [">=0.8.0", "<0.9.0"]
 
 ```
 ## Step 3: Define database and schema variables
@@ -109,21 +109,48 @@ vars:
         using_invoice_line_sub_filter: false # Default = true
 ```
 
-### Pivoting out Metadata Properties
-By default, this package selects the `metadata` JSON field within the `customer`, `charge`, `invoice`, `payment_intent`, `payment_method`, `payout`, `plan`, `refund`, and `subscription` source tables. However, you likely have properties within the `metadata` JSON field you would like to pivot out and include in the respective downstream staging model.
 
-If there are properties in the `metadata` JSON field that you'd like to pivot out into columns, add the respective variable(s) to your root `dbt_project.yml` file:
+### Pivoting out Metadata Properties
+Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package pivot out fields into their own columns. The metadata variables accept dictionaries in addition to strings.
+
+Additionally, if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field, Below are examples of how you would add the respective fields.
+
+The `metadata` JSON field is present within the `customer`, `charge`, `invoice`, `payment_intent`, `payment_method`, `payout`, `plan`, `refund`, and `subscription` source tables. To pivot these fields out and include in the respective downstream staging model, add the respective variable(s) to your root `dbt_project.yml` file like below.
+
+```yml
+vars: 
+  stripe__charge_metadata:
+    - name: metadata_field_1
+  stripe__invoice_metadata: 
+    - name: metadata_field_2
+  stripe__payment_intent_metadata:
+    - name: incompatible.field
+      alias: rename_incompatible_field
+  stripe__payment_method_metadata:
+    - name: field_is_reserved_word
+      alias: field_is_reserved_word_xyz
+  stripe__payout_metadata:
+    - name: 123
+      alias: one_two_three
+  stripe__plan_metadata:
+    - name: rename
+    - alias: renamed_field
+  stripe__refund_metadata:
+    - name: metadata_field_3
+    - name: metadata_field_4
+  stripe__subscription_metadata:
+    - name: metadata_field_5
+  stripe__customer_metadata:
+    - name: metadata_field_6
+
+```
+
+Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following configuration as well. 
+>**Note**: `stripe__plan_metadata` is only shown below, but the format will work for all metadata variables. 
+
 ```yml
 vars:
-    stripe__charge_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__invoice_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__payment_intent_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__payment_method_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__payout_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
     stripe__plan_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__refund_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
-    stripe__customer_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
 ### Change the build schema
@@ -160,13 +187,16 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/stripe_source
-      version: [">=0.7.0", "<0.8.0"]
+      version: [">=0.8.0", "<0.9.0"]
 
     - package: fivetran/fivetran_utils
-      version: [">=0.3.0", "<0.4.0"]
+      version: [">=0.4.0", "<0.5.0"]
 
     - package: dbt-labs/dbt_utils
-      version: [">=0.8.0", "<0.9.0"]
+      version: [">=1.0.0", "<2.0.0"]
+
+    - package: dbt-labs/spark_utils
+      version: [">=0.3.0", "<0.4.0"]
 ```
 # 🙌 How is this package maintained and can I contribute?
 ## Package Maintenance
