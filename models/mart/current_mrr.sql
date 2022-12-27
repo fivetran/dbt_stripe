@@ -3,6 +3,7 @@ SELECT
   sim.customer_id,
   c.name,
   sum(mrr) as mrr,
+  sum(brl_mrr) as brl_mrr,
   pc.name as product_class,
   sim.stripe_account
 FROM {{ref('stripe__subscription_items_mrr')}} sim
@@ -10,5 +11,5 @@ FROM {{ref('stripe__subscription_items_mrr')}} sim
   left join {{source('dbt_stripe_account_src', 'product')}} p on sim.product_id = p.id 
   left join {{source('dbt_stripe_account_src', 'product_classes')}} pc on pc.id = p.product_class
 where mrr > 0
-group by 1,2,3,5,6
+group by 1,2,3,6,7
 order by 2 asc

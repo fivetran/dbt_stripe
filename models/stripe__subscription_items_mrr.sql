@@ -35,6 +35,14 @@ select
         when 'year' then recurring_interval_count / 12.0
     end 
     end as mrr,
+    case
+        when subscription.status NOT IN ('active', 'past_due') THEN 0 ELSE
+    subscription_item.quantity * COALESCE(price.brl_unit_amount::FLOAT,price.brl_unit_amount_decimal::FLOAT) * coalesce(discount_factor, 1) * case recurring_interval
+        when 'week' then recurring_interval_count * 4
+        when 'month' then (1::FLOAT/recurring_interval_count::FLOAT)
+        when 'year' then recurring_interval_count / 12.0
+    end 
+    end as brl_mrr,
     product.id as product_id,
     subscription.stripe_account
 from subscription

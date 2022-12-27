@@ -57,7 +57,12 @@ churn as (
                 order by
                     mrr_day asc
             ) is null
-            and date_trunc('month', mrr_day) <> date_trunc('month', current_date + interval '-1' month)::date then 'Churn'
+            and plan_period_in_days <> 365
+            and date_trunc('month', mrr_day) <> date_trunc('month', current_date + interval '-1' month)::date
+            then 'Churn'
+            when plan_period_in_days >= 365
+            and mrr_day > (mrr_day + cast(plan_period_in_days as integer) + 30)
+            then 'Churn'
             when mn = 1 then case
                 when date_trunc('month', current_date + interval '-1' month) :: date - date_trunc(
                     'month',
@@ -76,7 +81,7 @@ churn as (
         mrr_day asc,
         churn_event desc
 ),
-final as (
+movements as (
 select
     distinct customer_id,
     mrr_day,
@@ -90,7 +95,9 @@ select
             partition by customer_id
             order by
                 mrr_day asc
-        ) then 'Reactivation'
+        )
+        and churn_event is null
+        then 'Reactivation'
         else churn_event
     end as event_type,
     stripe_account,
@@ -99,8 +106,8 @@ from
     churn
 order by
     customer_id asc,
-    mrr_day asc)
-select 
+    mrr_day asc),
+final as (select 
 	customer_id, 
 	case
 		when event_type = 'Churn' then (mrr_day+ INTERVAL '1 month')::date
@@ -109,5 +116,26 @@ select
 	event_type,
 	stripe_account,
 	mn
-from final
+from movements
 where event_type is not null
+union all
+select 
+	customer_id, 
+	case
+		when lag(event_type) over (partition by customer_id order by mrr_day asc) = 'Churn'
+		and event_type = 'Churn'
+		then mrr_day::date
+		when event_type = 'Churn' then (mrr_day+ INTERVAL '1 month')::date
+		else mrr_day::date
+	end as mrr_day,
+	case 
+		when lag(event_type) over (partition by customer_id order by mrr_day asc) = 'Churn'
+		and event_type = 'Churn'
+		then 'Reactivation'
+		else event_type end as event_type,
+	stripe_account,
+	mn
+from movements
+where event_type is not null)
+select distinct  * 
+from final
