@@ -57,6 +57,7 @@ churn as (
                 order by
                     mrr_day asc
             ) is null
+            --adding an exception rule for annual plans
             and plan_period_in_days <> 365
             and date_trunc('month', mrr_day) <> date_trunc('month', current_date + interval '-1' month)::date
             then 'Churn'
