@@ -29,14 +29,15 @@ final as (
 select 
 	*,
 	case rn1 when 1 then
-		LAG(mrr,cast(z1 as integer),mrr) OVER(PARTITION BY customer_id, rn1 ORDER BY x) 
-           ELSE LAG(mrr,cast(z1 as integer),mrr) OVER(PARTITION BY customer_id  ORDER BY x) 
-           END,
-    CASE rn1 WHEN 1 THEN 
-           LEAD(mrr,cast(z2 as integer),mrr) OVER(PARTITION by customer_id, rn1 ORDER BY x) 
-           ELSE LEAD(mrr,cast(z2 as integer),mrr) OVER(PARTITION BY customer_id ORDER BY x) 
-           END
-FROM b)
+	   lag(mrr,cast(z1 as integer),mrr) over(partition by customer_id, rn1 order by x) 
+           else lag(mrr,cast(z1 as integer),mrr) over(partition by customer_id order by x) 
+           end,
+       case rn1 when 1 then
+           lead(mrr,cast(z2 as integer),mrr) over(partition by customer_id, rn1 order by x) 
+           else lead(mrr,cast(z2 as integer),mrr) over(partition by customer_id order by x) 
+           end
+from b
+)
 select 
 	customer_id,
 	mrr_day,
