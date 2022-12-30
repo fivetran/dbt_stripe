@@ -50,7 +50,8 @@ current_mrr as (
 		left join last_brl_value lbl on cm.customer_id = lbl.customer_id
 			and lbl.stripe_account = cm.stripe_account
 			and lbl.rn = 1
-		left join historical_movements hm on cm.customer_id = hm.customer_id and hm.mn = 1),
+		left join historical_movements hm on cm.customer_id = hm.customer_id and hm.mn = 1
+),
 current_movement as (
 	select 
 		cm.customer_id,
