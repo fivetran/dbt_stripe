@@ -9,7 +9,8 @@ with mrr_sum_br as (
 	from {{ref('historical_mrr')}}
 	where mrr <> 0
 	and stripe_account = 'br'
-	group by 1,2,stripe_account, "date"),
+	group by 1,2,stripe_account, "date"
+),
 a as (
 	select	
 		*,
