@@ -1,4 +1,4 @@
-with mrr_sum as 
+with mrr_sum_us as 
 	(select 
 		customer_id,
 		date_trunc('day', "date")::date as mrr_day,
@@ -6,18 +6,35 @@ with mrr_sum as
 		stripe_account 
 	from {{ref('historical_mrr')}}  
 	where mrr <> 0
+	and stripe_account = 'us'
 	group by 1,2,stripe_account, "date"
 	order by 1 asc),
+mrr_sum_br as (
+	select *
+	from {{ref('brl_fx_variation')}}
+),
 mrr_movements as (
 	select
-		row_number() over( partition by customer_id order by mrr_day ASC) as mn,
+		row_number() over( partition by customer_id order by mrr_day asc) as mn,
 		customer_id,
 		mrr_day,
 		coalesce(lag(mrr) over (partition by customer_id order by mrr_day asc),0) as starting_mrr,
 		mrr - coalesce(lag(mrr) over (partition by customer_id order by mrr_day asc),0) as mrr_change,
 		mrr as ending_mrr,
 		stripe_account
-	from mrr_sum
+	from mrr_sum_us
+	where mrr <> 0
+	union all
+		select
+		row_number() over( partition by customer_id order by mrr_day asc) as mn,
+
+		customer_id,
+		mrr_day,
+		coalesce(lag(mrr) over (partition by customer_id order by mrr_day asc),0) as starting_mrr,
+		mrr - coalesce(lag(mrr) over (partition by customer_id order by mrr_day asc),0) as mrr_change,
+		mrr as ending_mrr,
+		stripe_account
+	from mrr_sum_br
 	where mrr <> 0
 	),
 movements as (

@@ -47,6 +47,16 @@ select
     plan_id,
     plan_interval,
     plan_interval_count,
+    case 
+        when proration and 
+	    date_trunc('MONTH', estimated_service_start)::date <> date_trunc('MONTH', period_start)::date then 0 --Stripe does not include this movements in MRR
+        when proration
+        then
+            -- we dont apply discounts on prorated items
+            (brl_line_item_amount - tax) * subscription_duration_ratio * (estimated_full_service_period / prorated_service_period)
+        else
+            ((brl_line_item_amount * coalesce(discount_factor, 1)) - tax) * subscription_duration_ratio * (estimated_full_service_period / prorated_service_period)
+    end as brl_mrr,
     invoice_line_item.stripe_account
 
 from invoice_line_item

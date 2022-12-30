@@ -57,6 +57,7 @@ select
     invoice_line_item.unique_id  as invoice_line_item_id,
     invoice_line_item.description as line_item_desc,
     invoice_line_item.amount as line_item_amount,
+    ili.brl_amount as brl_line_item_amount,
     invoice_line_item.is_discountable as discountable,
     invoice_line_item.quantity,
     invoice_line_item.period_start,
@@ -126,6 +127,8 @@ left join customer
     on invoice.customer_id = customer.customer_id
 left join invoice_src
     on invoice.invoice_id = invoice_src.id
+left join {{source('dbt_stripe_account_src', 'invoice_line_item')}} ili 
+    on ili.unique_id = invoice_line_item.unique_id
 
 {% if var('using_subscriptions', True) %}
 where
