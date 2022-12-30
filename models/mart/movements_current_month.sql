@@ -16,7 +16,8 @@ with subscription_mrr as (
 		left join {{ source('dbt_stripe_account_src', 'customer') }} c on c.id = cm.customer_id
 			and c.stripe_account = cm.stripe_account
 	group by 1,2,3,6
-	order by 1),
+	order by 1
+),
 historical_movements as (
 	select *,
 		row_number() over(partition by customer_id order by mrr_month desc) as mn
