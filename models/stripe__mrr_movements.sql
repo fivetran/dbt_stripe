@@ -26,7 +26,8 @@ mrr_movements as (
 	where mrr <> 0
 	union all
 		select
-		row_number() over( partition by customer_id order by mrr_day ASC) as mn,
+		row_number() over( partition by customer_id order by mrr_day asc) as mn,
+
 		customer_id,
 		mrr_day,
 		coalesce(lag(mrr) over (partition by customer_id order by mrr_day asc),0) as starting_mrr,
