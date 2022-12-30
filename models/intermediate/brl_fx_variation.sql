@@ -18,7 +18,7 @@ jumping_rule_1 as (
 			case rn1 when 1 then 1 else 0 end
 			order by mrr_day desc) y
 		from mrr_sum_br
-			),
+),
 jumping_rule_2 AS (
      SELECT *,
             ROW_NUMBER() OVER(PARTITION by customer_id,  x-y ORDER BY x ASC) z1,
