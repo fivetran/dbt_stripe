@@ -10,7 +10,7 @@ with mrr_sum_br as (
 	where mrr <> 0
 	and stripe_account = 'br'
 	group by 1,2,stripe_account, "date"),
-a as (
+jumping_rule_1 as (
 	select	
 		*,
 		row_number() over(partition by customer_id order by mrr_day desc) x,
@@ -19,11 +19,11 @@ a as (
 			order by mrr_day desc) y
 		from mrr_sum_br
 			),
-b AS (
+jumping_rule_2 AS (
      SELECT *,
             ROW_NUMBER() OVER(PARTITION by customer_id,  x-y ORDER BY x ASC) z1,
             ROW_NUMBER() OVER(PARTITION BY customer_id, x-y ORDER BY x DESC) z2 
-     FROM a),
+     FROM jumping_rule_1),
 final as (
 select 
 	*,
@@ -35,7 +35,7 @@ select
            LEAD(mrr,cast(z2 as integer),mrr) OVER(PARTITION by customer_id, rn1 ORDER BY x) 
            ELSE LEAD(mrr,cast(z2 as integer),mrr) OVER(PARTITION BY customer_id ORDER BY x) 
            END
-FROM b)
+FROM jumping_rule_2)
 select 
 	customer_id,
 	mrr_day,
