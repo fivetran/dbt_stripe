@@ -16,7 +16,8 @@ with subscription_mrr as (
 		left join {{ source('dbt_stripe_account_src', 'customer') }} c on c.id = cm.customer_id
 			and c.stripe_account = cm.stripe_account
 	group by 1,2,3,6
-	order by 1),
+	order by 1
+),
 historical_movements as (
 	select *,
 		row_number() over(partition by customer_id order by mrr_month desc) as mn
@@ -50,7 +51,8 @@ current_mrr as (
 		left join last_brl_value lbl on cm.customer_id = lbl.customer_id
 			and lbl.stripe_account = cm.stripe_account
 			and lbl.rn = 1
-		left join historical_movements hm on cm.customer_id = hm.customer_id and hm.mn = 1),
+		left join historical_movements hm on cm.customer_id = hm.customer_id and hm.mn = 1
+),
 current_movement as (
 	select 
 		cm.customer_id,
