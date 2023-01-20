@@ -25,7 +25,7 @@ with invoice as (
 
 ), customer as (
 
-    select *x
+    select *
     from {{ var('customer') }}  
 
 {% if var('stripe__using_subscriptions', True) %}
