@@ -84,7 +84,7 @@ For Stripe connectors set up after February 09, 2022 the `subscription` table ha
 > **Please note that if you have `stripe__subscription_history` enabled then the package will filter for only active records.**
 ```yml
 vars:
-    stripe__usingsubscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
+    stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
 ```
 ## Step 6: Leveraging Plan vs Price Sources
 

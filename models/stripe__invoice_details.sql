@@ -107,7 +107,6 @@ left join subscription
 
 {% endif %}
 
-
 left join customer 
     on invoice.customer_id = customer.customer_id
     and invoice.source_relation = customer.source_relation
