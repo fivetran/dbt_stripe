@@ -17,15 +17,15 @@ with invoice as (
         source_relation,
         plan_id,
         price_id,
-        count(distinct unique_id) as number_of_line_items,
-        sum(quantity) as total_quantity
+        coalesce(count(distinct unique_id),0) as number_of_line_items,
+        coalesce(sum(quantity),0) as total_quantity
 
     from {{ var('invoice_line_item') }}  
     group by 1,2,3,4
 
 ), customer as (
 
-    select *
+    select *x
     from {{ var('customer') }}  
 
 {% if var('stripe__using_subscriptions', True) %}
@@ -52,13 +52,13 @@ select
     invoice.status,
     invoice.due_date,
     invoice.currency,
-    invoice.amount_due,
-    invoice.amount_paid,
-    invoice.subtotal,
-    invoice.tax,
-    invoice.total,
-    invoice.amount_remaining,
-    invoice.attempt_count,
+    coalesce(invoice.amount_due,0) as amount_due,
+    coalesce(invoice.amount_paid,0) as amount_paid,
+    coalesce(invoice.subtotal,0) as subtotal,
+    coalesce(invoice.tax,0) as tax,
+    coalesce(invoice.total,0) as total,
+    coalesce(invoice.amount_remaining,0) as amount_remaining,
+    coalesce(invoice.attempt_count,0) as attempt_count,
     invoice.description as invoice_memo,
     invoice_line_item.number_of_line_items,
     invoice_line_item.total_quantity,

@@ -39,8 +39,8 @@ models:
       description: Three-letter ISO currency code that the customer sees.
     - name: effective_at 
       description: calendar day after available_at
-    - name: account_id
-      description: Account ID associated with this transaction
+    - name: connected_account_id
+      description: Connected account ID associated with this transaction
     - name: customer_id 
       description: The customer associated with the balance transaction (based on charge or refund details)
     - name: receipt_email 
@@ -100,7 +100,7 @@ models:
       - name: total_fees 
         description: Total fees charged on all transactions made with this customer.
       - name: total_net_transaction_amount 
-        description: Net amount of all transactions made with this customer.
+        description: Net amount of all transactions made with this customer. This is the gross amount excluding fees, refunds, and disputes.
       - name: total_sales_count 
         description: The total number of sales made to this customer.
       - name: total_refund_count 
@@ -374,7 +374,7 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 
-  - name: stripe__invoice_line_items
+  - name: stripe__invoice_line_item_details
     description: Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.
     tests:
       - dbt_utils.unique_combination_of_columns:

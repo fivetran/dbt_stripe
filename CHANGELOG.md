@@ -1,5 +1,7 @@
 # dbt_stripe v0.9.0
 
+[#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:
+
 ## 🎉 Feature Updates 🎉
 - Introducing the new models `stripe__account_daily_overview` and `stripe__invoice_details`
 - `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
@@ -9,7 +11,7 @@
 - `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
 - Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API, the following columns in `stripe__invoice_line_items` have been updated:
 
-| **Old**                          | **New**                                                                                                                                                                                                                              |
+| **Previous Name**                          | **New Name**                                                                                                                                                                                                                            |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | plan_is_active    | pricing_is_active
 | plan_amount    | pricing_amount
@@ -20,11 +22,20 @@
 
 - Variables have been prefixed with "stripe__" so they can be used globally.
 
+| **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| using_invoices    | stripe__using_invoices
+| using_credit_notes | stripe__using_credit_notes
+| using_payment_method | stripe__using_payment_method
+| using_livemode | stripe__using_livemode
+| using_invoice_line_sub_filter | stripe__using_invoice_line_sub_filter
+| using_subscriptions | stripe__using_subscriptions
+| using_subscription_history | stripe__using_subscription_history
+| using_price | stripe__using_price
+
 - In the `stripe__subscription_details` model `start_date` has been updated to `start_date_at` to follow our standard naming practices.
 
 For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
-
-[#56](https://github.com/fivetran/dbt_stripe/pull/56)
 
 # dbt_stripe v0.8.0
 

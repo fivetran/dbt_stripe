@@ -26,7 +26,7 @@ The following table provides a detailed list of all models materialized within t
 | [stripe__balance_transactions](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions)    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
 | [stripe__invoice_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details)      | Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.                                                                                         
 | [stripe__invoice_line_items](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_items)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.                                                                                 
-| [stripe__account_daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_items)      | Each record represents, per account per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions).                                                  |
+| [stripe__account_daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_items)      | Each record represents, per account per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You can use this model to create a MRR report.                                                  |
 | [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details)    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
 | [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                          |
 | [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)          | Each record represents a single day, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                           |
@@ -88,7 +88,9 @@ vars:
 ```
 ## Step 6: Leveraging Plan vs Price Sources
 
-Customers using Fivetran with the newest Stripe pricing model will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. While the default is to use the `price` table if it exists, you may add the following to your `dbt_project.yml` to override using the macro. 
+Customers using Fivetran with the newer Stripe Price API will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. The default is to use the `price` table if it exists. However if you wish to use the `plan` table instead, you may add the following to your `dbt_project.yml` to override the macro. 
+
+We recommend using the `price` table as Stripe replaced the Plans API with the Price API and is backwards compatible.
 
 ```yml
 # dbt_project.yml
@@ -158,14 +160,14 @@ By default, this package will run on non-test data (`where livemode = true`) fro
 ```yml
 vars:
     stripe_source:
-        using_livemode: false  # Default = true
+        stripe__using_livemode: false  # Default = true
 ```
 ### Including sub Invoice Line Items
 By default, this package will filter out any records from the `invoice_line_item` source table which include the string `sub_`. This is due to a legacy Stripe issue where `sub_` records were found to be duplicated. However, if you highly utilize these records you may wish they be included in the final output of the `stg_stripe__invoice_line_item` model. To do, so you may include the below variable configuration in your root `dbt_project.yml`:
 ```yml
 vars:
     stripe_source:
-        using_invoice_line_sub_filter: false # Default = true
+        stripe__using_invoice_line_sub_filter: false # Default = true
 ```
 
 
@@ -231,7 +233,7 @@ vars:
 
 </details>
 
-## (Optional) Step 7: Orchestrate your models with Fivetran Transformations for dbt Core™
+## (Optional) Step 9: Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
     
@@ -245,7 +247,7 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/stripe_source
-      version: [">=0.8.0", "<0.9.0"]
+      version: [">=0.9.0", "<0.10.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]

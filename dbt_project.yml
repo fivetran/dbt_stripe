@@ -26,11 +26,3 @@ vars:
     pricing: "{{ ref('stg_stripe__pricing') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"
-    stripe__using_invoices: true
-    stripe__using_credit_notes: false
-    stripe__using_payment_method: true
-    stripe__using_subscriptions: true
-    stripe__subscription_history: true
-    stripe__using_livemode: true
-    stripe__using_invoice_line_sub_filter: true
-    stripe__using_price: true
