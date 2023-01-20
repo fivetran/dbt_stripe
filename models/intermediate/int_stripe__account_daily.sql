@@ -22,7 +22,7 @@ with date_spine as (
 
     select
         date_spine.date_day,
-        balance_transaction.account_id,
+        date_spine.account_id,
         balance_transaction.source_relation,
         sum(case when balance_transaction.type in ('charge', 'payment') 
             then balance_transaction.amount
@@ -60,23 +60,21 @@ with date_spine as (
         count(distinct case when balance_transaction.type = 'adjustment' 
                 then coalesce(source, payout_id) 
                 else null end) as total_daily_adjustments_count
-    from balance_transaction
-    left join date_spine 
-        on balance_transaction.account_id = date_spine.account_id
+    from date_spine
+    left join balance_transaction
+        on cast({{ dbt.date_trunc('day', 'balance_transaction.date') }} as date) = date_spine.date_day
         and balance_transaction.source_relation = date_spine.source_relation
-        and cast({{ dbt.date_trunc('day', 'balance_transaction.date') }} as date) = date_spine.date_day
     group by 1,2,3
 
 ), daily_failed_charges as (
 
     select
         {{ date_timezone('created_at') }} as date,
-        connected_account_id,
         source_relation,
         count(*) as total_daily_failed_charge_count,
         sum(amount) as total_daily_failed_charge_amount
     from incomplete_charges
-    group by 1,2,3
+    group by 1,2
 )
 
 select
@@ -92,15 +90,14 @@ select
     daily_account_balance_transactions.total_daily_payout_fee_amount/100.0 as total_daily_payout_fee_amount,
     daily_account_balance_transactions.total_daily_gross_payout_amount/100.0 as total_daily_gross_payout_amount,
     daily_account_balance_transactions.daily_net_activity_amount/100.0 as daily_net_activity_amount,
-    (daily_account_balance_transactions.daily_net_activity_amount + daily_account_balance_transactions.total_daily_gross_payout_amount)/100.0 as daily_end_balance_amount,
-    daily_account_balance_transactions.total_daily_sales_count,
-    daily_account_balance_transactions.total_daily_payouts_count,
-    daily_account_balance_transactions.total_daily_adjustments_count,
+    coalesce((daily_account_balance_transactions.daily_net_activity_amount + daily_account_balance_transactions.total_daily_gross_payout_amount)/100.0, 0) as daily_end_balance_amount,
+    coalesce(daily_account_balance_transactions.total_daily_sales_count, 0) as total_daily_sales_count,
+    coalesce(daily_account_balance_transactions.total_daily_payouts_count, 0) as total_daily_payouts_count,
+    coalesce(daily_account_balance_transactions.total_daily_adjustments_count, 0) as total_daily_adjustments_count,
     coalesce(daily_failed_charges.total_daily_failed_charge_count, 0) as total_daily_failed_charge_count,
     coalesce(daily_failed_charges.total_daily_failed_charge_amount/100, 0) as total_daily_failed_charge_amount
 
 from daily_account_balance_transactions
 left join daily_failed_charges
     on daily_account_balance_transactions.date_day = daily_failed_charges.date
-    and daily_account_balance_transactions.account_id = daily_failed_charges.connected_account_id
     and daily_account_balance_transactions.source_relation = daily_failed_charges.source_relation

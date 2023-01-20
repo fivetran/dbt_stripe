@@ -6,6 +6,7 @@ with charge as (
 )
 
 select 
+  balance_transaction_id,
   created_at,
   customer_id,
   connected_account_id,
