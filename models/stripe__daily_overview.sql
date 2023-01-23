@@ -17,7 +17,7 @@ with date_spine as (
         *
 
         {% for t in total_fields %}
-        , sum({{ t }}) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_{{ t }}
+        , sum({{ t }}) over (order by date_day rows unbounded preceding) as rolling_{{ t }}
         {% endfor %}
 
     from account_daily_balances_by_type
@@ -25,17 +25,16 @@ with date_spine as (
 ), final as (
 
     select
-        coalesce(account_rolling_totals.account_id, date_spine.account_id) as account_id,
         coalesce(account_rolling_totals.date_day, date_spine.date_day) as date,
 
         {% for t in total_fields %}
-        account_rolling_totals.{{ t }},
+        round(account_rolling_totals.{{ t }},2) as {{ t }},
         {% endfor %}
 
         {% for f in rolling_fields %}
         case when account_rolling_totals.{{ f }} is null and date_index = 1
             then 0
-            else account_rolling_totals.{{ f }}
+            else round(account_rolling_totals.{{ f }},2)
             end as {{ f }},
         {% endfor %}
 
@@ -44,8 +43,7 @@ with date_spine as (
 
     from date_spine
     left join account_rolling_totals
-        on account_rolling_totals.account_id = date_spine.account_id 
-        and account_rolling_totals.date_day = date_spine.date_day
+        on account_rolling_totals.date_day = date_spine.date_day
         and account_rolling_totals.source_relation = date_spine.source_relation
 )
 
