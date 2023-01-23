@@ -21,8 +21,8 @@ models:
       description: Gross amount of the transaction, in cents.
     - name: fee 
       description: Fees (in cents) paid for this transaction.
-    - name: net 
-      description: Net amount of the transaction, in cents.
+    - name: net
+      description: Net amount of the transaction, in cents. Gross amount minus fees, refunds, and disputes
     - name: account_id
       description: The ID of the account tied to the transaction.
     - name: type 
@@ -40,7 +40,7 @@ models:
     - name: effective_at 
       description: calendar day after available_at
     - name: connected_account_id
-      description: Connected account ID associated with this transaction
+      description: Connected account ID associated with this transaction. A third party's account with Stripe.
     - name: customer_id 
       description: The customer associated with the balance transaction (based on charge or refund details)
     - name: receipt_email 
@@ -154,42 +154,6 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 
-  - name: stripe__daily_overview
-    description: Each record represents a single day, enriched with metrics about balances, payments, refunds, payouts, and other transactions.
-    columns:
-      - name: date 
-        description: The date associated with the transactions.  The available_at field is used for payouts, and the transaction created_at is used for all others.
-      - name: total_sales 
-        description: The sum of all sales during the reporting period.
-      - name: total_refunds 
-        description: The sum of all refunds during the reporting period.
-      - name: total_adjustments 
-        description: The sum of all adjustments during the reporting period.
-      - name: total_other_transactions
-        description: The sum of all other transactions during the reporting period.
-      - name: total_gross_transaction_amount
-        description: Gross amount of all transactions (excluding payouts and transfers)
-      - name: total_net_transactions
-        description: Net amount of all transactions (excluding payouts and transfers)
-      - name: total_payout_fees
-        description: Fees associated with all payouts and transfers during the reporting period.
-      - name: total_gross_payout_amount 
-        description: Total amount of all payouts and transfers during the reporting period.
-      - name: daily_net_activity 
-        description: Total balance transaction activity during the reporting period.
-      - name: daily_end_balance 
-        description: Account balance at the end of the reporting period.
-      - name: total_sales_count 
-        description: Number of sales transactions during the reporting period.
-      - name: total_payouts_count 
-        description: Number of payouts made during the reporting period.
-      - name: total_adjustments_count
-        description: Number of adjustments made during the reporting period.
-      - name: total_failed_charge_count
-        description: Number of incomplete charges during the reporting period.
-      - name: total_failed_charge_amount
-        description: Total amount from incomplete charges during the reporting period.
-
   - name: stripe__weekly_overview
     description: Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.
     columns:
@@ -246,7 +210,7 @@ models:
       - name: total_gross_payout_amount 
         description: Total amount of all payouts and transfers during the reporting period.
       - name: monthly_net_activity 
-        description: Total balance transaction activity during the reporting period.
+        description: Total balance transaction activity during the reporting period. Net amount minus fees from payouts and transfers
       - name: total_sales_count 
         description: Number of sales transactions during the reporting period.
       - name: total_payouts_count 
@@ -280,7 +244,7 @@ models:
       - name: total_gross_payout_amount 
         description: Total amount of all payouts and transfers during the reporting period.
       - name: quarterly_net_activity 
-        description: Total balance transaction activity during the reporting period.
+        description: Total balance transaction activity during the reporting period. Net amount minus fees from payouts and transfers
       - name: total_sales_count 
         description: Number of sales transactions during the reporting period.
       - name: total_payouts_count 
@@ -512,18 +476,15 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 
-  - name: stripe__account_daily_overview
+  - name: stripe__daily_overview
     description: Each record represents, per account per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions).
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - account_id
             - date_day
             - source_relation
     columns:
-      - name: account_id 
-        description: Id of account.
-      - name: date_day
+      - name: date
         description: Day of record, taken from the date of each balance transaction.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -544,7 +505,7 @@ models:
       - name: total_daily_gross_payout_amount
         description: Total amount for when transaction type is payout or transfer.
       - name: daily_net_activity_amount
-        description: Total fee for when transaction type is payout or transfer.
+        description: Net amount minus fees from payouts and transfers. 
       - name: daily_end_balance_amount
         description: daily_net_activity_amount + total_daily_gross_payout_amount
       - name: total_daily_sales_count

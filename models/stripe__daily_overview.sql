@@ -1,106 +1,53 @@
-with balance_transaction_joined as (
+{% set total_fields =  ['total_daily_sales_amount', 'total_daily_refunds_amount', 'total_daily_adjustments_amount', 'total_daily_other_transactions_amount', 'total_daily_gross_transaction_amount', 'total_daily_net_transactions_amount', 'total_daily_payout_fee_amount', 'total_daily_gross_payout_amount', 'daily_net_activity_amount', 'daily_end_balance_amount', 'total_daily_sales_count', 'total_daily_payouts_count', 'total_daily_adjustments_count', 'total_daily_failed_charge_count', 'total_daily_failed_charge_amount'] %}
+{% set rolling_fields = ['rolling_total_daily_sales_amount', 'rolling_total_daily_refunds_amount', 'rolling_total_daily_adjustments_amount', 'rolling_total_daily_other_transactions_amount', 'rolling_total_daily_gross_transaction_amount', 'rolling_total_daily_net_transactions_amount', 'rolling_total_daily_payout_fee_amount', 'rolling_total_daily_gross_payout_amount', 'rolling_daily_net_activity_amount', 'rolling_daily_end_balance_amount', 'rolling_total_daily_sales_count', 'rolling_total_daily_payouts_count', 'rolling_total_daily_adjustments_count', 'rolling_total_daily_failed_charge_count', 'rolling_total_daily_failed_charge_amount'] %}
 
-    select *
-    from {{ ref('stripe__balance_transactions') }}  
+with date_spine as (
 
-), incomplete_charges as (
+    select * 
+    from {{ ref('int_stripe__date_spine') }}
 
-    select *
-    from {{ ref('int_stripe__incomplete_charges') }}  
+), account_daily_balances_by_type as (
 
-), daily_balance_transactions as (
+    select * 
+    from {{ ref('int_stripe__account_daily')}}
 
-    select
-      case
-            when type = 'payout' 
-            then {{ date_timezone('available_on') }}  
-            else {{ date_timezone('created_at') }} 
-      end as date,
-      source_relation,
-      sum(case when type in ('charge', 'payment') 
-          then amount 
-          else 0 end) 
-      as total_sales,
-      sum(case when type in ('payment_refund', 'refund') 
-          then amount 
-          else 0 end) 
-      as total_refunds,
-      sum(case when type = 'adjustment' 
-          then amount 
-          else 0 end) 
-      as total_adjustments,
-      sum(case when type not in ('charge', 'payment', 'payment_refund', 'refund', 'adjustment', 'payout') and type not like '%transfer%' 
-          then amount 
-          else 0 end) 
-      as total_other_transactions,
-      sum(case when type <> 'payout' and type not like '%transfer%' 
-          then amount 
-          else 0 end) 
-      as total_gross_transaction_amount,
-      sum(case when type <> 'payout' and type not like '%transfer%' 
-          then net 
-          else 0 end)
-      as total_net_transactions,
-      sum(case when type = 'payout' or type like '%transfer%' 
-          then fee * -1.0
-          else 0 end) 
-      as total_payout_fees,
-      sum(case when type = 'payout' or type like '%transfer%' 
-          then amount 
-          else 0 end) 
-      as total_gross_payout_amount,
-      sum(case when type = 'payout' or type like '%transfer%' 
-          then fee * -1.0 
-          else net end) 
-      as daily_net_activity,
-      sum(case when type in ('payment', 'charge') 
-          then 1 
-          else 0 end) 
-      as total_sales_count,
-      sum(case when type = 'payout' 
-          then 1 
-          else 0 end)
-      as total_payouts_count,
-      count(distinct case when type = 'adjustment' 
-            then coalesce(source, payout_id) 
-            else null end) 
-      as total_adjustments_count
-
-    from balance_transaction_joined
-    group by 1,2
-
-), daily_failed_charges as (
+), account_rolling_totals as (
 
     select
-      {{ date_timezone('created_at') }} as date,
-      source_relation,
-      count(*) as total_failed_charge_count,
-      sum(amount) as total_failed_charge_amount
-    from incomplete_charges
-    group by 1,2
+        *
 
+        {% for t in total_fields %}
+        , sum({{ t }}) over (partition by account_id order by account_id, date_day rows unbounded preceding) as rolling_{{ t }}
+        {% endfor %}
+
+    from account_daily_balances_by_type
+
+), final as (
+
+    select
+        coalesce(account_rolling_totals.account_id, date_spine.account_id) as account_id,
+        coalesce(account_rolling_totals.date_day, date_spine.date_day) as date,
+
+        {% for t in total_fields %}
+        account_rolling_totals.{{ t }},
+        {% endfor %}
+
+        {% for f in rolling_fields %}
+        case when account_rolling_totals.{{ f }} is null and date_index = 1
+            then 0
+            else account_rolling_totals.{{ f }}
+            end as {{ f }},
+        {% endfor %}
+
+        date_spine.date_index,
+        account_rolling_totals.source_relation
+
+    from date_spine
+    left join account_rolling_totals
+        on account_rolling_totals.account_id = date_spine.account_id 
+        and account_rolling_totals.date_day = date_spine.date_day
+        and account_rolling_totals.source_relation = date_spine.source_relation
 )
 
-select
-      daily_balance_transactions.date,
-      daily_balance_transactions.total_sales/100.0 as total_sales,
-      daily_balance_transactions.total_refunds/100.0 as total_refunds,
-      daily_balance_transactions.total_adjustments/100.0 as total_adjustments,
-      daily_balance_transactions.total_other_transactions/100.0 as total_other_transactions,
-      daily_balance_transactions.total_gross_transaction_amount/100.0 as total_gross_transaction_amount,
-      daily_balance_transactions.total_net_transactions/100.0 as total_net_transactions,
-      daily_balance_transactions.total_payout_fees/100.0 as total_payout_fees,
-      daily_balance_transactions.total_gross_payout_amount/100.0 as total_gross_payout_amount,
-      daily_balance_transactions.daily_net_activity/100.0 as daily_net_activity,
-      (daily_balance_transactions.daily_net_activity + daily_balance_transactions.total_gross_payout_amount)/100.0 as daily_end_balance,
-      daily_balance_transactions.total_sales_count,
-      daily_balance_transactions.total_payouts_count,
-      daily_balance_transactions.total_adjustments_count,
-      coalesce(daily_failed_charges.total_failed_charge_count, 0) as total_failed_charge_count,
-      coalesce(daily_failed_charges.total_failed_charge_amount/100, 0) as total_failed_charge_amount,
-      daily_balance_transactions.source_relation
-from daily_balance_transactions
-
-left join daily_failed_charges 
-      on daily_balance_transactions.date = daily_failed_charges.date
-      and daily_balance_transactions.source_relation = daily_failed_charges.source_relation
+select * 
+from final
