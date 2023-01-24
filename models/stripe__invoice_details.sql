@@ -82,11 +82,6 @@ select
     subscription.ended_at as subscription_ended_at,
 
     {% endif %}
-
-    {% if var('stripe__invoice_metadata',[]) %}
-    {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__invoice_metadata')) }},
-    {% endif %}
-
     invoice.source_relation
 
 from invoice

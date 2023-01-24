@@ -99,6 +99,7 @@ select
     payout.description as payout_description,
     refund.reason as refund_reason,
     balance_transaction.source_relation
+
 from balance_transaction
 
 left join charge
