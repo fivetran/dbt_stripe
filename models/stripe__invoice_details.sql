@@ -15,13 +15,11 @@ with invoice as (
     select
         invoice_id,
         source_relation,
-        plan_id,
-        price_id,
         coalesce(count(distinct unique_id),0) as number_of_line_items,
         coalesce(sum(quantity),0) as total_quantity
 
     from {{ var('invoice_line_item') }}  
-    group by 1,2,3,4
+    group by 1,2
 
 ), customer as (
 
@@ -91,9 +89,9 @@ left join invoice_line_item
     and invoice.source_relation = invoice_line_item.source_relation
 
 left join charge 
-    on charge.charge_id = invoice.charge_id
-    and charge.invoice_id = invoice.invoice_id
-    and charge.source_relation = invoice.source_relation
+    on invoice.charge_id = charge.charge_id
+    and invoice.invoice_id = charge.invoice_id
+    and invoice.source_relation = charge.source_relation
 
 {% if var('stripe__using_subscriptions', True) %}
 left join subscription
