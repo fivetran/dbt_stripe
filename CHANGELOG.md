@@ -3,7 +3,9 @@
 [#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:
 
 ## 🎉 Feature Updates 🎉
-- Introducing the new models `stripe__account_daily_overview` and `stripe__invoice_details`
+- Introducing the new model `stripe__invoice_details`.
+- The `stripe__invoice_line_item` and `stripe__subscription_line_items` have been renamed to `stripe__invoice_line_item_details` and `stripe__subscription_details`.
+- Updated the models `stripe__daily_overview` with additional daily and rolling metrics. 
 - `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
 - We have also introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
 

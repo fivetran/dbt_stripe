@@ -25,7 +25,7 @@ with date_spine as (
 ), final as (
 
     select
-        coalesce(account_rolling_totals.date_day, date_spine.date_day) as date,
+        date_spine.date_day,
 
         {% for t in total_fields %}
         round(account_rolling_totals.{{ t }},2) as {{ t }},
