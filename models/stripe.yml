@@ -82,7 +82,14 @@ models:
 
   - name: stripe__customer_overview
     description: Each record represents a customer, enriched with metrics about their associated transactions.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_id
+            - source_relation
     columns:
+      - name: customer_id 
+        description: Unique identifier for each record from the Stripe customer object.
       - name: customer_description 
         description: An arbitrary string attached to the object. Often useful for displaying to users.
       - name: email 
@@ -486,6 +493,8 @@ models:
     columns:
       - name: date
         description: Day of record, taken from the date of each balance transaction.
+      - name: date_index
+        description: Number used to sort each day from oldest to most recent.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: total_daily_sales_amount

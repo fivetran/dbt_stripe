@@ -143,6 +143,7 @@ with balance_transaction_joined as (
 ), transactions_not_associated_with_customer as (
 
     select
+      'No Customer ID' as customer_id,
       'No Associated Customer' as customer_description,
       customer.email,
       customer.created_at as customer_created_at,
@@ -189,7 +190,8 @@ with balance_transaction_joined as (
 ), customer_transactions_overview as (
 
     select
-      coalesce(customer.description, customer.customer_id) as customer_description,
+      customer.customer_id,
+      customer.description,
       customer.email,
       customer.created_at as customer_created_at,
       customer.is_delinquent,
