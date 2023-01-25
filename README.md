@@ -26,12 +26,9 @@ The following table provides a detailed list of all models materialized within t
 | [stripe__balance_transactions](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions)    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
 | [stripe__invoice_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details)      | Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.                                                                                         
 | [stripe__invoice_line_items](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_items)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.                                                                                 
-| [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)      | Each record represents, per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You can use this model to create a MRR report.                                                  |
+| [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)      | Each record represents, per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You may use this model to roll up into weekly, quarterly, monthly, and other time grains. You may also use this model to create a MRR report.                                                  |
 | [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details)    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
 | [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                                                   |
-| [stripe__weekly_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__weekly_overview)         | Each record represents a single week, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                          |
-| [stripe__monthly_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__monthly_overview)        | Each record represents a single month, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                         |
-| [stripe__quarterly_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__quarterly_overview)      | Each record represents a single quarter, enriched with metrics about balances, payments, refunds, payouts, and other transactions.                                                                                                       |
 
 # 🎯 How do I use the dbt package?
 
@@ -78,14 +75,7 @@ vars:
     stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
     stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan/pricing tables.
 ```
-## Step 5: Leveraging Subscription Vs Subscription History Sources
-For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have a older connector then you must leverage the `stripe__using_subscription_history` toggle to have the package use the `subscription` source rather than the `subscription_history` table.
-> **Please note that if you have `stripe__subscription_history` enabled then the package will filter for only active records.**
-```yml
-vars:
-    stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
-```
-## (Optional) Step 6: Additional configurations
+## (Optional) Step 5: Additional configurations
 <details><summary>Expand for configurations</summary>
 
 ### Leveraging Plan vs Price Sources
@@ -104,6 +94,15 @@ vars:
   stripe:
     stripe__using_price: false #  True by default. If true, will look `price ` table. If false, will look for the `plan` table. 
 ```
+
+### Leveraging Subscription Vs Subscription History Sources
+For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have a older connector then you must leverage the `stripe__using_subscription_history` toggle to have the package use the `subscription` source rather than the `subscription_history` table.
+> **Please note that if you have `stripe__subscription_history` enabled then the package will filter for only active records.**
+```yml
+vars:
+    stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
+```
+
 ### Unioning Multiple Stripe Connectors
 If you have multiple Stripe connectors you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connectors will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
 
@@ -212,7 +211,7 @@ vars:
 
 </details>
 
-## (Optional) Step 7: Orchestrate your models with Fivetran Transformations for dbt Core™
+## (Optional) Step 6: Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
     

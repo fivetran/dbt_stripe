@@ -5,6 +5,7 @@
 ## 🎉 Feature Updates 🎉
 - Introducing the new model `stripe__invoice_details`.
 - The `stripe__invoice_line_item` and `stripe__subscription_line_items` have been renamed to `stripe__invoice_line_item_details` and `stripe__subscription_details`.
+- We removed models `stripe__weekly_overview`,`stripe__quarterly_overview`, and `stripe__monthly_overview` as they can be recreated directly from the `stripe__daily_overview` by rolling up the date grain.
 - Updated the models `stripe__daily_overview` with additional daily and rolling metrics. 
 - `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
 - We have also introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
