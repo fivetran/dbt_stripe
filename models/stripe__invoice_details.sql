@@ -15,7 +15,7 @@ with invoice as (
     select
         invoice_id,
         source_relation,
-        coalesce(count(distinct unique_id),0) as number_of_line_items,
+        coalesce(count(distinct unique_invoice_line_item_id),0) as number_of_line_items,
         coalesce(sum(quantity),0) as total_quantity
 
     from {{ var('invoice_line_item') }}  

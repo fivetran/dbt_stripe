@@ -39,7 +39,7 @@ select
     invoice_line_item.subscription_id,
     invoice_line_item.subscription_item_id,
     invoice_line_item.type,
-    invoice_line_item.unique_id,
+    invoice_line_item.unique_invoice_line_item_id,
     invoice_line_item.period_start,
     invoice_line_item.period_end,
     invoice_details.invoice_created_at,

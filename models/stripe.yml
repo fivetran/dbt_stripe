@@ -380,7 +380,7 @@ models:
         description: The average amount of invoices generated for this subscription
       - name: average_line_item_amount 
         description: The average sum of the line items for invoices generated for this subscription
-      - name: avg_num_invoice_items 
+      - name: avg_num_line_items 
         description: The average number of line items for invoices generated for this subscription   
       - name: source_relation
         description: "{{ doc('source_relation') }}"

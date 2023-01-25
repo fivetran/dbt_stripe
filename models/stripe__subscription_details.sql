@@ -35,8 +35,8 @@ with invoice as (
     invoice.created_at,
     invoice.source_relation,
     max(invoice_line_item.subscription_id) as subscription_id,
-    sum(invoice_line_item.amount) as total_item_amount,
-    count(distinct invoice_line_item.unique_id) as number_line_items
+    coalesce(sum(invoice_line_item.amount),0) as total_line_item_amount,
+    coalesce(count(distinct invoice_line_item.unique_invoice_line_item_id),0) as number_of_line_items
   from invoice_line_item
   join invoice 
     on invoice.invoice_id = invoice_line_item.invoice_id
@@ -53,8 +53,8 @@ with invoice as (
     sum(amount_remaining) total_amount_remaining,
     max(created_at) as most_recent_invoice_created_at,
     avg(amount_due) as average_invoice_amount,
-    avg(total_item_amount) as average_line_item_amount,
-    avg(number_line_items) as avg_num_invoice_items
+    avg(total_line_item_amount) as average_line_item_amount,
+    avg(number_of_line_items) as avg_num_line_items
   from line_items_groups
   group by 1, 2
 
@@ -85,7 +85,7 @@ select
   most_recent_invoice_created_at,
   average_invoice_amount,
   average_line_item_amount,
-  avg_num_invoice_items,
+  avg_num_line_items,
   subscription.source_relation
 from subscription
 left join grouped_by_subscription 
