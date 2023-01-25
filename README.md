@@ -85,9 +85,12 @@ For Stripe connectors set up after February 09, 2022 the `subscription` table ha
 vars:
     stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
 ```
-## Step 6: Leveraging Plan vs Price Sources
+## (Optional) Step 6: Additional configurations
+<details><summary>Expand for configurations</summary>
 
-Customers using Fivetran with the newer Stripe Price API will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. The default is to use the `price` table if it exists. However if you wish to use the `plan` table instead, you may add the following to your `dbt_project.yml` to override the macro. 
+### Leveraging Plan vs Price Sources
+
+Customers using Fivetran with the newer Stripe Price API will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. The default is to use the `price` table if it exists. However if you wish to use the `plan` table instead, you may set `stripe__using_price` to `false` in your `dbt_project.yml` to override the macro. 
 
 We recommend using the `price` table as Stripe replaced the Plans API with the Price API and is backwards compatible.
 
@@ -101,7 +104,7 @@ vars:
   stripe:
     stripe__using_price: false #  True by default. If true, will look `price ` table. If false, will look for the `plan` table. 
 ```
-## Step 7: Unioning Multiple Stripe Connectors
+### Unioning Multiple Stripe Connectors
 If you have multiple Stripe connectors you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connectors will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
 
 ```yml
@@ -114,37 +117,6 @@ vars:
     stripe_union_schemas: ['stripe_us','stripe_mx'] # use this if the data is in different schemas/datasets of the same database/project
     stripe_union_databases: ['stripe_db_1','stripe_db_2'] # use this if the data is in different databases/projects but uses the same schema name
 ```
-## Step 6: Leveraging Plan vs Price Sources
-
-Customers using Fivetran with the newest Stripe pricing model will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. While the default is to use the `price` table if it exists, you may add the following to your `dbt_project.yml` to override using the macro. 
-
-```yml
-# dbt_project.yml
-
-...
-config-version: 2
-
-vars:
-  stripe:
-    stripe__using_price: false #  If true, will look `price` table. If false, will look for the `plan` table. 
-```
-
-## Step 7: Unioning Multiple Stripe Connectors
-If you have multiple Stripe connectors you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connectors will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
-
-```yml
-# dbt_project.yml
-
-...
-config-version: 2
-
-vars:
-    stripe_union_schemas: ['stripe_us','stripe_mx'] # use this if the data is in different schemas/datasets of the same database/project
-    stripe_union_databases: ['stripe_db_1','stripe_db_2'] # use this if the data is in different databases/projects but uses the same schema name
-```
-## (Optional) Step 8: Additional configurations
-<details><summary>Expand for configurations</summary>
-
 ### Setting your timezone
 This packages leaves all timestamp columns in the UTC timezone. However, there are certain instances, such in the daily overview model, that timestamps have to be converted to dates. As a result, the timezone used for the timestamp becomes relevant.  By default, this package will use the UTC timezone when converting to date, but if you want to set the timezone to the time in your Stripe reports, add the following configuration to your root `dbt_project.yml`:
 
@@ -240,7 +212,7 @@ vars:
 
 </details>
 
-## (Optional) Step 9: Orchestrate your models with Fivetran Transformations for dbt Core™
+## (Optional) Step 7: Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
     
