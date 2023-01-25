@@ -79,6 +79,13 @@ For more information please refer to the [README](https://github.com/fivetran/db
     - `dbt.current_timestamp_in_utc_backcompat`
 - Dependencies on `fivetran/fivetran_utils` have been upgraded, previously `[">=0.3.0", "<0.4.0"]` now `[">=0.4.0", "<0.5.0"]`.
 - Updated README to include instructions on how to use metadata variable in cases of dictionary arguments. ([#51](https://github.com/fivetran/dbt_stripe/pull/51))
+# dbt_stripe v0.7.4
+## 🎉 Feature Updates
+- Included the `subscription_item_id` field within the `stripe__invoice_line_items` model. ([#50](https://github.com/fivetran/dbt_stripe/pull/50))
+- BuildKite testing has been added. ([#52](https://github.com/fivetran/dbt_stripe/pull/52))
+
+## Contributors
+- [LewisDavies](https://github.com/LewisDavies) ([#50](https://github.com/fivetran/dbt_stripe/pull/50))
 
 # dbt_stripe v0.7.3
 ## 🎉 Feature Updates
@@ -88,7 +95,7 @@ For more information please refer to the [README](https://github.com/fivetran/db
 - [ccbrandenburg](https://github.com/ccbrandenburg) ([#44](https://github.com/fivetran/dbt_stripe/pull/47))
 
 
-# dbt_stripe_source v0.7.2
+# dbt_stripe v0.7.2
 
 ## 🎉 Feature Updates
 - Databricks compatibility 🧱 ([#44](https://github.com/fivetran/dbt_stripe/pull/44))

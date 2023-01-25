@@ -28,9 +28,9 @@
 
 **How did you test the PR changes?** 
 <!--- Proof of testing is required in order for the PR to be approved. -->
-<!--- To check a box, remove the space and insert an x in the box (eg. [x] Buildkite). --> 
+<!--- To check a box, remove the space and insert an x in the box (eg. [x] BuildKite). --> 
 <!--- To select a checkbox you simply need to add an "x" with no spaces between the brackets (eg. [x] Yes). -->
-- [ ] Buildkite <!--- Buildkite testing is only applicable to Fivetran employees. --> 
+- [ ] BuildKite <!--- BuildKite testing is only applicable to Fivetran employees. --> 
 - [ ] Local (please provide additional testing details below)
 
 **Select which warehouse(s) were used to test the PR**
