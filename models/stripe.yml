@@ -346,16 +346,17 @@ models:
         description: "{{ doc('source_relation') }}"
 
   - name: stripe__invoice_line_item_details
-    description: Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.
+    description: Each record represents an invoice line item, enriched with details about the associated invoice, charge, customer, subscription, and pricing data.
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - invoice_line_item_id
+            - invoice_id
             - source_relation
     columns:
       - name: invoice_line_item_id 
-        description: The unique Identifier of the invoice line object.
-      - name: invoice_id 
+        description: The unique Identifier of the invoice line object. Note that the same line item can be shown across different invoices, so this value can appear multiple times.
+      - name: invoice_id
         description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
       - name: invoice_item_id 
         description: The ID of the invoice item this item is a part of
@@ -367,6 +368,10 @@ models:
         description: Description for this line item.
       - name: is_discountable
         description: Whether this line item is discountable.
+      - name: plan_id
+        description: The ID that documents the plan record detailing the base price, currency, and billing information for each product. Valid if you are using the Plan API.
+      - name: price_id
+        description: The ID that documents the price record detailing the base price, currency, and billing information for each product. Valid if you are using the new Prices API.
       - name: proration
         description: Whether this is a proration.
       - name: quantity
@@ -377,8 +382,8 @@ models:
         description: The subscription item that generated this invoice item. Left empty if the line item is not an explicit result of a subscription.
       - name: type
         description: A string identifying the type of the source of this line item, either an invoice item or a subscription.
-      - name: unique_id
-        description: A unique id generated for old invoice ID's from a past version of the API
+      - name: unique_invoice_line_item_id
+        description: A unique id generated for old invoice line item ID's from a past version of the API
       - name: period_start
         description: Start of the usage period during which invoice items were added to this invoice.
       - name: period_end
@@ -409,10 +414,6 @@ models:
         description: The start date of the subscription
       - name: subscription_ended_at 
         description: The end date of the subscription
-      - name: plan_id
-        description: The ID that documents the plan record detailing the base price, currency, and billing information for each product. Valid if you are using the Plan API.
-      - name: price_id
-        description: The ID that documents the price record detailing the base price, currency, and billing information for each product. Valid if you are using the new Prices API.
       - name: pricing_is_active
         description: Boolean indicating if the plan or price is active (true) or in-active (false).
       - name: pricing_amount
