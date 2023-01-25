@@ -274,7 +274,7 @@ models:
     columns:
       - name: invoice_id
         description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
-      - name: number 
+      - name: invoice_number 
         description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
       - name: invoice_created_at 
         description: Timestamp of when the invoice was created.
@@ -409,6 +409,10 @@ models:
         description: The start date of the subscription
       - name: subscription_ended_at 
         description: The end date of the subscription
+      - name: plan_id
+        description: The ID that documents the plan record detailing the base price, currency, and billing information for each product. Valid if you are using the Plan API.
+      - name: price_id
+        description: The ID that documents the price record detailing the base price, currency, and billing information for each product. Valid if you are using the new Prices API.
       - name: pricing_is_active
         description: Boolean indicating if the plan or price is active (true) or in-active (false).
       - name: pricing_amount
