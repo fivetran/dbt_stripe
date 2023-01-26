@@ -395,7 +395,7 @@ models:
             - date_day
             - source_relation
     columns:
-      - name: date
+      - name: date_day
         description: Day of record, taken from the date of each balance transaction.
       - name: date_index
         description: Number used to sort each day from oldest to most recent.
