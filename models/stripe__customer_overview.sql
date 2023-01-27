@@ -178,7 +178,11 @@ with balance_transaction_joined as (
       customer.shipping_address_country,
       customer.shipping_address_postal_code,
       customer.shipping_phone,
-      transactions_grouped.source_relation
+        
+      {% if var('stripe__customer_metadata',[]) %}
+        customer.{{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__customer_metadata')) }},
+      {% endif %}
+
       
     from transactions_grouped
     left join customer 
@@ -225,6 +229,11 @@ with balance_transaction_joined as (
       customer.shipping_address_country,
       customer.shipping_address_postal_code,
       customer.shipping_phone,
+        
+        {% if var('stripe__customer_metadata',[]) %}
+          customer.{{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__customer_metadata')) }},
+        {% endif %}
+
       customer.source_relation
       
     from customer

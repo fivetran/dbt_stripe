@@ -23,6 +23,6 @@ vars:
     payment_method_card: "{{ ref('stg_stripe__payment_method_card') }}"
     payment_method: "{{ ref('stg_stripe__payment_method') }}"
     payout: "{{ ref('stg_stripe__payout') }}"
-    pricing: "{{ ref('stg_stripe__pricing') }}"
+    price_plan: "{{ ref('stg_stripe__price_plan') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"

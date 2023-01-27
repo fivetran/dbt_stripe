@@ -33,10 +33,10 @@ with invoice as (
     select *
     from {{ var('subscription') }}  
 
-), pricing as (
+), price_plan as (
 
     select *
-    from {{ var('pricing') }}  
+    from {{ var('price_plan') }}  
 
 {% endif %}
 )

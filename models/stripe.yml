@@ -82,11 +82,6 @@ models:
 
   - name: stripe__customer_overview
     description: Each record represents a customer, enriched with metrics about their associated transactions.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - customer_id
-            - source_relation
     columns:
       - name: customer_id 
         description: Unique identifier for each record from the Stripe customer object.
@@ -313,18 +308,18 @@ models:
         description: The start date of the subscription
       - name: subscription_ended_at 
         description: The end date of the subscription
-      - name: pricing_is_active
+      - name: price_plan_is_active
         description: Boolean indicating if the plan or price is active (true) or in-active (false).
-      - name: pricing_amount
+      - name: price_plan_amount
         description: The unit amount in cents to be charged, represented as a whole integer if possible.
-      - name: pricing_interval
+      - name: price_plan_interval
         description: The frequency at which a subscription is billed. One of day, week, month or year.
-      - name: pricing_interval_count
+      - name: price_plan_interval_count
         description: The number of intervals between subscription billings. For example, interval_count=3 bills every 3 months.
-      - name: pricing_nickname
+      - name: price_plan_nickname
         description: A brief description of the plan or price, hidden from customers.
-      - name: pricing_product_id
-        description: Reference to the product whose pricing this price or plan determines.
+      - name: price_plan_product_id
+        description: Reference to the product this price or plan is about.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 

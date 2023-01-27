@@ -16,10 +16,10 @@ with invoice_line_item as (
     select *
     from {{ var('subscription') }}  
 
-), pricing as (
+), price_plan as (
 
     select *
-    from {{ var('pricing') }}  
+    from {{ var('price_plan') }}  
 
 {% endif %}
 )
@@ -58,12 +58,12 @@ select
     subscription.billing as subscription_billing,
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
-    pricing.is_active as pricing_is_active,
-    pricing.unit_amount as pricing_amount,
-    pricing.recurring_interval as pricing_interval,
-    pricing.recurring_interval_count as pricing_interval_count,
-    pricing.nickname as pricing_nickname,
-    pricing.product_id as pricing_product_id,
+    price_plan.is_active as price_plan_is_active,
+    price_plan.unit_amount as price_plan_amount,
+    price_plan.recurring_interval as price_plan_interval,
+    price_plan.recurring_interval_count as price_plan_interval_count,
+    price_plan.nickname as price_plan_nickname,
+    price_plan.product_id as price_plan_product_id,
     {% endif %}
 
     invoice_line_item.source_relation
@@ -80,14 +80,14 @@ left join subscription
     on invoice_line_item.subscription_id = subscription.subscription_id
     and invoice_line_item.source_relation = subscription.source_relation
 
-left join pricing
-    {% if var('stripe__using_price', stripe_source.does_table_exist('price')) %}
-    on invoice_line_item.price_id = pricing.price_id
+left join price_plan
 
-    {% else %}
-    on invoice_line_item.plan_id = pricing.plan_id
+{% if var('stripe__using_price', stripe_source.does_table_exist('price')) %}
+    on invoice_line_item.price_id = price_plan.price_plan_id
+{% else %}
+    on invoice_line_item.plan_id = price_plan.price_plan_id
+{% endif %}
 
-    {% endif %}
-    and invoice_line_item.source_relation = pricing.source_relation
+    and invoice_line_item.source_relation = price_plan.source_relation
 
 {% endif %}
