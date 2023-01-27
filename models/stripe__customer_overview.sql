@@ -184,6 +184,8 @@ with balance_transaction_joined as (
       {% endif %}
 
       
+      transactions_grouped.source_relation
+
     from transactions_grouped
     left join customer 
         on transactions_grouped.customer_id = customer.customer_id
