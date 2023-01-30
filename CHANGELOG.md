@@ -3,16 +3,18 @@
 [#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:
 ## 🚨 Breaking Changes 🚨:
 - `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
-- Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API, the following columns in `stripe__invoice_line_items` have been updated:
+- Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API ([Stripe doc here.](https://stripe.com/docs/billing/migration/migrating-prices)), the following columns in `stripe__invoice_line_items` have been updated:
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                            |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| plan_is_active    | pricing_is_active
-| plan_amount    | pricing_amount
-| plan_interval    | pricing_interval
-| plan_interval_count    | pricing_interval_count
-| plan_nickname    | pricing_nickname
-| plan_product_id    | pricing_product_id                                                                                                       |
+| plan_is_active    | price_plan_is_active
+| plan_amount    | price_plan_amount
+| plan_interval    | price_plan_interval
+| plan_interval_count    | price_plan_interval_count
+| plan_nickname    | price_plan_nickname
+| plan_product_id    | price_plan_product_id                                                                                                       |
+
+This package will draw the respective columns from the `price` object by default if it exists. However, if you still have and wish to keep using `plan`, you can set `stripe__using_price` to False. For more please see the [README](https://github.com/fivetran/dbt_stripe#leveraging-plan-vs-price-sources)
 
 - Variables have been prefixed with "stripe__" so they can be used globally.
 
