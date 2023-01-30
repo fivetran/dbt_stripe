@@ -392,8 +392,6 @@ models:
     columns:
       - name: date_day
         description: Day of record, taken from the date of each balance transaction.
-      - name: date_index
-        description: Number used to sort each day from oldest to most recent.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: total_daily_sales_amount
