@@ -20,7 +20,7 @@ with account_partitions as (
 
         {% for f in rolling_fields %}
         coalesce({{ f }},   
-            first_value({{ f }}) over (partition by {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
+            first_value({{ f }}) over (partition by {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }},
         {% endfor %}
 
         source_relation
