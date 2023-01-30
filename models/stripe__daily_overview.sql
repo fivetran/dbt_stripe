@@ -21,8 +21,10 @@ with account_partitions as (
         {% for f in rolling_fields %}
         coalesce({{ f }},   
             first_value({{ f }}) over (partition by {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
-        {%- if not loop.last -%},{%- endif -%}
         {% endfor %}
+
+        source_relation
+
     from account_partitions
 )
 
