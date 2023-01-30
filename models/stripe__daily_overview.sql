@@ -28,13 +28,13 @@ with date_spine as (
         date_spine.date_day,
 
         {% for t in total_fields %}
-        round(account_rolling_totals.{{ t }},2) as {{ t }},
+        coalesce(round(account_rolling_totals.{{ t }},2),0) as {{ t }},
         {% endfor %}
 
         {% for f in rolling_fields %}
         case when account_rolling_totals.{{ f }} is null and date_index = 1
             then 0
-            else round(account_rolling_totals.{{ f }},2)
+            else coalesce(round(account_rolling_totals.{{ f }},2),0)
             end as {{ f }},
         {% endfor %}
 

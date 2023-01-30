@@ -145,9 +145,9 @@ with balance_transaction_joined as (
     select
       'No Customer ID' as customer_id,
       'No Associated Customer' as customer_description,
-      customer.email,
       customer.created_at as customer_created_at,
-      customer.is_delinquent,
+      customer.currency as customer_currency,
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
       coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
@@ -168,22 +168,6 @@ with balance_transaction_joined as (
       0 as total_failed_charge_amount,
       0 as failed_charge_count_this_month,
       0 as failed_charge_amount_this_month,
-      customer.currency as customer_currency,
-      customer.default_card_id,
-      customer.shipping_name,
-      customer.shipping_address_line_1,
-      customer.shipping_address_line_2,
-      customer.shipping_address_city,
-      customer.shipping_address_state,
-      customer.shipping_address_country,
-      customer.shipping_address_postal_code,
-      customer.shipping_phone,
-        
-      {% if var('stripe__customer_metadata',[]) %}
-        customer.{{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__customer_metadata')) }},
-      {% endif %}
-
-      
       transactions_grouped.source_relation
 
     from transactions_grouped
@@ -197,10 +181,10 @@ with balance_transaction_joined as (
 
     select
       customer.customer_id,
-      customer.description,
-      customer.email,
+      customer.description as customer_description,
       customer.created_at as customer_created_at,
-      customer.is_delinquent,
+      customer.currency as customer_currency,
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
       coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
@@ -221,21 +205,6 @@ with balance_transaction_joined as (
       coalesce(failed_charges_by_customer.total_failed_charge_amount/100, 0) as total_failed_charge_amount,
       coalesce(failed_charges_by_customer.failed_charge_count_this_month, 0) as failed_charge_count_this_month,
       coalesce(failed_charges_by_customer.failed_charge_amount_this_month/100, 0) as failed_charge_amount_this_month,
-      customer.currency as customer_currency,
-      customer.default_card_id,
-      customer.shipping_name,
-      customer.shipping_address_line_1,
-      customer.shipping_address_line_2,
-      customer.shipping_address_city,
-      customer.shipping_address_state,
-      customer.shipping_address_country,
-      customer.shipping_address_postal_code,
-      customer.shipping_phone,
-        
-        {% if var('stripe__customer_metadata',[]) %}
-          customer.{{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__customer_metadata')) }},
-        {% endif %}
-
       customer.source_relation
       
     from customer

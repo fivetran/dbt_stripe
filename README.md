@@ -25,7 +25,7 @@ The following table provides a detailed list of all models materialized within t
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [stripe__balance_transactions](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions)    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
 | [stripe__invoice_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details)      | Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.                                                                                         
-| [stripe__invoice_line_items](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_items)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.                                                                                 
+| [stripe__invoice_line_item_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.                                                                                 
 | [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)      | Each record represents, per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You may use this model to roll up into weekly, quarterly, monthly, and other time grains. You may also use this model to create a MRR report.                                                  |
 | [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details)    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
 | [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                                                   |
@@ -65,43 +65,20 @@ vars:
 ```
 
 ## Step 4: Disable models for non-existent sources
-This package takes into consideration that not every Stripe account utilizes the **invoices**, **payment method**, and **subscription** features. Therefore we allow you to configure the following variables below, which will then disable the corresponding related tables: `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, or `subscription`. The `plan` and `price` tables are toggled automatically (see *Step 6: Leveraging Plan vs Price Sources*)
-
-By default, all variables' values are assumed to be `true`. Only add variables within your root `dbt_project.yml` for only the tables you would want to disable:
-
-```yml
-vars:
-    stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
-    stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
-    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan/pricing tables.
-```
-## (Optional) Step 5: Additional configurations
-<details><summary>Expand for configurations</summary>
-
-### Leveraging Plan vs Price Sources
-
-Customers using Fivetran with the newer Stripe Price API will have a `price` table in place of the older `plan` table. Therefore to accommodate two different source tables we added additional logic in the `stg_stripe__pricing` model, which replaces the `stg_stripe__plan` model. This model checks if there exists a `price` table using a new `does_table_exist()` macro. If not, it will look for a `plan` table. The default is to use the `price` table if it exists. However if you wish to use the `plan` table instead, you may set `stripe__using_price` to `false` in your `dbt_project.yml` to override the macro. 
-
-We recommend using the `price` table as Stripe replaced the Plans API with the Price API and is backwards compatible.
+This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
 
 ```yml
 # dbt_project.yml
 
 ...
-config-version: 2
-
 vars:
-  stripe:
-    stripe__using_price: false #  True by default. If true, will look `price ` table. If false, will look for the `plan` table. 
+    stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
+    stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
+    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan/price tables.
+    stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
 ```
-
-### Leveraging Subscription Vs Subscription History Sources
-For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have a older connector then you must leverage the `stripe__using_subscription_history` toggle to have the package use the `subscription` source rather than the `subscription_history` table.
-> **Please note that if you have `stripe__subscription_history` enabled then the package will filter for only active records.**
-```yml
-vars:
-    stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
-```
+## (Optional) Step 5: Additional configurations
+<details><summary>Expand for configurations</summary>
 
 ### Unioning Multiple Stripe Connectors
 If you have multiple Stripe connectors you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connectors will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
@@ -116,6 +93,28 @@ vars:
     stripe_union_schemas: ['stripe_us','stripe_mx'] # use this if the data is in different schemas/datasets of the same database/project
     stripe_union_databases: ['stripe_db_1','stripe_db_2'] # use this if the data is in different databases/projects but uses the same schema name
 ```
+### Leveraging Plan vs Price Sources
+
+Customers using Fivetran with the newer [Stripe Price API](https://stripe.com/docs/billing/migration/migrating-prices) will have a `price` table, and possibly a `plan` table if that was used previously. Therefore to accommodate two different source tables we added logic to check if there exists a `price` table by default. If not, it will leverage the `plan` table. However if you wish to use the `plan` table instead, you may set `stripe__using_price` to `false` in your `dbt_project.yml` to override the macro. 
+
+```yml
+# dbt_project.yml
+
+...
+config-version: 2
+
+vars:
+  stripe__using_price: false #  True by default. If true, will look `price ` table. If false, will look for the `plan` table. 
+```
+
+### Leveraging Subscription Vs Subscription History Sources
+For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have an older connector then you must configure the `stripe__using_subscription_history` to `false` in order to have the package use the `subscription` source rather than the `subscription_history` table.
+> **Please note that if you have `stripe__using_subscription_history` enabled then the package will filter for only active records.**
+```yml
+vars:
+    stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription_history` table instead. 
+```
+
 ### Setting your timezone
 This packages leaves all timestamp columns in the UTC timezone. However, there are certain instances, such in the daily overview model, that timestamps have to be converted to dates. As a result, the timezone used for the timestamp becomes relevant.  By default, this package will use the UTC timezone when converting to date, but if you want to set the timezone to the time in your Stripe reports, add the following configuration to your root `dbt_project.yml`:
 
@@ -170,10 +169,7 @@ vars:
   stripe__payout_metadata:
     - name: 123
       alias: one_two_three
-  stripe__plan_metadata:
-    - name: rename
-      alias: renamed_field
-  stripe__price_metadata:
+  stripe__price_plan_metadata: ## Used for both Price and Plan sources
     - name: rename_price
       alias: renamed_field_price
   stripe__refund_metadata:
@@ -184,12 +180,11 @@ vars:
 
 ```
 
-Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following configuration as well. 
->**Note**: `stripe__plan_metadata` is only shown below, but the format will work for all metadata variables. 
+Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following configuration as well.
 
 ```yml
 vars:
-    stripe__plan_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
+    stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
 ### Change the build schema
