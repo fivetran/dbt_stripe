@@ -3,6 +3,8 @@
 [#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:
 ## 🚨 Breaking Changes 🚨:
 - `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
+- The `stripe__weekly_overview`, `stripe__quarterly_overview`, and `stripe__monthly_overview` models have been removed as they can be recreated directly from the `stripe__daily_overview` by rolling up the date grain.
+- The `stripe__invoice_line_item` and `stripe__subscription_line_items` have been renamed to `stripe__invoice_line_item_details` and `stripe__subscription_details`.
 - Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API ([Stripe doc here.](https://stripe.com/docs/billing/migration/migrating-prices)), the following columns in `stripe__invoice_line_items` have been updated:
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                            |
@@ -35,11 +37,9 @@ This package will draw the respective columns from the `price` object by default
 
 ## 🎉 Feature Updates 🎉
 - Introducing the new model `stripe__invoice_details`.
-- The `stripe__invoice_line_item` and `stripe__subscription_line_items` have been renamed to `stripe__invoice_line_item_details` and `stripe__subscription_details`.
-- We removed models `stripe__weekly_overview`,`stripe__quarterly_overview`, and `stripe__monthly_overview` as they can be recreated directly from the `stripe__daily_overview` by rolling up the date grain.
 - Updated the models `stripe__daily_overview` with additional daily and rolling metrics. 
 - `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
-- We have also introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
+- Added the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
 
 For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
 
