@@ -18,6 +18,8 @@
 
 - In addition, `stripe__plan_metadata` variable has been renamed to `stripe__price_plan_metadata`
 
+- Stripe connectors set up after February 09, 2022 will use the subscription_history table, as they will no longer be syncing the subscription table. This package uses `subscription_history` by default if it exists. However, if you still have the `subscription` table and wish to use it instead, then set the `stripe__using_subscription_history` to False.
+
 - Variables have been prefixed with `stripe__` so they can be used globally.
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
