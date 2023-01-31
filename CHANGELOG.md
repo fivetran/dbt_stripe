@@ -16,6 +16,8 @@
 
 This package will draw the respective columns from the `price` object by default if it exists. However, if you still have and wish to keep using `plan`, you can set `stripe__using_price` to False. For more please see the [README](https://github.com/fivetran/dbt_stripe#leveraging-plan-vs-price-sources)
 
+- In addition, `stripe__plan_metadata` variable has been renamed to `stripe__price_plan_metadata`
+
 - Variables have been prefixed with "stripe__" so they can be used globally.
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |

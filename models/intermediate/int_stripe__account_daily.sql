@@ -23,7 +23,7 @@ with date_spine as (
     select
         date_spine.date_day,
         date_spine.account_id,
-        balance_transaction.source_relation,
+        date_spine.source_relation,
         sum(case when balance_transaction.type in ('charge', 'payment') 
             then balance_transaction.amount
             else 0 end) as total_daily_sales_amount,
