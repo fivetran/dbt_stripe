@@ -5,7 +5,7 @@
 - `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
 - The `stripe__weekly_overview`, `stripe__quarterly_overview`, and `stripe__monthly_overview` models have been removed as they can be recreated directly from the `stripe__daily_overview` by rolling up the date grain.
 - The `stripe__invoice_line_item` and `stripe__subscription_line_items` have been renamed to `stripe__invoice_line_item_details` and `stripe__subscription_details`.
-- Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API ([Stripe doc here.](https://stripe.com/docs/billing/migration/migrating-prices)), the following columns in `stripe__invoice_line_items` have been updated:
+- Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API ([Stripe doc here.](https://stripe.com/docs/billing/migration/migrating-prices)), the following columns in `stripe__invoice_line_items` have been updated. This package will draw the respective columns from the `price` object by default if it exists. However, if you still have and wish to keep using `plan`, you can set `stripe__using_price` to False. For more please see the [README](https://github.com/fivetran/dbt_stripe#leveraging-plan-vs-price-sources)
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                            |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -16,11 +16,9 @@
 | plan_nickname    | price_plan_nickname
 | plan_product_id    | price_plan_product_id                                                                                                       |
 
-This package will draw the respective columns from the `price` object by default if it exists. However, if you still have and wish to keep using `plan`, you can set `stripe__using_price` to False. For more please see the [README](https://github.com/fivetran/dbt_stripe#leveraging-plan-vs-price-sources)
-
 - In addition, `stripe__plan_metadata` variable has been renamed to `stripe__price_plan_metadata`
 
-- Variables have been prefixed with "stripe__" so they can be used globally.
+- Variables have been prefixed with `stripe__` so they can be used globally.
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -33,7 +31,7 @@ This package will draw the respective columns from the `price` object by default
 | using_subscription_history | stripe__using_subscription_history
 | using_price | stripe__using_price
 
-- In the `stripe__subscription_details` model `start_date` has been updated to `start_date_at` to follow our standard naming practices.
+- In the `stripe__subscription_details` model, `start_date` has been updated to `start_date_at` to follow our standard naming practices.
 
 ## 🎉 Feature Updates 🎉
 - Introducing the new model `stripe__invoice_details`.
