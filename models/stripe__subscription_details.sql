@@ -1,4 +1,4 @@
-{{ config(enabled=fivetran_utils.enabled_vars(['using_invoices','using_subscriptions'])) }}
+{{ config(enabled=fivetran_utils.enabled_vars(['stripe__using_invoices','stripe__using_subscriptions'])) }}
 
 with invoice as (
 
@@ -33,28 +33,30 @@ with invoice as (
     invoice.amount_paid,
     invoice.amount_remaining,
     invoice.created_at,
+    invoice.source_relation,
     max(invoice_line_item.subscription_id) as subscription_id,
-    sum(invoice_line_item.amount) as total_item_amount,
-    count(distinct invoice_line_item.unique_id) as number_line_items
+    coalesce(sum(invoice_line_item.amount),0) as total_line_item_amount,
+    coalesce(count(distinct invoice_line_item.unique_invoice_line_item_id),0) as number_of_line_items
   from invoice_line_item
   join invoice 
     on invoice.invoice_id = invoice_line_item.invoice_id
-  group by 1, 2, 3, 4, 5
+  group by 1, 2, 3, 4, 5, 6
 
 ), grouped_by_subscription as (
 
   select
     subscription_id,
+    source_relation,
     count(distinct invoice_id) as number_invoices_generated,
     sum(amount_due) as total_amount_billed,
     sum(amount_paid) as total_amount_paid,
     sum(amount_remaining) total_amount_remaining,
     max(created_at) as most_recent_invoice_created_at,
     avg(amount_due) as average_invoice_amount,
-    avg(total_item_amount) as average_line_item_amount,
-    avg(number_line_items) as avg_num_invoice_items
+    avg(total_line_item_amount) as average_line_item_amount,
+    avg(number_of_line_items) as avg_num_line_items
   from line_items_groups
-  group by 1
+  group by 1, 2
 
 )
 
@@ -65,7 +67,7 @@ select
   customer.description as customer_description,
   customer.email as customer_email,
   subscription.status,
-  subscription.start_date,
+  subscription.start_date_at,
   subscription.ended_at,
   subscription.billing,
   subscription.billing_cycle_anchor,
@@ -83,9 +85,12 @@ select
   most_recent_invoice_created_at,
   average_invoice_amount,
   average_line_item_amount,
-  avg_num_invoice_items
+  avg_num_line_items,
+  subscription.source_relation
 from subscription
 left join grouped_by_subscription 
   on subscription.subscription_id = grouped_by_subscription.subscription_id
-left join customer 
+  and subscription.source_relation = grouped_by_subscription.source_relation
+left join customer
   on subscription.customer_id = customer.customer_id
+  and subscription.source_relation = customer.source_relation

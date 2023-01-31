@@ -6,8 +6,11 @@ with charge as (
 )
 
 select 
+  balance_transaction_id,
   created_at,
   customer_id,
-  amount
+  connected_account_id,
+  amount,
+  source_relation
 from charge
 where not is_captured

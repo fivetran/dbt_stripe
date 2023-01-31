@@ -1,3 +1,5 @@
 packages:
-- package: fivetran/stripe_source
-  version: [">=0.8.0", "<0.9.0"]
+# - package: fivetran/stripe_source
+#   version: [">=0.9.0", "<0.10.0"]
+- git: https://github.com/fivetran/dbt_stripe_source.git
+  warn-unpinned: false

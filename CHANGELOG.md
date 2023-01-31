@@ -1,3 +1,48 @@
+# dbt_stripe v0.9.0
+
+[#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:
+## 🚨 Breaking Changes 🚨:
+- `stripe__subscription_line_items` has been removed. To recreate it, simply filter `stripe__invoice_line_items` for where `subscription_id` is not null.
+- Following the addition of the new `pricing` source table which may replace the `plan` table depending on whether you migrated to the Price API ([Stripe doc here.](https://stripe.com/docs/billing/migration/migrating-prices)), the following columns in `stripe__invoice_line_items` have been updated:
+
+| **Previous Name**                          | **New Name**                                                                                                                                                                                                                            |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| plan_is_active    | price_plan_is_active
+| plan_amount    | price_plan_amount
+| plan_interval    | price_plan_interval
+| plan_interval_count    | price_plan_interval_count
+| plan_nickname    | price_plan_nickname
+| plan_product_id    | price_plan_product_id                                                                                                       |
+
+This package will draw the respective columns from the `price` object by default if it exists. However, if you still have and wish to keep using `plan`, you can set `stripe__using_price` to False. For more please see the [README](https://github.com/fivetran/dbt_stripe#leveraging-plan-vs-price-sources)
+
+- In addition, `stripe__plan_metadata` variable has been renamed to `stripe__price_plan_metadata`
+
+- Variables have been prefixed with "stripe__" so they can be used globally.
+
+| **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| using_invoices    | stripe__using_invoices
+| using_credit_notes | stripe__using_credit_notes
+| using_payment_method | stripe__using_payment_method
+| using_livemode | stripe__using_livemode
+| using_invoice_line_sub_filter | stripe__using_invoice_line_sub_filter
+| using_subscriptions | stripe__using_subscriptions
+| using_subscription_history | stripe__using_subscription_history
+| using_price | stripe__using_price
+
+- In the `stripe__subscription_details` model `start_date` has been updated to `start_date_at` to follow our standard naming practices.
+
+## 🎉 Feature Updates 🎉
+- Introducing the new model `stripe__invoice_details`.
+- The `stripe__invoice_line_item` and `stripe__subscription_line_items` have been renamed to `stripe__invoice_line_item_details` and `stripe__subscription_details`.
+- We removed models `stripe__weekly_overview`,`stripe__quarterly_overview`, and `stripe__monthly_overview` as they can be recreated directly from the `stripe__daily_overview` by rolling up the date grain.
+- Updated the models `stripe__daily_overview` with additional daily and rolling metrics. 
+- `subscription_item_id` has been added to the `stripe__invoice_line_items` model.
+- We have also introduced the ability to union datasets across different schemas or databases. A new column populating each model called `source_relation` will specify the source of each record. 
+
+For more information please refer to the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md) and [stripe.yml](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe.yml)
+
 # dbt_stripe v0.8.0
 
 ## 🚨 Breaking Changes 🚨:

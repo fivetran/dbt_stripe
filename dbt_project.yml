@@ -1,7 +1,7 @@
 config-version: 2
 name: 'stripe'
 
-version: '0.8.0'
+version: '0.9.0'
 require-dbt-version: [">=1.3.0", "<2.0.0"]
 models:
   stripe:
@@ -11,6 +11,7 @@ models:
       +materialized: ephemeral
 vars:
   stripe:
+    account: "{{ ref('stg_stripe__account') }}"
     balance_transaction: "{{ ref('stg_stripe__balance_transaction') }}"
     card: "{{ ref('stg_stripe__card') }}"
     charge: "{{ ref('stg_stripe__charge') }}"
@@ -22,9 +23,6 @@ vars:
     payment_method_card: "{{ ref('stg_stripe__payment_method_card') }}"
     payment_method: "{{ ref('stg_stripe__payment_method') }}"
     payout: "{{ ref('stg_stripe__payout') }}"
-    plan: "{{ ref('stg_stripe__plan') }}"
+    price_plan: "{{ ref('stg_stripe__price_plan') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"
-    using_invoices: true
-    using_payment_method: true
-    using_subscriptions: true

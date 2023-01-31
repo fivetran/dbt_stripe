@@ -14,92 +14,140 @@ with balance_transaction_joined as (
     from {{ var('customer') }}  
 
 ), transactions_grouped as (
- 
+
     select
       customer_id,
-      sum(case when type in ('charge', 'payment') 
-        then amount
-        else 0 
-            end) as total_sales,
-      sum(case when type in ('payment_refund', 'refund') 
-        then amount
-        else 0 
-            end) as total_refunds,    
+      source_relation,
+      sum(
+        case 
+          when type in ('charge', 'payment') 
+          then amount
+          else 0 
+        end) 
+      as total_sales,
+      sum(
+        case 
+          when type in ('payment_refund', 'refund') 
+          then amount
+          else 0 
+        end) 
+      as total_refunds,    
       sum(amount) as total_gross_transaction_amount,
       sum(fee) as total_fees,
       sum(net) as total_net_transaction_amount,
-      sum(case when type in ('charge', 'payment') 
-        then 1
-        else 0 
-            end) as total_sales_count, 
-      sum(case when type in ('payment_refund', 'refund') 
-        then 1
-        else 0 
-            end) as total_refund_count,   
-      sum(case when type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then amount 
-        else 0 
-            end) as sales_this_month,
-      sum(case when type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then amount 
-        else 0 
-            end) as refunds_this_month,
-      sum(case when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then amount 
-        else 0 
-            end) as gross_transaction_amount_this_month,
-      sum(case when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then fee 
-        else 0 
-            end) as fees_this_month,
-      sum(case when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then net 
-        else 0 
-            end) as net_transaction_amount_this_month,
-      sum(case when type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then 1 
-        else 0 
-            end) as sales_count_this_month,
-      sum(case when type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then 1 
-        else 0 
-            end) as refund_count_this_month,
-      min(case when type in ('charge', 'payment') 
-        then {{ date_timezone('created_at') }}
-        else null 
-            end) as first_sale_date,
-      max(case when type in ('charge', 'payment') 
-        then {{ date_timezone('created_at') }}
-        else null 
-            end) as most_recent_sale_date
+      sum(
+        case 
+          when type in ('charge', 'payment') 
+          then 1
+          else 0 
+          end) 
+      as total_sales_count, 
+      sum(
+        case 
+          when type in ('payment_refund', 'refund') 
+          then 1
+          else 0 
+        end) 
+      as total_refund_count,   
+      sum(
+        case 
+          when type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then amount 
+          else 0 
+        end) 
+      as sales_this_month,
+      sum(
+        case 
+          when type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then amount 
+          else 0 
+        end) 
+      as refunds_this_month,
+      sum(
+        case 
+          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then amount 
+          else 0 
+        end) 
+      as gross_transaction_amount_this_month,
+      sum(
+        case 
+          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then fee 
+          else 0 
+        end) 
+      as fees_this_month,
+      sum(
+        case 
+          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then net 
+          else 0 
+        end) 
+      as net_transaction_amount_this_month,
+      sum(
+        case 
+          when type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then 1 
+          else 0 
+        end) 
+      as sales_count_this_month,
+      sum(
+        case 
+          when type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then 1 
+          else 0 
+        end) 
+      as refund_count_this_month,
+      min(
+        case 
+          when type in ('charge', 'payment') 
+          then {{ date_timezone('created_at') }}
+          else null 
+        end) 
+      as first_sale_date,
+      max(
+        case 
+          when type in ('charge', 'payment') 
+          then {{ date_timezone('created_at') }}
+          else null 
+        end) 
+      as most_recent_sale_date
     from balance_transaction_joined
     where type in ('payment', 'charge', 'payment_refund', 'refund')
-    group by 1
+    group by 1,2
 
 ), failed_charges_by_customer as (
 
     select
       customer_id,
+      source_relation,
       count(*) as total_failed_charge_count,
       sum(amount) as total_failed_charge_amount,
-      sum(case when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then 1
-        else 0 
-            end) as failed_charge_count_this_month,
-      sum(case when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-        then amount
-        else 0 
-            end) as failed_charge_amount_this_month
+      sum(
+        case 
+          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then 1
+          else 0 
+        end) 
+      as failed_charge_count_this_month,
+      sum(
+        case 
+          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then amount
+          else 0 
+        end) 
+      as failed_charge_amount_this_month
     from incomplete_charges
-    group by 1
+    group by 1,2
 
 ), transactions_not_associated_with_customer as (
 
     select
+      'No Customer ID' as customer_id,
       'No Associated Customer' as customer_description,
-      customer.email,
       customer.created_at as customer_created_at,
-      customer.is_delinquent,
+      customer.currency as customer_currency,
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
       coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
@@ -120,36 +168,23 @@ with balance_transaction_joined as (
       0 as total_failed_charge_amount,
       0 as failed_charge_count_this_month,
       0 as failed_charge_amount_this_month,
-      customer.currency as customer_currency,
-      customer.default_card_id,
-      customer.shipping_name,
-      customer.shipping_address_line_1,
-      customer.shipping_address_line_2,
-      customer.shipping_address_city,
-      customer.shipping_address_state,
-      customer.shipping_address_country,
-      customer.shipping_address_postal_code,
-      customer.shipping_phone
+      transactions_grouped.source_relation
 
-      {% if var('stripe__customer_metadata',[]) %}
-        {% for metadata in var('stripe__customer_metadata') %}
-            ,customer.{{ metadata }}
-        {% endfor %}
-      {% endif %}
-      
     from transactions_grouped
     left join customer 
         on transactions_grouped.customer_id = customer.customer_id
+        and transactions_grouped.source_relation = customer.source_relation
     where customer.customer_id is null and customer.description is null
 
 
 ), customer_transactions_overview as (
 
     select
-      coalesce(customer.description, customer.customer_id) as customer_description,
-      customer.email,
+      customer.customer_id,
+      customer.description as customer_description,
       customer.created_at as customer_created_at,
-      customer.is_delinquent,
+      customer.currency as customer_currency,
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
       coalesce(transactions_grouped.total_sales/100.0, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds/100.0, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount/100.0, 0) as total_gross_transaction_amount,
@@ -170,28 +205,15 @@ with balance_transaction_joined as (
       coalesce(failed_charges_by_customer.total_failed_charge_amount/100, 0) as total_failed_charge_amount,
       coalesce(failed_charges_by_customer.failed_charge_count_this_month, 0) as failed_charge_count_this_month,
       coalesce(failed_charges_by_customer.failed_charge_amount_this_month/100, 0) as failed_charge_amount_this_month,
-      customer.currency as customer_currency,
-      customer.default_card_id,
-      customer.shipping_name,
-      customer.shipping_address_line_1,
-      customer.shipping_address_line_2,
-      customer.shipping_address_city,
-      customer.shipping_address_state,
-      customer.shipping_address_country,
-      customer.shipping_address_postal_code,
-      customer.shipping_phone
-
-      {% if var('stripe__customer_metadata',[]) %}
-        {% for metadata in var('stripe__customer_metadata') %}
-            ,customer.{{ metadata }}
-        {% endfor %}
-      {% endif %}
+      customer.source_relation
       
     from customer
     left join transactions_grouped
         on customer.customer_id = transactions_grouped.customer_id
+        and customer.source_relation = transactions_grouped.source_relation
     left join failed_charges_by_customer 
         on customer.customer_id = failed_charges_by_customer.customer_id
+        and customer.source_relation = failed_charges_by_customer.source_relation
 )
 
 select *

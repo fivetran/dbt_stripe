@@ -23,13 +23,12 @@ with balance_transaction as (
     select *
     from {{ var('payout')}}
 
-
 ), customer as (
 
     select *
     from {{ var('customer')}}
 
-{% if var('using_payment_method', True) %}
+{% if var('stripe__using_payment_method', True) %}
 
 ), payment_method as (
 
@@ -69,14 +68,19 @@ select
     end as reporting_category,
     balance_transaction.source,
     balance_transaction.description,
-    case when balance_transaction.type = 'charge' then charge.amount end as customer_facing_amount, 
-    case when balance_transaction.type = 'charge' then charge.currency end as customer_facing_currency,
+    case 
+        when balance_transaction.type = 'charge' then charge.amount 
+    end as customer_facing_amount, 
+    case 
+        when balance_transaction.type = 'charge' then charge.currency 
+    end as customer_facing_currency,
     {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
+    coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id, 
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.description as customer_description, 
 
-    {% if var('using_payment_method', True) %}
+    {% if var('stripe__using_payment_method', True) %}
     payment_method.type as payment_method_type,
     payment_method_card.brand as payment_method_brand,
     payment_method_card.funding as payment_method_funding,
@@ -93,28 +97,39 @@ select
     payout.status as payout_status,
     payout.type as payout_type,
     payout.description as payout_description,
-    refund.reason as refund_reason
+    refund.reason as refund_reason,
+    balance_transaction.source_relation
+
 from balance_transaction
 
-left join charge 
+left join charge
     on charge.balance_transaction_id = balance_transaction.balance_transaction_id
+    and charge.source_relation = balance_transaction.source_relation
 left join customer 
     on charge.customer_id = customer.customer_id
+    and charge.source_relation = balance_transaction.source_relation
 left join payment_intent 
     on charge.payment_intent_id = payment_intent.payment_intent_id
+    and charge.source_relation = balance_transaction.source_relation
 
-{% if var('using_payment_method', True) %}
+{% if var('stripe__using_payment_method', True) %}
 left join payment_method 
     on payment_intent.payment_method_id = payment_method.payment_method_id
+    and charge.source_relation = balance_transaction.source_relation
 left join payment_method_card 
     on payment_method_card.payment_method_id = payment_method.payment_method_id
+    and charge.source_relation = balance_transaction.source_relation
 {% endif %}
 
 left join cards 
     on charge.card_id = cards.card_id
+    and charge.source_relation = balance_transaction.source_relation
 left join payout 
     on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+    and charge.source_relation = balance_transaction.source_relation
 left join refund 
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
+    and charge.source_relation = balance_transaction.source_relation
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
+    and charge.source_relation = balance_transaction.source_relation
