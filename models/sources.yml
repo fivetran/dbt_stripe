@@ -16,3 +16,9 @@ sources:
     tables:
       - name: dcim_site
       - name: dcim_device  
+      - name: dcim_region 
+    
+  - name: dbt_netbox
+    tables:
+      - name: regions_locations
+      - name: device_subscription_item_history
