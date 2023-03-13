@@ -8,7 +8,7 @@ models:
     +schema: stripe
     +materialized: table
     intermediate:
-      +materialized: ephemeral
+      +materialized: table
 vars:
   stripe:
     account: "{{ ref('stg_stripe__account') }}"
