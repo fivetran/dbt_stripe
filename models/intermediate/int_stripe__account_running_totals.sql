@@ -18,6 +18,7 @@ final as (
         date_month, 
         date_year,  
         date_index,
+        source_relation,
         coalesce(total_daily_sales_amount,0) as total_daily_sales_amount,
         coalesce(total_daily_refunds_amount,0) as total_daily_refunds_amount,
         coalesce(total_daily_adjustments_amount,0) as total_daily_adjustments_amount,
