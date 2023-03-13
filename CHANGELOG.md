@@ -1,3 +1,9 @@
+
+# dbt_stripe v0.10.0
+[#60](https://github.com/fivetran/dbt_stripe/pull/60) includes the following changes:
+## 🚨 Breaking Changes 🚨:
+- - Introduces a `int_stripe__account_running_totals` model to alleviate runtime errors resulting from the `stripe__daily_overview` model exceeding disc capacity upon running.
+
 # dbt_stripe v0.9.0
 
 [#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:
