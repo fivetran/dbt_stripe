@@ -6,7 +6,6 @@ with account_rolling_totals as (
     from {{ ref('int_stripe__account_rolling_totals') }}
 ),
 
-
 final as (
 
     select

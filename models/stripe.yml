@@ -1,6 +1,24 @@
 version: 2
 
 models:
+  - name: int_stripe__account_daily
+    description: Each record represents each day's ending balances per account.
+
+  - name: int_stripe__account_partitions
+    description: Each record is a group of partitioned account totals updating null values with zeroes to eventually calculate running totals downstream.
+
+  - name: int_stripe__account_rolling_totals
+    description: Each record represents each day's ending balances per account, in addition to changes over time.
+
+  - name: int_stripe__account_running_totals
+    description: Each record represents each day's ending balances per account, changes over time, and daily running (cumulative) balances. 
+
+  - name: int_stripe__date_spine
+    description: Each record represents a day of each calendar year.
+
+  - name: int_stripe__incomplete_charges
+    description: Each record represents a charge that is incomplete.
+
   - name: stripe__balance_transactions
     description: Each record represents a change to your account balance, enriched with data about the transaction.
     tests:
@@ -390,6 +408,8 @@ models:
             - date_day
             - source_relation
     columns:
+      - name: account_id
+        description: The ID of the account tied to the balance.
       - name: date_day
         description: Day of record, taken from the date of each balance transaction.
       - name: source_relation
