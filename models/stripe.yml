@@ -9,10 +9,7 @@ models:
 
   - name: int_stripe__account_rolling_totals
     description: Each record represents each day's ending balances per account, in addition to changes over time.
-
-  - name: int_stripe__account_running_totals
-    description: Each record represents each day's ending balances per account, changes over time, and daily running (cumulative) balances. 
-
+    
   - name: int_stripe__date_spine
     description: Each record represents a day of each calendar year.
 
