@@ -44,3 +44,5 @@ vars:
     using_invoices: true
     using_payment_method: true
     using_subscriptions: true
+
+  exception_ids: ('cus_MVjwgFklliUF9p','cus_J8IS1IGMxzZLzR')

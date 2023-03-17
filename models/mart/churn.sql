@@ -6,5 +6,5 @@ select
 from {{ref('mrr_movements_monthly')}} mmm 
 where event_type = 'Churn'
     -- Removing test accounts
-    and customer_id NOT IN ('cus_MVjwgFklliUF9p','cus_J8IS1IGMxzZLzR')
+    and customer_id NOT IN {{var('exception_ids')}}
 order by 1 desc
