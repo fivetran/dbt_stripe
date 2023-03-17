@@ -13,7 +13,7 @@
 }}
 
     select customer_id, name, sum(mrr) as mrr from {{ref('current_mrr')}} 
-    where customer_id NOT IN ('cus_MVjwgFklliUF9p','cus_J8IS1IGMxzZLzR')
+    where customer_id NOT IN {{var('exception_ids')}}
     group by 1,2
     order by 1
 
