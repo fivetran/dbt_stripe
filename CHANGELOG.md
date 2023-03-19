@@ -2,12 +2,11 @@
 # dbt_stripe v0.10.0
 [#60](https://github.com/fivetran/dbt_stripe/pull/60) includes the following changes:
 ## 🚨 Breaking Changes 🚨:
-- Introduces a `int_stripe__account_running_totals` model to alleviate runtime errors resulting from the `stripe__daily_overview` model exceeding disc capacity upon running.
+- Unwrapped `total_*` fields from the for loop in `stripe__daily_overview` to reduce compute required for previous for-loops 
 - Add `account_id` in `int_stripe__account_rolling_totals` for use as part of the join in the case where more than 1 `account_id` exists.
 
 ## Under the Hood
-- The previous logic from `stripe__daily_overview` has been moved to the intermediate `int_stripe__account_running_totals` model to help optimize runtime. 
-- Intermediate model materializations have changed from ephemeral to table to help with the complexity of calculations. 
+- Intermediate model materializations have changed from ephemeral to table to reduce the compute required for the complexity of calculations. 
 
 # dbt_stripe v0.9.0
 
