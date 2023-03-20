@@ -11,5 +11,6 @@ FROM {{ref('stripe__subscription_items_mrr')}} sim
   left join {{source('dbt_stripe_account_src', 'product')}} p on sim.product_id = p.id 
   left join {{source('dbt_stripe_account_src', 'product_classes')}} pc on pc.id = p.product_class
 where mrr > 0
+and customer_id NOT IN {{var('exception_ids')}}
 group by 1,2,3,6,7
 order by 2 asc

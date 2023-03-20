@@ -108,6 +108,7 @@ where not exists (
             and date_trunc('month', mrr.invoice_date)::date = nm.mrr_month
             and nm.mrr_sum < 0
             and nm.stripe_account = mrr.stripe_account)
+and customer_id NOT IN {{var('exception_ids')}}
 group by
     1,2,3,4,5,6,7,8,9,10,stripe_account
 order by
