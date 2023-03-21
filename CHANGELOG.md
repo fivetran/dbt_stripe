@@ -1,3 +1,13 @@
+
+# dbt_stripe v0.10.0
+[#60](https://github.com/fivetran/dbt_stripe/pull/60) includes the following changes:
+## 🚨 Breaking Changes 🚨:
+- Unwrapped `total_*` fields from the for loop in `stripe__daily_overview` to reduce compute required for previous for-loops 
+- Add `account_id` in `int_stripe__account_rolling_totals` for use as part of the join in the case where more than 1 `account_id` exists.
+
+## Under the Hood
+- Intermediate model materializations have changed from ephemeral to table to reduce the compute required for the complexity of calculations. 
+
 # dbt_stripe v0.9.0
 
 [#56](https://github.com/fivetran/dbt_stripe/pull/56) includes the following changes:

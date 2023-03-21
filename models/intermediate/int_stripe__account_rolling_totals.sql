@@ -25,6 +25,7 @@ with date_spine as (
 ), final as (
 
     select
+        date_spine.account_id,
         date_spine.date_day,
         date_spine.date_week,
         date_spine.date_month,
@@ -46,6 +47,7 @@ with date_spine as (
     from date_spine
     left join account_rolling_totals
         on account_rolling_totals.date_day = date_spine.date_day
+        and account_rolling_totals.account_id = date_spine.account_id
         and account_rolling_totals.source_relation = date_spine.source_relation
 )
 
