@@ -10,7 +10,7 @@
 - Added a new BuildKite run statement to test a few of the metadata variables.
 
 ## Upstream Changes
-- See the source package [CHANGELOG](https://github.com/fivetran/dbt_stripe_source/blob/main/CHANGELOG.md) for updates made to the staging layer in dbt_stripe_source `v0.9.0`.
+- See the source package [CHANGELOG](https://github.com/fivetran/dbt_stripe_source/blob/main/CHANGELOG.md) for updates made to the staging layer in dbt_stripe_source `v0.9.1`.
 
 # dbt_stripe v0.10.0
 [#60](https://github.com/fivetran/dbt_stripe/pull/60) includes the following changes:
