@@ -8,6 +8,10 @@
 ## Under the Hood
 - Updated the `card` and `invoice_line_item` seed files to be consistent with the source package versions. Specifically to include the metadata fields.
 - Added a new BuildKite run statement to test a few of the metadata variables.
+
+## Upstream Changes
+- See the source package [CHANGELOG](https://github.com/fivetran/dbt_stripe_source/blob/main/CHANGELOG.md) for updates made to the staging layer in dbt_stripe_source `v0.9.0`.
+
 # dbt_stripe v0.10.0
 [#60](https://github.com/fivetran/dbt_stripe/pull/60) includes the following changes:
 ## 🚨 Breaking Changes 🚨:
