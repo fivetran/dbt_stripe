@@ -1,4 +1,12 @@
 
+# dbt_stripe v0.10.1
+## Documentation Updates
+- Updated the Metadata pivot documentation to be more clear that these variables only affect the `dbt_stripe_source` staging models.
+- Added reference to the new `stripe__card_metadata` and `stripe__invoice_line_item_metadata` metadata variables that are available in the latest source package update.
+
+## Under the Hood
+- Updated the `card` and `invoice_line_item` seed files to be consistent with the source package versions. Specifically to include the metadata fields.
+- Added a new BuildKite run statement to test a few of the metadata variables.
 # dbt_stripe v0.10.0
 [#60](https://github.com/fivetran/dbt_stripe/pull/60) includes the following changes:
 ## 🚨 Breaking Changes 🚨:
