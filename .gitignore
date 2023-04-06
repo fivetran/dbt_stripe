@@ -4,3 +4,5 @@ dbt_modules/
 logs/
 
 dbt_packages/
+
+dbt_stripe/

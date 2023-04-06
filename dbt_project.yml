@@ -2,6 +2,8 @@ config-version: 2
 name: 'stripe'
 version: '0.1.0'
 
+profile: dbt_stripe_n
+
 snapshot-paths: ["snapshots"]
 
 require-dbt-version: [">=1.0.0", "<2.0.0"]
