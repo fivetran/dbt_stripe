@@ -60,6 +60,8 @@ packages:
     version: [">=0.10.0", "<0.11.0"]
 
 ```
+Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well. 
+
 ## Step 3: Define database and schema variables
 By default, this package runs using your destination and the `stripe` schema. If this is not where your stripe data is (for example, if your stripe schema is named `stripe_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
