@@ -1,13 +1,12 @@
 
 with spine as (
-
     {% if execute %}
     {% set first_date_query %}
         select  min( created_at ) as min_date from {{ ref('stripe__balance_transactions') }}
     {% endset %}
     {% set first_date = run_query(first_date_query).columns[0][0]|string %}
     
-        {% if target.type == 'postgres' %}
+        {% if target.type == 'postgres' or target.type == 'duckdb' %}
             {% set first_date_adjust = "cast('" ~ first_date[0:10] ~ "' as date)" %}
 
         {% else %}
@@ -34,7 +33,7 @@ with spine as (
     {% else %} {% set last_date = run_query(current_date_query).columns[0][0]|string %}
     {% endif %}
         
-    {% if target.type == 'postgres' %}
+    {% if target.type == 'postgres' or target.type == 'duckdb' %}
         {% set last_date_adjust = "cast('" ~ last_date[0:10] ~ "' as date)" %}
 
     {% else %}
