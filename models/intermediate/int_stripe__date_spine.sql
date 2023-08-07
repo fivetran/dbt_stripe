@@ -1,6 +1,6 @@
 
 with spine as (
-    
+
     {% if execute %}
     {% set first_date_query %}
         select  min( created_at ) as min_date from {{ ref('stripe__balance_transactions') }}
