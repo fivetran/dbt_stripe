@@ -1,3 +1,10 @@
+# dbt_stripe v0.10.2
+## 🎉 Feature Updates
+- Included support for DuckDB via ([#67](https://github.com/fivetran/dbt_stripe/pull/67))
+
+## Contributors
+- [ericmichael](https://github.com/ericmichael) ([#67](https://github.com/fivetran/dbt_stripe/pull/67))
+
 # dbt_stripe v0.UPDATE.UPDATE
 
  ## Under the Hood:
