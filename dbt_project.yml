@@ -16,6 +16,7 @@ vars:
     card: "{{ ref('stg_stripe__card') }}"
     charge: "{{ ref('stg_stripe__charge') }}"
     customer: "{{ ref('stg_stripe__customer') }}"
+    dispute: "{{ ref('stg_stripe__dispute') }}"
     fee: "{{ ref('stg_stripe__fee') }}"
     invoice: "{{ ref('stg_stripe__invoice') }}"
     invoice_line_item: "{{ ref('stg_stripe__invoice_line_item') }}"
@@ -26,3 +27,4 @@ vars:
     price_plan: "{{ ref('stg_stripe__price_plan') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
     subscription: "{{ ref('stg_stripe__subscription') }}"
+    transfer: "{{ ref('stg_stripe__transfer') }}"
