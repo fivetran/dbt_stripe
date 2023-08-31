@@ -391,8 +391,8 @@ select
     card.card_address_postal_code,
     card.card_address_country,
     charge.charge_id,
-    charge.payment_intent_id,
     charge.charge_created_at,
+    payment_intent.payment_intent_id,
     invoice.invoice_id,
     invoice.invoice_number,
     subscription.subscription_id,
@@ -455,7 +455,7 @@ left join invoice
 left join subscription
     on subscription.latest_invoice_id =  invoice.invoice_id
     and subscription.source_relation =  invoice.source_relation
-left join refund 
+left join refund
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
     and refund.source_relation = balance_transaction.source_relation
 left join transfers 
