@@ -1,4 +1,4 @@
-# dbt_stripe v0.UPDATE.UPDATE
+# dbt_stripe v0.11.0
 
  ## Under the Hood:
 
