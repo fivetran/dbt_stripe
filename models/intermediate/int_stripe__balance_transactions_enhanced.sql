@@ -32,7 +32,7 @@ with balance_transaction as (
         company_address_line_2,
         company_address_postal_code,
         company_address_state,
-        company_name,
+        company_name as account_name,
         company_phone,
         country as account_country,
         created_at as account_created_at,
@@ -239,6 +239,8 @@ with balance_transaction as (
 
     from {{ var('payment_intent') }}
 
+{% if var('stripe__using_payment_method', True) %}
+
 ), payment_method as 
 
     (select
@@ -251,6 +253,13 @@ with balance_transaction as (
     
     from {{ var('payment_method') }}
 
+), payment_method_card as (
+
+    select *
+    from {{ var('payment_method_card')}}
+
+{% endif %}
+
 ), payout as 
 
     (select
@@ -261,11 +270,11 @@ with balance_transaction as (
         balance_transaction_id,
         created_at as payout_created_at,
         currency,
-        description,
+        description as payout_description,
         metadata as payout_metadata,
-        method,
+        method as payout_method,
         source_type,
-        status,
+        status as payout_status,
         type as payout_type,
         source_relation
 
@@ -278,14 +287,14 @@ with balance_transaction as (
         payment_intent_id,
         balance_transaction_id,
         charge_id,
-        amount,
+        amount as refund_amount,
         created_at as refund_created_at,
         currency,
-        description,
+        description as refund_description,
         metadata as refund_metadata,
-        reason,
+        reason as refund_reason,
         receipt_number,
-        status,
+        status as refund_status,
         source_relation
 
     from {{ var('refund') }}
@@ -349,20 +358,40 @@ select
     balance_transaction.amount,
     balance_transaction.fee,
     balance_transaction.net,
-    balance_transaction.reporting_category,
+    balance_transaction.type,
+    coalesce(reporting_category,
+        case
+            when balance_transaction.type in ('charge', 'payment') then 'charge'
+            when balance_transaction.type in ('refund', 'payment_refund') then 'refund'
+            when balance_transaction.type in ('payout_cancel', 'payout_failure') then 'payout_reversal'
+            when balance_transaction.type in ('transfer', 'recipient_transfer') then 'transfer'
+            when balance_transaction.type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
+            else balance_transaction.type end)
+    as reporting_category,
     balance_transaction.source_id,
     balance_transaction.balance_transaction_description,
     case 
-        when balance_transaction.reporting_category = 'charge' or balance_transaction.type = 'refund' then charge.charge_amount 
-        end as customer_facing_amount,
+        when balance_transaction.type in ('charge', 'payment') then charge.charge_amount 
+        when balance_transaction.type in ('refund', 'payment_refund') then refund.refund_amount
+        when dispute_id is not null then dispute.dispute_amount
+    end as customer_facing_amount,
     case 
         when balance_transaction.type = 'charge' then charge.charge_currency 
     end as customer_facing_currency,
-    case 
+    {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
+    case
         when payout.is_automatic is true then payout.payout_id
     end as automatic_payout_id,
-    payout.arrival_date as automatic_payout_effective_at,
+    payout.payout_id,
+    payout.arrival_date as payout_expected_arrival_date,
+    case
+        when payout.is_automatic is true then payout.arrival_date 
+    end as automatic_payout_effective_at,
+    payout.payout_type,
+    payout.payout_status,
+    payout.payout_description,
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
+    charge.receipt_email,
     customer.customer_email,
     customer.customer_name,
     customer.customer_description,
@@ -390,7 +419,7 @@ select
     card.card_address_state,
     card.card_address_postal_code,
     card.card_address_country,
-    charge.charge_id,
+    coalesce(charge.charge_id, refund.charge_id, dispute.charge_id) as charge_id,
     charge.charge_created_at,
     payment_intent.payment_intent_id,
     invoice.invoice_id,
@@ -400,6 +429,8 @@ select
 
     {% if var('stripe__using_payment_method', True) %}
     payment_method.payment_method_type,
+    payment_method_card.brand as payment_method_brand,
+    payment_method_card.funding as payment_method_funding,
     {% endif %}
 
     card.card_brand,
@@ -409,8 +440,10 @@ select
     dispute.dispute_id,
     dispute.dispute_reason,
     refund.refund_id,
+    refund.refund_reason,
     transfers.transfer_id,
     coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id, 
+    connected_account.account_name as connected_account_name,
     connected_account.account_country as connected_account_country,
     case 
         when charge.connected_account_id is not null then charge.charge_id
@@ -447,6 +480,9 @@ left join payment_intent
 left join payment_method
     on charge.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = payment_method.source_relation
+left join payment_method_card 
+    on payment_method_card.payment_method_id = payment_method.payment_method_id
+    and charge.source_relation = balance_transaction.source_relation
 {% endif %}
 
 left join invoice 
