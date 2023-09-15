@@ -1,64 +1,28 @@
-with payout as (
-    
-    select
-        payout_id,
-        amount as payout_amount,
-        arrival_date,
-        is_automatic,
-        balance_transaction_id,
-        created_at,
-        currency as payout_currency,
-        description as payout_description,
-        destination_bank_account_id,
-        destination_card_id,
-        metadata as payout_metadata,
-        method,
-        source_type,
-        status as payout_status,
-        type as payout_type
-    
-    from {{ var('payout') }}
+with payout_enhanced as (
 
-), balance_transaction as (
-
-    select
-        balance_transaction_id, 
-        connected_account_id,
-        created_at as balance_transaction_created_at,
-        available_on, 
-        currency, 
-        amount, 
-        fee, 
-        net, 
-        reporting_category, 
-        source as source_id, 
-        status as balance_transaction_status,
-        type as balance_transaction_type,
-        description as balance_transaction_description
-
-    from {{ var('balance_transaction') }}
+    select *
+    from {{ ref('int_stripe__payout_enhanced')}}
 
 )
 
 select
-    payout.payout_id,
-    case when is_automatic 
-        then payout.arrival_date 
-        else created_at
+    payout_id,
+    case 
+        when is_automatic 
+        then payout_arrival_date 
+        else payout_created_at
     end as effective_at,
-    payout.payout_currency,
-    payout.balance_transaction_id,
-    balance_transaction.amount as gross,
-    balance_transaction.fee,
-    balance_transaction.net,
-    balance_transaction.reporting_category,
-    balance_transaction.balance_transaction_description,
-    payout.payout_status,
-    payout.payout_type,
-    payout.payout_description,
-    coalesce(payout.destination_bank_account_id, payout.destination_card_id) as payout_destination_id
+    payout_currency as currency,
+    balance_transaction_id,
+    balance_transaction_amount as gross,
+    balance_transaction_fee,
+    balance_transaction_net,
+    reporting_category,
+    balance_transaction_description,
+    payout_status,
+    payout_type,
+    balance_transaction_description as description,
+    coalesce(destination_bank_account_id, destination_card_id) as payout_destination_id,
+    source_relation
 
-from payout
-
-left join balance_transaction 
-    on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+from payout_enhanced
