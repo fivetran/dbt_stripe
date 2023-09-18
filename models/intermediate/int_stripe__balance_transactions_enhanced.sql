@@ -3,16 +3,16 @@ with balance_transaction as (
     select 
         balance_transaction_id, 
         connected_account_id,
-        created_at,
-        available_on, 
-        currency, 
-        amount, 
-        fee, 
-        net, 
+        created_at as balance_transaction_created_at,
+        available_on as balance_transaction_available_on, 
+        currency as balance_transaction_currency, 
+        amount as balance_transaction_amount, 
+        fee as balance_transaction_fee, 
+        net as balance_transaction_net,
         reporting_category, 
         source as source_id,
-        status,
-        type,
+        status as balance_transaction_status,
+        type as balance_transaction_type,
         description as balance_transaction_description,
         source_relation
 
@@ -204,10 +204,10 @@ with balance_transaction as (
         total,
         period_start,
         period_end,
-        cast(status_transitions_finalized_at as TIMESTAMP) as status_transitions_finalized_at,
-        cast(status_transitions_marked_uncollectible_at as TIMESTAMP) as status_transitions_marked_uncollectible_at,
-        cast(status_transitions_paid_at as TIMESTAMP) as status_transitions_paid_at,
-        cast(status_transitions_voided_at as TIMESTAMP) as status_transitions_voided_at,
+        status_transitions_finalized_at,
+        status_transitions_marked_uncollectible_at,
+        status_transitions_paid_at,
+        status_transitions_voided_at,
         source_relation
     
     from {{ var('invoice') }}
@@ -263,13 +263,15 @@ with balance_transaction as (
 
     (select
         payout_id,
-        amount,
-        arrival_date,
+        amount as payout_amount,
+        arrival_date as payout_arrival_date,
         is_automatic,
         balance_transaction_id,
         created_at as payout_created_at,
-        currency,
+        currency as payout_currency,
         description as payout_description,
+        destination_bank_account_id,
+        destination_card_id,
         metadata as payout_metadata,
         method as payout_method,
         source_type,
@@ -351,40 +353,40 @@ with balance_transaction as (
 
 select
     balance_transaction.balance_transaction_id,
-    balance_transaction.created_at,
-    balance_transaction.available_on,
-    balance_transaction.currency,
-    balance_transaction.amount,
-    balance_transaction.fee,
-    balance_transaction.net,
-    balance_transaction.type,
-    coalesce(reporting_category,
-        case
-            when balance_transaction.type in ('charge', 'payment') then 'charge'
-            when balance_transaction.type in ('refund', 'payment_refund') then 'refund'
-            when balance_transaction.type in ('payout_cancel', 'payout_failure') then 'payout_reversal'
-            when balance_transaction.type in ('transfer', 'recipient_transfer') then 'transfer'
-            when balance_transaction.type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
-            else balance_transaction.type end)
-    as reporting_category,
+    balance_transaction.balance_transaction_created_at,
+    balance_transaction.balance_transaction_available_on,
+    balance_transaction.balance_transaction_currency,
+    balance_transaction.balance_transaction_amount,
+    balance_transaction.balance_transaction_fee,
+    balance_transaction.balance_transaction_net,
     balance_transaction.source_id,
     balance_transaction.balance_transaction_description,
+    balance_transaction.balance_transaction_type,
+    coalesce(reporting_category,
+        case
+            when balance_transaction.balance_transaction_type in ('charge', 'payment') then 'charge'
+            when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then 'refund'
+            when balance_transaction.balance_transaction_type in ('payout_cancel', 'payout_failure') then 'payout_reversal'
+            when balance_transaction.balance_transaction_type in ('transfer', 'recipient_transfer') then 'transfer'
+            when balance_transaction.balance_transaction_type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
+            else balance_transaction.balance_transaction_type end)
+    as reporting_category,
     case 
-        when balance_transaction.type in ('charge', 'payment') then charge.charge_amount 
-        when balance_transaction.type in ('refund', 'payment_refund') then refund.refund_amount
+        when balance_transaction.balance_transaction_type in ('charge', 'payment') then charge.charge_amount 
+        when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then refund.refund_amount
         when dispute_id is not null then dispute.dispute_amount
     end as customer_facing_amount,
     case 
-        when balance_transaction.type = 'charge' then charge.charge_currency 
+        when balance_transaction.balance_transaction_type = 'charge' then charge.charge_currency 
     end as customer_facing_currency,
-    {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
+    {{ dbt.dateadd('day', 1, 'balance_transaction_available_on') }} as effective_at,
     case
         when payout.is_automatic is true then payout.payout_id
     end as automatic_payout_id,
     payout.payout_id,
-    payout.arrival_date as payout_expected_arrival_date,
+    payout.payout_arrival_date as payout_expected_arrival_date,
     case
-        when payout.is_automatic is true then payout.arrival_date 
+        when payout.is_automatic is true then payout.payout_arrival_date 
     end as automatic_payout_effective_at,
     payout.payout_type,
     payout.payout_status,

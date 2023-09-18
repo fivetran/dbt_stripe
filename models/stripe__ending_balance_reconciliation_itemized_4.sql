@@ -61,8 +61,6 @@ select
     statement_descriptor,
     dispute_id,
     dispute_reason,
-    -- refund.refund_id,
-    -- transfer.transfer_id,
     connected_account_id, 
     connected_account_country,
     connected_account_direct_charge_id,

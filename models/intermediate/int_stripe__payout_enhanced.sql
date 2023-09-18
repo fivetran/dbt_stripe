@@ -204,10 +204,10 @@ with balance_transaction as (
         total,
         period_start,
         period_end,
-        cast(status_transitions_finalized_at as TIMESTAMP) as status_transitions_finalized_at,
-        cast(status_transitions_marked_uncollectible_at as TIMESTAMP) as status_transitions_marked_uncollectible_at,
-        cast(status_transitions_paid_at as TIMESTAMP) as status_transitions_paid_at,
-        cast(status_transitions_voided_at as TIMESTAMP) as status_transitions_voided_at,
+        status_transitions_finalized_at,
+        status_transitions_marked_uncollectible_at,
+        status_transitions_paid_at,
+        status_transitions_voided_at,
         source_relation
     
     from {{ var('invoice') }}
@@ -259,7 +259,7 @@ with balance_transaction as (
 
 {% endif %}
 
-), payout as 
+), payout as
 
     (select
         payout_id,
@@ -357,7 +357,10 @@ select
     case 
         when payout.is_automatic is true then payout.payout_id
     end as automatic_payout_id,
-    payout.payout_arrival_date,
+    payout.payout_arrival_date as payout_expected_arrival_date,
+    case
+        when payout.is_automatic is true then payout.payout_arrival_date 
+    end as automatic_payout_effective_at,
     payout.payout_created_at,
     payout.payout_currency,
     payout.payout_status,
@@ -372,12 +375,23 @@ select
     balance_transaction.balance_transaction_amount,
     balance_transaction.balance_transaction_fee,
     balance_transaction.balance_transaction_net,
-    balance_transaction.reporting_category,
     balance_transaction.source_id,
     balance_transaction.balance_transaction_description,
+    balance_transaction.balance_transaction_type,
+    coalesce(reporting_category,
+        case
+            when balance_transaction.balance_transaction_type in ('charge', 'payment') then 'charge'
+            when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then 'refund'
+            when balance_transaction.balance_transaction_type in ('payout_cancel', 'payout_failure') then 'payout_reversal'
+            when balance_transaction.balance_transaction_type in ('transfer', 'recipient_transfer') then 'transfer'
+            when balance_transaction.balance_transaction_type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
+            else balance_transaction.balance_transaction_type end)
+    as reporting_category,
     case 
-        when balance_transaction.balance_transaction_type = 'charge' then charge.charge_amount 
-        end as customer_facing_amount,
+        when balance_transaction.balance_transaction_type in ('charge', 'payment') then charge.charge_amount 
+        when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then refund.refund_amount
+        when dispute_id is not null then dispute.dispute_amount
+    end as customer_facing_amount,
     case
         when balance_transaction.balance_transaction_type = 'charge' then charge.charge_currency 
     end as customer_facing_currency,
@@ -415,7 +429,11 @@ select
     invoice.invoice_id,
     invoice.invoice_number,
     subscription.subscription_id,
+
+    {% if var('stripe__using_payment_method', True) %}
     payment_method.payment_method_type,
+    {% endif %}
+
     cards.card_brand,
     cards.card_funding,
     cards.card_country,
@@ -454,9 +472,13 @@ left join cards
 left join payment_intent
     on charge.payment_intent_id = payment_intent.payment_intent_id
     and charge.source_relation = payment_intent.source_relation
+
+{% if var('stripe__using_payment_method', True) %}
 left join payment_method
     on charge.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = payment_method.source_relation
+{% endif %}
+
 left join invoice 
     on charge.invoice_id = invoice.invoice_id
     and charge.source_relation = invoice.source_relation
