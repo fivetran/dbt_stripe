@@ -357,7 +357,7 @@ select
     case 
         when payout.is_automatic is true then payout.payout_id
     end as automatic_payout_id,
-    payout.payout_arrival_date as payout_expected_arrival_date,
+    payout.payout_arrival_date,
     case
         when payout.is_automatic is true then payout.payout_arrival_date 
     end as automatic_payout_effective_at,

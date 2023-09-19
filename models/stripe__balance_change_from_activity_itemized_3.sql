@@ -8,12 +8,12 @@ with balance_transaction_enhanced as (
 
 select 
     balance_transaction_id,
-    created_at,
-    available_on,
-    currency,
-    amount as gross,
-    fee,
-    net,
+    balance_transaction_created_at as created,
+    balance_transaction_available_on as available_on,
+    balance_transaction_currency as currency,
+    balance_transaction_amount as gross,
+    balance_transaction_fee,
+    balance_transaction_net,
     reporting_category,
     source_id,
     balance_transaction_description,

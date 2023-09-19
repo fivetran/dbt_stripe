@@ -20,6 +20,10 @@ select
     reporting_category,
     balance_transaction_description,
     payout_status,
+    case 
+        when lower(payout_status) in ('canceled','failed') then payout_created_at
+        else null
+    end as payout_reversed_at,
     payout_type,
     balance_transaction_description as description,
     coalesce(destination_bank_account_id, destination_card_id) as payout_destination_id,
