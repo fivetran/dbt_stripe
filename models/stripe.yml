@@ -714,8 +714,6 @@ models:
         description: Unique identifier for the original charge associated with this balance transaction. Available for charges, refunds and disputes.
       - name: payment_intent_id		
         description: The unique ID of the related Payment Intent, if any.
-      - name: charge_created_utc		
-        description: Creation time of the original charge associated with this balance transaction. Available for charges, refunds and disputes. For charges that were separately authorized and captured, this is the authorization time. Dates in UTC.
       - name: charge_created		
         description: Creation time of the original charge associated with this balance transaction. Available for charges, refunds and disputes. For charges that were separately authorized and captured, this is the authorization time. Dates in the requested timezone, or UTC if not provided.
       - name: invoice_id		
@@ -734,6 +732,8 @@ models:
         description: Two-letter ISO code representing the country of the card.
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
+      - name: dispute_id	
+        description: The unique ID of the related dispute, if any.
       - name: dispute_reason		
         description: Reason given by cardholder for dispute. Read more about dispute reasons.
       - name: connected_account_id		
@@ -900,7 +900,7 @@ models:
         description: Three-letter ISO code for the currency in which gross, fee and net are defined.
       - name: gross		
         description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
-      - name: fee		
+      - name: fee
         description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
       - name: net		
         description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).

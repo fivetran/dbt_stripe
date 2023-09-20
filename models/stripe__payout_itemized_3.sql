@@ -15,10 +15,10 @@ select
     payout_currency as currency,
     balance_transaction_id,
     balance_transaction_amount as gross,
-    balance_transaction_fee,
-    balance_transaction_net,
+    balance_transaction_fee as fee,
+    balance_transaction_net as net,
     reporting_category,
-    balance_transaction_description,
+    balance_transaction_description as description,
     payout_status,
     case 
         when lower(payout_status) in ('canceled','failed') then payout_created_at
