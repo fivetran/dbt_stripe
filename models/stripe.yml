@@ -16,6 +16,12 @@ models:
   - name: int_stripe__incomplete_charges
     description: Each record represents a charge that is incomplete.
 
+  - name: int_stripe__balance_transactions_enhanced
+    description: Each record provides additional details on each balance_transaction.
+
+  - name: int_stripe__payout_enhanced
+    description: Each record provides additional details on each payout.
+
   - name: stripe__balance_transactions
     description: Each record represents a change to your account balance, enriched with data about the transaction.
     tests:
@@ -479,189 +485,132 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - balance_transaction_id
+            - source_relation
     columns:
       - name: balance_transaction_id	
         description: Unique identifier for the related balance transaction.
-
       - name: balance_transaction_created_at	
         description: Time (in UTC) at which the balance transaction affected your Stripe balance.
-
       - name: balance_transaction_reporting_category	
         description: (Beta) Reporting category is a top-level categorization of balance transactions for financial accounting purposes.
-
       - name: activity_at	
         description: The time (in UTC) to which we attribute this line item. This time is based on the originating activity, such as the date of the originating charge for a post-billed fee. (For activity attributed to a time range—often a full day or a full month—this will be the final second of that range.)
-
       - name: currency	
         description: Three-letter ISO code for the currency in which the amount is defined.
-
       - name: amount	
         description: Amount of this activity, expressed in major units of the currency (e.g., dollars for USD, or yen for JPY).
-
       - name: charge_id	
         description: The unique ID of the related charge, if any. For charges, this will be the charge itself; for refunds or disputes, this will be the original charge being refunded or disputed.
-
       - name: payment_intent_id		
         description: The unique ID of the related Payment Intent, if any.
-
       - name: refund_id	
         description: The unique ID of the related refund, if any.
-
       - name: dispute_id	
         description: The unique ID of the related dispute, if any.
-
       - name: invoice_id		
         description: Unique ID for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
-
       - name: invoice_number		
         description: Number for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
-
       - name: subscription_id		
         description: Unique ID for the subscription associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing subscription.
-
       - name: fee_id	
         description: For network charges and Stripe fees associated with Interchange Plus pricing, a unique ID for that charge or fee.
-
       - name: transfer_id		
         description: The unique ID of the related transfer, if any.
-
       - name: destination_id		
         description: For Stripe Connect activity with a related destination charge (including downstream refunds and disputes), a unique ID for that destination account.
-
       - name: customer_id		
         description: The unique ID of the related customer, if any.
-
       - name: customer_email		
         description: Email address of the customer, if any, associated with this balance transaction.
-
       - name: customer_name		
         description: Name of the customer, if any, associated with this balance transaction.
-
       - name: customer_description		
         description: Description provided when creating the customer, often used to store the customer name.
-
-      - name: customer_shipping_address_line1		
+      - name: customer_shipping_address_line_1		
         description: First line of the customer shipping address associated with this charge, if any
-
-      - name: customer_shipping_address_line2		
+      - name: customer_shipping_address_line_2		
         description: Second line of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_city		
         description: City of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_state		
         description: State of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_postal_code		
         description: Postal code of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_country		
         description: Country of the customer shipping address associated with this charge, if any
-
-      - name: customer_address_line1		
+      - name: customer_address_line_1		
         description: First line of the customer address associated with this charge, if any
-
-      - name: customer_address_line2		
+      - name: customer_address_line_2		
         description: Second line of the customer address associated with this charge, if any
-
       - name: customer_address_city		
         description: City of the customer address associated with this charge, if any
-
       - name: customer_address_state		
         description: State of the customer address associated with this charge, if any
-
       - name: customer_address_postal_code		
         description: Postal code of the customer address associated with this charge, if any
-
       - name: customer_address_country		
         description: Country of the customer address associated with this charge, if any
-
-      - name: shipping_address_line1		
+      - name: shipping_address_line_1		
         description: First line of the shipping address associated with this charge, if any
-
-      - name: shipping_address_line2		
+      - name: shipping_address_line_2		
         description: Second line of the shipping address associated with this charge, if any
-
       - name: shipping_address_city		
         description: City of the shipping address associated with this charge, if any
-
       - name: shipping_address_state		
         description: State of the shipping address associated with this charge, if any
-
       - name: shipping_address_postal_code		
         description: Postal code of the shipping address associated with this charge, if any
-
       - name: shipping_address_country		
         description: Country of the shipping address associated with this charge, if any
-
-      - name: card_address_line1		
+      - name: card_address_line_1		
         description: First line of the card address associated with this charge, if any
-
-      - name: card_address_line2		
+      - name: card_address_line_2		
         description: Second line of the card address associated with this charge, if any
-
       - name: card_address_city		
         description: City of the card address associated with this charge, if any
-
       - name: card_address_state		
         description: State of the card address associated with this charge, if any
-
       - name: card_address_postal_code		
         description: Postal code of the card address associated with this charge, if any
-
       - name: card_address_country		
         description: Country of the card address associated with this charge, if any
-
       - name: automatic_payout_id		
         description: (Applies only to accounts on automatic payouts.) For paid-out activity, this will be the unique ID for the associated payout.
-
       - name: automatic_payout_effective_at		
         description: The date we expect this automatic payout to arrive in your bank account, in UTC. This is also when the paid-out funds are deducted from your Stripe balance.
-
       - name: payment_method_type		
         description: The type of payment method used in the related payment.
-
       - name: card_brand		
         description: Card brand, if applicable.
-
       - name: card_funding		
         description: Card funding type, if applicable.
-
       - name: card_country		
         description: Two-letter ISO code representing the country of the card.
-
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
-
       - name: customer_facing_currency		
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
-
       - name: customer_facing_amount		
         description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, refund, or dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
-
       - name: balance_transaction_description	
         description: An arbitrary string attached to the balance transaction.
-
       - name: connected_account_id		
         description: For Stripe Connect activity related to a connected account, the unique ID for the account.
-
       - name: connected_account_name		
         description: For Stripe Connect activity related to a connected account, the name of the account.
-
       - name: connected_account_country		
         description: For Stripe Connect activity related to a connected account, the two-letter ISO code representing the country of the account.
-
       - name: connected_account_direct_charge_id		
         description: (Beta) For Stripe Connect activity related to a connected account, charge id of the direct charge that happened on connected account.
-
-      - name: payment_metadata[key]		
+      - name: payment_metadata
         description: Metadata associated with the related PaymentIntent, if any. If no PaymentIntent metadata exists, metadata from any related charge object will be returned. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
-
-      - name: refund_metadata[key]		
+      - name: refund_metadata
         description: Metadata associated with the related refund object, if any. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
-
-      - name: transfer_metadata[key]		
+      - name: transfer_metadata
         description: Metadata associated with the related transfer object, if any. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
 
   - name: stripe__balance_change_from_activity_itemized_3
     description: This report belongs under Balance reports. The Balance report is similar to a bank statement, helping you to reconcile your Stripe balance at the end of the month. The Balance report is most useful if you treat Stripe like a bank account for accounting purposes, reconciling the balance at the end of each month. If you have automatic payouts enabled and prefer to reconcile the transactions settled in each payout, see the Payout reconciliation report instead. The Balance Change from Activity reports provides a more detailed breakdown of your transactions by reporting category. This section includes all transactions except for payouts that affect your balance, including charges, refunds, disputes, other adjustments, and fees.
@@ -669,205 +618,309 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - balance_transaction_id
+            - source_relation
     columns:
       - name: balance_transaction_id	
         description: Unique identifier for the balance transaction.
-
       - name: created_utc		
         description: Time at which the balance transaction was created. Dates in UTC.
-
       - name: created	
         description: Time at which the balance transaction was created. Dates in the requested timezone, or UTC if not provided.
-
       - name: available_on_utc		
         description: The date the balance transaction’s net funds will become available in the Stripe balance. Dates in UTC.
-
       - name: available_on	
         description: The date the balance transaction’s net funds will become available in the Stripe balance. Dates in the requested timezone, or UTC if not provided.
-
       - name: currency	
         description: Three-letter ISO code for the currency in which gross, fee and net are defined.
-
       - name: gross	
         description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
-
       - name: fee	
         description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
-
       - name: net	
         description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
-
       - name: reporting_category	
         description: Reporting Category is a new categorization of balance transactions, meant to improve on the current type field.
-
       - name: source_id		
         description: The Stripe object to which this transaction is related.
-
       - name: description	
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
-
       - name: customer_facing_amount		
         description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, refund, or dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
-
       - name: customer_facing_currency		
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
-
       - name: automatic_payout_id		
         description: ID of the automatically created payout associated with this balance transaction (only set if your account is on an automatic payout schedule).
-
       - name: automatic_payout_effective_at_utc		
         description: The date we expect this automatic payout to arrive in your bank account, in UTC. This is also when the paid-out funds are deducted from your Stripe balance.
-
       - name: automatic_payout_effective_at		
         description: The date we expect this automatic payout to arrive in your bank account, in the requested timezone, or UTC if not provided. This is also when the paid-out funds are deducted from your Stripe balance.
-
       - name: customer_id		
         description: The unique ID of the related customer, if any.
-
       - name: customer_email		
         description: Email address of the customer, if any, associated with this balance transaction.
-
       - name: customer_name		
         description: Name of the customer, if any, associated with this balance transaction.
-
       - name: customer_description		
         description: Description provided when creating the customer, often used to store the customer name.
-
-      - name: customer_shipping_address_line1		
+      - name: customer_shipping_address_line_1		
         description: First line of the customer shipping address associated with this charge, if any
-
-      - name: customer_shipping_address_line2		
+      - name: customer_shipping_address_line_2		
         description: Second line of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_city		
         description: City of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_state		
         description: State of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_postal_code		
         description: Postal code of the customer shipping address associated with this charge, if any
-
       - name: customer_shipping_address_country		
         description: Country of the customer shipping address associated with this charge, if any
-
-      - name: customer_address_line1		
+      - name: customer_address_line_1		
         description: First line of the customer address associated with this charge, if any
-
-      - name: customer_address_line2		
+      - name: customer_address_line_2		
         description: Second line of the customer address associated with this charge, if any
-
       - name: customer_address_city		
         description: City of the customer address associated with this charge, if any
-
       - name: customer_address_state		
         description: State of the customer address associated with this charge, if any
-
       - name: customer_address_postal_code		
         description: Postal code of the customer address associated with this charge, if any
-
       - name: customer_address_country		
         description: Country of the customer address associated with this charge, if any
-
-      - name: shipping_address_line1		
+      - name: shipping_address_line_1		
         description: First line of the shipping address associated with this charge, if any
-
-      - name: shipping_address_line2		
+      - name: shipping_address_line_2		
         description: Second line of the shipping address associated with this charge, if any
-
       - name: shipping_address_city		
         description: City of the shipping address associated with this charge, if any
-
       - name: shipping_address_state		
         description: State of the shipping address associated with this charge, if any
-
       - name: shipping_address_postal_code		
         description: Postal code of the shipping address associated with this charge, if any
-
       - name: shipping_address_country		
         description: Country of the shipping address associated with this charge, if any
-
-      - name: card_address_line1		
+      - name: card_address_line_1		
         description: First line of the card address associated with this charge, if any
-
-      - name: card_address_line2		
+      - name: card_address_line_2		
         description: Second line of the card address associated with this charge, if any
-
       - name: card_address_city		
         description: City of the card address associated with this charge, if any
-
       - name: card_address_state		
         description: State of the card address associated with this charge, if any
-
       - name: card_address_postal_code		
         description: Postal code of the card address associated with this charge, if any
-
       - name: card_address_country		
         description: Country of the card address associated with this charge, if any
-
       - name: charge_id		
         description: Unique identifier for the original charge associated with this balance transaction. Available for charges, refunds and disputes.
-
       - name: payment_intent_id		
         description: The unique ID of the related Payment Intent, if any.
-
       - name: charge_created_utc		
         description: Creation time of the original charge associated with this balance transaction. Available for charges, refunds and disputes. For charges that were separately authorized and captured, this is the authorization time. Dates in UTC.
-
       - name: charge_created		
         description: Creation time of the original charge associated with this balance transaction. Available for charges, refunds and disputes. For charges that were separately authorized and captured, this is the authorization time. Dates in the requested timezone, or UTC if not provided.
-
       - name: invoice_id		
         description: Unique ID for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
-
       - name: invoice_number		
         description: Number for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
-
       - name: subscription_id		
         description: Unique ID for the subscription associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing subscription.
-
       - name: payment_method_type		
         description: The type of payment method used in the related payment.
-
       - name: card_brand		
         description: Card brand, if applicable.
-
       - name: card_funding		
         description: Card funding type, if applicable.
-
       - name: card_country		
         description: Two-letter ISO code representing the country of the card.
-
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
-
       - name: dispute_reason		
         description: Reason given by cardholder for dispute. Read more about dispute reasons.
-
       - name: connected_account_id		
         description: For Stripe Connect activity related to a connected account, the unique ID for the account.
-
       - name: connected_account_name		
         description: For Stripe Connect activity related to a connected account, the name of the account.
-
       - name: connected_account_country		
         description: For Stripe Connect activity related to a connected account, the two-letter ISO code representing the country of the account.
-
       - name: connected_account_direct_charge_id		
         description: (Beta) For Stripe Connect activity related to a connected account, charge id of the direct charge that happened on connected account.
-
-      - name: payment_metadata[key]		
+      - name: payment_metadata		
         description: Metadata associated with the related PaymentIntent, if any. If no PaymentIntent metadata exists, metadata from any related charge object will be returned. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
-
-      - name: refund_metadata[key]		
+      - name: refund_metadata
         description: Metadata associated with the related refund object, if any. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
-
-      - name: transfer_metadata[key]		
+      - name: transfer_metadata
         description: Metadata associated with the related transfer object, if any. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
 
   - name: stripe__ending_balance_reconciliation_itemized_4
     description: This report is related to Payout Reconciliation report. The Payout reconciliation report helps you match the payouts you receive in your bank account with the batches of payments and other transactions that they relate to. The payout reconciliation report is only available for users with automatic payouts enabled, and is optimized for users who prefer to reconcile the transactions included in each payout as a settlement batch. If you use manual payouts or prefer to track and reconcile your Stripe balance like a bank account, see the Balance report instead. To help you decide which report is right for you, see the guide for selecting reports. This Ending Balance Reconciliation section provides a similar breakdown of the transactions that hadn’t been settled as of the report’s end date.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - payout_id
+            - source_relation
+    columns:
+      - name: automatic_payout_id
+        description: ID of the automatically created payout associated with this balance transaction (only set if your account is on an automatic payout schedule).
+      - name: automatic_payout_effective_at
+        description: The date we expect this automatic payout to arrive in your bank account, in the requested timezone, or UTC if not provided. This is also when the paid-out funds are deducted from your Stripe balance.
+      - name: balance_transaction_id
+        description: Unique identifier for the balance transaction.
+      - name: created
+        description: Time at which the balance transaction was created. Dates in the requested timezone, or UTC if not provided.
+      - name: available_on
+        description: The date the balance transaction’s net funds will become available in the Stripe balance. Dates in the requested timezone, or UTC if not provided.
+      - name: currency
+        description: Three-letter ISO code for the currency in which gross, fee and net are defined.
+      - name: gross
+        description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+      - name: fee
+        description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+      - name: net
+        description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+      - name: reporting_category
+        description: Reporting Category is a new categorization of balance transactions, meant to improve on the current type field.
+      - name: source_id
+        description: The Stripe object to which this transaction is related.
+      - name: description
+        description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
+      - name: customer_facing_amount
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, refund, or dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+      - name: customer_facing_currency
+        description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
+      - name: customer_id
+        description: The unique ID of the related customer, if any.
+      - name: customer_email
+        description: Email address of the customer, if any, associated with this balance transaction.
+      - name: customer_name
+        description: Name of the customer, if any, associated with this balance transaction.
+      - name: customer_description
+        description: Description provided when creating the customer, often used to store the customer name.
+      - name: customer_shipping_address_line_1
+        description: First line of the customer shipping address associated with this charge, if any
+      - name: customer_shipping_address_line_2
+        description: Second line of the customer shipping address associated with this charge, if any
+      - name: customer_shipping_address_city
+        description: City of the customer shipping address associated with this charge, if any
+      - name: customer_shipping_address_state
+        description: State of the customer shipping address associated with this charge, if any
+      - name: customer_shipping_address_postal_code
+        description: Postal code of the customer shipping address associated with this charge, if any
+      - name: customer_shipping_address_country
+        description: Country of the customer shipping address associated with this charge, if any
+      - name: customer_address_line_1
+        description: First line of the customer address associated with this charge, if any
+      - name: customer_address_line_2
+        description: Second line of the customer address associated with this charge, if any
+      - name: customer_address_city
+        description: City of the customer address associated with this charge, if any
+      - name: customer_address_state
+        description: State of the customer address associated with this charge, if any
+      - name: customer_address_postal_code
+        description: Postal code of the customer address associated with this charge, if any
+      - name: customer_address_country
+        description: Country of the customer address associated with this charge, if any
+      - name: shipping_address_line_1
+        description: First line of the shipping address associated with this charge, if any
+      - name: shipping_address_line_2
+        description: Second line of the shipping address associated with this charge, if any
+      - name: shipping_address_city
+        description: City of the shipping address associated with this charge, if any
+      - name: shipping_address_state
+        description: State of the shipping address associated with this charge, if any
+      - name: shipping_address_postal_code
+        description: Postal code of the shipping address associated with this charge, if any
+      - name: shipping_address_country
+        description: Country of the shipping address associated with this charge, if any
+      - name: card_address_line_1
+        description: First line of the card address associated with this charge, if any
+      - name: card_address_line_2
+        description: Second line of the card address associated with this charge, if any
+      - name: card_address_city
+        description: City of the card address associated with this charge, if any
+      - name: card_address_state
+        description: State of the card address associated with this charge, if any
+      - name: card_address_postal_code
+        description: Postal code of the card address associated with this charge, if any
+      - name: card_address_country
+        description: Country of the card address associated with this charge, if any
+      - name: charge_id
+        description: Unique identifier for the original charge associated with this balance transaction. Available for charges, refunds and disputes.
+      - name: payment_intent_id
+        description: The unique ID of the related Payment Intent, if any.
+      - name: charge_created
+        description: Creation time of the original charge associated with this balance transaction. Available for charges, refunds and disputes. For charges that were separately authorized and captured, this is the authorization time. Dates in the requested timezone, or UTC if not provided.
+      - name: invoice_id
+        description: Unique ID for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
+      - name: invoice_number
+        description: Unique Number for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
+      - name: subscription_id
+        description: Unique ID for the subscription associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing subscription.
+      - name: payment_method_type
+        description: The type of payment method used in the related payment.
+      - name: card_brand
+        description: Card brand, if applicable.
+      - name: card_funding
+        description: Card funding type, if applicable.
+      - name: card_country
+        description: Two-letter ISO code representing the country of the card.
+      - name: statement_descriptor
+        description: The dynamic statement descriptor or suffix specified when the related charge was created.
+      - name: dispute_reason
+        description: Reason given by cardholder for dispute. Read more about dispute reasons.
+      - name: connected_account_id
+        description: For Stripe Connect activity related to a connected account, the unique ID for the account.
+      - name: connected_account_country
+        description: For Stripe Connect activity related to a connected account, the two-letter ISO code representing the country of the account.
+      - name: connected_account_direct_charge_id
+        description: (Beta) For Stripe Connect activity related to a connected account, charge id of the direct charge that happened on connected account.
+      - name: payment_metadata
+        description: Metadata associated with the related PaymentIntent, if any. If no PaymentIntent metadata exists, metadata from any related charge object will be returned. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
+      - name: refund_metadata
+        description: Metadata associated with the related refund object, if any. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
+      - name: transfer_metadata
+        description: Metadata associated with the related transfer object, if any. API requests including this column must specify a metadata key in brackets. This column can be specified multiple times to retrieve data from additional metadata keys.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
     
-  - name: stripe_payout_itemized_3
+  - name: stripe__payout_itemized_3
     description: This report belongs under Balance reports. The Balance report is similar to a bank statement, helping you to reconcile your Stripe balance at the end of the month. The Balance report is most useful if you treat Stripe like a bank account for accounting purposes, reconciling the balance at the end of each month. If you have automatic payouts enabled and prefer to reconcile the transactions settled in each payout, see the Payout reconciliation report instead. The Payout Itemized report information on each payout made to your bank account.
-    
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - payout_id
+            - source_relation
+    columns:
+      - name: payout_id
+        description: The Stripe object to which this transaction is related.
+      - name: effective_at		
+        description: For automatic payouts, this is the date we expect funds to arrive in your bank account. For manual payouts, this is the date the payout was initiated. In both cases, it’s the date the paid-out funds are deducted from your Stripe balance. All dates in the requested timezone, or UTC if not provided.
+      - name: currency		
+        description: Three-letter ISO code for the currency in which gross, fee and net are defined.
+      - name: gross		
+        description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+      - name: fee		
+        description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+      - name: net		
+        description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+      - name: reporting_category		
+        description: Reporting Category is a new categorization of balance transactions, meant to improve on the current type field.
+      - name: balance_transaction_id		
+        description: Unique identifier for the balance transaction. Specifically for Payout, the relation is the ID of the balance transaction that describes the impact of this payout on your account balance.
+      - name: description		
+        description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
+      - name: payout_expected_arrival_date		
+        description: Date the payout is scheduled to arrive in the bank. This factors in delays like weekends or bank holidays.
+      - name: payout_status		
+        description: Current status of the payout (paid, pending, in_transit, canceled or failed). A payout will be pending until it is submitted to the bank, at which point it becomes in_transit. It will then change to paid if the transaction goes through. If it does not go through successfully, its status will change to failed or canceled.
+      - name: payout_reversed_at		
+        description: Typically this field will be empty. However, if the payout’s status is canceled or failed, this field will reflect the time at which it entered that status. Times in the requested timezone, or UTC if not provided.
+      - name: payout_type		
+        description: Can be bank_account or card.
+      - name: payout_description		
+        description: An arbitrary string attached to the payout. Often useful for displaying to users.
+      - name: payout_destination_id		
+        description: ID of the bank account or card the payout was sent to.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
