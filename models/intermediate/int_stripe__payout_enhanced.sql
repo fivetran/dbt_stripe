@@ -391,6 +391,7 @@ select
         when balance_transaction.balance_transaction_type in ('charge', 'payment') then charge.charge_amount 
         when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then refund.refund_amount
         when dispute_id is not null then dispute.dispute_amount
+        else null
     end as customer_facing_amount,
     case
         when balance_transaction.balance_transaction_type = 'charge' then charge.charge_currency 
@@ -440,8 +441,6 @@ select
     charge.statement_descriptor,
     dispute.dispute_id,
     dispute.dispute_reason,
-    -- refund.refund_id,
-    -- transfers.transfer_id,
     coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id, 
     connected_account.account_country as connected_account_country,
     case 

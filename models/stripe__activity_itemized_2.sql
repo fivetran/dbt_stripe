@@ -62,6 +62,7 @@ select
     connected_account_direct_charge_id,
     payment_metadata,
     refund_metadata,
-    transfer_metadata
+    transfer_metadata,
+    source_relation
 
 from balance_transaction_enhanced

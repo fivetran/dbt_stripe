@@ -758,7 +758,7 @@ models:
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - payout_id
+            - automatic_payout_id
             - source_relation
     columns:
       - name: automatic_payout_id

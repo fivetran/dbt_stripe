@@ -264,7 +264,7 @@ with balance_transaction as (
     (select
         payout_id,
         amount as payout_amount,
-        arrival_date_at as payout_arrival_date,
+        arrival_date_at as payout_arrival_date_at,
         is_automatic,
         balance_transaction_id,
         created_at as payout_created_at,
@@ -375,6 +375,7 @@ select
         when balance_transaction.balance_transaction_type in ('charge', 'payment') then charge.charge_amount 
         when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then refund.refund_amount
         when dispute_id is not null then dispute.dispute_amount
+        else null
     end as customer_facing_amount,
     case 
         when balance_transaction.balance_transaction_type = 'charge' then charge.charge_currency 
@@ -384,9 +385,9 @@ select
         when payout.is_automatic is true then payout.payout_id
     end as automatic_payout_id,
     payout.payout_id,
-    payout.payout_arrival_date as payout_expected_arrival_date,
+    payout.payout_arrival_date_at as payout_expected_arrival_date,
     case
-        when payout.is_automatic is true then payout.payout_arrival_date 
+        when payout.is_automatic is true then payout.payout_arrival_date_at
     end as automatic_payout_effective_at,
     payout.payout_type,
     payout.payout_status,
@@ -451,9 +452,8 @@ select
     end as connected_account_direct_charge_id,
     coalesce(payment_intent.payment_intent_metadata, charge.charge_metadata) as payment_metadata,
     refund.refund_metadata,
-    transfers.transfer_metadata
-
-
+    transfers.transfer_metadata,
+    balance_transaction.source_relation
 
 from balance_transaction
 
