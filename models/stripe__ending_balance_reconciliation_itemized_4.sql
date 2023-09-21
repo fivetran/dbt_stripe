@@ -7,7 +7,7 @@ with payout_enhanced as (
 
 select
     automatic_payout_id,
-    payout_arrival_date as automatic_payout_effective_at,
+    payout_arrival_date_at as automatic_payout_effective_at,
     balance_transaction_id,
     balance_transaction_created_at as created,
     balance_transaction_available_on as available_on,

@@ -264,7 +264,7 @@ with balance_transaction as (
     (select
         payout_id,
         amount as payout_amount,
-        arrival_date as payout_arrival_date,
+        arrival_date_at as payout_arrival_date_at,
         is_automatic,
         balance_transaction_id,
         created_at as payout_created_at,
@@ -357,9 +357,9 @@ select
     case 
         when payout.is_automatic is true then payout.payout_id
     end as automatic_payout_id,
-    payout.payout_arrival_date,
+    payout.payout_arrival_date_at,
     case
-        when payout.is_automatic is true then payout.payout_arrival_date 
+        when payout.is_automatic is true then payout.payout_arrival_date_at 
     end as automatic_payout_effective_at,
     payout.payout_created_at,
     payout.payout_currency,
