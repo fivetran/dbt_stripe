@@ -93,7 +93,7 @@ select
     cards.funding as card_funding,
     cards.country as card_country,
     payout.payout_id,
-    payout.arrival_date as payout_expected_arrival_date,
+    payout.arrival_date_at as payout_expected_arrival_date,
     payout.status as payout_status,
     payout.type as payout_type,
     payout.description as payout_description,

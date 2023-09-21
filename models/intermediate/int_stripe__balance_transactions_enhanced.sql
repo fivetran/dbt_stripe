@@ -264,7 +264,7 @@ with balance_transaction as (
     (select
         payout_id,
         amount as payout_amount,
-        arrival_date as payout_arrival_date,
+        arrival_date_at as payout_arrival_date,
         is_automatic,
         balance_transaction_id,
         created_at as payout_created_at,
