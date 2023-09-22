@@ -52,10 +52,20 @@ select
     charge_id,
     payment_intent_id,
     charge_created_at,
+
+    {% if var('stripe__using_invoices', True) %}
     invoice_id,
     invoice_number,
+    {% endif %}
+
+    {% if var('stripe__using_subscriptions', True) %}
     subscription_id,
+    {% endif %}
+    
+    {% if var('stripe__using_payment_method', True) %}
     payment_method_type,
+    {% endif %}
+
     card_brand,
     card_funding,
     card_country,

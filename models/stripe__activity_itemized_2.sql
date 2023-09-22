@@ -15,9 +15,16 @@ select
     payment_intent_id,
     refund_id,
     dispute_id,
+
+    {% if var('stripe__using_invoices', True) %}
     invoice_id,
     invoice_number,
+    {% endif %}
+
+    {% if var('stripe__using_subscriptions', True) %}
     subscription_id,
+    {% endif %}
+
     transfer_id,
     customer_id,
     customer_email,
@@ -49,7 +56,11 @@ select
     card_address_country,
     automatic_payout_id,
     automatic_payout_effective_at,
+
+    {% if var('stripe__using_payment_method', True) %}
     payment_method_type,
+    {% endif %}
+    
     card_brand,
     card_funding,
     card_country,

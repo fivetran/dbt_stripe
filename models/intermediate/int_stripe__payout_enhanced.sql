@@ -1,7 +1,7 @@
 with balance_transaction as (
 
     select 
-        balance_transaction_id, 
+        balance_transaction_id,
         connected_account_id,
         created_at as balance_transaction_created_at,
         available_on as balance_transaction_available_on, 
@@ -9,7 +9,7 @@ with balance_transaction as (
         amount as balance_transaction_amount, 
         fee as balance_transaction_fee, 
         net as balance_transaction_net,
-        reporting_category, 
+        reporting_category,
         source as source_id,
         status as balance_transaction_status,
         type as balance_transaction_type,
@@ -172,6 +172,8 @@ with balance_transaction as (
     
     from {{ var('dispute') }}
 
+
+{% if var('stripe__using_invoices', True) %}
 ), invoice as 
 
     (select
@@ -212,6 +214,8 @@ with balance_transaction as (
     
     from {{ var('invoice') }}
 
+{% endif %}
+
 ), payment_intent as 
 
     (select 
@@ -239,7 +243,6 @@ with balance_transaction as (
     from {{ var('payment_intent') }}
 
 {% if var('stripe__using_payment_method', True) %}
-
 ), payment_method as 
 
     (select
@@ -259,7 +262,7 @@ with balance_transaction as (
 
 {% endif %}
 
-), payout as
+), payout as 
 
     (select
         payout_id,
@@ -300,6 +303,7 @@ with balance_transaction as (
 
     from {{ var('refund') }}
 
+{% if var('stripe__using_subscriptions', True) %}
 ), subscription as 
 
     (select 
@@ -326,6 +330,8 @@ with balance_transaction as (
         source_relation
 
     from {{ var('subscription') }}
+
+{% endif %}
 
 ), transfers as 
 
@@ -427,9 +433,15 @@ select
     charge.charge_id,
     charge.payment_intent_id,
     charge.charge_created_at,
+
+    {% if var('stripe__using_invoices', True) %}
     invoice.invoice_id,
     invoice.invoice_number,
+    {% endif %}
+
+    {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
+    {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}
     payment_method.payment_method_type,
@@ -478,12 +490,18 @@ left join payment_method
     and charge.source_relation = payment_method.source_relation
 {% endif %}
 
+{% if var('stripe__using_invoices', True) %}
 left join invoice 
     on charge.invoice_id = invoice.invoice_id
     and charge.source_relation = invoice.source_relation
+{% endif %}
+
+{% if var('stripe__using_subscriptions', True) %}
 left join subscription
-    on subscription.latest_invoice_id =  invoice.invoice_id
-    and subscription.source_relation =  invoice.source_relation
+    on subscription.latest_invoice_id =  charge.invoice_id
+    and subscription.source_relation =  charge.source_relation
+{% endif %}
+
 left join refund 
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
     and refund.source_relation = balance_transaction.source_relation

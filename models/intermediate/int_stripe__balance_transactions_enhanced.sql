@@ -1,7 +1,7 @@
 with balance_transaction as (
 
     select 
-        balance_transaction_id, 
+        balance_transaction_id,
         connected_account_id,
         created_at as balance_transaction_created_at,
         available_on as balance_transaction_available_on, 
@@ -9,7 +9,7 @@ with balance_transaction as (
         amount as balance_transaction_amount, 
         fee as balance_transaction_fee, 
         net as balance_transaction_net,
-        reporting_category, 
+        reporting_category,
         source as source_id,
         status as balance_transaction_status,
         type as balance_transaction_type,
@@ -19,7 +19,7 @@ with balance_transaction as (
     from {{ var('balance_transaction') }}
 
 ), account as (
-    
+
     select
         account_id,
         business_profile_mcc,
@@ -46,7 +46,7 @@ with balance_transaction as (
 
     from {{ var('account') }}
 
-), card as (
+), cards as (
 
     select
         card_id,
@@ -172,6 +172,8 @@ with balance_transaction as (
     
     from {{ var('dispute') }}
 
+
+{% if var('stripe__using_invoices', True) %}
 ), invoice as 
 
     (select
@@ -212,6 +214,8 @@ with balance_transaction as (
     
     from {{ var('invoice') }}
 
+{% endif %}
+
 ), payment_intent as 
 
     (select 
@@ -239,7 +243,6 @@ with balance_transaction as (
     from {{ var('payment_intent') }}
 
 {% if var('stripe__using_payment_method', True) %}
-
 ), payment_method as 
 
     (select
@@ -300,6 +303,7 @@ with balance_transaction as (
 
     from {{ var('refund') }}
 
+{% if var('stripe__using_subscriptions', True) %}
 ), subscription as 
 
     (select 
@@ -326,6 +330,8 @@ with balance_transaction as (
         source_relation
 
     from {{ var('subscription') }}
+
+{% endif %}
 
 ), transfers as 
 
@@ -415,29 +421,34 @@ select
     charge.shipping_address_state,
     charge.shipping_address_postal_code,
     charge.shipping_address_country,
-    card.card_address_line_1,
-    card.card_address_line_2,
-    card.card_address_city,
-    card.card_address_state,
-    card.card_address_postal_code,
-    card.card_address_country,
+    cards.card_address_line_1,
+    cards.card_address_line_2,
+    cards.card_address_city,
+    cards.card_address_state,
+    cards.card_address_postal_code,
+    cards.card_address_country,
     coalesce(charge.charge_id, refund.charge_id, dispute.charge_id) as charge_id,
     charge.charge_created_at,
     payment_intent.payment_intent_id,
+
+    {% if var('stripe__using_invoices', True) %}
     invoice.invoice_id,
     invoice.invoice_number,
-    subscription.subscription_id,
+    {% endif %}
 
+    {% if var('stripe__using_subscriptions', True) %}
+    subscription.subscription_id,
+    {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}
     payment_method.payment_method_type,
-    payment_method_card.brand as payment_method_brand,
-    payment_method_card.funding as payment_method_funding,
+    payment_method_cards.brand as payment_method_brand,
+    payment_method_cards.funding as payment_method_funding,
     {% endif %}
 
-    card.card_brand,
-    card.card_funding,
-    card.card_country,
+    cards.card_brand,
+    cards.card_funding,
+    cards.card_country,
     charge.statement_descriptor,
     dispute.dispute_id,
     dispute.dispute_reason,
@@ -469,29 +480,34 @@ left join charge
 left join customer 
     on charge.customer_id = customer.customer_id
     and charge.source_relation = customer.source_relation
-left join card
-    on charge.card_id = card.card_id
-    and charge.source_relation = card.source_relation
+left join cards
+    on charge.card_id = cards.card_id
+    and charge.source_relation = cards.source_relation
 left join payment_intent
     on charge.payment_intent_id = payment_intent.payment_intent_id
     and charge.source_relation = payment_intent.source_relation
-
 
 {% if var('stripe__using_payment_method', True) %}
 left join payment_method
     on charge.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = payment_method.source_relation
 left join payment_method_card 
-    on payment_method_card.payment_method_id = payment_method.payment_method_id
+    on payment_method_cards.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = balance_transaction.source_relation
 {% endif %}
 
+{% if var('stripe__using_invoices', True) %}
 left join invoice 
     on charge.invoice_id = invoice.invoice_id
     and charge.source_relation = invoice.source_relation
+{% endif %}
+
+{% if var('stripe__using_subscriptions', True) %}
 left join subscription
-    on subscription.latest_invoice_id =  invoice.invoice_id
-    and subscription.source_relation =  invoice.source_relation
+    on subscription.latest_invoice_id =  charge.invoice_id
+    and subscription.source_relation =  charge.source_relation
+{% endif %}
+
 left join refund
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
     and refund.source_relation = balance_transaction.source_relation
