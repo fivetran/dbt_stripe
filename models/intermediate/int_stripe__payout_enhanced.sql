@@ -362,10 +362,12 @@ select
     payout.is_automatic,
     case 
         when payout.is_automatic is true then payout.payout_id
+        else null
     end as automatic_payout_id,
     payout.payout_arrival_date_at,
     case
-        when payout.is_automatic is true then payout.payout_arrival_date_at 
+        when payout.is_automatic is true then payout.payout_arrival_date_at
+        else null
     end as automatic_payout_effective_at,
     payout.payout_created_at,
     payout.payout_currency,
@@ -457,6 +459,7 @@ select
     connected_account.account_country as connected_account_country,
     case 
         when charge.connected_account_id is not null then charge.charge_id
+        else null
     end as connected_account_direct_charge_id,
     coalesce(payment_intent.payment_intent_metadata, charge.charge_metadata) as payment_metadata,
     refund.refund_metadata,

@@ -462,6 +462,7 @@ select
     connected_account.account_country as connected_account_country,
     case 
         when charge.connected_account_id is not null then charge.charge_id
+        else null
     end as connected_account_direct_charge_id,
     coalesce(payment_intent.payment_intent_metadata, charge.charge_metadata) as payment_metadata,
     refund.refund_metadata,
