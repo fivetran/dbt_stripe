@@ -442,8 +442,8 @@ select
 
     {% if var('stripe__using_payment_method', True) %}
     payment_method.payment_method_type,
-    payment_method_cards.brand as payment_method_brand,
-    payment_method_cards.funding as payment_method_funding,
+    payment_method_card.brand as payment_method_brand,
+    payment_method_card.funding as payment_method_funding,
     {% endif %}
 
     cards.card_brand,
@@ -492,7 +492,7 @@ left join payment_method
     on charge.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = payment_method.source_relation
 left join payment_method_card 
-    on payment_method_cards.payment_method_id = payment_method.payment_method_id
+    on payment_method_card.payment_method_id = payment_method.payment_method_id
     and charge.source_relation = balance_transaction.source_relation
 {% endif %}
 
