@@ -1,5 +1,5 @@
 # dbt_stripe v0.11.0
-
+[PR #69](https://github.com/fivetran/dbt_stripe/pull/69) contains the following updates:
 ## Updates:
 - Introduced the following new models, named after the Stripe reports that they follow:
   - stripe__activity_itemized_2
