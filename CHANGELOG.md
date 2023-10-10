@@ -1,6 +1,13 @@
 # dbt_stripe v0.11.0
 
- ## Under the Hood:
+## Updates:
+- Introduced the following new models, named after the Stripe reports that they follow:
+  - stripe__activity_itemized_2
+  - stripe__balance_change_from_activity_itemized_3
+  - stripe__ending_balance_reconciliation_itemized_4
+  - stripe__payout_itemized_3
+
+## Under the Hood:
 
 - Incorporated the new `fivetran_utils.drop_schemas_automation` macro into the end of each Buildkite integration test job.
 - Updated the pull request [templates](/.github).

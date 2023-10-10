@@ -27,7 +27,7 @@ vars:
     stripe_refund_identifier:                 "refund_data"
     stripe_subscription_history_identifier:   "subscription_history_data"
     stripe_subscription_identifier:           "subscription_data"
-    stripe_transfer__identifier:              "transfer_data"
+    stripe_transfer_identifier:               "transfer_data"
     stripe_credit_note_identifier:            "credit_note_data"
     stripe_credit_note_line_item_identifier:  "credit_note_line_item_data"
 
