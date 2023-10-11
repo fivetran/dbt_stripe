@@ -361,12 +361,12 @@ select
     payout.payout_id,
     payout.is_automatic,
     case 
-        when payout.is_automatic is true then payout.payout_id
+        when payout.is_automatic = true then payout.payout_id
         else null
     end as automatic_payout_id,
     payout.payout_arrival_date_at,
     case
-        when payout.is_automatic is true then payout.payout_arrival_date_at
+        when payout.is_automatic = true then payout.payout_arrival_date_at
         else null
     end as automatic_payout_effective_at,
     payout.payout_created_at,
