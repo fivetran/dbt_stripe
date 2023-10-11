@@ -8,7 +8,7 @@ with payout_enhanced as (
 select
     payout_id,
     case 
-        when is_automatic is true
+        when is_automatic = true
         then payout_arrival_date_at 
         else payout_created_at
     end as effective_at,
