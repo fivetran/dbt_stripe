@@ -2,7 +2,7 @@
 with balance_transaction_enhanced as (
 
     select *
-    from {{ ref('int_stripe__balance_transactions_enhanced')}}
+    from {{ ref('stripe__balance_transactions')}}
 
 )
 
