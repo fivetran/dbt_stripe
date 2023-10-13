@@ -471,7 +471,7 @@ from payout
 left join balance_transaction 
     on payout.balance_transaction_id = balance_transaction.balance_transaction_id
     and payout.source_relation = balance_transaction.source_relation
-left join account connected_account
+left join account as connected_account
     on balance_transaction.connected_account_id = connected_account.account_id
     and balance_transaction.source_relation = connected_account.source_relation
 left join charge
