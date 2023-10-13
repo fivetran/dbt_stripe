@@ -16,9 +16,6 @@ models:
   - name: int_stripe__incomplete_charges
     description: Each record represents a charge that is incomplete.
 
-  - name: int_stripe__balance_transactions_enhanced
-    description: Each record provides additional details on each balance_transaction.
-
   - name: int_stripe__payout_enhanced
     description: Each record provides additional details on each payout.
 

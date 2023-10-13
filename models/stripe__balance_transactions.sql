@@ -32,7 +32,7 @@ with balance_transaction as (
         company_address_line_2,
         company_address_postal_code,
         company_address_state,
-        company_name as account_name,
+        company_name,
         company_phone,
         country as account_country,
         created_at as account_created_at,
@@ -155,9 +155,9 @@ with balance_transaction as (
     
     from {{ var('customer') }}
 
-), dispute as 
-
-    (select
+), dispute as (
+    
+    select
         dispute_id,
         dispute_amount,
         balance_transaction,
@@ -174,9 +174,9 @@ with balance_transaction as (
 
 
 {% if var('stripe__using_invoices', True) %}
-), invoice as 
-
-    (select
+), invoice as (
+    
+    select
         invoice_id,
         default_payment_method_id,
         payment_intent_id,
@@ -216,9 +216,9 @@ with balance_transaction as (
 
 {% endif %}
 
-), payment_intent as 
-
-    (select 
+), payment_intent as (
+    
+    select
         payment_intent_id,
         amount,
         amount_capturable,
@@ -243,9 +243,9 @@ with balance_transaction as (
     from {{ var('payment_intent') }}
 
 {% if var('stripe__using_payment_method', True) %}
-), payment_method as 
-
-    (select
+), payment_method as (
+    
+    select
         payment_method_id,
         created_at as payment_method_created_at,
         customer_id,
@@ -262,9 +262,9 @@ with balance_transaction as (
 
 {% endif %}
 
-), payout as 
-
-    (select
+), payout as (
+    
+    select
         payout_id,
         amount as payout_amount,
         arrival_date_at as payout_arrival_date_at,
@@ -284,9 +284,9 @@ with balance_transaction as (
 
     from {{ var('payout') }}
 
-), refund as 
-
-    (select
+), refund as (
+    
+    select
         refund_id,
         payment_intent_id,
         balance_transaction_id,
@@ -304,9 +304,9 @@ with balance_transaction as (
     from {{ var('refund') }}
 
 {% if var('stripe__using_subscriptions', True) %}
-), subscription as 
-
-    (select 
+), subscription as (
+    
+    select
         subscription_id,
         latest_invoice_id,
         customer_id,
@@ -333,9 +333,9 @@ with balance_transaction as (
 
 {% endif %}
 
-), transfers as 
-
-    (select
+), transfers as (
+    
+    select
         transfer_id,
         transfer_amount,
         transfer_amount_reversed,
@@ -365,7 +365,7 @@ select
     balance_transaction.balance_transaction_amount,
     balance_transaction.balance_transaction_fee,
     balance_transaction.balance_transaction_net,
-    balance_transaction.source_id,
+    balance_transaction.source_id as balance_transaction_source_id,
     balance_transaction.balance_transaction_description,
     balance_transaction.balance_transaction_type,
     coalesce(reporting_category,
@@ -376,7 +376,7 @@ select
             when balance_transaction.balance_transaction_type in ('transfer', 'recipient_transfer') then 'transfer'
             when balance_transaction.balance_transaction_type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
             else balance_transaction.balance_transaction_type end)
-    as reporting_category,
+    as balance_transactions_reporting_category,
     case 
         when balance_transaction.balance_transaction_type in ('charge', 'payment') then charge.charge_amount 
         when balance_transaction.balance_transaction_type in ('refund', 'payment_refund') then refund.refund_amount
