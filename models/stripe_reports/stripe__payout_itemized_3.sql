@@ -1,14 +1,15 @@
-with payout_enhanced as (
+with balance_transaction_enhanced as (
 
     select *
-    from {{ ref('int_stripe__payout_enhanced')}}
+    from {{ ref('stripe__balance_transactions')}}
+    where payout_id is not null
 
 )
 
 select
     payout_id,
     case 
-        when is_automatic = true then payout_arrival_date_at 
+        when payout_is_automatic = true then payout_arrival_date_at 
         else payout_created_at
     end as effective_at,
     payout_currency as currency,
@@ -28,4 +29,4 @@ select
     coalesce(destination_bank_account_id, destination_card_id) as payout_destination_id,
     source_relation
 
-from payout_enhanced
+from balance_transaction_enhanced

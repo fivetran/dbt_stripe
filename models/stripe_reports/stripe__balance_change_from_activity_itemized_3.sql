@@ -73,7 +73,6 @@ select
     dispute_reason,
     connected_account_id,
     connected_account_country,
-    connected_account_name,
     connected_account_direct_charge_id,
     payment_metadata,
     refund_metadata,

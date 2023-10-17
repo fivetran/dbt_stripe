@@ -1,7 +1,8 @@
-with payout_enhanced as (
+with balance_transaction_enhanced as (
 
     select *
-    from {{ ref('int_stripe__payout_enhanced')}}
+    from {{ ref('stripe__balance_transactions')}}
+    where automatic_payout_id is not null
 
 )
 
@@ -79,4 +80,4 @@ select
     transfer_metadata,
     source_relation
 
-from payout_enhanced
+from balance_transaction_enhanced
