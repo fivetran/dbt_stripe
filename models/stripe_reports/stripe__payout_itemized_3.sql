@@ -26,6 +26,7 @@ select
         else null
     end as payout_reversed_at,
     payout_type,
+    payout_description,
     coalesce(destination_bank_account_id, destination_card_id) as payout_destination_id,
     source_relation
 

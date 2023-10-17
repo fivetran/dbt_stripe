@@ -141,12 +141,12 @@ select
     customer.customer_address_state,
     customer.customer_address_postal_code,
     customer.customer_address_country,
-    charge.shipping_address_line_1,
-    charge.shipping_address_line_2,
-    charge.shipping_address_city,
-    charge.shipping_address_state,
-    charge.shipping_address_postal_code,
-    charge.shipping_address_country,
+    charge.shipping_address_line_1 as charge_shipping_address_line_1,
+    charge.shipping_address_line_2 as charge_shipping_address_line_2,
+    charge.shipping_address_city as charge_shipping_address_city,
+    charge.shipping_address_state as charge_shipping_address_state,
+    charge.shipping_address_postal_code as charge_shipping_address_postal_code,
+    charge.shipping_address_country as charge_shipping_address_country,
     cards.card_address_line_1,
     cards.card_address_line_2,
     cards.card_address_city,
@@ -175,7 +175,7 @@ select
     cards.brand as card_brand,
     cards.funding as card_funding,
     cards.country as card_country,
-    charge.statement_descriptor,
+    charge.statement_descriptor as charge_statement_descriptor ,
     dispute.dispute_id,
     dispute.dispute_reason,
     refund.refund_id,
@@ -187,11 +187,9 @@ select
         when charge.connected_account_id is not null then charge.charge_id
         else null
     end as connected_account_direct_charge_id,
-
-    
-    coalesce(payment_intent.metadata, charge.metadata) as payment_metadata,
-    refund.metadata as refund_metadata,
-    transfers.transfer_metadata,
+    -- coalesce(payment_intent.metadata, charge.metadata) as payment_metadata,
+    -- refund.metadata as refund_metadata,
+    -- transfers.transfer_metadata,
     balance_transaction.source_relation
 
 from balance_transaction

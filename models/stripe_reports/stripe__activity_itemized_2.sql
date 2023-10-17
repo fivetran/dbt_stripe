@@ -42,12 +42,12 @@ select
     customer_address_state,
     customer_address_postal_code,
     customer_address_country,
-    shipping_address_line_1,
-    shipping_address_line_2,
-    shipping_address_city,
-    shipping_address_state,
-    shipping_address_postal_code,
-    shipping_address_country,
+    charge_shipping_address_line_1 as shipping_address_line_1,
+    charge_shipping_address_line_2 as shipping_address_line_2,
+    charge_shipping_address_city as shipping_address_city,
+    charge_shipping_address_state as shipping_address_state,
+    charge_shipping_address_postal_code as shipping_address_postal_code,
+    charge_shipping_address_country as shipping_address_country,
     card_address_line_1,
     card_address_line_2,
     card_address_city,
@@ -64,24 +64,15 @@ select
     card_brand,
     card_funding,
     card_country,
-    statement_descriptor,
+    charge_statement_descriptor as statement_descriptor,
     customer_facing_amount,
     balance_transaction_description,
     connected_account_id,
     connected_account_country,
     connected_account_direct_charge_id,
+    -- payment_metadata,
+    -- refund_metadata,
+    -- transfer_metadata,
     source_relation
-
-    {% if var('stripe__payment_metadata',[]) %}
-    , {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__payment_metadata')) }}
-    {% endif %}
-
-    {% if var('stripe__refund_metadata',[]) %}
-    , {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__refund_metadata')) }}
-    {% endif %}
-
-    {% if var('stripe__transfer_metadata',[]) %}
-    , {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__transfer_metadata')) }}
-    {% endif %}
 
 from balance_transaction_enhanced
