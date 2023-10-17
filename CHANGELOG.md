@@ -1,7 +1,7 @@
 # dbt_stripe v0.11.0
 [PR #69](https://github.com/fivetran/dbt_stripe/pull/69) contains the following updates:
 ## Updates:
-- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce records that customers have voiced are highly used. 
+- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce reports that customers have voiced are highly used. 
   - stripe__activity_itemized_2
   - stripe__balance_change_from_activity_itemized_3
   - stripe__ending_balance_reconciliation_itemized_4
@@ -10,17 +10,30 @@
 - Updated the `stripe__balance_transactions` with the following changes:
   - `reporting_category` has been updated to pull directly from the titular column. If no `reporting_category` exists, it then falls to sort based on balance transaction  `type` in accordance to the Stripe [documentation](https://stripe.com/docs/reports/reporting-categories).
   - Added the following fields:
-    - balance transaction `source_id`
-    - balance transaction `description`
     - dispute fields
-    - refund fields
+    - transfer fields
     - additional payout fields
     - additional customer fields
     - additional card fields
     - additional charge fields
+    - additional invoice fields
   - Updated `customer_facing_amount` to include for refund and disputes as well
+  - Updated `charge_id` to charge, refund, then dispute objects consecutively
 
-[ FINISH ]
+  - Prefixed the following fields based on their corresponding upstream source:
+
+| **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| created_at | balance_transaction_created_at
+| available_on | balance_transaction_available_on
+| currency | balance_transaction_currency
+| amount | balance_transaction_amount
+| fee | balance_transaction_fee
+| net | balance_transaction_net
+| type | balance_transaction_type
+| source | balance_transaction_source
+| description | balance_transaction_description
+
 
 ## Under the Hood:
 

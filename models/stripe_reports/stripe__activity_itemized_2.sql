@@ -70,9 +70,18 @@ select
     connected_account_id,
     connected_account_country,
     connected_account_direct_charge_id,
-    payment_metadata,
-    refund_metadata,
-    transfer_metadata,
     source_relation
+
+    {% if var('stripe__payment_metadata',[]) %}
+    , {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__payment_metadata')) }}
+    {% endif %}
+
+    {% if var('stripe__refund_metadata',[]) %}
+    , {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__refund_metadata')) }}
+    {% endif %}
+
+    {% if var('stripe__transfer_metadata',[]) %}
+    , {{ fivetran_utils.pivot_json_extract(string = 'metadata', list_of_properties = var('stripe__transfer_metadata')) }}
+    {% endif %}
 
 from balance_transaction_enhanced

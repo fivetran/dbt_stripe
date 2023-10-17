@@ -105,7 +105,7 @@ select
     case 
         when balance_transaction.type = 'charge' then charge.currency 
     end as customer_facing_currency,
-    {{ dbt.dateadd('day', 1, 'available_on') }} as effective_at,
+    {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
     case
         when payout.is_automatic = true then payout.payout_id 
         else null
@@ -187,6 +187,8 @@ select
         when charge.connected_account_id is not null then charge.charge_id
         else null
     end as connected_account_direct_charge_id,
+
+    
     coalesce(payment_intent.metadata, charge.metadata) as payment_metadata,
     refund.metadata as refund_metadata,
     transfers.transfer_metadata,
