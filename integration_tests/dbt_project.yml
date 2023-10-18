@@ -6,7 +6,7 @@ version: '0.11.0'
 profile: 'integration_tests'
 
 vars:
-  stripe_schema: stripe_integrations_tests_9
+  stripe_schema: stripe_integrations_tests_10
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
