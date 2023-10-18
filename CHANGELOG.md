@@ -1,6 +1,47 @@
-# dbt_stripe v0.UPDATE.UPDATE
+# dbt_stripe v0.11.0
 
- ## Under the Hood:
+[PR #69](https://github.com/fivetran/dbt_stripe/pull/69) contains the following updates:
+
+## 🚨 Breaking Changes 🚨
+
+  - Prefixed the following fields based on their corresponding upstream source to maintain clarity:
+
+| **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| created_at | balance_transaction_created_at
+| available_on | balance_transaction_available_on
+| currency | balance_transaction_currency
+| amount | balance_transaction_amount
+| fee | balance_transaction_fee
+| net | balance_transaction_net
+| type | balance_transaction_type
+| source | balance_transaction_source_id
+| reporting_category | balance_transaction_reporting_category
+| description | balance_transaction_description
+
+## Updates:
+- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce reports available in the [Stripe Reporting API](https://stripe.com/docs/reports/report-types). The reports introduced in this update include:
+  - stripe__activity_itemized_2
+  - stripe__balance_change_from_activity_itemized_3
+  - stripe__ending_balance_reconciliation_itemized_4
+  - stripe__payout_itemized_3
+
+- Updated the [`stripe__balance_transactions`](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe__balance_transactions.sql) with the following changes:
+  - `reporting_category` has been updated to pull directly from the titular column. If no `reporting_category` exists, it then falls to sort based on balance transaction  `type` in accordance to the Stripe [documentation](https://stripe.com/docs/reports/reporting-categories).
+  - Added the following fields:
+    - dispute fields
+    - transfer fields
+    - additional payout fields
+    - additional customer fields
+    - additional card fields
+    - additional charge fields
+    - additional invoice fields
+  - Updated `customer_facing_amount` to include for refunds and disputes as well
+  - Updated `charge_id` to charge, refund, then dispute objects consecutively
+
+
+
+## Under the Hood:
 
 - Incorporated the new `fivetran_utils.drop_schemas_automation` macro into the end of each Buildkite integration test job.
 - Updated the pull request [templates](/.github).

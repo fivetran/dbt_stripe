@@ -12,7 +12,7 @@
         href="https://fivetran.com/docs/transformations/dbt/quickstart">
         <img src="https://img.shields.io/badge/Fivetran_Quickstart_Compatible%3F-yes-green.svg" /></a>
 </p>
-
+ 
 # Stripe Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_stripe/))
 # 📣 What does this dbt package do?
 - Produces modeled tables that leverage Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe) in the format described by [this ERD](https://fivetran.com/docs/applications/stripe#schemainformation) and build off the output of our [stripe source package](https://github.com/fivetran/dbt_stripe_source).
@@ -32,7 +32,11 @@ The following table provides a detailed list of all models materialized within t
 | [stripe__invoice_line_item_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.                                                                                 
 | [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)      | Each record represents, per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You may use this model to roll up into weekly, quarterly, monthly, and other time grains. You may also use this model to create a MRR report.                                                  |
 | [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details)    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
-| [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                                                   |
+| [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                               |
+| [stripe__activity_itemized_2](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__activity_itemized_2)       |  This report displays balance transactions alongside associated customer, charge, refund, fee, and invoice details, useful for Interchange Plus (IC+) pricing users.                                                                                                                                             |
+| [stripe__balance_change_from_activity_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_change_from_activity_itemized_3)       | This report functions like a bank statement for reconciling your Stripe balance, especially beneficial for treating Stripe as a bank account for accounting purposes. It offers a detailed breakdown of transactions affecting your balance.                                                                                                                                               |
+| [stripe__ending_balance_reconciliation_itemized_4](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__ending_balance_reconciliation_itemized_4)       | This reports models after Stripe's payout reconciliation reports, helping match bank account payouts with related transactions. It provides details for automatic payouts and transactions that hadn't settled as of the report's end date. This report is only available for users with automatic payouts enabled and optimized for those who prefer to reconcile the transactions included in each payout as a settlement batch.                                                                                                                                               |
+| [stripe__payout_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__payout_itemized_3)       | This report represents payouts with information on expected arrival dates and status, akin to a bank statement for reconciling your Stripe balance, particularly useful for accounting purposes.                                                                                                                                                      |
 <!--section-end-->
 
 # 🎯 How do I use the dbt package?
@@ -57,7 +61,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.10.0", "<0.11.0"]
+    version: [">=0.11.0", "<0.12.0"]
 
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well. 
@@ -232,7 +236,7 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/stripe_source
-      version: [">=0.9.0", "<0.10.0"]
+      version: [">=0.10.0", "<0.11.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]

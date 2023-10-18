@@ -3,7 +3,7 @@ with spine as (
 
     {% if execute %}
     {% set first_date_query %}
-        select  min( created_at ) as min_date from {{ ref('stripe__balance_transactions') }}
+        select  min( balance_transaction_created_at ) as min_date from {{ ref('stripe__balance_transactions') }}
     {% endset %}
     {% set first_date = run_query(first_date_query).columns[0][0]|string %}
     
@@ -20,7 +20,7 @@ with spine as (
 
     {% if execute %}
     {% set last_date_query %}
-        select  max( created_at ) as max_date from {{ ref('stripe__balance_transactions') }}
+        select  max( balance_transaction_created_at ) as max_date from {{ ref('stripe__balance_transactions') }}
     {% endset %}
 
     {% set current_date_query %}

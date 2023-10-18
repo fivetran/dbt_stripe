@@ -1,12 +1,12 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.10.1'
+version: '0.11.0'
 
 profile: 'integration_tests'
 
 vars:
-  stripe_schema: stripe_integrations_tests_9
+  stripe_schema: stripe_integrations_tests_10
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
@@ -14,6 +14,7 @@ vars:
     stripe_card_identifier:                   "card_data"
     stripe_charge_identifier:                 "charge_data"
     stripe_customer_identifier:               "customer_data"
+    stripe_dispute_identifier:                "dispute_data"
     stripe_fee_identifier:                    "fee_data"
     stripe_invoice_identifier:                "invoice_data"
     stripe_invoice_line_item_identifier:      "invoice_line_item_data"
@@ -26,6 +27,7 @@ vars:
     stripe_refund_identifier:                 "refund_data"
     stripe_subscription_history_identifier:   "subscription_history_data"
     stripe_subscription_identifier:           "subscription_data"
+    stripe_transfer_identifier:               "transfer_data"
     stripe_credit_note_identifier:            "credit_note_data"
     stripe_credit_note_line_item_identifier:  "credit_note_line_item_data"
 
@@ -51,6 +53,10 @@ seeds:
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+    payout_data:
+      +column_types:
+        destination_bank_account_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+        destination_card_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
 
 dispatch:
   - macro_namespace: dbt_utils

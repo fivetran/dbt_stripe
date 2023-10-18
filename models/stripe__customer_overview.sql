@@ -20,100 +20,100 @@ with balance_transaction_joined as (
       source_relation,
       sum(
         case 
-          when type in ('charge', 'payment') 
-          then amount
+          when balance_transaction_type in ('charge', 'payment') 
+          then balance_transaction_amount
           else 0 
         end) 
       as total_sales,
       sum(
         case 
-          when type in ('payment_refund', 'refund') 
-          then amount
+          when balance_transaction_type in ('payment_refund', 'refund') 
+          then balance_transaction_amount
           else 0 
         end) 
       as total_refunds,    
-      sum(amount) as total_gross_transaction_amount,
-      sum(fee) as total_fees,
-      sum(net) as total_net_transaction_amount,
+      sum(balance_transaction_amount) as total_gross_transaction_amount,
+      sum(balance_transaction_fee) as total_fees,
+      sum(balance_transaction_net) as total_net_transaction_amount,
       sum(
         case 
-          when type in ('charge', 'payment') 
+          when balance_transaction_type in ('charge', 'payment') 
           then 1
           else 0 
           end) 
       as total_sales_count, 
       sum(
         case 
-          when type in ('payment_refund', 'refund') 
+          when balance_transaction_type in ('payment_refund', 'refund') 
           then 1
           else 0 
         end) 
       as total_refund_count,   
       sum(
         case 
-          when type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-          then amount 
+          when balance_transaction_type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then balance_transaction_amount 
           else 0 
         end) 
       as sales_this_month,
       sum(
         case 
-          when type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-          then amount 
+          when balance_transaction_type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then balance_transaction_amount 
           else 0 
         end) 
       as refunds_this_month,
       sum(
         case 
-          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-          then amount 
+          when {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then balance_transaction_amount 
           else 0 
         end) 
       as gross_transaction_amount_this_month,
       sum(
         case 
-          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-          then fee 
+          when {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then balance_transaction_fee 
           else 0 
         end) 
       as fees_this_month,
       sum(
         case 
-          when {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
-          then net 
+          when {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          then balance_transaction_net 
           else 0 
         end) 
       as net_transaction_amount_this_month,
       sum(
         case 
-          when type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          when balance_transaction_type in ('charge', 'payment') and {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
           then 1 
           else 0 
         end) 
       as sales_count_this_month,
       sum(
         case 
-          when type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
+          when balance_transaction_type in ('payment_refund', 'refund') and {{ dbt.date_trunc('month', date_timezone('balance_transaction_created_at')) }} = {{ dbt.date_trunc('month', date_timezone(dbt.current_timestamp_backcompat())) }}
           then 1 
           else 0 
         end) 
       as refund_count_this_month,
       min(
         case 
-          when type in ('charge', 'payment') 
-          then {{ date_timezone('created_at') }}
+          when balance_transaction_type in ('charge', 'payment') 
+          then {{ date_timezone('balance_transaction_created_at') }}
           else null 
         end) 
       as first_sale_date,
       max(
         case 
-          when type in ('charge', 'payment') 
-          then {{ date_timezone('created_at') }}
+          when balance_transaction_type in ('charge', 'payment') 
+          then {{ date_timezone('balance_transaction_created_at') }}
           else null 
         end) 
       as most_recent_sale_date
     from balance_transaction_joined
-    where type in ('payment', 'charge', 'payment_refund', 'refund')
+    where balance_transaction_type in ('payment', 'charge', 'payment_refund', 'refund')
     group by 1,2
 
 ), failed_charges_by_customer as (
@@ -219,5 +219,5 @@ with balance_transaction_joined as (
 select *
 from transactions_not_associated_with_customer
 union all 
-select * 
+select *
 from customer_transactions_overview

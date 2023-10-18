@@ -7,9 +7,9 @@ with date_spine as (
 
     select *,
         case 
-            when type = 'payout' 
-            then {{ date_timezone('available_on') }}  
-            else {{ date_timezone('created_at') }}
+            when balance_transaction_type = 'payout' 
+            then {{ date_timezone('balance_transaction_available_on') }}  
+            else {{ date_timezone('balance_transaction_created_at') }}
         end as date
     from {{ ref('stripe__balance_transactions') }}
 
@@ -24,41 +24,41 @@ with date_spine as (
         date_spine.date_day,
         date_spine.account_id,
         date_spine.source_relation,
-        sum(case when balance_transaction.type in ('charge', 'payment') 
-            then balance_transaction.amount
+        sum(case when balance_transaction.balance_transaction_type in ('charge', 'payment') 
+            then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_sales_amount,
-        sum(case when balance_transaction.type in ('payment_refund', 'refund') 
-            then balance_transaction.amount
+        sum(case when balance_transaction.balance_transaction_type in ('payment_refund', 'refund') 
+            then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_refunds_amount,
-        sum(case when balance_transaction.type = 'adjustment' 
-            then balance_transaction.amount
+        sum(case when balance_transaction.balance_transaction_type = 'adjustment' 
+            then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_adjustments_amount,
-        sum(case when balance_transaction.type not in ('charge', 'payment', 'payment_refund', 'refund', 'adjustment', 'payout') and balance_transaction.type not like '%transfer%' 
-            then balance_transaction.amount
+        sum(case when balance_transaction.balance_transaction_type not in ('charge', 'payment', 'payment_refund', 'refund', 'adjustment', 'payout') and balance_transaction.balance_transaction_type not like '%transfer%' 
+            then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_other_transactions_amount,
-        sum(case when balance_transaction.type <> 'payout' and balance_transaction.type not like '%transfer%' 
-            then balance_transaction.amount
+        sum(case when balance_transaction.balance_transaction_type <> 'payout' and balance_transaction.balance_transaction_type not like '%transfer%' 
+            then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_gross_transaction_amount,
-        sum(case when balance_transaction.type <> 'payout' and balance_transaction.type not like '%transfer%' 
-            then net 
+        sum(case when balance_transaction.balance_transaction_type <> 'payout' and balance_transaction.balance_transaction_type not like '%transfer%' 
+            then balance_transaction_net 
             else 0 end) as total_daily_net_transactions_amount,
-        sum(case when balance_transaction.type = 'payout' or balance_transaction.type like '%transfer%' 
-            then fee * -1.0
+        sum(case when balance_transaction.balance_transaction_type = 'payout' or balance_transaction.balance_transaction_type like '%transfer%' 
+            then balance_transaction_fee * -1.0
             else 0 end) as total_daily_payout_fee_amount,
-        sum(case when balance_transaction.type = 'payout' or balance_transaction.type like '%transfer%' 
-            then balance_transaction.amount
+        sum(case when balance_transaction.balance_transaction_type = 'payout' or balance_transaction.balance_transaction_type like '%transfer%' 
+            then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_gross_payout_amount,
-        sum(case when balance_transaction.type = 'payout' or balance_transaction.type like '%transfer%' 
-            then fee * -1.0 
-            else net end) as daily_net_activity_amount,
-        sum(case when balance_transaction.type in ('payment', 'charge') 
+        sum(case when balance_transaction.balance_transaction_type = 'payout' or balance_transaction.balance_transaction_type like '%transfer%' 
+            then balance_transaction_fee * -1.0 
+            else balance_transaction_net end) as daily_net_activity_amount,
+        sum(case when balance_transaction.balance_transaction_type in ('payment', 'charge') 
             then 1 
             else 0 end) as total_daily_sales_count,
-        sum(case when balance_transaction.type = 'payout' 
+        sum(case when balance_transaction.balance_transaction_type = 'payout' 
             then 1
             else 0 end) as total_daily_payouts_count,
-        count(distinct case when balance_transaction.type = 'adjustment' 
-                then coalesce(source, payout_id) 
+        count(distinct case when balance_transaction.balance_transaction_type = 'adjustment' 
+                then coalesce(balance_transaction_source_id, payout_id) 
                 else null end) as total_daily_adjustments_count
     from date_spine
     left join balance_transaction
