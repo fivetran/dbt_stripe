@@ -43,9 +43,9 @@ models:
       description: Net amount of the transaction, in cents. Gross amount minus fees, refunds, and disputes
     - name: balance_transaction_type 
       description: The type of transaction.  Possible values are adjustment, advance, advance_funding, application_fee, application_fee_refund, charge, connect_collection_transfer, issuing_authorization_hold, issuing_authorization_release, issuing_dispute, issuing_transaction, payment, payment_failure_refund, payment_refund, payout, payout_cancel, payout_failure, refund, refund_failure, reserve_transaction, reserved_funds, stripe_fee, stripe_fx_fee, tax_fee, topup, topup_reversal, transfer, transfer_cancel, transfer_failure, or transfer_refund.
-    - name: reporting_category 
+    - name: balance_transaction_reporting_category 
       description: Groupings of transactions types based on how they show in Stripe's reporting
-    - name: source_id
+    - name: balance_transaction_source_id
       description: The Stripe object to which this transaction is related.
     - name: balance_transaction_description 
       description: An arbitrary string attached to the object. Often useful for displaying to users.
