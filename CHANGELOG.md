@@ -1,7 +1,8 @@
 # dbt_stripe v0.11.0
 
-## 🚨 Breaking Changes 🚨
 [PR #69](https://github.com/fivetran/dbt_stripe/pull/69) contains the following updates:
+
+## 🚨 Breaking Changes 🚨
 
   - Prefixed the following fields based on their corresponding upstream source to maintain clarity:
 
