@@ -16,6 +16,7 @@
 | net | balance_transaction_net
 | type | balance_transaction_type
 | source | balance_transaction_source_id
+| reporting_category | balance_transaction_reporting_category
 | description | balance_transaction_description
 
 ## Updates:
