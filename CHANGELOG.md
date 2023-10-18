@@ -14,7 +14,7 @@
 | fee | balance_transaction_fee
 | net | balance_transaction_net
 | type | balance_transaction_type
-| source | balance_transaction_source
+| source | balance_transaction_source_id
 | description | balance_transaction_description
 
 ## Updates:
