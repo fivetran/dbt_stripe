@@ -1,7 +1,7 @@
 # dbt_stripe v0.11.0
 [PR #69](https://github.com/fivetran/dbt_stripe/pull/69) contains the following updates:
 ## Updates:
-- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce reports that customers have voiced are highly used. 
+- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce reports available in the [Stripe Reporting API](https://stripe.com/docs/reports/report-types). The reports introduced in this update include:
   - stripe__activity_itemized_2
   - stripe__balance_change_from_activity_itemized_3
   - stripe__ending_balance_reconciliation_itemized_4
