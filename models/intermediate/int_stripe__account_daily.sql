@@ -58,7 +58,7 @@ with date_spine as (
             then 1
             else 0 end) as total_daily_payouts_count,
         count(distinct case when balance_transaction.balance_transaction_type = 'adjustment' 
-                then coalesce(source_id, payout_id) 
+                then coalesce(balance_transaction_source_id, payout_id) 
                 else null end) as total_daily_adjustments_count
     from date_spine
     left join balance_transaction

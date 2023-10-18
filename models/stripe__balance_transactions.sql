@@ -84,10 +84,10 @@ select
     balance_transaction.amount as balance_transaction_amount,
     balance_transaction.fee as balance_transaction_fee,
     balance_transaction.net as balance_transaction_net,
-    balance_transaction.source as source_id,
+    balance_transaction.source as balance_transaction_source_id,
     balance_transaction.description as balance_transaction_description,
     balance_transaction.type as balance_transaction_type,
-    coalesce(reporting_category,
+    coalesce(balance_transaction.reporting_category,
         case
             when balance_transaction.type in ('charge', 'payment') then 'charge'
             when balance_transaction.type in ('refund', 'payment_refund') then 'refund'
@@ -95,7 +95,7 @@ select
             when balance_transaction.type in ('transfer', 'recipient_transfer') then 'transfer'
             when balance_transaction.type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
             else balance_transaction.type end)
-    as reporting_category,
+    as balance_transaction_reporting_category,
     case
         when balance_transaction.type in ('charge', 'payment') then charge.amount 
         when balance_transaction.type in ('refund', 'payment_refund') then refund.amount
@@ -187,9 +187,6 @@ select
         when charge.connected_account_id is not null then charge.charge_id
         else null
     end as connected_account_direct_charge_id,
-    -- coalesce(payment_intent.metadata, charge.metadata) as payment_metadata,
-    -- refund.metadata as refund_metadata,
-    -- transfers.transfer_metadata,
     balance_transaction.source_relation
 
 from balance_transaction

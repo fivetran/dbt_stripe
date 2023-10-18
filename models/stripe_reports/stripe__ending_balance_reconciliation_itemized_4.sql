@@ -16,8 +16,8 @@ select
     balance_transaction_amount as gross,
     balance_transaction_fee as fee,
     balance_transaction_net as net,
-    reporting_category,
-    source_id,
+    balance_transaction_reporting_category as reporting_category,
+    balance_transaction_source_id as source_id,
     balance_transaction_description as description,
     customer_facing_amount,
     customer_facing_currency,
@@ -74,9 +74,6 @@ select
     connected_account_id, 
     connected_account_country,
     connected_account_direct_charge_id,
-    -- payment_metadata,
-    -- refund_metadata,
-    -- transfer_metadata,
     source_relation
 
 from balance_transaction_enhanced

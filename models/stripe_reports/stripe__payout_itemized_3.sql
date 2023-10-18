@@ -17,7 +17,7 @@ select
     balance_transaction_amount as gross,
     balance_transaction_fee as fee,
     balance_transaction_net as net,
-    reporting_category,
+    balance_transaction_reporting_category as reporting_category,
     balance_transaction_description as description,
     payout_arrival_date_at as payout_expected_arrival_date,
     payout_status,

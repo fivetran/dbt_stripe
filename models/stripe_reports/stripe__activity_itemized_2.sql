@@ -8,7 +8,7 @@ with balance_transaction_enhanced as (
 select 
     balance_transaction_id,
     balance_transaction_created_at,
-    reporting_category as balance_transaction_reporting_category,
+    balance_transaction_reporting_category,
     balance_transaction_currency as currency,
     balance_transaction_amount as amount,
     charge_id,
@@ -70,9 +70,6 @@ select
     connected_account_id,
     connected_account_country,
     connected_account_direct_charge_id,
-    -- payment_metadata,
-    -- refund_metadata,
-    -- transfer_metadata,
     source_relation
 
 from balance_transaction_enhanced

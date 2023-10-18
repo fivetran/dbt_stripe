@@ -1,26 +1,9 @@
 # dbt_stripe v0.11.0
+
+## 🚨 Breaking Changes 🚨
 [PR #69](https://github.com/fivetran/dbt_stripe/pull/69) contains the following updates:
-## Updates:
-- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce reports available in the [Stripe Reporting API](https://stripe.com/docs/reports/report-types). The reports introduced in this update include:
-  - stripe__activity_itemized_2
-  - stripe__balance_change_from_activity_itemized_3
-  - stripe__ending_balance_reconciliation_itemized_4
-  - stripe__payout_itemized_3
 
-- Updated the `stripe__balance_transactions` with the following changes:
-  - `reporting_category` has been updated to pull directly from the titular column. If no `reporting_category` exists, it then falls to sort based on balance transaction  `type` in accordance to the Stripe [documentation](https://stripe.com/docs/reports/reporting-categories).
-  - Added the following fields:
-    - dispute fields
-    - transfer fields
-    - additional payout fields
-    - additional customer fields
-    - additional card fields
-    - additional charge fields
-    - additional invoice fields
-  - Updated `customer_facing_amount` to include for refund and disputes as well
-  - Updated `charge_id` to charge, refund, then dispute objects consecutively
-
-  - Prefixed the following fields based on their corresponding upstream source:
+  - Prefixed the following fields based on their corresponding upstream source to maintain clarity:
 
 | **Previous Name**                          | **New Name**                                                                                                                                                                                                                             |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -33,6 +16,27 @@
 | type | balance_transaction_type
 | source | balance_transaction_source
 | description | balance_transaction_description
+
+## Updates:
+- Introduced the following new models, named after the Stripe reports that they follow. These models help reproduce reports available in the [Stripe Reporting API](https://stripe.com/docs/reports/report-types). The reports introduced in this update include:
+  - stripe__activity_itemized_2
+  - stripe__balance_change_from_activity_itemized_3
+  - stripe__ending_balance_reconciliation_itemized_4
+  - stripe__payout_itemized_3
+
+- Updated the [`stripe__balance_transactions`](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe__balance_transactions.sql) with the following changes:
+  - `reporting_category` has been updated to pull directly from the titular column. If no `reporting_category` exists, it then falls to sort based on balance transaction  `type` in accordance to the Stripe [documentation](https://stripe.com/docs/reports/reporting-categories).
+  - Added the following fields:
+    - dispute fields
+    - transfer fields
+    - additional payout fields
+    - additional customer fields
+    - additional card fields
+    - additional charge fields
+    - additional invoice fields
+  - Updated `customer_facing_amount` to include for refunds and disputes as well
+  - Updated `charge_id` to charge, refund, then dispute objects consecutively
+
 
 
 ## Under the Hood:
