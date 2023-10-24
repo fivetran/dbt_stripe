@@ -25,7 +25,7 @@ date(
 
 {% endset %}
 
-{{ dbt.date_trunc('day',converted_date) }}
+{{ dbt_utils.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -42,7 +42,7 @@ date(
 
 {% endset %}
 
-{{ dbt.date_trunc('day',converted_date) }}
+{{ dbt_utils.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
 
@@ -59,22 +59,6 @@ date(
 
 {% endset %}
 
-{{ dbt.date_trunc('day',converted_date) }}
-
-{%- endmacro %}
-
-{% macro spark__date_timezone(column) -%}
-
-{% set converted_date %}
-
-{% if var('stripe_timezone', none) %}
-    from_utc_timestamp({{ column }}, '{{ var("stripe_timezone") }}')
-{% else %}
-    {{ column }}
-{% endif %}
-
-{% endset %}
-
-{{ dbt.date_trunc('day',converted_date) }}
+{{ dbt_utils.date_trunc('day',converted_date) }}
 
 {%- endmacro %}
