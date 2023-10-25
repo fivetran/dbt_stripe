@@ -43,4 +43,3 @@ seeds:
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
-
