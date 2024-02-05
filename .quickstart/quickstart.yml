@@ -1,0 +1,23 @@
+database_key: stripe_database
+schema_key: stripe_schema
+
+dbt_versions: ">=1.3.0 <2.0.0"
+
+table_variables:
+  stripe__using_invoices:
+    - invoice_line_item
+    - invoice
+  stripe__using_payment_method:
+    - payment_method_card
+    - payment_method
+  stripe__using_subscriptions:
+    - subscription_history
+  stripe__using_credit_notes:
+    - credit_note
+    - credit_note_line_item
+
+destination_configurations:
+  databricks:
+    dispatch:
+      - macro_namespace: dbt_utils
+        search_order: [ 'spark_utils', 'dbt_utils' ]
