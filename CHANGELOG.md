@@ -1,11 +1,17 @@
 # dbt_stripe v0.12.0
 [PR #75](https://github.com/fivetran/dbt_stripe/pull/75) includes the following updates:
 
-## Feature Updates
-- Adds the `phone` column to `stripe__customer_overview`. 
+## 🚨 Breaking Changes 🚨
 - No longer filters out deleted customers in `stripe__customer_overview`.
   - Persists `is_deleted` field to differentiate between deleted and active customers.
   - Note that this is a 🚨 breaking change 🚨, as previously filtered-out records will appear in `stripe__customer_overview`.
+
+## Feature Updates
+- Adds the `phone` column to `stripe__customer_overview`. 
+
+## Under the Hood
+- Included auto-releaser GitHub Actions workflow to automate future releases.
+- Updated the maintainer PR template to resemble the most up to date format.
 
 # dbt_stripe v0.11.0
 
