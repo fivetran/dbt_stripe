@@ -254,6 +254,10 @@ models:
         description: Attribute of the customer's shipping address.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
+      - name: phone
+        description: Customer's phone number. 
+      - name: is_deleted
+        description: Boolean reflecting whether the customer has been deleted in Stripe.
 
   - name: stripe__invoice_details
     description: Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.
