@@ -1,3 +1,13 @@
+# dbt_stripe v0.13.0
+[PR #78](https://github.com/fivetran/dbt_stripe/pull/78) includes the following updates:
+
+## 🚨 Breaking Changes 🚨
+- Renamed folder `stripe_reports` to `stripe_financial_reports` to be more descriptive of the contents.
+  - ⚠️ If you are using folder names to scope out configs, runs, etc., you will need to update the folder name.
+
+## Bug fixes
+- 
+
 # dbt_stripe v0.12.0
 [PR #75](https://github.com/fivetran/dbt_stripe/pull/75) includes the following updates:
 
