@@ -5,11 +5,12 @@ version: '0.13.0'
 
 profile: 'integration_tests'
 
-models:
-  +schema: "stripe_{{ var('directed_schema','dev') }}"
+# For use with validations
+# models:
+#   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_4566
+  stripe_schema: stripe_integrations_tests_11
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
