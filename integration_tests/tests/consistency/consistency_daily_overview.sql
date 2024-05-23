@@ -8,7 +8,7 @@
 -- the below iterates through the prod and dev names to reduce redudancy of logic
 with
 {% for prod_or_dev in ('prod', 'dev') %}
-    {% set cols = adapter.get_columns_in_relation(ref('stripe__daily_overview', schema=target.schema ~ '_stripe' ~ prod_or_dev)) %}
+    {% set cols = adapter.get_columns_in_relation(ref('stripe__daily_overview')) %}
     {{ prod_or_dev }} as (
         select
             date_index,
