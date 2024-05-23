@@ -1,4 +1,4 @@
--- depends on {{ ref('stripe__balance_transactions') }}
+-- depends_on: {{ ref('stripe__balance_transactions') }}
 with spine as (
 
     {% if execute %}
@@ -26,7 +26,7 @@ with spine as (
     {% else %}
 
     {% set first_date = 'dbt.dateadd("month", -1, "current_date")' %}
-    {% set last_date = 'current_date' %}
+    {% set last_date = 'dbt.current_timestamp_backcompat()' %}
 
     {% endif %}
 
@@ -40,9 +40,7 @@ with spine as (
 
 account as (
 
-    select
-        *
-        {# , coalesce(cast(created_at as date), cast({{ "'" ~ first_date ~ "'" }} as date)) as account_start_date #}
+    select *
     from {{ var('account') }}
 ),
 

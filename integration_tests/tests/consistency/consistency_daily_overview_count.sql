@@ -3,18 +3,19 @@
     enabled=var('fivetran_validation_tests_enabled', false)
 ) }}
 
+-- this test is to make sure the rows counts are the same between versions
 with prod as (
-    select count(*) as num_rows
+    select count(*) as prod_rows
     from {{ target.schema }}_stripe_prod.stripe__daily_overview
 ),
 
 dev as (
-    select count(*) as num_rows
-    from {{ target.schema }}_stripe_prod.stripe__daily_overview
+    select count(*) as dev_rows
+    from {{ target.schema }}_stripe_dev.stripe__daily_overview
 )
 
 -- test will return values and fail if the row counts don't match
 select *
 from prod
-full outer join dev
-where prod.num_rows != dev.num_rows
+join dev
+    on prod.prod_rows != dev.dev_rows

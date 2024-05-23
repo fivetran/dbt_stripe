@@ -5,7 +5,8 @@ with date_spine as (
 
 ), balance_transaction as (
 
-    select *,
+    select 
+        *,
         case 
             when balance_transaction_type = 'payout' 
             then {{ date_timezone('balance_transaction_available_on') }}  
@@ -62,9 +63,8 @@ with date_spine as (
                 else null end) as total_daily_adjustments_count
     from date_spine
     left join balance_transaction
-        on cast({{ dbt.date_trunc('day', 'balance_transaction.date') }} as date) = date_spine.date_day
+        on cast(balance_transaction.date as date) = date_spine.date_day
         and balance_transaction.source_relation = date_spine.source_relation
-        {# and balance_transaction.account_id = date_spine.account_id #}
     group by 1,2,3
 
 ), daily_failed_charges as (
