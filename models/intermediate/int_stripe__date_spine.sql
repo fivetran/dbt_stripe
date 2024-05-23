@@ -67,7 +67,6 @@ final as (
         date_spine.date_index
     from account 
     cross join date_spine
-    {# where account.account_start_date <= date_spine.date_day #}
 )
 
 select * 
