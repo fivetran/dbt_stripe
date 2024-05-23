@@ -6,8 +6,8 @@ version: '0.13.0'
 profile: 'integration_tests'
 
 # For use with validations
-# models:
-#   +schema: "stripe_{{ var('directed_schema','dev') }}"
+models:
+  +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
   stripe_schema: stripe_integrations_tests_11
