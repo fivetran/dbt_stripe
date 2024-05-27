@@ -1,60 +1,41 @@
-
+-- depends_on: {{ ref('stripe__balance_transactions') }}
 with spine as (
 
     {% if execute %}
-    {% set first_date_query %}
-        select  min( balance_transaction_created_at ) as min_date from {{ ref('stripe__balance_transactions') }}
-    {% endset %}
-    {% set first_date = run_query(first_date_query).columns[0][0]|string %}
-    
-        {% if target.type == 'postgres' %}
-            {% set first_date_adjust = "cast('" ~ first_date[0:10] ~ "' as date)" %}
 
-        {% else %}
-            {% set first_date_adjust = "'" ~ first_date[0:10] ~ "'" %}
+    {%- set first_date_query %}
+        select coalesce(
+            min(cast(balance_transaction_created_at as date)), 
+            cast({{ dbt.dateadd("month", -1, "current_date") }} as date)
+            ) as min_date
+        from {{ ref('stripe__balance_transactions') }}
+    {% endset -%}
 
-        {% endif %}
+    {%- set first_date = dbt_utils.get_single_value(first_date_query) %}
 
-    {% else %} {% set first_date_adjust = "'2009-01-01'" %}
-    {% endif %}
-
-    {% if execute %}
     {% set last_date_query %}
-        select  max( balance_transaction_created_at ) as max_date from {{ ref('stripe__balance_transactions') }}
+        select coalesce(
+            greatest(max(cast(balance_transaction_created_at as date)), cast(current_date as date)),
+            cast(current_date as date)
+            ) as max_date
+        from {{ ref('stripe__balance_transactions') }}
     {% endset %}
 
-    {% set current_date_query %}
-        select current_date
-    {% endset %}
-
-    {% if run_query(current_date_query).columns[0][0]|string < run_query(last_date_query).columns[0][0]|string %}
-
-    {% set last_date = run_query(last_date_query).columns[0][0]|string %}
-
-    {% else %} {% set last_date = run_query(current_date_query).columns[0][0]|string %}
-    {% endif %}
-        
-    {% if target.type == 'postgres' %}
-        {% set last_date_adjust = "cast('" ~ last_date[0:10] ~ "' as date)" %}
+    {% set last_date = dbt_utils.get_single_value(last_date_query) %}
 
     {% else %}
-        {% set last_date_adjust = "'" ~ last_date[0:10] ~ "'" %}
 
-    {% endif %}
+    {% set first_date = 'dbt.dateadd("month", -1, "current_date")' %}
+    {% set last_date = 'dbt.current_timestamp_backcompat()' %}
+
     {% endif %}
 
     {{ dbt_utils.date_spine(
         datepart="day",
-        start_date=first_date_adjust,
-        end_date=dbt.dateadd("day", 1, last_date_adjust)
+        start_date="cast('" ~ first_date ~ "' as date)",
+        end_date=dbt.dateadd("day", 1, "cast('" ~ last_date  ~ "' as date)")
         )
     }}
-),
-
-balance_transactions as (
-    
-    select *
-    from {{ ref('stripe__balance_transactions') }}
 ),
 
 account as (
