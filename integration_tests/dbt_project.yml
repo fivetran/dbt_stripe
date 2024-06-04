@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.13.0'
+version: '0.13.1'
 
 profile: 'integration_tests'
 
@@ -10,7 +10,7 @@ models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_11
+  stripe_schema: stripe_integrations_tests_12
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
