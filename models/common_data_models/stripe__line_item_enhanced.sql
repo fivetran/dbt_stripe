@@ -63,11 +63,11 @@ with invoice_line_item as (
     select
     invoice_line_item.invoice_id as header_id,
     invoice_line_item.invoice_line_item_id as line_item_id,
-    ow_number() over (partition by invoice_line_item.invoice_id) as line_item_index,
+    row_number() over (partition by invoice_line_item.invoice_id) as line_item_index,
     record_type, -- check
     invoice.created_at as created_at,
     invoice_line_item.currency as currency,
-    invoice.status as line_item_status,
+    null as line_item_status,
     invoice.status as header_status,
     price_plan.product_id as product_id,
     price_plan.nickname as product_name,
@@ -76,7 +76,7 @@ with invoice_line_item as (
     invoice_line_item.quantity as quantity,
     (invoice_line_item.amount/invoice_line_item.quantity) as unit_amount,
     null as discount_amount,
-    null as tax_rate,
+    null as tax_rate, -- to check-- INVOICE_LINE_ITEM_TAX_RATE 
     null as tax_amount,
     invoice_line_item.amount as total_amount,
     payment_intent.payment_intent_id as payment_id,
@@ -158,16 +158,16 @@ with invoice_line_item as (
     record_type,
     created_at,
     currency,
-    line_item_status,
-    header_status,
+    null as line_item_status,
+    invoice.status as header_status,
     product_id,
     product_name,
     product_type,
     product_category,
     quantity,
     unit_amount,
-    discount_amount,
-    tax_rate,
+    discount_amount, -- to do
+    (invoice.tax/invoice.subtotal) as tax_rate, -- check
     invoice.tax as tax_amount,
     total_amount,
     payment_id,
