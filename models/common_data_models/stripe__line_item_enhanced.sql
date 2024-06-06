@@ -5,10 +5,23 @@ with invoice_line_item as (
     select *
     from {{ var('invoice_line_item') }} 
 
+), invoice_line_item_agg as (
+
+    select
+        invoice_id,
+        coalesce(count(distinct unique_invoice_line_item_id),0) as number_of_line_items,
+        coalesce(sum(quantity),0) as total_quantity
+
+    from {{ var('invoice_line_item') }}  
+    group by 1
+
 ), invoice as (
 
-    select *
-    from {{ var('invoice') }}
+    select inv.*,
+        invoice_line_item_agg.total_quantity
+    from {{ var('invoice') }} inv
+    left join invoice_line_item_agg
+        on inv.invoice_id = invoice_line_item_agg.invoice_id
 
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
@@ -20,6 +33,11 @@ with invoice_line_item as (
 
     select *
     from {{ var('price_plan') }}  
+
+), product as (
+
+    select *
+    from {{ var('product') }}
 
 {% endif %}
 
@@ -37,6 +55,11 @@ with invoice_line_item as (
 
     select *
     from {{ var('fee') }} 
+
+), account as (
+
+    select *
+    from {{ var('account') }}
 
 ), balance_transaction as (
 
@@ -61,57 +84,58 @@ with invoice_line_item as (
 ), invoice_line_item_enhanced as (
 
     select
-    invoice_line_item.invoice_id as header_id,
-    invoice_line_item.invoice_line_item_id as line_item_id,
-    row_number() over (partition by invoice_line_item.invoice_id) as line_item_index,
-    record_type, -- check
-    invoice.created_at as created_at,
-    invoice_line_item.currency as currency,
-    null as line_item_status,
-    invoice.status as header_status,
-    price_plan.product_id as product_id,
-    price_plan.nickname as product_name,
-    null as product_type,
-    null as product_category,
-    invoice_line_item.quantity as quantity,
-    (invoice_line_item.amount/invoice_line_item.quantity) as unit_amount,
-    null as discount_amount,
-    null as tax_rate, -- to check-- INVOICE_LINE_ITEM_TAX_RATE 
-    null as tax_amount,
-    invoice_line_item.amount as total_amount,
-    payment_intent.payment_intent_id as payment_id,
-    payment_method.type as payment_method,
-    charge.created_at as payment_at,
-    null as as fee_amount,
-    refund_id,
-    null as refund_amount,
-    null as refunded_at,
-    subscription_id,
-    subscription_period_started_at,
-    subscription_period_ended_at,
-    subscription_status,
-    customer_id,
-    customer_level,
-    customer_name,
-    customer_company,
-    customer_email,
-    customer_city,
-    customer_country
+
+        invoice_line_item.invoice_id as header_id,
+        invoice_line_item.invoice_line_item_id as line_item_id,
+        row_number() over (partition by invoice_line_item.invoice_id) as line_item_index,
+        'line_item' as record_type,
+        invoice.created_at as created_at,
+        invoice_line_item.currency as currency,
+        cast(null as {{ dbt.type_string() }}) as line_item_status,
+        invoice.status as header_status,
+        price_plan.product_id as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
+        product.name as product_name, 
+        product.type as product_type,
+        cast(null as {{ dbt.type_string() }}) as product_category,
+        invoice_line_item.quantity as quantity,
+        (invoice_line_item.amount/invoice_line_item.quantity) as unit_amount,
+        cast(null as {{ dbt.type_int() }}) as discount_amount,
+        cast(null as {{ dbt.type_int() }}) as tax_rate, -- bring in invoice_line_item_tax_rate > tax_rate.percentage 
+        cast(null as {{ dbt.type_int() }}) as tax_amount,  -- assuming it's tax_rate.percentage * amount
+        invoice_line_item.amount as total_amount,
+        payment_intent.payment_intent_id as payment_id,
+        payment_method.type as payment_method,
+        charge.created_at as payment_at,
+        cast(null as {{ dbt.type_int() }}) as fee_amount,
+        cast(null as {{ dbt.type_string() }}) as refund_id,
+        cast(null as {{ dbt.type_int() }}) as refund_amount,
+        cast(null as {{ dbt.type_timestamp() }}) as refunded_at,
+        invoice.subscription_id,
+
+        {% if var('stripe__using_subscriptions', True) %}
+
+        subscription.current_period_start as subscription_period_started_at,
+        subscription.current_period_end as subscription_period_ended_at,
+        subscription.status as subscription_status,
+
+        {% endif %}
+
+        invoice.customer_id,
+        cast(null as {{ dbt.type_string() }}) as customer_level,
+        customer.customer_name as customer_name, 
+        connected_account.company_name as customer_company, 
+        customer.email as customer_email,
+        customer.customer_address_city as customer_city,
+        customer.customer_address_country as customer_country
 
     from invoice_line_item
 
-    left join invoice_details 
-        on invoice_line_item.invoice_id = invoice_details.invoice_id
-        and invoice_line_item.source_relation = invoice_details.source_relation
-
     left join invoice
         on invoice.invoice_id = invoice_line_item.invoice_id
-        and invoice.source_relation = invoice_line_item.source_relation
 
     left join charge 
         on invoice.charge_id = charge.charge_id
         and invoice.invoice_id = charge.invoice_id
-        and invoice.source_relation = charge.source_relation
 
     left join balance_transaction
         on charge.balance_transaction_id = balance_transaction.balance_transaction_id
@@ -130,13 +154,11 @@ with invoice_line_item as (
 
     left join customer 
         on invoice.customer_id = customer.customer_id
-        and invoice.source_relation = customer.source_relation
 
     {% if var('stripe__using_subscriptions', True) %}
 
     left join subscription
-        on invoice_line_item.subscription_id = subscription.subscription_id
-        and invoice_line_item.source_relation = subscription.source_relation
+        on invoice.subscription_id = subscription.subscription_id
 
     left join price_plan
 
@@ -146,66 +168,65 @@ with invoice_line_item as (
         on invoice_line_item.plan_id = price_plan.price_plan_id
     {% endif %}
 
-        and invoice_line_item.source_relation = price_plan.source_relation
-
+    left join product
+        on price_plan.product_id = product.product_id
     {% endif %}
 
-), invoice_enhanced as 
+), invoice_enhanced as (
 
-    header_id,
-    line_item_id,
-    line_item_index,
-    record_type,
-    created_at,
-    currency,
-    null as line_item_status,
-    invoice.status as header_status,
-    product_id,
-    product_name,
-    product_type,
-    product_category,
-    quantity,
-    unit_amount,
-    discount_amount, -- to do
-    (invoice.tax/invoice.subtotal) as tax_rate, -- check
-    invoice.tax as tax_amount,
-    total_amount,
-    payment_id,
-    payment_method,
-    charge.created_at as payment_at,
-    balance_transaction.fee as fee_amount ,
-    refund.refund_id,
-    refund.amount as refund_amount,
-    balance_transaction.created_at as refunded_at, -- check
+    select
 
-    {% if var('stripe__using_subscriptions', True) %}
+        invoice.invoice_id as header_id,
+        cast(null as {{ dbt.type_string() }}) as line_item_id,
+        0 as line_item_index,
+        'header' as record_type,
+        invoice.created_at as created_at,
+        invoice.currency as currency,
+        cast(null as {{ dbt.type_string() }}) as line_item_status,
+        invoice.status as header_status,
+        price_plan.product_id as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
+        cast(null as {{ dbt.type_string() }}) as product_name, 
+        cast(null as {{ dbt.type_string() }}) as product_type,
+        cast(null as {{ dbt.type_string() }}) as product_category,
+        invoice.total_quantity as total_quantity,
+        cast(null as {{ dbt.type_int() }}) as unit_amount,
+        cast(null as {{ dbt.type_int() }}) as discount_amount, -- to do
+        (invoice.tax/invoice.subtotal) as tax_rate, -- check
+        invoice.tax as tax_amount,
+        invoice.total as total_amount,
+        payment_intent.payment_intent_id as payment_id,
+        payment_method.type as payment_method,
+        charge.created_at as payment_at,
+        balance_transaction.fee as fee_amount,
+        refund.refund_id,
+        refund.amount as refund_amount,
+        refund.created_at as refunded_at,
+        invoice.subscription_id,
 
-    subscription.subscription_id,
-    subscription.current_period_start as subscription_period_started_at,
-    subscription.current_period_end as subscription_period_ended_at,
-    subscription.status as subscription_status,
-    customer.customer_id as customer_id,
-    null as customer_level,
-    account.company_name as customer_name, -- check- should we be using account?
-    account.company_name as customer_company,  -- check- should we be using account?
-    customer.email as customer_email,
-    customer.customer_address_city as customer_city,
-    customer.customer_address_country as customer_country
+        {% if var('stripe__using_subscriptions', True) %}
+
+        subscription.current_period_start as subscription_period_started_at,
+        subscription.current_period_end as subscription_period_ended_at,
+        subscription.status as subscription_status,
+
+        {% endif %}
+
+        invoice.customer_id as customer_id,
+        cast(null as {{ dbt.type_string() }}) as customer_level,
+        customer.customer_name as customer_name, 
+        connected_account.company_name as customer_company, 
+        customer.email as customer_email,
+        customer.customer_address_city as customer_city,
+        customer.customer_address_country as customer_country
 
     from invoice_line_item
 
-    left join invoice_details 
-        on invoice_line_item.invoice_id = invoice_details.invoice_id
-        and invoice_line_item.source_relation = invoice_details.source_relation
-
     left join invoice
         on invoice.invoice_id = invoice_line_item.invoice_id
-        and invoice.source_relation = invoice_line_item.source_relation
 
     left join charge 
         on invoice.charge_id = charge.charge_id
         and invoice.invoice_id = charge.invoice_id
-        and invoice.source_relation = charge.source_relation
 
     left join balance_transaction
         on charge.balance_transaction_id = balance_transaction.balance_transaction_id
@@ -224,13 +245,11 @@ with invoice_line_item as (
 
     left join customer 
         on invoice.customer_id = customer.customer_id
-        and invoice.source_relation = customer.source_relation
 
     {% if var('stripe__using_subscriptions', True) %}
 
     left join subscription
-        on invoice_line_item.subscription_id = subscription.subscription_id
-        and invoice_line_item.source_relation = subscription.source_relation
+        on invoice.subscription_id = subscription.subscription_id
 
     left join price_plan
 
@@ -240,6 +259,13 @@ with invoice_line_item as (
         on invoice_line_item.plan_id = price_plan.price_plan_id
     {% endif %}
 
-        and invoice_line_item.source_relation = price_plan.source_relation
-
+    left join product
+        on price_plan.product_id = product.product_id
     {% endif %}
+
+)
+
+select * from invoice_line_item_enhanced
+union all
+select * from invoice_enhanced
+order by header_id, line_item_index
