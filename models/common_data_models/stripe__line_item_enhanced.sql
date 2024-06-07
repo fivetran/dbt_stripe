@@ -190,8 +190,8 @@ with invoice_line_item as (
         cast(null as {{ dbt.type_string() }}) as product_category,
         invoice.total_quantity as total_quantity,
         cast(null as {{ dbt.type_int() }}) as unit_amount,
-        cast(null as {{ dbt.type_int() }}) as discount_amount, -- to do
-        (invoice.tax/invoice.subtotal) as tax_rate, -- check
+        cast(null as {{ dbt.type_int() }}) as discount_amount,
+        invoice.tax_percent as tax_rate,
         invoice.tax as tax_amount,
         invoice.total as total_amount,
         payment_intent.payment_intent_id as payment_id,
