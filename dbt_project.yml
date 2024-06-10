@@ -17,6 +17,7 @@ vars:
     charge: "{{ ref('stg_stripe__charge') }}"
     customer: "{{ ref('stg_stripe__customer') }}"
     dispute: "{{ ref('stg_stripe__dispute') }}"
+    discount: "{{ ref('stg_stripe__discount') }}"
     fee: "{{ ref('stg_stripe__fee') }}"
     invoice: "{{ ref('stg_stripe__invoice') }}"
     invoice_line_item: "{{ ref('stg_stripe__invoice_line_item') }}"

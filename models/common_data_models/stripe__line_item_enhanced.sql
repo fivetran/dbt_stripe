@@ -18,6 +18,7 @@ with invoice_line_item as (
 ), invoice as (
 
     select inv.*,
+        invoice_line_item_agg.number_of_line_items
         invoice_line_item_agg.total_quantity
     from {{ var('invoice') }} inv
     left join invoice_line_item_agg
@@ -71,6 +72,14 @@ with invoice_line_item as (
     select *
     from {{ var('charge') }} 
 
+), discount as (
+
+    select
+        invoice_id,
+        sum(amount) as discount_amount_per_invoice
+    from {{ var('discount') }}
+    group by 1
+
 ), refund as (
 
     select *
@@ -87,29 +96,28 @@ with invoice_line_item as (
 
         invoice_line_item.invoice_id as header_id,
         invoice_line_item.invoice_line_item_id as line_item_id,
-        row_number() over (partition by invoice_line_item.invoice_id) as line_item_index,
+        row_number() over (partition by invoice_line_item.invoice_id order by amount desc) as line_item_index,
         'line_item' as record_type,
         invoice.created_at as created_at,
         invoice_line_item.currency as currency,
-        cast(null as {{ dbt.type_string() }}) as line_item_status,
         invoice.status as header_status,
         price_plan.product_id as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
-        product.name as product_name, 
+        product.name as product_name,
+        balance_transaction.type as transaction_type,
+        invoice_line_item.type as billing_type,
         product.type as product_type,
         cast(null as {{ dbt.type_string() }}) as product_category,
         invoice_line_item.quantity as quantity,
         (invoice_line_item.amount/invoice_line_item.quantity) as unit_amount,
         cast(null as {{ dbt.type_int() }}) as discount_amount,
-        cast(null as {{ dbt.type_int() }}) as tax_rate, -- bring in invoice_line_item_tax_rate > tax_rate.percentage 
-        cast(null as {{ dbt.type_int() }}) as tax_amount,  -- assuming it's tax_rate.percentage * amount
+        cast(null as {{ dbt.type_int() }}) as tax_amount,
         invoice_line_item.amount as total_amount,
         payment_intent.payment_intent_id as payment_id,
-        payment_method.type as payment_method,
+        payment_method.payment_method_id as payment_method_id,
+        payment_method.type as payment_method_name,
         charge.created_at as payment_at,
         cast(null as {{ dbt.type_int() }}) as fee_amount,
-        cast(null as {{ dbt.type_string() }}) as refund_id,
         cast(null as {{ dbt.type_int() }}) as refund_amount,
-        cast(null as {{ dbt.type_timestamp() }}) as refunded_at,
         invoice.subscription_id,
 
         {% if var('stripe__using_subscriptions', True) %}
@@ -139,6 +147,9 @@ with invoice_line_item as (
 
     left join balance_transaction
         on charge.balance_transaction_id = balance_transaction.balance_transaction_id
+
+    left join discount 
+        on invoice.invoice_id = discount.invoice_id
 
     left join refund 
         on balance_transaction.balance_transaction_id = refund.balance_transaction_id
@@ -182,25 +193,24 @@ with invoice_line_item as (
         'header' as record_type,
         invoice.created_at as created_at,
         invoice.currency as currency,
-        cast(null as {{ dbt.type_string() }}) as line_item_status,
         invoice.status as header_status,
         price_plan.product_id as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
         cast(null as {{ dbt.type_string() }}) as product_name, 
+        balance_transaction.type as transaction_type,
+        cast(null as {{ dbt.type_string() }}) as billing_type,
         cast(null as {{ dbt.type_string() }}) as product_type,
         cast(null as {{ dbt.type_string() }}) as product_category,
-        invoice.total_quantity as total_quantity,
+        invoice.total_quantity as quantity,
         cast(null as {{ dbt.type_int() }}) as unit_amount,
-        cast(null as {{ dbt.type_int() }}) as discount_amount,
-        invoice.tax_percent as tax_rate,
+        discount.discount_amount_per_invoice as discount_amount,
         invoice.tax as tax_amount,
         invoice.total as total_amount,
         payment_intent.payment_intent_id as payment_id,
-        payment_method.type as payment_method,
+        payment_method.payment_method_id as payment_method_id,
+        payment_method.type as payment_method_name,
         charge.created_at as payment_at,
         balance_transaction.fee as fee_amount,
-        refund.refund_id,
         refund.amount as refund_amount,
-        refund.created_at as refunded_at,
         invoice.subscription_id,
 
         {% if var('stripe__using_subscriptions', True) %}
@@ -230,6 +240,9 @@ with invoice_line_item as (
 
     left join balance_transaction
         on charge.balance_transaction_id = balance_transaction.balance_transaction_id
+
+    left join discount 
+        on invoice.invoice_id = discount.invoice_id
 
     left join refund 
         on balance_transaction.balance_transaction_id = refund.balance_transaction_id
