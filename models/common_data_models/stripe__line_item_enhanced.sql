@@ -117,7 +117,7 @@ with invoice_line_item as (
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
         cast(null as {{ dbt.type_int() }}) as fee_amount,
         cast(null as {{ dbt.type_int() }}) as refund_amount,
-        cast(invoice.subscription_id as {{ dbt.type_string() }}),
+        cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
         {% if var('stripe__using_subscriptions', True) %}
 
@@ -209,7 +209,7 @@ with invoice_line_item as (
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
         cast(balance_transaction.fee as {{ dbt.type_int() }}) as fee_amount,
         cast(refund.amount as {{ dbt.type_int() }}) as refund_amount,
-        cast(invoice.subscription_id as {{ dbt.type_string() }}),
+        cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
         {% if var('stripe__using_subscriptions', True) %}
 
