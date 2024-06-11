@@ -12,13 +12,13 @@ with invoice_line_item as (
         coalesce(count(distinct unique_invoice_line_item_id),0) as number_of_line_items,
         coalesce(sum(quantity),0) as total_quantity
 
-    from {{ var('invoice_line_item') }}  
+    from invoice_line_item
     group by 1
 
 ), invoice as (
 
     select inv.*,
-        invoice_line_item_agg.number_of_line_items
+        invoice_line_item_agg.number_of_line_items,
         invoice_line_item_agg.total_quantity
     from {{ var('invoice') }} inv
     left join invoice_line_item_agg
