@@ -189,7 +189,7 @@ with invoice_line_item as (
 
         invoice.invoice_id as header_id,
         cast(null as {{ dbt.type_string() }}) as line_item_id,
-        0 as line_item_index,
+        cast(null as {{ dbt.type_int() }}) as line_item_index,
         'header' as record_type,
         invoice.created_at as created_at,
         invoice.currency as currency,
