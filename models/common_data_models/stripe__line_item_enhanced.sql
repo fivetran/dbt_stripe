@@ -96,7 +96,7 @@ with invoice_line_item as (
 
         invoice_line_item.invoice_id as header_id,
         invoice_line_item.invoice_line_item_id as line_item_id,
-        row_number() over (partition by invoice_line_item.invoice_id order by amount desc) as line_item_index,
+        row_number() over (partition by invoice_line_item.invoice_id order by invoice_line_item.amount desc) as line_item_index,
         'line_item' as record_type,
         invoice.created_at as created_at,
         invoice_line_item.currency as currency,
