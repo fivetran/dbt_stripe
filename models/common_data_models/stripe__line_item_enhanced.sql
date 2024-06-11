@@ -93,48 +93,47 @@ with invoice_line_item as (
 ), invoice_line_item_enhanced as (
 
     select
-
         invoice_line_item.invoice_id as header_id,
-        invoice_line_item.invoice_line_item_id as line_item_id,
+        cast(invoice_line_item.invoice_line_item_id as {{ dbt.type_string() }}) as line_item_id,
         row_number() over (partition by invoice_line_item.invoice_id order by invoice_line_item.amount desc) as line_item_index,
         'line_item' as record_type,
         invoice.created_at as created_at,
-        invoice_line_item.currency as currency,
-        invoice.status as header_status,
-        price_plan.product_id as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
-        product.name as product_name,
-        balance_transaction.type as transaction_type,
-        invoice_line_item.type as billing_type,
-        product.type as product_type,
+        cast(invoice_line_item.currency as {{ dbt.type_string() }}) as currency,
+        cast(invoice.status as {{ dbt.type_string() }}) as header_status,
+        cast(price_plan.product_id as {{ dbt.type_string() }}) as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
+        cast(product.name as {{ dbt.type_string() }}) as product_name,
+        cast(balance_transaction.type as {{ dbt.type_string() }}) as transaction_type,
+        cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
+        cast(product.type as {{ dbt.type_string() }}) as product_type,
         cast(null as {{ dbt.type_string() }}) as product_category,
-        invoice_line_item.quantity as quantity,
-        (invoice_line_item.amount/invoice_line_item.quantity) as unit_amount,
+        cast(invoice_line_item.quantity as {{ dbt.type_int() }}) as quantity,
+        cast((invoice_line_item.amount/invoice_line_item.quantity) as {{ dbt.type_int() }}) as unit_amount,
         cast(null as {{ dbt.type_int() }}) as discount_amount,
         cast(null as {{ dbt.type_int() }}) as tax_amount,
-        invoice_line_item.amount as total_amount,
-        payment_intent.payment_intent_id as payment_id,
-        payment_method.payment_method_id as payment_method_id,
-        payment_method.type as payment_method_name,
-        charge.created_at as payment_at,
+        cast(invoice_line_item.amount as {{ dbt.type_int() }}) as total_amount,
+        cast(payment_intent.payment_intent_id as {{ dbt.type_string() }}) as payment_id,
+        cast(payment_method.payment_method_id as {{ dbt.type_string() }}) as payment_method_id,
+        cast(payment_method.type as {{ dbt.type_string() }}) as payment_method_name,
+        cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
         cast(null as {{ dbt.type_int() }}) as fee_amount,
         cast(null as {{ dbt.type_int() }}) as refund_amount,
-        invoice.subscription_id,
+        cast(invoice.subscription_id as {{ dbt.type_string() }}),
 
         {% if var('stripe__using_subscriptions', True) %}
 
-        subscription.current_period_start as subscription_period_started_at,
-        subscription.current_period_end as subscription_period_ended_at,
-        subscription.status as subscription_status,
+        cast(subscription.current_period_start as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
+        cast(subscription.current_period_end as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
+        cast(subscription.status as {{ dbt.type_string() }}) as subscription_status,
 
         {% endif %}
 
-        invoice.customer_id,
+        cast(invoice.customer_id as {{ dbt.type_string() }}) as customer_id,
         cast(null as {{ dbt.type_string() }}) as customer_level,
-        customer.customer_name as customer_name, 
-        connected_account.company_name as customer_company, 
-        customer.email as customer_email,
-        customer.customer_address_city as customer_city,
-        customer.customer_address_country as customer_country
+        cast(customer.customer_name as {{ dbt.type_string() }}) as customer_name, 
+        cast(connected_account.company_name as {{ dbt.type_string() }}) as customer_company, 
+        cast(customer.email as {{ dbt.type_string() }}) as customer_email,
+        cast(customer.customer_address_city as {{ dbt.type_string() }}) as customer_city,
+        cast(customer.customer_address_country as {{ dbt.type_string() }}) as customer_country
 
     from invoice_line_item
 
@@ -186,48 +185,47 @@ with invoice_line_item as (
 ), invoice_enhanced as (
 
     select
-
         invoice.invoice_id as header_id,
         cast(null as {{ dbt.type_string() }}) as line_item_id,
         cast(null as {{ dbt.type_int() }}) as line_item_index,
         'header' as record_type,
-        invoice.created_at as created_at,
-        invoice.currency as currency,
-        invoice.status as header_status,
-        price_plan.product_id as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
+        cast(invoice.created_at as {{ dbt.type_timestamp() }}) as created_at,
+        cast(invoice.currency as {{ dbt.type_string() }}) as currency,
+        cast(invoice.status as {{ dbt.type_string() }}) as header_status,
+        cast(price_plan.product_id as {{ dbt.type_string() }}) as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
         cast(null as {{ dbt.type_string() }}) as product_name, 
-        balance_transaction.type as transaction_type,
+        cast(balance_transaction.type as {{ dbt.type_string() }}) as transaction_type,
         cast(null as {{ dbt.type_string() }}) as billing_type,
         cast(null as {{ dbt.type_string() }}) as product_type,
         cast(null as {{ dbt.type_string() }}) as product_category,
-        invoice.total_quantity as quantity,
+        cast(invoice.total_quantity as {{ dbt.type_int() }}) as quantity,
         cast(null as {{ dbt.type_int() }}) as unit_amount,
-        discount.discount_amount_per_invoice as discount_amount,
-        invoice.tax as tax_amount,
-        invoice.total as total_amount,
-        payment_intent.payment_intent_id as payment_id,
-        payment_method.payment_method_id as payment_method_id,
-        payment_method.type as payment_method_name,
-        charge.created_at as payment_at,
-        balance_transaction.fee as fee_amount,
-        refund.amount as refund_amount,
-        invoice.subscription_id,
+        cast(discount.discount_amount_per_invoice as {{ dbt.type_int() }}) as discount_amount,
+        cast(invoice.tax as {{ dbt.type_int() }}) as tax_amount,
+        cast(invoice.total as {{ dbt.type_int() }}) as total_amount,
+        cast(payment_intent.payment_intent_id as {{ dbt.type_string() }}) as payment_id,
+        cast(payment_method.payment_method_id as {{ dbt.type_string() }}) as payment_method_id,
+        cast(payment_method.type as {{ dbt.type_string() }}) as payment_method_name,
+        cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
+        cast(balance_transaction.fee as {{ dbt.type_int() }}) as fee_amount,
+        cast(refund.amount as {{ dbt.type_int() }}) as refund_amount,
+        cast(invoice.subscription_id as {{ dbt.type_string() }}),
 
         {% if var('stripe__using_subscriptions', True) %}
 
-        subscription.current_period_start as subscription_period_started_at,
-        subscription.current_period_end as subscription_period_ended_at,
-        subscription.status as subscription_status,
+        cast(subscription.current_period_start as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
+        cast(subscription.current_period_end as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
+        cast(subscription.status as {{ dbt.type_string() }}) as subscription_status,
 
         {% endif %}
 
-        invoice.customer_id as customer_id,
+        cast(invoice.customer_id as {{ dbt.type_string() }}) as customer_id,
         cast(null as {{ dbt.type_string() }}) as customer_level,
-        customer.customer_name as customer_name, 
-        connected_account.company_name as customer_company, 
-        customer.email as customer_email,
-        customer.customer_address_city as customer_city,
-        customer.customer_address_country as customer_country
+        cast(customer.customer_name as {{ dbt.type_string() }}) as customer_name, 
+        cast(connected_account.company_name as {{ dbt.type_string() }}) as customer_company,
+        cast(customer.email as {{ dbt.type_string() }}) as customer_email,
+        cast(customer.customer_address_city as {{ dbt.type_string() }}) as customer_city,
+        cast(customer.customer_address_country as {{ dbt.type_string() }}) as customer_country
 
     from invoice_line_item
 
