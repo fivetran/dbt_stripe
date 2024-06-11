@@ -10,7 +10,7 @@ models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_12
+  stripe_schema: stripe_integrations_tests_13
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
