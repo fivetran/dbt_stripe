@@ -49,6 +49,7 @@ seeds:
       voided_at: timestamp
       canceled_at: timestamp
       invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+      end: timestamp
     balance_transaction_data:
       +column_types:
         available_on: timestamp
