@@ -60,8 +60,11 @@ with invoice_line_item as (
 
 ), discount as (
 
-    select *
+    select
+        invoice_id,
+        sum(amount) as total_discount_amount
     from {{ var('discount') }}
+    group by 1
 
 ), refund as (
 
@@ -89,12 +92,12 @@ with invoice_line_item as (
         cast(product.type as {{ dbt.type_string() }}) as product_type,
         cast(invoice_line_item.quantity as {{ dbt.type_numeric() }}) as quantity,
         cast((invoice_line_item.amount/invoice_line_item.quantity) as {{ dbt.type_numeric() }}) as unit_amount,
-        cast(discount.amount as {{ dbt.type_numeric() }}) as discount_amount,
+        cast(discount.total_discount_amount as {{ dbt.type_numeric() }}) as discount_amount,
         cast(invoice.tax as {{ dbt.type_numeric() }}) as tax_amount,
         cast(invoice.total as {{ dbt.type_numeric() }}) as total_amount,
         cast(payment_intent.payment_intent_id as {{ dbt.type_string() }}) as payment_id,
         cast(payment_method.payment_method_id as {{ dbt.type_string() }}) as payment_method_id,
-        cast(payment_method.type as {{ dbt.type_string() }}) as payment_method_name,
+        cast(payment_method.type as {{ dbt.type_string() }}) as payment_method,
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
         cast(balance_transaction.fee as {{ dbt.type_numeric() }}) as fee_amount,
         cast(refund.amount as {{ dbt.type_numeric() }}) as refund_amount,
@@ -192,7 +195,7 @@ with invoice_line_item as (
         total_amount,
         payment_id,
         payment_method_id,
-        payment_method_name,
+        payment_method,
         payment_at,
         cast(null as {{ dbt.type_numeric() }}) as fee_amount,
         cast(null as {{ dbt.type_numeric() }}) as refund_amount,
@@ -232,7 +235,7 @@ with invoice_line_item as (
         cast(null as {{ dbt.type_float() }}) as total_amount,
         payment_id,
         payment_method_id,
-        payment_method_name,
+        payment_method,
         payment_at,
         fee_amount,
         refund_amount,
