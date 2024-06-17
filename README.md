@@ -65,6 +65,9 @@ packages:
     revision: feature/normalized-billing-model
     warn-unpinned: false
 
+  ## To be used once live on the dbt hub
+  # - package: fivetran/stripe
+  #   version: [">=0.14.0", "<0.15.0"]
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well. 
 
@@ -238,8 +241,11 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - git: https://github.com/fivetran/dbt_stripe_source.git
-      revision: feature/normalized-billing-model
+      revision: feature/standardized-billing-line-item-model
       warn-unpinned: false
+  ## Will be used once live on the dbt hub
+  # - package: fivetran/stripe_source
+  #   version: [">=0.12.0", "<0.13.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
