@@ -29,7 +29,8 @@ The following table provides a detailed list of all models materialized within t
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [stripe__balance_transactions](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions)    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
 | [stripe__invoice_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details)      | Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.                                                                                         
-| [stripe__invoice_line_item_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.                                                                                 
+| [stripe__invoice_line_item_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.  
+| [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced)       | This model builds a standard denormalized analytical table which can be used to report on your revenue, subscription, customer, and product metrics from your billing platform. This model has been designed to match the schema of the similarly named `*__line_item_enhanced` model within the Shopify, Recharge, Recurly, and Zuora platforms in an effort to standardize reporting when using data from a billing platform.
 | [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)      | Each record represents, per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You may use this model to roll up into weekly, quarterly, monthly, and other time grains. You may also use this model to create a MRR report.                                                  |
 | [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details)    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
 | [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                               |
@@ -60,8 +61,9 @@ Include the following stripe package version in your `packages.yml` file:
 > TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 ```yaml
 packages:
-  - package: fivetran/stripe
-    version: [">=0.13.0", "<0.14.0"]
+  - git: https://github.com/fivetran/dbt_stripe.git
+    revision: feature/normalized-billing-model
+    warn-unpinned: false
 
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well. 
@@ -235,8 +237,9 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
     
 ```yml
 packages:
-    - package: fivetran/stripe_source
-      version: [">=0.11.0", "<0.12.0"]
+    - git: https://github.com/fivetran/dbt_stripe_source.git
+      revision: feature/normalized-billing-model
+      warn-unpinned: false
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]

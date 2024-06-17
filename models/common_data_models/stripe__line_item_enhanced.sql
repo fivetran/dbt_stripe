@@ -85,11 +85,13 @@ with invoice_line_item as (
         invoice.created_at as created_at,
         cast(invoice_line_item.currency as {{ dbt.type_string() }}) as currency,
         cast(invoice.status as {{ dbt.type_string() }}) as header_status,
-        cast(price_plan.product_id as {{ dbt.type_string() }}) as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
-        cast(product.name as {{ dbt.type_string() }}) as product_name,
+
+        cast({{ "price_plan.product_id" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_id, -- The ID of the product this price is associated with. https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-price-product
+        cast({{ "product.name" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_name,
+        cast({{ "product.type" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_type,
+
         cast(balance_transaction.type as {{ dbt.type_string() }}) as transaction_type,
         cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
-        cast(product.type as {{ dbt.type_string() }}) as product_type,
         cast(invoice_line_item.quantity as {{ dbt.type_numeric() }}) as quantity,
         cast((invoice_line_item.amount/invoice_line_item.quantity) as {{ dbt.type_numeric() }}) as unit_amount,
         cast(discount.total_discount_amount as {{ dbt.type_numeric() }}) as discount_amount,
@@ -103,19 +105,9 @@ with invoice_line_item as (
         cast(refund.amount as {{ dbt.type_numeric() }}) as refund_amount,
         cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
-        {% if var('stripe__using_subscriptions', True) %}
-
-        cast(subscription.current_period_start as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
-        cast(subscription.current_period_end as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
-        cast(subscription.status as {{ dbt.type_string() }}) as subscription_status,
-
-        {% else %}
-
-        cast(null as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
-        cast(null as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
-        cast(null as {{ dbt.type_string() }}) as subscription_status,
-
-        {% endif %}
+        cast({{ "subscription.current_period_start" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
+        cast({{ "subscription.current_period_end" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
+        cast({{ "subscription.status" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as subscription_status,
 
         cast(invoice.customer_id as {{ dbt.type_string() }}) as customer_id,
         'customer' as customer_level,
@@ -185,7 +177,7 @@ with invoice_line_item as (
         header_status,
         product_id,
         product_name,
-        cast(null as {{ dbt.type_string() }}) as transaction_type,
+        transaction_type,
         billing_type,
         product_type,
         quantity,
@@ -218,7 +210,7 @@ with invoice_line_item as (
     select
         header_id,
         cast(null as {{ dbt.type_string() }}) as line_item_id,
-        line_item_index,
+        cast(0 as {{ dbt.type_int() }}) as line_item_index,
         'header' as record_type,
         created_at,
         currency,
@@ -226,7 +218,7 @@ with invoice_line_item as (
         cast(null as {{ dbt.type_string() }}) as product_id,
         cast(null as {{ dbt.type_string() }}) as product_name,
         transaction_type,
-        cast(null as {{ dbt.type_string() }}) as billing_type,
+        billing_type,
         cast(null as {{ dbt.type_string() }}) as product_type,
         cast(null as {{ dbt.type_float() }}) as quantity,
         cast(null as {{ dbt.type_float() }}) as unit_amount,
@@ -252,7 +244,7 @@ with invoice_line_item as (
         customer_country
     from enhanced
     where line_item_index = 1
-        and discount_amount is not null or tax_amount is not null or fee_amount is not null or refund_amount is not null
+        and (discount_amount is not null or tax_amount is not null or fee_amount is not null or refund_amount is not null)
 )
 
 select *

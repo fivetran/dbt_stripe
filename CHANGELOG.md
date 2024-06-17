@@ -1,3 +1,9 @@
+# dbt_stripe v0.14.0-b1
+[PR #81](https://github.com/fivetran/dbt_stripe/pull/81) includes the following updates:
+
+## Feature Updates
+- Addition of the `stripe__line_item_enhanced` model. This model builds a standard denormalized analytical table which can be used to report on your revenue, subscription, customer, and product metrics from your billing platform. This model has been designed to match the schema of the similarly named `*__line_item_enhanced` model within the Shopify, Recharge, Recurly, and Zuora platforms in an effort to standardize reporting when using data from a billing platform.
+
 # dbt_stripe v0.13.0
 [PR #78](https://github.com/fivetran/dbt_stripe/pull/78) includes the following updates:
 
