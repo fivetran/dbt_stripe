@@ -62,7 +62,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - git: https://github.com/fivetran/dbt_stripe.git
-    revision: feature/normalized-billing-model
+    revision: feature/standardized-billing-line-item-model
     warn-unpinned: false
 
   ## To be used once live on the dbt hub
