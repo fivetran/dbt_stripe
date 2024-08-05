@@ -118,6 +118,7 @@ with invoice_line_item as (
         {% endif %}
 
         cast(invoice.customer_id as {{ dbt.type_string() }}) as customer_id,
+        cast(customer.created_at as {{ dbt.type_timestamp() }}) as customer_created_at,
         'customer' as customer_level,
         cast(customer.customer_name as {{ dbt.type_string() }}) as customer_name, 
         cast(connected_account.company_name as {{ dbt.type_string() }}) as customer_company, 
@@ -204,6 +205,7 @@ with invoice_line_item as (
         subscription_period_ended_at,
         subscription_status,
         customer_id,
+        customer_created_at,
         customer_level,
         customer_name,
         customer_company,
@@ -244,6 +246,7 @@ with invoice_line_item as (
         subscription_period_ended_at,
         subscription_status,
         customer_id,
+        customer_created_at,
         customer_level,
         customer_name,
         customer_company,

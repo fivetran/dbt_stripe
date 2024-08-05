@@ -65,6 +65,8 @@ models:
         description: Subscription status
       - name: customer_id
         description: Customer associated with this invoice.
+      - name: customer_created_at
+        description: Timestamp of when the customer entry was created.
       - name: customer_level
         description: Whether 'account' or 'customer'. For Stripe, the level is 'customer'.
       - name: customer_name
