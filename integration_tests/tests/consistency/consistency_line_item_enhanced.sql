@@ -3,19 +3,29 @@
     enabled=var('fivetran_validation_tests_enabled', false)
 ) }}
 
--- this test is to make sure the rows counts are the same between versions
 with prod as (
-    select count(*) as prod_rows
+    select *
     from {{ target.schema }}_stripe_prod.stripe__line_item_enhanced
 ),
 
 dev as (
-    select count(*) as dev_rows
+    select *
     from {{ target.schema }}_stripe_dev.stripe__line_item_enhanced
-)
+), 
 
--- test will return values and fail if the row counts don't match
+final as (
+    -- test will fail if any rows from prod are not found in dev
+    (select * from prod
+    except distinct
+    select * from dev)
+
+    union all -- union since we only care if rows are produced
+
+    -- test will fail if any rows from dev are not found in prod
+    (select * from dev
+    except distinct
+    select * from prod)
+    )
+
 select *
-from prod
-join dev
-    on prod.prod_rows != dev.dev_rows
+from final
