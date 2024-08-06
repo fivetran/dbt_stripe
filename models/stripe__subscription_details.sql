@@ -1,4 +1,4 @@
-{{ config(enabled=fivetran_utils.enabled_vars(['stripe__using_invoices','stripe__using_subscriptions'])) }}
+{{ config(enabled=fivetran_utils.enabled_vars(['stripe__using_invoices','stripe__using_subscriptions', 'customer360__using_stripe'])) }}
 
 with invoice as (
 

@@ -1,3 +1,5 @@
+{{ config(enabled=var('customer360__using_stripe', true)) }}
+
 with balance_transaction_enhanced as (
 
     select *
