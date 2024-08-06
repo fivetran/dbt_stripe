@@ -3,19 +3,34 @@
     enabled=var('fivetran_validation_tests_enabled', false)
 ) }}
 
--- this test is to make sure there is no fanout between the spine and the daily_overview
-with stg_invoice_line_item as (
-    select count(*) as line_item_count
-    from {{ target.schema }}_stripe_dev.stg_stripe__invoice_line_item
+with staging_model as (
+    select 
+        invoice_id as header_id,
+        count(*) as stg_line_item_count,
+    from {{ ref('stg_stripe__invoice_line_item') }}
+    group by 1
 ),
 
-line_item_enhanced as (
-    select count(*) as daily_overview_count
-    from {{ target.schema }}_stripe_dev.stripe__line_item_enhanced
+end_model as (
+    select 
+        header_id,
+        count(*) as end_model_count
+    from {{ ref('stripe__line_item_enhanced') }}
+    group by 1
+),
+
+final as (
+    select 
+        end_model.header_id as end_header_id,
+        staging_model.header_id as staging_header_id,
+        end_model.end_model_count as end_model_row_count,
+        (staging_model.stg_line_item_count + 1) as stg_model_row_count
+    from staging_model
+    full outer join end_model
+        on end_model.header_id = staging_model.header_id
 )
 
--- test will return values and fail if the row counts don't match
 select *
-from stg_invoice_line_item
-join line_item_enhanced
-    on stg_invoice_line_item.line_item_count != line_item_enhanced.daily_overview_count
+from final
+where end_model_row_count > stg_model_row_count -- At this moment we are most concerned about fanout. We will need to add significant logic to account for invoices that don't receive a header record. Therefore, to avoid this we can relying on the fact that no fanouts (end model has a greater count than staging) are occurring from this integrity test is sufficient.
+    or end_header_id is null or staging_header_id is null

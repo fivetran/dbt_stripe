@@ -2,12 +2,13 @@ version: 2
 
 models:
   - name: stripe__line_item_enhanced
-    description: Add description
+    description: This model constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It’s designed to align with the schema of the `*__line_item_enhanced` model found in Stripe, Recharge, Recurly, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). Visit the app for more details.
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - header_id
             - line_item_id
+            - source_relation
     columns:
       - name: header_id
         description: Id of corresponding invoice.
@@ -57,6 +58,8 @@ models:
         description: Refund amount associated with this invoice.
       - name: subscription_id
         description: Subscription associated with this invoice.
+      - name: subscription_plan
+        description: The product associated with the subscription item. In Stripe a subscription plan would best be attributed to the product which the price/plan is of the subscription is linked.
       - name: subscription_period_started_at
         description: Subscription's current period start
       - name: subscription_period_ended_at
@@ -65,6 +68,8 @@ models:
         description: Subscription status
       - name: customer_id
         description: Customer associated with this invoice.
+      - name: customer_created_at
+        description: Date which the customer was created in Stripe.
       - name: customer_level
         description: Whether 'account' or 'customer'. For Stripe, the level is 'customer'.
       - name: customer_name
@@ -77,3 +82,5 @@ models:
         description: Customer city
       - name: customer_country
         description: Customer country
+      - name: source_relation
+        description: The source of the record if the unioning functionality is being used. If not this field will be empty.

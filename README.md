@@ -30,7 +30,7 @@ The following table provides a detailed list of all models materialized within t
 | [stripe__balance_transactions](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions)    | Each record represents a change to your account balance, enriched with data about the transaction.                                                                                                                                       |
 | [stripe__invoice_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details)      | Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.                                                                                         
 | [stripe__invoice_line_item_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details)      | Each record represents an invoice line item, enriched with details about the associated charge, customer, subscription, and pricing data.  
-| [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced)       | This model builds a standard denormalized analytical table which can be used to report on your revenue, subscription, customer, and product metrics from your billing platform. This model has been designed to match the schema of the similarly named `*__line_item_enhanced` model within the Shopify, Recharge, Recurly, and Zuora platforms in an effort to standardize reporting when using data from a billing platform.
+| [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced)       | This model constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It’s designed to align with the schema of the `*__line_item_enhanced` model found in Stripe, Recharge, Recurly, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). Visit the app for more details.  |
 | [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview)      | Each record represents, per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions). You may use this model to roll up into weekly, quarterly, monthly, and other time grains. You may also use this model to create a MRR report.                                                  |
 | [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details)    | Each record represents a subscription, enriched with customer details and payment aggregations.                                                                                                                                          |
 | [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview)       | Each record represents a customer, enriched with metrics about their associated transactions.  Transactions with no associated customer will have a customer description of "No associated customer".                                                                                                                                               |
@@ -38,6 +38,9 @@ The following table provides a detailed list of all models materialized within t
 | [stripe__balance_change_from_activity_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_change_from_activity_itemized_3)       | This report functions like a bank statement for reconciling your Stripe balance, especially beneficial for treating Stripe as a bank account for accounting purposes. It offers a detailed breakdown of transactions affecting your balance.                                                                                                                                               |
 | [stripe__ending_balance_reconciliation_itemized_4](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__ending_balance_reconciliation_itemized_4)       | This reports models after Stripe's payout reconciliation reports, helping match bank account payouts with related transactions. It provides details for automatic payouts and transactions that hadn't settled as of the report's end date. This report is only available for users with automatic payouts enabled and optimized for those who prefer to reconcile the transactions included in each payout as a settlement batch.                                                                                                                                               |
 | [stripe__payout_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__payout_itemized_3)       | This report represents payouts with information on expected arrival dates and status, akin to a bank statement for reconciling your Stripe balance, particularly useful for accounting purposes.                                                                                                                                                      |
+
+## Example Visualizations
+Explore example visualizations produced by the [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) model in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). For further details and to see how these insights can be applied, visit the app.
 <!--section-end-->
 
 # 🎯 How do I use the dbt package?
@@ -61,13 +64,8 @@ Include the following stripe package version in your `packages.yml` file:
 > TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 ```yaml
 packages:
-  - git: https://github.com/fivetran/dbt_stripe.git
-    revision: feature/standardized-billing-line-item-model
-    warn-unpinned: false
-
-  ## To be used once live on the dbt hub
-  # - package: fivetran/stripe
-  #   version: [">=0.14.0", "<0.15.0"]
+  - package: fivetran/stripe
+    version: [">=0.14.0", "<0.15.0"]
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well. 
 
@@ -240,12 +238,8 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
     
 ```yml
 packages:
-    - git: https://github.com/fivetran/dbt_stripe_source.git
-      revision: feature/standardized-billing-line-item-model
-      warn-unpinned: false
-  ## Will be used once live on the dbt hub
-  # - package: fivetran/stripe_source
-  #   version: [">=0.12.0", "<0.13.0"]
+    - package: fivetran/stripe_source
+      version: [">=0.12.0", "<0.13.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
