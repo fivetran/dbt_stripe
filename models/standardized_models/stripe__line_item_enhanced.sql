@@ -1,4 +1,10 @@
-{{ config(enabled=var('stripe__using_invoices', True) and var('stripe__standardized_billing_model_enabled', True)) }}
+{{ config(
+    enabled=(
+        var('stripe__standardized_billing_model_enabled', False) and 
+        (var('stripe__using_invoices', True) and var('stripe__standardized_billing_model_enabled', True))
+    )
+) }}
+
 
 with invoice_line_item as (
 
