@@ -12,6 +12,7 @@ table_variables:
     - payment_method
   stripe__using_subscriptions:
     - subscription_history
+    - product
   stripe__using_credit_notes:
     - credit_note_line_item
     - credit_note

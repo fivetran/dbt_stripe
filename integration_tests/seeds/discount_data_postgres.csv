@@ -1,0 +1,11 @@
+id,type,type_id,_fivetran_synced,amount,checkout_session_id,checkout_session_line_item_id,coupon_id,credit_note_line_item_id,customer_id,"end",invoice_id,invoice_item_id,promotion_code,"start",subscription_id
+one1,,cus_twelve,,1,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-27 05:50:07.000000",in_1OvvZQDZlKRVG8GnByl08x0P,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+2wo,,cus_twelve,,2,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-22 05:50:07.000000",in_1OlPk3DZlKRVG8GnkWTFA0go,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+3hree,,cus_twelve,,3,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-27 05:50:07.000000",in_1OaAyXDZlKRVG8GnQo19CbEo,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+4our,,cus_twelve,,4,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-22 05:50:07.000000",,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+5ive,,cus_twelve,,5,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-27 05:50:07.000000",in_1P7ALFDZlKRVG8GnTUCtI40b,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+6ix,,cus_twelve,,6,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-22 05:50:07.000000",in_1OOwCbDZlKRVG8Gn3Tfhz2RW,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+7even,,cus_twelve,,7,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-27 05:50:07.000000",in_1PI2dvDZlKRVG8Gn4I34kEqR,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+8ight,,cus_twelve,,8,,,2022-09-19 05:50:07.000000,sub_nine,cus_MSXtGSAxxtYWe1,"2022-09-22 05:50:07.000000",,,,"2022-09-19 05:50:07.000000",sub_1LjcrrDZlKRVG8Gnv1Bjosun
+9ine,,cus_thirteen,,9,,,2023-08-07 09:37:39.000000,,cus_OPEJRxhitWa90P,"2022-09-27 05:50:07.000000",,,,"2023-08-07 09:37:39.000000",
+10n,,cus_OPEKG00sHdsUs8,,10,,,2023-08-07 09:38:05.000000,,cus_OPEKG00sHdsUs8,,,,,"2023-08-07 09:38:05.000000",

@@ -1,3 +1,19 @@
+# dbt_stripe v0.14.0
+[PR #82](https://github.com/fivetran/dbt_stripe/pull/82) includes the following updates:
+
+## Feature Updates
+- Addition of the `stripe__line_item_enhanced` model. This model constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It’s designed to align with the schema of the `*__line_item_enhanced` model found in Stripe, Recharge, Recurly, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). Visit the app for more details.
+  - This model is currently disabled by default. You may enable it by setting the `stripe__standardized_billing_model_enabled` as `true` in your `dbt_project.yml`.
+
+## Relevant Upstream Updates ([dbt_stripe_source v0.12.0](https://github.com/fivetran/dbt_stripe_source/releases/tag/v0.12.0))
+- Addition of the following new staging models and accompanying upstream references:
+  - `stg_stripe__discount` (required for downstream `dbt_stripe` model transformations)
+  - `stg_stripe__product` (enabled by default, but can be disabled by setting the `stripe__using_subscriptions` variable to `false`)
+
+## Under the Hood
+- Added consistency test within integration_tests for the `stripe__line_item_enhanced` model.
+- Updated the `quickstart.yml` to include the `product` source table as a requirement for the `stripe__using_subscriptions` variable.
+
 # dbt_stripe v0.13.0
 [PR #78](https://github.com/fivetran/dbt_stripe/pull/78) includes the following updates:
 

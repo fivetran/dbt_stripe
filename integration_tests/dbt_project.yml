@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.13.0'
+version: '0.14.0'
 
 profile: 'integration_tests'
 
@@ -10,7 +10,7 @@ models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_11
+  stripe_schema: stripe_integrations_tests_14
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
@@ -18,6 +18,7 @@ vars:
     stripe_card_identifier:                   "card_data"
     stripe_charge_identifier:                 "charge_data"
     stripe_customer_identifier:               "customer_data"
+    stripe_discount_identifier:               "discount_data"
     stripe_dispute_identifier:                "dispute_data"
     stripe_fee_identifier:                    "fee_data"
     stripe_invoice_identifier:                "invoice_data"
@@ -28,6 +29,7 @@ vars:
     stripe_payout_identifier:                 "payout_data"
     stripe_plan_identifier:                   "plan_data"
     stripe_price_identifier:                  "price_data"
+    stripe_product_identifier:                "product_data"
     stripe_refund_identifier:                 "refund_data"
     stripe_subscription_history_identifier:   "subscription_history_data"
     stripe_subscription_identifier:           "subscription_data"
@@ -47,6 +49,7 @@ seeds:
       voided_at: timestamp
       canceled_at: timestamp
       invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+      end: timestamp
     balance_transaction_data:
       +column_types:
         available_on: timestamp
@@ -61,6 +64,15 @@ seeds:
       +column_types:
         destination_bank_account_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         destination_card_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+    discount_data:
+      +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
+    discount_data_snowflake:
+      +alias: discount_data
+      +enabled: "{{ true if target.type == 'snowflake' else false }}"
+    discount_data_postgres:
+      +alias: discount_data
+      +enabled: "{{ true if target.type == 'postgres' else false }}"
+
 
 dispatch:
   - macro_namespace: dbt_utils
