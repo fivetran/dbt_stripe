@@ -22,3 +22,11 @@ destination_configurations:
     dispatch:
       - macro_namespace: dbt_utils
         search_order: [ 'spark_utils', 'dbt_utils' ]
+public_models: [
+  "stripe__customer_overview",
+  "stripe__balance_transactions",
+  "stripe__invoice_details",
+  "stripe__subscription_details",
+  "stripe__invoice_line_item_details",
+  "stripe__daily_overview"
+]
