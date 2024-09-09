@@ -70,7 +70,7 @@ select
     card_funding,
     card_country,
     charge_statement_descriptor as statement_descriptor,
-    dispute_reason,
+    dispute_reasons,
     connected_account_id,
     connected_account_country,
     connected_account_direct_charge_id,

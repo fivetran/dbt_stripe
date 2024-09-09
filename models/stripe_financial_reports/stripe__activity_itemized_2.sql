@@ -14,7 +14,7 @@ select
     charge_id,
     payment_intent_id,
     refund_id,
-    dispute_id,
+    dispute_ids,
 
     {% if var('stripe__using_invoices', True) %}
     invoice_id,
