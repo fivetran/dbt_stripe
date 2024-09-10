@@ -81,8 +81,8 @@ with balance_transaction as (
     select
         charge_id,
         source_relation,
-        array_agg(dispute_id) as dispute_ids,
-        array_agg(dispute_reason) as dispute_reasons,
+        string_agg(dispute_id) as dispute_ids,
+        string_agg(dispute_reason) as dispute_reasons,
         sum(dispute_amount) as dispute_amount
     from dispute
     group by 1,2
