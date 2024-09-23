@@ -1,3 +1,8 @@
+# dbt_stripe v0.14.1
+
+## Bug Fixes
+- Addressed a potential `Divide by 0` error in calculating `unit_amount` in the `stripe__line_item_enhanced` model. Now, if the denominator `invoice_line_item.quantity` is 0, `unit_amount` will also be 0.
+
 # dbt_stripe v0.14.0
 [PR #82](https://github.com/fivetran/dbt_stripe/pull/82) includes the following updates:
 

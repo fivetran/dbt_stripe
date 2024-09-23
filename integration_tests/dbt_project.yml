@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.14.0'
+version: '0.14.1'
 
 profile: 'integration_tests'
 
@@ -47,7 +47,6 @@ seeds:
       created: timestamp
       canceled_at: timestamp
       voided_at: timestamp
-      canceled_at: timestamp
       invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
       end: timestamp
     balance_transaction_data:

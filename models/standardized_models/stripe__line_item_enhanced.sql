@@ -108,7 +108,12 @@ with invoice_line_item as (
         cast(balance_transaction.type as {{ dbt.type_string() }}) as transaction_type,
         cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
         cast(invoice_line_item.quantity as {{ dbt.type_numeric() }}) as quantity,
-        cast((invoice_line_item.amount/invoice_line_item.quantity) as {{ dbt.type_numeric() }}) as unit_amount,
+
+        cast(case 
+                when invoice_line_item.quantity = 0 then 0
+                else (invoice_line_item.amount / invoice_line_item.quantity) 
+            end as {{ dbt.type_numeric() }}) as unit_amount,
+
         cast(discount.total_discount_amount as {{ dbt.type_numeric() }}) as discount_amount,
         cast(invoice.tax as {{ dbt.type_numeric() }}) as tax_amount,
         cast(line_item_aggregate.total_line_item_amount as {{ dbt.type_numeric() }}) as total_line_item_amount,
