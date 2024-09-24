@@ -11,6 +11,8 @@ models:
 
 vars:
   stripe_schema: stripe_integrations_tests_14
+  stripe__standardized_billing_model_enabled: true
+  stripe__using_credit_notes: true
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
