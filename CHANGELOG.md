@@ -1,3 +1,8 @@
+# dbt_stripe v0.15.0
+
+## Under the Hood
+- Adjusted all `joins` to dynamically include `source_relation` as a condition _only_ if unioning together multiple schemas or databases. This should reduce model runtime for Postgres users specifically.
+
 # dbt_stripe v0.14.0
 [PR #82](https://github.com/fivetran/dbt_stripe/pull/82) includes the following updates:
 

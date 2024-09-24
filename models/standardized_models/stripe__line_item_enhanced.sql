@@ -141,50 +141,50 @@ with invoice_line_item as (
 
     left join invoice
         on invoice.invoice_id = invoice_line_item.invoice_id
-        and invoice.source_relation = invoice_line_item.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'invoice_line_item') }}
 
     left join line_item_aggregate
         on invoice.invoice_id = line_item_aggregate.invoice_id
-        and invoice.source_relation = line_item_aggregate.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'line_item_aggregate') }}
 
     left join charge 
         on invoice.charge_id = charge.charge_id
         and invoice.invoice_id = charge.invoice_id
-        and invoice.source_relation = charge.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'charge') }}
 
     left join balance_transaction
         on charge.balance_transaction_id = balance_transaction.balance_transaction_id
-        and charge.source_relation = balance_transaction.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'balance_transaction') }}
 
     left join discount 
         on invoice.invoice_id = discount.invoice_id
-        and invoice.source_relation = discount.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'discount') }}
 
     left join refund 
         on balance_transaction.balance_transaction_id = refund.balance_transaction_id
-        and balance_transaction.source_relation = refund.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'refund') }}
 
     left join account connected_account
         on balance_transaction.connected_account_id = connected_account.account_id
-        and balance_transaction.source_relation = connected_account.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'connected_account') }}
 
     left join payment_intent
         on charge.payment_intent_id = payment_intent.payment_intent_id
-        and charge.source_relation = payment_intent.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'payment_intent') }}
 
     left join payment_method 
         on charge.payment_method_id = payment_method.payment_method_id
-        and charge.source_relation = payment_method.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'payment_method') }}
 
     left join customer 
         on invoice.customer_id = customer.customer_id
-        and invoice.source_relation = customer.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'customer') }}
 
     {% if var('stripe__using_subscriptions', True) %}
 
     left join subscription
         on invoice.subscription_id = subscription.subscription_id
-        and invoice.source_relation = subscription.source_relation
+        {{ stripe_include_source_relation_in_join('invoice', 'subscription') }}
 
     left join price_plan
 
@@ -193,11 +193,11 @@ with invoice_line_item as (
     {% else %}
         on invoice_line_item.plan_id = price_plan.price_plan_id
     {% endif %}
-        and invoice_line_item.source_relation = price_plan.source_relation
+        {{ stripe_include_source_relation_in_join('invoice_line_item', 'price_plan') }}
 
     left join product
         on price_plan.product_id = product.product_id
-        and price_plan.source_relation = product.source_relation
+        {{ stripe_include_source_relation_in_join('price_plan', 'product') }}
     {% endif %}
 
 ), final as (

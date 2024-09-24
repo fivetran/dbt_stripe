@@ -86,20 +86,20 @@ from invoice
 
 left join invoice_line_item 
     on invoice.invoice_id = invoice_line_item.invoice_id
-    and invoice.source_relation = invoice_line_item.source_relation
+    {{ stripe_include_source_relation_in_join('invoice', 'invoice_line_item') }}
 
 left join charge 
     on invoice.charge_id = charge.charge_id
     and invoice.invoice_id = charge.invoice_id
-    and invoice.source_relation = charge.source_relation
+    {{ stripe_include_source_relation_in_join('invoice', 'charge') }}
 
 {% if var('stripe__using_subscriptions', True) %}
 left join subscription
     on invoice.subscription_id = subscription.subscription_id
-    and invoice.source_relation = subscription.source_relation
+    {{ stripe_include_source_relation_in_join('invoice', 'subscription') }}
 
 {% endif %}
 
 left join customer 
     on invoice.customer_id = customer.customer_id
-    and invoice.source_relation = customer.source_relation
+    {{ stripe_include_source_relation_in_join('invoice', 'customer') }}

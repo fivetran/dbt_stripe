@@ -193,54 +193,54 @@ from balance_transaction
 
 left join payout 
     on payout.balance_transaction_id = balance_transaction.balance_transaction_id
-    and payout.source_relation = balance_transaction.source_relation
+    {{ stripe_include_source_relation_in_join('payout', 'balance_transaction') }}
 left join account connected_account
     on balance_transaction.connected_account_id = connected_account.account_id
-    and balance_transaction.source_relation = connected_account.source_relation
+    {{ stripe_include_source_relation_in_join('balance_transaction', 'connected_account') }}
 left join charge
     on charge.balance_transaction_id = balance_transaction.balance_transaction_id
-    and charge.source_relation = balance_transaction.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'balance_transaction') }}
 left join customer 
     on charge.customer_id = customer.customer_id
-    and charge.source_relation = customer.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'customer') }}
 left join cards
     on charge.card_id = cards.card_id
-    and charge.source_relation = cards.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'cards') }}
 left join payment_intent
     on charge.payment_intent_id = payment_intent.payment_intent_id
-    and charge.source_relation = payment_intent.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'payment_intent') }}
 
 {% if var('stripe__using_payment_method', True) %}
 left join payment_method
     on charge.payment_method_id = payment_method.payment_method_id
-    and charge.source_relation = payment_method.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'payment_method') }}
 left join payment_method_card 
     on payment_method_card.payment_method_id = payment_method.payment_method_id
-    and charge.source_relation = balance_transaction.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'balance_transaction') }}
 {% endif %}
 
 {% if var('stripe__using_invoices', True) %}
 left join invoice 
     on charge.invoice_id = invoice.invoice_id
-    and charge.source_relation = invoice.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'invoice') }}
 {% endif %}
 
 {% if var('stripe__using_subscriptions', True) %}
 left join subscription
     on subscription.latest_invoice_id =  charge.invoice_id
-    and subscription.source_relation =  charge.source_relation
+    {{ stripe_include_source_relation_in_join('subscription', 'charge') }}
 {% endif %}
 
 left join refund
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
-    and refund.source_relation = balance_transaction.source_relation
+    {{ stripe_include_source_relation_in_join('refund', 'balance_transaction') }}
 left join transfers 
     on transfers.balance_transaction_id = balance_transaction.balance_transaction_id
-    and transfers.source_relation = balance_transaction.source_relation
+    {{ stripe_include_source_relation_in_join('transfers', 'balance_transaction') }}
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
-    and refund.source_relation = refund_charge.source_relation
+    {{ stripe_include_source_relation_in_join('refund', 'refund_charge') }}
 left join dispute
     on charge.charge_id = dispute.charge_id
-    and charge.source_relation = dispute.source_relation
+    {{ stripe_include_source_relation_in_join('charge', 'dispute') }}
 

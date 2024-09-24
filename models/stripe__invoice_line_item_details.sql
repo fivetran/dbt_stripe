@@ -72,13 +72,13 @@ from invoice_line_item
 
 left join invoice_details 
     on invoice_line_item.invoice_id = invoice_details.invoice_id
-    and invoice_line_item.source_relation = invoice_details.source_relation
+    {{ stripe_include_source_relation_in_join('invoice_line_item', 'invoice_details') }}
 
 {% if var('stripe__using_subscriptions', True) %}
 
 left join subscription
     on invoice_line_item.subscription_id = subscription.subscription_id
-    and invoice_line_item.source_relation = subscription.source_relation
+    {{ stripe_include_source_relation_in_join('invoice_line_item', 'subscription') }}
 
 left join price_plan
 
@@ -88,6 +88,6 @@ left join price_plan
     on invoice_line_item.plan_id = price_plan.price_plan_id
 {% endif %}
 
-    and invoice_line_item.source_relation = price_plan.source_relation
+    {{ stripe_include_source_relation_in_join('invoice_line_item', 'price_plan') }}
 
 {% endif %}

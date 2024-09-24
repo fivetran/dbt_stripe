@@ -48,7 +48,7 @@ with date_spine as (
     left join account_rolling_totals
         on account_rolling_totals.date_day = date_spine.date_day
         and account_rolling_totals.account_id = date_spine.account_id
-        and account_rolling_totals.source_relation = date_spine.source_relation
+        {{ stripe_include_source_relation_in_join('account_rolling_totals', 'date_spine') }}
 )
 
 select * 

@@ -90,7 +90,7 @@ select
 from subscription
 left join grouped_by_subscription 
   on subscription.subscription_id = grouped_by_subscription.subscription_id
-  and subscription.source_relation = grouped_by_subscription.source_relation
+  {{ stripe_include_source_relation_in_join('subscription', 'grouped_by_subscription') }}
 left join customer
   on subscription.customer_id = customer.customer_id
-  and subscription.source_relation = customer.source_relation
+  {{ stripe_include_source_relation_in_join('subscription', 'customer') }}

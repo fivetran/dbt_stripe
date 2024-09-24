@@ -173,7 +173,7 @@ with balance_transaction_joined as (
     from transactions_grouped
     left join customer 
         on transactions_grouped.customer_id = customer.customer_id
-        and transactions_grouped.source_relation = customer.source_relation
+        {{ stripe_include_source_relation_in_join('transactions_grouped', 'customer') }}
     where customer.customer_id is null and customer.description is null
 
 
@@ -210,10 +210,10 @@ with balance_transaction_joined as (
     from customer
     left join transactions_grouped
         on customer.customer_id = transactions_grouped.customer_id
-        and customer.source_relation = transactions_grouped.source_relation
+        {{ stripe_include_source_relation_in_join('customer', 'transactions_grouped') }}
     left join failed_charges_by_customer 
         on customer.customer_id = failed_charges_by_customer.customer_id
-        and customer.source_relation = failed_charges_by_customer.source_relation
+        {{ stripe_include_source_relation_in_join('customer', 'failed_charges_by_customer') }}
 )
 
 select *
