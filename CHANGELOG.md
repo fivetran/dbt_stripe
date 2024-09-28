@@ -9,6 +9,20 @@
   - `stripe__balance_change_from_activity_itemized_3`
   - `stripe__ending_balance_reconciliation_itemized_4`
 
+## Contributors
+- [@bramrodenburg](https://github.com/bramrodenburg) ([PR #88](https://github.com/fivetran/dbt_stripe/pull/88))
+
+# dbt_stripe v0.14.1
+
+[PR #89](https://github.com/fivetran/dbt_stripe/pull/89) includes the following updates:
+
+## Bug Fixes
+- Addressed a potential `Divide by 0` error in calculating `unit_amount` in the `stripe__line_item_enhanced` model. Now, if the denominator `invoice_line_item.quantity` is 0, `unit_amount` will also be 0.
+
+## Under the Hood
+- Expanded the `consistency_line_item_enhanced_count` test to also validate potential changes to `unit_amount` sums.
+- Adjusted the `invoice_line_item` seed data to include cases where `quantity` = 0 in order to test the above bug fix.
+
 # dbt_stripe v0.14.0
 [PR #82](https://github.com/fivetran/dbt_stripe/pull/82) includes the following updates:
 

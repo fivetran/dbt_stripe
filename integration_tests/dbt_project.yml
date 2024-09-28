@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.14.0'
+version: '0.15.0'
 
 profile: 'integration_tests'
 
@@ -11,6 +11,8 @@ models:
 
 vars:
   stripe_schema: stripe_integrations_tests_14
+  stripe__standardized_billing_model_enabled: true
+  stripe__using_credit_notes: true
   stripe_source:
     stripe_account_identifier:                "account_data"
     stripe_group_identifier:                  "group_data"
@@ -47,7 +49,6 @@ seeds:
       created: timestamp
       canceled_at: timestamp
       voided_at: timestamp
-      canceled_at: timestamp
       invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
       end: timestamp
     balance_transaction_data:
