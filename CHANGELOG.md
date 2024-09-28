@@ -1,3 +1,14 @@
+# dbt_stripe v0.15.0
+[PR #88](https://github.com/fivetran/dbt_stripe/pull/88) includes the following updates:
+
+## 🚨 Breaking Changes 🚨
+- Updated `stripe__balance_transactions` to correctly handle multiple disputes on the same transaction.
+- Renamed the columns `dispute_id` and `dispute_reason` to `dispute_ids` and `dispute_reasons` in the following models:
+  - `stripe__balance_transactions`
+  - `stripe__activity_itemized_2`
+  - `stripe__balance_change_from_activity_itemized_3`
+  - `stripe__ending_balance_reconciliation_itemized_4`
+
 # dbt_stripe v0.14.0
 [PR #82](https://github.com/fivetran/dbt_stripe/pull/82) includes the following updates:
 

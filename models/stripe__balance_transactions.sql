@@ -74,6 +74,18 @@ with balance_transaction as (
     select *
     from {{ var('transfer') }}
 
+), dispute_summary as (
+    /* Althrough rare, payments can be disputed multiple times. 
+    Hence, we need to aggregate the disputes to get the total disputed amount.
+    */
+    select
+        charge_id,
+        source_relation,
+        string_agg(dispute_id) as dispute_ids,
+        string_agg(dispute_reason) as dispute_reasons,
+        sum(dispute_amount) as dispute_amount
+    from dispute
+    group by 1,2
 )
 
 select
@@ -99,7 +111,7 @@ select
     case
         when balance_transaction.type in ('charge', 'payment') then charge.amount 
         when balance_transaction.type in ('refund', 'payment_refund') then refund.amount
-        when dispute_id is not null then dispute.dispute_amount
+        when dispute_ids is not null then dispute_summary.dispute_amount
         else null
     end as customer_facing_amount,
     case 
@@ -153,7 +165,7 @@ select
     cards.card_address_state,
     cards.card_address_postal_code,
     cards.card_address_country,
-    coalesce(charge.charge_id, refund.charge_id, dispute.charge_id) as charge_id,
+    coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
     payment_intent.payment_intent_id,
 
@@ -176,8 +188,8 @@ select
     cards.funding as card_funding,
     cards.country as card_country,
     charge.statement_descriptor as charge_statement_descriptor ,
-    dispute.dispute_id,
-    dispute.dispute_reason,
+    dispute_summary.dispute_ids,
+    dispute_summary.dispute_reasons,
     refund.refund_id,
     refund.reason as refund_reason,
     transfers.transfer_id,
@@ -240,7 +252,7 @@ left join transfers
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
     and refund.source_relation = refund_charge.source_relation
-left join dispute
-    on charge.charge_id = dispute.charge_id
-    and charge.source_relation = dispute.source_relation
+left join dispute_summary
+    on charge.charge_id = dispute_summary.charge_id
+    and charge.source_relation = dispute_summary.source_relation
 

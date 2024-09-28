@@ -162,10 +162,10 @@ models:
       description: The ID of the subscription is associated with this record.
     - name: charge_statement_descriptor
       description: Extra information about a source. This will appear on your customer’s statement every time you charge the source.
-    - name: dispute_id
-      description: Unique identifier for the object.
-    - name: dispute_reason
-      description: Reason given by cardholder for dispute. Possible values are bank_cannot_process, check_returned, credit_not_processed, customer_initiated, debit_not_authorized, duplicate, fraudulent, general, incorrect_account_details, insufficient_funds, product_not_received, product_unacceptable, subscription_canceled, or unrecognized. 
+    - name: dispute_ids
+      description: Unique identifiers for the object.
+    - name: dispute_reasons
+      description: Reasons given by cardholder for dispute. Possible values are bank_cannot_process, check_returned, credit_not_processed, customer_initiated, debit_not_authorized, duplicate, fraudulent, general, incorrect_account_details, insufficient_funds, product_not_received, product_unacceptable, subscription_canceled, or unrecognized. 
     - name: refund_id
       description: ID of the refund associated with this record.
     - name: transfer_id
@@ -585,8 +585,8 @@ models:
         description: The unique ID of the related Payment Intent, if any.
       - name: refund_id	
         description: The unique ID of the related refund, if any.
-      - name: dispute_id	
-        description: The unique ID of the related dispute, if any.
+      - name: dispute_ids	
+        description: The unique IDs of the related disputes, if any.
       - name: invoice_id		
         description: Unique ID for the invoice associated with this balance transaction. Available for charges, refunds, and disputes made in connection with a Stripe Billing invoice.
       - name: invoice_number		
@@ -792,8 +792,8 @@ models:
         description: Two-letter ISO code representing the country of the card.
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
-      - name: dispute_reason		
-        description: Reason given by cardholder for dispute. Read more about dispute reasons.
+      - name: dispute_reasons		
+        description: Reasons given by cardholder for disputes. Read more about dispute reasons.
       - name: connected_account_id		
         description: For Stripe Connect activity related to a connected account, the unique ID for the account.
       - name: connected_account_country		
@@ -917,8 +917,8 @@ models:
         description: Two-letter ISO code representing the country of the card.
       - name: statement_descriptor
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
-      - name: dispute_reason
-        description: Reason given by cardholder for dispute. Read more about dispute reasons.
+      - name: dispute_reasons
+        description: Reasons given by cardholder for disputes. Read more about dispute reasons.
       - name: connected_account_id
         description: For Stripe Connect activity related to a connected account, the unique ID for the account.
       - name: connected_account_country
