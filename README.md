@@ -72,7 +72,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.14.0", "<0.15.0"]
+    version: [">=0.15.0", "<0.16.0"]
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 

@@ -178,6 +178,22 @@ models:
       description: (Beta) For Stripe Connect activity related to a connected account, charge id of the direct charge that happened on connected account.
     - name: source_relation
       description: "{{ doc('source_relation') }}"
+    - name: latest_dispute_amount_won
+      description: Latest disputed amount that was won in favor of the merchant. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: latest_dispute_amount_lost
+      description: Latest disputed amount that was lost and returned to the customer. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: latest_dispute_amount_under_review
+      description: Latest disputed amount that is currently under review by the bank. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: latest_dispute_amount_needs_response
+      description: Latest disputed amount that currently needs a response (the dispute has been filed but the merchant has not yet responded with evidence). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: latest_dispute_amount_warning_closed
+      description: Latest disputed amount that is currently of status `warning_under_closed` (early fraud warning being closed due to no formal dispute). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: latest_dispute_amount_warning_under_review
+      description: Latest disputed amount that is currently of status `warning_under_review` (card issuer suspects possible fraud but hasn't yet escalated the situation to a full dispute). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: latest_dispute_amount_warning_needs_response
+      description: Latest disputed amount that is currently of status `warning_needs_response` (early fraud warning has been escalated into formal dispute or card issuer has requested more information). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    - name: dispute_count
+      description: Count of disputes raised against this transaction. A single charge can be associated with multiple disputes.
 
   - name: stripe__customer_overview
     description: Each record represents a customer, enriched with metrics about their associated transactions.
@@ -666,7 +682,7 @@ models:
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
       - name: customer_facing_amount		
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, refund, or dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
       - name: balance_transaction_description	
         description: An arbitrary string attached to the balance transaction.
       - name: connected_account_id		
@@ -707,7 +723,7 @@ models:
       - name: description	
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
       - name: customer_facing_amount		
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, refund, or dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
       - name: customer_facing_currency		
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
       - name: automatic_payout_id		
@@ -836,7 +852,7 @@ models:
       - name: description
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, refund, or dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
       - name: customer_facing_currency
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
       - name: customer_id

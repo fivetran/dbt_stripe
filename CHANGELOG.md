@@ -11,6 +11,7 @@
 
 ## Contributors
 - [@bramrodenburg](https://github.com/bramrodenburg) ([PR #88](https://github.com/fivetran/dbt_stripe/pull/88))
+- [@jsnorthrup](https://github.com/jsnorthrup)
 
 # dbt_stripe v0.14.1
 
