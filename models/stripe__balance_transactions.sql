@@ -83,7 +83,7 @@ with balance_transaction as (
         source_relation,
         {{ fivetran_utils.string_agg('dispute_id', "','")}} as dispute_ids,
         {{ fivetran_utils.string_agg('dispute_reason', "','")}} as dispute_reasons,
-        count(distinct dispute_id) as dispute_count
+        count(dispute_id) as dispute_count
     from dispute
     group by 1,2
 
