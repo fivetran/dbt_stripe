@@ -3,8 +3,8 @@
 
 ## 🚨 Breaking Changes 🚨
 - Updated `stripe__balance_transactions` to correctly handle multiple disputes on the same transaction:
-  - Adjusted [`customer_facing_amount`](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe__balance_transactions.sql#L99-L104) to reflect the `dispute_amount` of the *latest* dispute (if the transaction is not a charge or refund and is associated with any disputes).
-  - Added the following the dispute-related columns:
+  - Adjusted [`customer_facing_amount`](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe__balance_transactions.sql#L99-L104) to reflect the `dispute_amount` of the *latest* dispute (if the transaction is not a charge or refund and is associated with any disputes) ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)).
+  - Added the following the dispute-related columns ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)):
     - `latest_dispute_amount_won`: Latest disputed amount that was won in favor of the merchant.
     - `latest_dispute_amount_lost`: Latest disputed amount that was lost and returned to the customer.
     - `latest_dispute_amount_under_review`: Latest disputed amount that is currently under review by the bank.
@@ -20,7 +20,8 @@
     - `stripe__ending_balance_reconciliation_itemized_4`
 
 ## Under the Hood
-- Updated `dispute` seed data to test the above changes.
+- Updated `dispute` seed data to test the above changes ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)).
+- Added additional validation tests on the affected models from above ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)).
 
 ## Contributors
 - [@bramrodenburg](https://github.com/bramrodenburg) ([PR #88](https://github.com/fivetran/dbt_stripe/pull/88))
