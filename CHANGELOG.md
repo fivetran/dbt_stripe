@@ -1,5 +1,4 @@
 # dbt_stripe v0.15.0
-[PR #88](https://github.com/fivetran/dbt_stripe/pull/88) includes the following updates:
 
 ## 🚨 Breaking Changes 🚨
 - Updated `stripe__balance_transactions` to correctly handle multiple disputes on the same transaction:

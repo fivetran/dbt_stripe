@@ -809,7 +809,7 @@ models:
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
       - name: dispute_reasons		
-        description: Reasons given by cardholder for disputes. Read more about dispute reasons.
+        description: Reasons given by cardholder for disputes. Read more about [dispute reasons](https://docs.stripe.com/disputes/categories).
       - name: connected_account_id		
         description: For Stripe Connect activity related to a connected account, the unique ID for the account.
       - name: connected_account_country		
@@ -934,7 +934,7 @@ models:
       - name: statement_descriptor
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
       - name: dispute_reasons
-        description: Reasons given by cardholder for disputes. Read more about dispute reasons.
+        description: Reasons given by cardholder for disputes. Read more about [dispute reasons](https://docs.stripe.com/disputes/categories).
       - name: connected_account_id
         description: For Stripe Connect activity related to a connected account, the unique ID for the account.
       - name: connected_account_country

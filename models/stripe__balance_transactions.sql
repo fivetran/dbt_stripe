@@ -75,14 +75,14 @@ with balance_transaction as (
     from {{ var('transfer') }}
 
 ), dispute_summary as (
-    /* Althrough rare, payments can be disputed multiple times. 
+    /* Although rare, payments can be disputed multiple times. 
     Hence, we need to aggregate the disputes to get the total disputed amount.
     */
     select
         charge_id,
         source_relation,
         {{ fivetran_utils.string_agg('dispute_id', "','")}} as dispute_ids,
-        {{ fivetran_utils.string_agg('dispute_reason', "','")}} as dispute_reasons,
+        {{ fivetran_utils.string_agg('distinct dispute_reason', "','")}} as dispute_reasons,
         count(dispute_id) as dispute_count
     from dispute
     group by 1,2
