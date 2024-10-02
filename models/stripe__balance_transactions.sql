@@ -96,7 +96,7 @@ with balance_transaction as (
         dispute_status,
         dispute_amount,
         row_number() over (partition by charge_id, dispute_status, source_relation order by dispute_created_at desc) = 1 as is_latest_status_dispute,
-        row_number() over (partition by charge_id, source_relation order by dispute_created_at desc) = 1 as is_absolute_latest_dispute
+        row_number() over (partition by charge_id, source_relation order by dispute_created_at desc, dispute_amount desc) = 1 as is_absolute_latest_dispute -- include dispute_amount desc in off chance of identical dispute_created_ats 
     from dispute 
 
 ), latest_disputes as (
