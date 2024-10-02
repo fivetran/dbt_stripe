@@ -75,7 +75,7 @@ with balance_transaction as (
     from {{ var('transfer') }}
 
 ), dispute_summary as (
-    /* Althrough rare, payments can be disputed multiple times. 
+    /* Although rare, payments can be disputed multiple times. 
     Hence, we need to aggregate the disputes to get the total disputed amount.
     */
     select
