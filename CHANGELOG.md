@@ -1,3 +1,31 @@
+# dbt_stripe v0.15.0
+
+## Breaking Changes
+- Updated `stripe__balance_transactions` to correctly handle multiple disputes on the same transaction:
+  - Adjusted [`customer_facing_amount`](https://github.com/fivetran/dbt_stripe/blob/main/models/stripe__balance_transactions.sql#L139-L144) to reflect the `dispute_amount` of the *latest* dispute (if the transaction is not a charge or refund and is associated with any disputes) ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)).
+  - Added the following the dispute-related columns ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)):
+    - `latest_dispute_amount_won`: Latest disputed amount that was won in favor of the merchant.
+    - `latest_dispute_amount_lost`: Latest disputed amount that was lost and returned to the customer.
+    - `latest_dispute_amount_under_review`: Latest disputed amount that is currently under review by the bank.
+    - `latest_dispute_amount_needs_response`: Latest disputed amount that currently needs a response (the dispute has been filed but the merchant has not yet responded with evidence).
+    - `latest_dispute_amount_warning_closed`: Latest disputed amount that is currently of status `warning_under_closed` (early fraud warning being closed due to no formal dispute).
+    - `latest_dispute_amount_warning_under_review`: Latest disputed amount that is currently of status `warning_under_review` (card issuer suspects possible fraud but hasn't yet escalated the situation to a full dispute).
+    - `latest_dispute_amount_warning_needs_response`: Latest disputed amount that is currently of status `warning_needs_response` (early fraud warning has been escalated into formal dispute and/or card issuer has requested more information).
+    - `dispute_count`: Count of disputes raised against this transaction. If > 1, join in `dispute` data for additional information on each dispute.
+  - Adjusted the `dispute_id` and `dispute_reason` fields to aggregate together data from multiple disputes if present. They have been renamed to `dispute_ids` and `dispute_reasons` in the following models ([PR #88](https://github.com/fivetran/dbt_stripe/pull/88)):
+    - `stripe__balance_transactions`
+    - `stripe__activity_itemized_2`
+    - `stripe__balance_change_from_activity_itemized_3`
+    - `stripe__ending_balance_reconciliation_itemized_4`
+
+## Under the Hood
+- Updated `dispute` seed data to test the above changes ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)).
+- Added additional validation tests on the affected models from above ([PR #92](https://github.com/fivetran/dbt_stripe/pull/92)).
+
+## Contributors
+- [@bramrodenburg](https://github.com/bramrodenburg) ([PR #88](https://github.com/fivetran/dbt_stripe/pull/88))
+- [@jsnorthrup](https://github.com/jsnorthrup)
+
 # dbt_stripe v0.14.1
 
 [PR #89](https://github.com/fivetran/dbt_stripe/pull/89) includes the following updates:

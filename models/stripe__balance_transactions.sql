@@ -74,6 +74,46 @@ with balance_transaction as (
     select *
     from {{ var('transfer') }}
 
+), dispute_summary as (
+    /* Although rare, payments can be disputed multiple times. 
+    Hence, we need to aggregate the disputes to get the total disputed amount.
+    */
+    select
+        charge_id,
+        source_relation,
+        {{ fivetran_utils.string_agg('dispute_id', "','")}} as dispute_ids,
+        {{ fivetran_utils.string_agg('distinct dispute_reason', "','")}} as dispute_reasons,
+        count(dispute_id) as dispute_count
+    from dispute
+    group by 1,2
+
+), order_disputes as (
+
+    select 
+        charge_id,
+        source_relation,
+        dispute_id,
+        dispute_status,
+        dispute_amount,
+        row_number() over (partition by charge_id, dispute_status, source_relation order by dispute_created_at desc) = 1 as is_latest_status_dispute,
+        row_number() over (partition by charge_id, source_relation order by dispute_created_at desc, dispute_amount desc) = 1 as is_absolute_latest_dispute -- include dispute_amount desc in off chance of identical dispute_created_ats 
+    from dispute 
+
+), latest_disputes as (
+
+    select 
+        charge_id,
+        source_relation,
+        -- Iterate over each type of possible status (according https://docs.stripe.com/api/disputes/object) and pull out the dispute_amount from the latest dispute
+        {% for status in ['won', 'lost', 'under_review', 'needs_response', 'warning_closed', 'warning_under_review', 'warning_needs_response'] %}
+            sum(case when lower(dispute_status) = '{{ status }}' then dispute_amount else 0 end) as latest_dispute_amount_{{ status }},
+        {% endfor %}
+        -- For the customer_facing_amount fields, pull out the generally latest dispute_amount
+        sum(case when is_absolute_latest_dispute then dispute_amount else 0 end) as latest_dispute_amount
+
+    from order_disputes 
+    where is_latest_status_dispute
+    group by 1,2
 )
 
 select
@@ -99,12 +139,19 @@ select
     case
         when balance_transaction.type in ('charge', 'payment') then charge.amount 
         when balance_transaction.type in ('refund', 'payment_refund') then refund.amount
-        when dispute_id is not null then dispute.dispute_amount
+        when dispute_ids is not null then latest_disputes.latest_dispute_amount
         else null
     end as customer_facing_amount,
     case 
         when balance_transaction.type = 'charge' then charge.currency 
     end as customer_facing_currency,
+    latest_disputes.latest_dispute_amount_won,
+    latest_disputes.latest_dispute_amount_lost,
+    latest_disputes.latest_dispute_amount_under_review,
+    latest_disputes.latest_dispute_amount_needs_response,
+    latest_disputes.latest_dispute_amount_warning_closed,
+    latest_disputes.latest_dispute_amount_warning_under_review,
+    latest_disputes.latest_dispute_amount_warning_needs_response,
     {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
     case
         when payout.is_automatic = true then payout.payout_id 
@@ -153,7 +200,7 @@ select
     cards.card_address_state,
     cards.card_address_postal_code,
     cards.card_address_country,
-    coalesce(charge.charge_id, refund.charge_id, dispute.charge_id) as charge_id,
+    coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
     payment_intent.payment_intent_id,
 
@@ -176,8 +223,9 @@ select
     cards.funding as card_funding,
     cards.country as card_country,
     charge.statement_descriptor as charge_statement_descriptor ,
-    dispute.dispute_id,
-    dispute.dispute_reason,
+    dispute_summary.dispute_ids,
+    dispute_summary.dispute_reasons,
+    dispute_summary.dispute_count,
     refund.refund_id,
     refund.reason as refund_reason,
     transfers.transfer_id,
@@ -240,7 +288,10 @@ left join transfers
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
     and refund.source_relation = refund_charge.source_relation
-left join dispute
-    on charge.charge_id = dispute.charge_id
-    and charge.source_relation = dispute.source_relation
+left join dispute_summary
+    on charge.charge_id = dispute_summary.charge_id
+    and charge.source_relation = dispute_summary.source_relation
+left join latest_disputes
+    on charge.charge_id = latest_disputes.charge_id
+    and charge.source_relation = latest_disputes.source_relation
 
