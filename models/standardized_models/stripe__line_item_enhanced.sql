@@ -105,7 +105,11 @@ with invoice_line_item as (
         cast({{ "product.name" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_name,
         cast({{ "product.type" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_type,
 
-        cast(balance_transaction.type as {{ dbt.type_string() }}) as transaction_type,
+        case 
+            when bt_refund.balance_transaction_id is not null then 'charge + refund'
+            else 'charge'
+        end as transaction_type,
+            
         cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
         cast(invoice_line_item.quantity as {{ dbt.type_numeric() }}) as quantity,
 
@@ -123,7 +127,7 @@ with invoice_line_item as (
         cast(payment_method.payment_method_id as {{ dbt.type_string() }}) as payment_method_id,
         cast(payment_method.type as {{ dbt.type_string() }}) as payment_method,
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
-        cast(balance_transaction.fee as {{ dbt.type_numeric() }}) as fee_amount,
+        cast(bt_charge.fee as {{ dbt.type_numeric() }}) + cast(bt_refund.fee as {{ dbt.type_numeric() }}) as fee_amount,
         cast(refund.amount as {{ dbt.type_numeric() }}) as refund_amount,
         cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
@@ -157,21 +161,25 @@ with invoice_line_item as (
         and invoice.invoice_id = charge.invoice_id
         and invoice.source_relation = charge.source_relation
 
-    left join balance_transaction
-        on charge.balance_transaction_id = balance_transaction.balance_transaction_id
-        and charge.source_relation = balance_transaction.source_relation
+    left join refund
+        on charge.charge_id = refund.charge_id
+        and charge.source_relation = refund.source_relation
+
+    left join balance_transaction bt_charge
+        on charge.balance_transaction_id = bt_charge.balance_transaction_id
+        and charge.source_relation = bt_charge.source_relation
+
+    left join balance_transaction bt_refund
+        on refund.balance_transaction_id = bt_refund.balance_transaction_id
+        and refund.source_relation = bt_refund.source_relation
 
     left join discount 
         on invoice.invoice_id = discount.invoice_id
         and invoice.source_relation = discount.source_relation
 
-    left join refund 
-        on balance_transaction.balance_transaction_id = refund.balance_transaction_id
-        and balance_transaction.source_relation = refund.source_relation
-
     left join account connected_account
-        on balance_transaction.connected_account_id = connected_account.account_id
-        and balance_transaction.source_relation = connected_account.source_relation
+        on bt_charge.connected_account_id = connected_account.account_id
+        and bt_charge.source_relation = connected_account.source_relation
 
     left join payment_intent
         on charge.payment_intent_id = payment_intent.payment_intent_id
