@@ -4,7 +4,7 @@
 - Updated the logic in `stripe__line_item_enhanced` to properly bring in refund data by adjusting the joins on balance transactions, refunds and charges. 
   - Since charges and refunds are both types of balance transactions, included an additional join between refunds and balance transactions to bring in refunds at the same level as charges. 
   - Fixed `fee_amount` logic to sum together charge and refund amounts.
-  - Updated `transaction_type` logic to not only bring in `refund`, but return `charge+refund` if the balance transaction has a charge and a refund associated with it.
+  - Updated `transaction_type` logic to not only bring in `charge`, but also return `charge + refund` if the balance transaction has a charge and a refund associated with it.
   - Updated conditional logic for invoice-only records to bring in only non-zero rather than not null `fee_amounts`, as summing charge and refund amounts together brings in only not null `fee_amount` values.
 
 ## Under the Hood
