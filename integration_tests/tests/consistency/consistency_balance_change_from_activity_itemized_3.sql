@@ -4,18 +4,42 @@
 ) }}
 
 with prod as (
-    select balance_transaction_id, dispute_reason as dispute_reasons -- we don't have multi-dispute records in our data
+    select balance_transaction_id, dispute_reasons
     from {{ target.schema }}_stripe_prod.stripe__balance_change_from_activity_itemized_3
 ),
 
 dev as (
     select balance_transaction_id, dispute_reasons
     from {{ target.schema }}_stripe_dev.stripe__balance_change_from_activity_itemized_3
+),
+
+prod_not_in_dev as (
+    -- rows from prod not found in dev
+    select * from prod
+    except distinct
+    select * from dev
+),
+
+dev_not_in_prod as (
+    -- rows from dev not found in prod
+    select * from dev
+    except distinct
+    select * from prod
+),
+
+final as (
+    select
+        *,
+        'from prod' as source
+    from prod_not_in_dev
+
+    union all -- union since we only care if rows are produced
+
+    select
+        *,
+        'from dev' as source
+    from dev_not_in_prod
 )
 
--- test will return values and fail if the values are different (which they shouldn't be in our test data)
 select *
-from prod
-join dev
-    on prod.balance_transaction_id = dev.balance_transaction_id
-where prod.dispute_reasons != dev.dispute_reasons
+from final

@@ -106,8 +106,9 @@ with invoice_line_item as (
         cast({{ "product.type" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_type,
 
         case 
-            when bt_refund.balance_transaction_id is not null then 'charge + refund'
-            else 'charge'
+            when bt_refund.balance_transaction_id is not null and bt_charge.balance_transaction_id is not null then 'charge + refund'
+            when bt_charge.balance_transaction_id is not null then 'charge'
+            else null
         end as transaction_type,
             
         cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
@@ -127,7 +128,7 @@ with invoice_line_item as (
         cast(payment_method.payment_method_id as {{ dbt.type_string() }}) as payment_method_id,
         cast(payment_method.type as {{ dbt.type_string() }}) as payment_method,
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
-        cast(bt_charge.fee as {{ dbt.type_numeric() }}) + cast(bt_refund.fee as {{ dbt.type_numeric() }}) as fee_amount,
+        cast(coalesce(bt_charge.fee, 0) as {{ dbt.type_numeric() }}) + cast(coalesce(bt_refund.fee, 0) as {{ dbt.type_numeric() }}) as fee_amount,
         cast(refund.amount as {{ dbt.type_numeric() }}) as refund_amount,
         cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
@@ -299,7 +300,7 @@ with invoice_line_item as (
         source_relation
     from enhanced
     where line_item_index = 1
-        and (discount_amount is not null or tax_amount is not null or fee_amount is not null or refund_amount is not null)
+        and (discount_amount is not null or tax_amount is not null or fee_amount != 0 or refund_amount is not null)
 )
 
 select *

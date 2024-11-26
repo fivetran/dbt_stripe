@@ -1,3 +1,14 @@
+# dbt_stripe v0.15.1
+
+## Bug Fixes
+- Updated the logic in `stripe__line_item_enhanced` to properly bring in refund data by adjusting the joins on balance transactions, refunds and charges. 
+  - Since charges and refunds are both types of balance transactions, included an additional join between refunds and balance transactions to bring in refunds at the same level as charges. 
+  - Fixed `fee_amount` logic to sum together charge and refund amounts.
+  - Updated `transaction_type` logic to not only bring in `refund`, but return `charge+refund` if the balance transaction has a charge and a refund associated with it.
+
+## Under the Hood
+- Modified the end model consistency tests to better compare differences between production and development rows
+
 # dbt_stripe v0.15.0
 
 ## Breaking Changes
