@@ -3,9 +3,10 @@
 ## Bug Fixes
 - Updated the logic in `stripe__line_item_enhanced` to properly bring in refund data by adjusting the joins on balance transactions, refunds and charges. 
   - Since charges and refunds are both types of balance transactions, included an additional join between refunds and balance transactions to bring in refunds at the same level as charges. 
+    - Updated balance transactions join on `connected_account_id` and `source_relation` to look at both charge and refund balance transactions.
   - Fixed `fee_amount` logic to sum together charge and refund amounts.
-  - Updated `transaction_type` logic to not only bring in `charge`, but also return `charge + refund` if the balance transaction has a charge and a refund associated with it.
-  - Updated conditional logic for invoice-only records to bring in only non-zero rather than not null `fee_amounts`, as summing charge and refund amounts together brings in only not null `fee_amount` values.
+    - Updated conditional logic for invoice-only records to ensure `fee_amount` is not null by coalescing to zero for summing non-header rows.
+  - Updated `transaction_type` logic to not only bring in `charge`, but also return `charge + refund` if the balance transaction has a charge and a refund associated with it, or `payment intent + refund` if the refund balance transaction is not yet tied to a charge. 
 
 ## Under the Hood
 - Modified the consistency tests to better compare differences between production and development rows.

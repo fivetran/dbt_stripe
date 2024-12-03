@@ -108,6 +108,7 @@ with invoice_line_item as (
         case 
             when bt_refund.balance_transaction_id is not null and bt_charge.balance_transaction_id is not null then 'charge + refund'
             when bt_charge.balance_transaction_id is not null then 'charge'
+            when bt_refund.balance_transaction_id is not null then 'payment intent + refund'
             else null
         end as transaction_type,
             
@@ -179,8 +180,8 @@ with invoice_line_item as (
         and invoice.source_relation = discount.source_relation
 
     left join account connected_account
-        on bt_charge.connected_account_id = connected_account.account_id
-        and bt_charge.source_relation = connected_account.source_relation
+        on coalesce(bt_charge.connected_account_id, bt_refund.connected_account_id)  = connected_account.account_id
+        and coalesce(bt_charge.source_relation, bt_refund.source_relation) = connected_account.source_relation
 
     left join payment_intent
         on charge.payment_intent_id = payment_intent.payment_intent_id
