@@ -109,7 +109,7 @@ with invoice_line_item as (
             when bt_refund.balance_transaction_id is not null and bt_charge.balance_transaction_id is not null then 'charge + refund'
             when bt_charge.balance_transaction_id is not null then 'charge'
             when bt_refund.balance_transaction_id is not null then 'payment intent + refund'
-            else null
+            else coalesce(bt_charge.type, bt_refund.type)
         end as transaction_type,
             
         cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
