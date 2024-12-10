@@ -33,7 +33,7 @@ models:
       - name: product_type
         description: Product type
       - name: transaction_type
-        description: Balance transaction type
+        description: Balance transaction type. If refunds and charges are tied to one invoice, it's designated as 'charge + refund'. If a charge isn't tied to a refund, it's designated as 'payment intent + refund'. Otherwise, it's just 'charge'.
       - name: quantity
         description: The number of units of this line item.
       - name: unit_amount
@@ -53,7 +53,7 @@ models:
       - name: payment_at
         description: Charge created date
       - name: fee_amount
-        description: Balance transaction fee
+        description: Balance transaction fee from charges and refunds.
       - name: refund_amount
         description: Refund amount associated with this invoice.
       - name: subscription_id
