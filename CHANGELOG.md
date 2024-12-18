@@ -1,3 +1,6 @@
+# dbt_stripe v0.15.2
+
+
 # dbt_stripe v0.15.1
 
 ## Bug Fixes
