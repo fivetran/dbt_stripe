@@ -1,5 +1,7 @@
-# dbt_stripe v0.15.2
+# dbt_stripe v0.16.0
 
+## Breaking Changes
+- Shifts the conversions from cent to major currency units further upstream. Previously, currency-related fields were converted in downstream models, but now have been converted directly in staging models. Since currency-related fields now have different values, this is a breaking change.
 
 # dbt_stripe v0.15.1
 
