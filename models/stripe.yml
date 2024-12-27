@@ -33,11 +33,11 @@ models:
     - name: balance_transaction_currency 
       description: Three-letter ISO currency code, in lowercase.
     - name: balance_transaction_amount 
-      description: Gross amount of the transaction, in cents.
+      description: Gross amount of the transaction, in currency units.
     - name: balance_transaction_fee 
-      description: Fees (in cents) paid for this transaction.
+      description: Fees (in currency units) paid for this transaction.
     - name: balance_transaction_net
-      description: Net amount of the transaction, in cents. Gross amount minus fees, refunds, and disputes
+      description: Net amount of the transaction, in currency units. Gross amount minus fees, refunds, and disputes
     - name: balance_transaction_type 
       description: The type of transaction.  Possible values are adjustment, advance, advance_funding, application_fee, application_fee_refund, charge, connect_collection_transfer, issuing_authorization_hold, issuing_authorization_release, issuing_dispute, issuing_transaction, payment, payment_failure_refund, payment_refund, payout, payout_cancel, payout_failure, refund, refund_failure, reserve_transaction, reserved_funds, stripe_fee, stripe_fx_fee, tax_fee, topup, topup_reversal, transfer, transfer_cancel, transfer_failure, or transfer_refund.
     - name: balance_transaction_reporting_category 
@@ -430,7 +430,7 @@ models:
       - name: price_plan_is_active
         description: Boolean indicating if the plan or price is active (true) or in-active (false).
       - name: price_plan_amount
-        description: The unit amount in cents to be charged, represented as a whole integer if possible.
+        description: The unit amount in currency units to be charged, represented as a whole integer if possible.
       - name: price_plan_interval
         description: The frequency at which a subscription is billed. One of day, week, month or year.
       - name: price_plan_interval_count

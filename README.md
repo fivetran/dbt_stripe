@@ -220,6 +220,15 @@ vars:
     stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
+#### Disabling Cent to Dollar Conversion
+
+Amount-based fields, such as `amount` and `net`, are typically displayed in the smallest denomination (e.g., cents for USD). By default, these values are automatically converted to dollars by dividing by `100.0`. To disable this conversion and retain the values in their smallest denomination, set the `stripe__amount_divide` variable to `False` as shown below:
+
+```yml
+vars:
+    stripe__amount_divide: False
+```
+
 #### Change the build schema
 By default, this package builds the stripe staging models within a schema titled (`<target_schema>` + `_stg_stripe`) in your destination. If this is not where you would like your stripe staging data to be written to, add the following configuration to your root `dbt_project.yml` file:
 
