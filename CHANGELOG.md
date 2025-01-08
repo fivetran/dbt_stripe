@@ -1,9 +1,15 @@
 # dbt_stripe v0.16.0
 
 ## Breaking Changes
-- This package assumes that amount-based fields, which as raw values are represented in the smallest denomination in Stripe, are cent-based. This PR shifts the existing conversion from cents to dollars to further upstream. Previously, currency-related fields were converted in downstream models, but now have been converted directly in staging models. Since currency-related fields now have different values, this is a breaking change. 
+- This package assumes that amount-based fields, such as `amount`, `net`, and `fee`, which in raw form are represented in the smallest denomination in Stripe, are cent-based (minor units). Therefore, for example, an amount of 100 cents would be equal to 1 dollar (major unit).
 
-To disable this default conversion, refer to the [README]((https://github.com/fivetran/dbt_stripe/blob/main/README.md#disabling-cent-to-dollar-conversion)) on disabling the `stripe__amount_divide` variable.
+- This PR shifts the existing conversion from cents to dollars to further upstream. Previously, amount-based fields were automatically converted in downstream models, but they are now converted directly in the staging models, with an option to disable this behavior. As the values of amount-based fields have changed, this introduces a breaking change. This impacts the following 
+
+- If your Stripe data is *not* using a currency involving minor units, you may want to disable this default conversion in order to retain the amount-based fields as raw form. For information on how to do so, refer to the [README]((https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disabling-cent-to-dollar-conversion)) on disabling the `stripe__convert_values` variable.
+  - Examples of currencies using minor units include USD, Euro, and CAD.
+  - Examples of currencies NOT using minor units include Japanese Yen (JPY), Indonesian Rupiah (IDR), and Korean Won (KRW).
+
+- Currently this package does not support multiple currencies, but we have created a [feature flag to support multiple currencies](https://github.com/fivetran/dbt_stripe/issues/102) where you are welcome to provide feedback or contribute to the discussion.
 
 # dbt_stripe v0.15.1
 
