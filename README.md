@@ -48,6 +48,8 @@ Curious what these tables can do? Check out example visualizations from the [str
 </a>
 </p>
 
+### Materialized Models
+Each Quickstart transformation job run materializes 57 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
 
 ## How do I use the dbt package?
@@ -55,7 +57,7 @@ Curious what these tables can do? Check out example visualizations from the [str
 ### Step 1: Prerequisites
 To use this dbt package, you must have the following:
 
-- At least one Fivetran Stripe connector syncing data into your destination.
+- At least one Fivetran Stripe connection syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **Databricks**, or **PostgreSQL** destination.
 
 #### Databricks Dispatch Configuration
@@ -109,8 +111,8 @@ vars:
   stripe__standardized_billing_model_enabled: true # false by default.
 ```
 
-#### Unioning Multiple Stripe Connectors
-If you have multiple Stripe connectors you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connectors will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
+#### Unioning Multiple Stripe Connections
+If you have multiple Stripe connections you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connections will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
 
 ```yml
 # dbt_project.yml
@@ -137,11 +139,11 @@ vars:
 ```
 
 #### Leveraging Subscription Vs Subscription History Sources
-For Stripe connectors set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have an older connector then you must configure the `stripe__using_subscription_history` to `false` in order to have the package use the `subscription` source rather than the `subscription_history` table.
+For Stripe connections set up after February 09, 2022 the `subscription` table has been replaced with the new `subscription_history` table. By default this package will look for your subscription data within the `subscription_history` source table. However, if you have an older connection, then you must configure the `stripe__using_subscription_history` to `false` in order to have the package use the `subscription` source rather than the `subscription_history` table.
 > **Please note that if you have `stripe__using_subscription_history` enabled then the package will filter for only active records.**
 ```yml
 vars:
-    stripe__using_subscription_history: False  # True by default. Set to False if your connector syncs the `subscription` table instead. 
+    stripe__using_subscription_history: False  # True by default. Set to False if your connection syncs the `subscription` table instead. 
 ```
 
 #### Setting your timezone

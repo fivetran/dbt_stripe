@@ -1,3 +1,9 @@
+# dbt_stripe version.version
+
+## Documentation
+- Added Quickstart model counts to README. ([#103](https://github.com/fivetran/dbt_stripe/pull/103))
+- Corrected references to connectors and connections in the README. ([#103](https://github.com/fivetran/dbt_stripe/pull/103))
+
 # dbt_stripe v0.15.1
 
 ## Bug Fixes
