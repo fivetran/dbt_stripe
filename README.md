@@ -221,14 +221,16 @@ vars:
     stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
-#### Disabling Cent to Dollar Conversion
+#### Enabling Cent to Dollar Conversion
 
-Amount-based fields, such as `amount` and `net`, are typically displayed in the smallest denomination (e.g., cents for USD). By default, these values are automatically converted to major units (dollars for USD) by dividing by `100.0`. However, you may want to disable this default conversion if you are working in a currency that does not have minor units, such as JPY or KRW. To disable this conversion and retain the values in their smallest denomination, set the `stripe__convert_values` variable to `False` as shown below.
+Amount-based fields, such as `amount` and `net`, are typically displayed in the smallest denomination (e.g., cents for USD). By default, amount-based fields will be in this raw form. However, some currencies use major and minor units (for example, cents and dollars when using USD). In these cases, it may be useful to divide the amounts by 100, converting amounts to major units (dollars for USD). To enable the division, configure the `stripe__convert_values` to `true` in your project.yml: 
 
 ```yml
 vars:
-    stripe__convert_values: False
+    stripe__convert_values: true  # default is false 
 ```
+
+If you are working in a currency that does not differentiate between minor and major units, such as JPY or KRW, it may make more sense to keep the amount-based fields in raw form and therefore the package can be ran without configuration. As `stripe__convert_values` is disabled by default, these fields will not be impacted.
 
 #### Change the build schema
 By default, this package builds the stripe staging models within a schema titled (`<target_schema>` + `_stg_stripe`) in your destination. If this is not where you would like your stripe staging data to be written to, add the following configuration to your root `dbt_project.yml` file:
