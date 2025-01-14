@@ -33,11 +33,11 @@ models:
     - name: balance_transaction_currency 
       description: Three-letter ISO currency code, in lowercase.
     - name: balance_transaction_amount 
-      description: Gross amount of the transaction, in currency units.
+      description: Gross amount of the transaction. "{{ doc('convert_values') }}"
     - name: balance_transaction_fee 
       description: Fees (in currency units) paid for this transaction.
     - name: balance_transaction_net
-      description: Net amount of the transaction, in currency units. Gross amount minus fees, refunds, and disputes
+      description: Net amount of the transaction. Gross amount minus fees, refunds, and disputes. "{{ doc('convert_values') }}"
     - name: balance_transaction_type 
       description: The type of transaction.  Possible values are adjustment, advance, advance_funding, application_fee, application_fee_refund, charge, connect_collection_transfer, issuing_authorization_hold, issuing_authorization_release, issuing_dispute, issuing_transaction, payment, payment_failure_refund, payment_refund, payout, payout_cancel, payout_failure, refund, refund_failure, reserve_transaction, reserved_funds, stripe_fee, stripe_fx_fee, tax_fee, topup, topup_reversal, transfer, transfer_cancel, transfer_failure, or transfer_refund.
     - name: balance_transaction_reporting_category 
@@ -47,7 +47,7 @@ models:
     - name: balance_transaction_description 
       description: An arbitrary string attached to the object. Often useful for displaying to users.
     - name: customer_facing_amount 
-      description: The transaction amount that the customer sees.
+      description: The transaction amount that the customer sees. "{{ doc('convert_values') }}"
     - name: customer_facing_currency 
       description: Three-letter ISO currency code that the customer sees.
     - name: effective_at 
@@ -179,19 +179,19 @@ models:
     - name: source_relation
       description: "{{ doc('source_relation') }}"
     - name: latest_dispute_amount_won
-      description: Latest disputed amount that was won in favor of the merchant. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that was won in favor of the merchant. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: latest_dispute_amount_lost
-      description: Latest disputed amount that was lost and returned to the customer. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that was lost and returned to the customer. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: latest_dispute_amount_under_review
-      description: Latest disputed amount that is currently under review by the bank. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that is currently under review by the bank. Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: latest_dispute_amount_needs_response
-      description: Latest disputed amount that currently needs a response (the dispute has been filed but the merchant has not yet responded with evidence). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that currently needs a response (the dispute has been filed but the merchant has not yet responded with evidence). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: latest_dispute_amount_warning_closed
-      description: Latest disputed amount that is currently of status `warning_under_closed` (early fraud warning being closed due to no formal dispute). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that is currently of status `warning_under_closed` (early fraud warning being closed due to no formal dispute). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: latest_dispute_amount_warning_under_review
-      description: Latest disputed amount that is currently of status `warning_under_review` (card issuer suspects possible fraud but hasn't yet escalated the situation to a full dispute). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that is currently of status `warning_under_review` (card issuer suspects possible fraud but hasn't yet escalated the situation to a full dispute). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: latest_dispute_amount_warning_needs_response
-      description: Latest disputed amount that is currently of status `warning_needs_response` (early fraud warning has been escalated into formal dispute or card issuer has requested more information). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+      description: Latest disputed amount that is currently of status `warning_needs_response` (early fraud warning has been escalated into formal dispute or card issuer has requested more information). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: dispute_count
       description: Count of disputes raised against this transaction. If > 1, join in `dispute` data for additional information on each dispute.
 
@@ -213,11 +213,11 @@ models:
       - name: total_refunds 
         description: Sum of all refunds made to this customer.
       - name: total_gross_transaction_amount
-        description: Gross amount of all transactions made with this customer.
+        description: Gross amount of all transactions made with this customer. "{{ doc('convert_values') }}"
       - name: total_fees 
-        description: Total fees charged on all transactions made with this customer.
+        description: Total fees charged on all transactions made with this customer. "{{ doc('convert_values') }}"
       - name: total_net_transaction_amount 
-        description: Net amount of all transactions made with this customer. This is the gross amount excluding fees, refunds, and disputes.
+        description: Net amount of all transactions made with this customer. This is the gross amount excluding fees, refunds, and disputes. "{{ doc('convert_values') }}"
       - name: total_sales_count 
         description: The total number of sales made to this customer.
       - name: total_refund_count 
@@ -227,11 +227,11 @@ models:
       - name: refunds_this_month 
         description: Sum of refunds made to this customer this month.
       - name: gross_transaction_amount_this_month 
-        description: Gross amount of transactions made with this customer this month.
+        description: Gross amount of transactions made with this customer this month. "{{ doc('convert_values') }}"
       - name: fees_this_month 
-        description: Total fees charged on transactions made with this customer this month.
+        description: Total fees charged on transactions made with this customer this month. "{{ doc('convert_values') }}"
       - name: net_transaction_amount_this_month 
-        description: Net amount of transactions made with this customer this month.
+        description: Net amount of transactions made with this customer this month. "{{ doc('convert_values') }}"
       - name: sales_count_this_month 
         description: The number of sales made to this customer this month.
       - name: refund_count_this_month
@@ -243,11 +243,11 @@ models:
       - name: total_failed_charge_count
         description: The total number of incomplete charges this customer has had.
       - name: total_failed_charge_amount
-        description: The total amount from incomplete charges this customer has had.
+        description: The total amount from incomplete charges this customer has had. "{{ doc('convert_values') }}"
       - name: failed_charge_count_this_month
         description: The number of incomplete charges this customer has had this month.
       - name: failed_charge_amount_this_month
-        description: The amount from incomplete charges this customer has had this month.
+        description: The amount from incomplete charges this customer has had this month. "{{ doc('convert_values') }}"
       - name: customer_currency 
         description: Currency used by the customer.
       - name: default_card_id
@@ -300,19 +300,19 @@ models:
       - name: currency 
         description: The currency that the invoice is in. Three-letter ISO currency code, in lowercase.
       - name: amount_due 
-        description: The amount, if any, that the customer has paid on the invoice
+        description: The amount, if any, that the customer has paid on the invoice. "{{ doc('convert_values') }}"
       - name: amount_paid 
-        description: The amount, if any, that the customer has paid on the invoice
+        description: The amount, if any, that the customer has paid on the invoice. "{{ doc('convert_values') }}"
       - name: amount_due 
-        description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
+        description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due. "{{ doc('convert_values') }}"
       - name: subtotal 
-        description: The amount of the invoice before discounts and taxes.
+        description: The amount of the invoice before discounts and taxes. "{{ doc('convert_values') }}"
       - name: tax 
-        description: The amount of tax being charged in the invoice.
+        description: The amount of tax being charged in the invoice. "{{ doc('convert_values') }}"
       - name: total 
         description: The Total after discounts and taxes.
       - name: amount_remaining 
-        description: The amount of the invoice remaining to be paid.
+        description: The amount of the invoice remaining to be paid. "{{ doc('convert_values') }}"
       - name: attempt_count 
         description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
       - name: invoice_memo 
@@ -324,7 +324,7 @@ models:
       - name: balance_transaction_id 
         description: The ID of the balance transaction object representing payment
       - name: charge_amount 
-        description: The amount charged to the customer.
+        description: The amount charged to the customer. "{{ doc('convert_values') }}"
       - name: charge_status 
         description: The status of the charge for the invoice.
       - name: charge_created_at 
@@ -374,7 +374,7 @@ models:
       - name: invoice_item_id 
         description: The ID of the invoice item this item is a part of
       - name: invoice_line_item_amount
-        description: Amount for this line item.
+        description: Amount for this line item. "{{ doc('convert_values') }}"
       - name: currency
         description: Currency of this line item.
       - name: invoice_line_item_memo
@@ -408,13 +408,13 @@ models:
       - name: invoice_due_date 
         description: Date when payment for the invoice is due.
       - name: invoice_amount_due
-        description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
+        description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due. "{{ doc('convert_values') }}"
       - name: invoice_amount_paid 
-        description: The amount, if any, that the customer has paid on the invoice
+        description: The amount, if any, that the customer has paid on the invoice. "{{ doc('convert_values') }}"
       - name: invoice_subtotal 
-        description: The amount of the invoice before discounts and taxes.
+        description: The amount of the invoice before discounts and taxes. "{{ doc('convert_values') }}"
       - name: invoice_tax 
-        description: The amount of tax being charged in the invoice.
+        description: The amount of tax being charged in the invoice. "{{ doc('convert_values') }}"
       - name: invoice_total 
         description: The total of the invoice after discounts and taxes.
       - name: connected_account_id
@@ -430,7 +430,7 @@ models:
       - name: price_plan_is_active
         description: Boolean indicating if the plan or price is active (true) or in-active (false).
       - name: price_plan_amount
-        description: The unit amount in currency units to be charged, represented as a whole integer if possible.
+        description: The unit amount in currency units to be charged, represented as a whole integer if possible. "{{ doc('convert_values') }}"
       - name: price_plan_interval
         description: The frequency at which a subscription is billed. One of day, week, month or year.
       - name: price_plan_interval_count
@@ -485,17 +485,17 @@ models:
       - name: number_invoices_generated 
         description: Number of invoices that have been generated for this subscription.
       - name: total_amount_billed 
-        description: The total amount that has been billed to the customer for this subscription.
+        description: The total amount that has been billed to the customer for this subscription. "{{ doc('convert_values') }}"
       - name: total_amount_paid 
-        description: The total amount paid by the customer for this subscription.
+        description: The total amount paid by the customer for this subscription. "{{ doc('convert_values') }}"
       - name: total_amount_remaining 
-        description: Any outstanding balance for invoices related to this subscription.
+        description: Any outstanding balance for invoices related to this subscription. "{{ doc('convert_values') }}"
       - name: most_recent_invoice_created_at 
         description: The timestamp of the most recent invoice for this subscription created.
       - name: average_invoice_amount 
-        description: The average amount of invoices generated for this subscription
+        description: The average amount of invoices generated for this subscription. "{{ doc('convert_values') }}"
       - name: average_line_item_amount 
-        description: The average sum of the line items for invoices generated for this subscription
+        description: The average sum of the line items for invoices generated for this subscription. "{{ doc('convert_values') }}"
       - name: avg_num_line_items 
         description: The average number of line items for invoices generated for this subscription   
       - name: source_relation
@@ -517,25 +517,25 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: total_daily_sales_amount
-        description: Total amount for when transaction type is a charge or payment.
+        description: Total amount for when transaction type is a charge or payment. "{{ doc('convert_values') }}"
       - name: total_daily_refunds_amount
-        description: Total amount for when transaction type is payment_refund or refund.
+        description: Total amount for when transaction type is payment_refund or refund. "{{ doc('convert_values') }}"
       - name: total_daily_adjustments_amount
-        description: Total amount for when transaction type is adjustment
+        description: Total amount for when transaction type is adjustment. "{{ doc('convert_values') }}"
       - name: total_daily_other_transactions_amount
-        description: Total amount for when transaction type is not of the prior types.
+        description: Total amount for when transaction type is not of the prior types. "{{ doc('convert_values') }}"
       - name: total_daily_gross_transaction_amount
-        description: Total amount for when transaction type is not payout or transfer
+        description: Total amount for when transaction type is not payout or transfer "{{ doc('convert_values') }}"
       - name: total_daily_net_transactions_amount
-        description: Total net for when transaction type is not payout or transfer.
+        description: Total net for when transaction type is not payout or transfer. "{{ doc('convert_values') }}"
       - name: total_daily_payout_fee_amount
-        description: Total fee for when transaction type is payout or transfer.
+        description: Total fee for when transaction type is payout or transfer. "{{ doc('convert_values') }}"
       - name: total_daily_gross_payout_amount
-        description: Total amount for when transaction type is payout or transfer.
+        description: Total amount for when transaction type is payout or transfer. "{{ doc('convert_values') }}"
       - name: daily_net_activity_amount
-        description: Net amount minus fees from payouts and transfers. 
+        description: Net amount minus fees from payouts and transfers. "{{ doc('convert_values') }}"
       - name: daily_end_balance_amount
-        description: daily_net_activity_amount + total_daily_gross_payout_amount
+        description: daily_net_activity_amount + total_daily_gross_payout_amount. "{{ doc('convert_values') }}"
       - name: total_daily_sales_count
         description: Count of total balance transactions where type is payment or charge.
       - name: total_daily_payouts_count
@@ -545,27 +545,27 @@ models:
       - name: total_daily_failed_charge_count
         description: Count of incomplete charges.
       - name: total_daily_failed_charge_amount
-        description: Total amount of incomplete charges.
+        description: Total amount of incomplete charges. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_sales_amount
-        description: Rolling total of total_daily_sales_amount
+        description: Rolling total of total_daily_sales_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_refunds_amount
-        description: Rolling total of total_daily_refunds_amount
+        description: Rolling total of total_daily_refunds_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_adjustments_amount
-        description: Rolling total of total_daily_adjustments_amount
+        description: Rolling total of total_daily_adjustments_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_other_transactions_amount
-        description: Rolling total of total_daily_other_transactions_amount
+        description: Rolling total of total_daily_other_transactions_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_gross_transaction_amount
-        description: Rolling total of total_daily_gross_transaction_amount
+        description: Rolling total of total_daily_gross_transaction_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_net_transactions_amount
-        description: Rolling total of total_daily_net_transactions_amount
+        description: Rolling total of total_daily_net_transactions_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_payout_fee_amount
-        description: Rolling total of total_daily_payout_fee_amount
+        description: Rolling total of total_daily_payout_fee_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_gross_payout_amount
-        description: Rolling total of total_daily_gross_payout_amount
+        description: Rolling total of total_daily_gross_payout_amount. "{{ doc('convert_values') }}"
       - name: rolling_daily_net_activity_amount
-        description: Rolling total of daily_net_activity_amount
+        description: Rolling total of daily_net_activity_amount. "{{ doc('convert_values') }}"
       - name: rolling_daily_end_balance_amount
-        description: Rolling total of daily_end_balance_amount
+        description: Rolling total of daily_end_balance_amount. "{{ doc('convert_values') }}"
       - name: rolling_total_daily_sales_count
         description: Rolling total of total_daily_sales_count
       - name: rolling_total_daily_payouts_count
@@ -575,7 +575,7 @@ models:
       - name: rolling_total_daily_failed_charge_count
         description: Rolling total of total_daily_failed_charge_count
       - name: rolling_total_daily_failed_charge_amount
-        description: Rolling total of total_daily_failed_charge_amount
+        description: Rolling total of total_daily_failed_charge_amount. "{{ doc('convert_values') }}"
 
   - name: stripe__activity_itemized_2
     description: Modeled after the [titular report](https://stripe.com/docs/reports/activity#downloading-data) from Stripe, each record represents a balance transaction and additional details such as associated customer, charge, refund, fee, and invoice information. This class of Activity reports allows you to see your payments activity alongside the related fees for the same period of time. Designed specifically for users with Interchange Plus (IC+) pricing, it presents users with fees on the date they incur them. This makes it useful for calculating fee accrual entries and understanding your net payments activity. This itemized report contains a full list of individual transactions.
@@ -594,7 +594,7 @@ models:
       - name: currency	
         description: Three-letter ISO code for the currency in which the amount is defined.
       - name: amount	
-        description: Amount of this activity, expressed in major units of the currency (e.g., dollars for USD, or yen for JPY).
+        description: Amount of this activity.
       - name: charge_id	
         description: The unique ID of the related charge, if any. For charges, this will be the charge itself; for refunds or disputes, this will be the original charge being refunded or disputed.
       - name: payment_intent_id		
@@ -682,7 +682,7 @@ models:
       - name: statement_descriptor		
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
       - name: customer_facing_amount		
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer. 
       - name: balance_transaction_description	
         description: An arbitrary string attached to the balance transaction.
       - name: connected_account_id		
