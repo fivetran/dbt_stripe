@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.16.0'
+version: '0.15.2'
 
 profile: 'integration_tests'
 
@@ -9,7 +9,7 @@ profile: 'integration_tests'
 models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
-vars:  
+vars:
   stripe_schema: stripe_integrations_tests_15
   stripe__standardized_billing_model_enabled: true
   stripe__using_credit_notes: true
