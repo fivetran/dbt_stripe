@@ -1,5 +1,4 @@
 # dbt_stripe v0.16.0
-
 ## Breaking Change
 - The aggregated amount-based fields in `stripe__daily_overview` and `stripe__customer_overview` now reflect the raw smallest units (e.g., cents), following Stripe's raw data, instead of converted dollar amounts. This change standardizes values across all models.  
 
@@ -21,9 +20,12 @@
 - If your Stripe data is *not* using a currency involving minor units, it may make more sense to retain the amount-based fields as raw smallest units by leaving `stripe__convert_values` disabled.
   - Examples of currencies NOT using minor units include JPY (100 = 100 JPY), IDR (100 = 100 IDR), KRW (100 = 100 KRW).
 
-
 ## Notes
 - Currently this package does not support multiple currencies, but we have created a [feature request to support multiple currencies](https://github.com/fivetran/dbt_stripe/issues/102) where you are welcome to provide feedback or contribute to the discussion.
+
+## Under the Hood
+- Updated the `run_models.sh` script to test for when `stripe__convert_values` is set to True.
+- Added a consistency test for `stripe__customer_overview`.
 
 ## Documentation
 - Updated the descriptions for all amount-based fields to specify the grain of the values and add information about the `stripe__convert_values` variable.
