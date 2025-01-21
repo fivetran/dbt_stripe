@@ -1,27 +1,21 @@
 # dbt_stripe v0.16.0
 ## Breaking Change
-- The aggregated amount-based fields in `stripe__daily_overview` and `stripe__customer_overview` now reflect the raw smallest units (e.g., cents), following Stripe's raw data, instead of converted dollar amounts. This change standardizes values across all models.  
-
-  **Impact**: Customers using these models should note that the values will appear inflated compared to the previous dollar-based representation.  
-
-- Important to note:  
+- The aggregated net, gross, sale, charge, refund, and fee amount-based fields in `stripe__daily_overview` and `stripe__customer_overview` now reflect the raw smallest units (e.g., cents), following Stripe's raw data, instead of converted dollar amounts. This change standardizes values across all models.  
+  - Customers using these models should note that the values will appear inflated compared to the previous dollar-based representation.  
   - The cent-to-dollar conversion has been moved upstream and is now controlled by a new variable: `stripe__convert_values` which is disabled by default.  
-  - To enable the conversion and divide all amount-based fields by 100, set `stripe__convert_values` to `True` in your `project.yml`.  
-  - See below for more context behind these changes and for detailed setup instructions, see the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#enabling-cent-to-dollar-conversion).  
+  - See the below Feature Update notes for more context behind these changes and for detailed setup instructions, see the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#enabling-cent-to-dollar-conversion).  
 
 ## Feature Update: Optional Conversion to Major Units
-- **Background**:  Stripe provides amount-based fields (e.g., `amount`, `net`, `fee`) in the smallest denomination. For currencies with minor and major units (e.g., USD), 100 represents 100 cents (1 USD). For currencies without minor units (e.g., JPY), 100 represents 100 JPY.  
+Stripe passes amount-based fields, such as `amount`, `net`, and `fee`, in the smallest denomination as raw form. This means, if your currency has minor and major units such as USD, 100 represents 100 cents, the minor unit, or 1 USD, the major unit. Alternatively, if your currency doesn't use minor units such as JPY, 100 represents 100 JPY. 
 
 - This PR introduces a variable `stripe__convert_values` (disabled by default) upstream in the staging models which allows users the option to divide all amount-based fields by 100.
-
-- If your data is using a currency with major and minor units, it may be useful to enable this variable if you wish to divide amounts by 100 and therefore convert values into major units. For information on how to do so, refer to the [README]((https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#enabling-cent-to-dollar-conversion)) on enabling the `stripe__convert_values` variable.
-  - Examples of currencies using minor units (in which enabling `stripe__convert_values` may be useful) include USD (100 = 1 USD), EUR (100 = 1 Euro), and CAD (100 = 1 CAD).  
-
-- If your Stripe data is *not* using a currency involving minor units, it may make more sense to retain the amount-based fields as raw smallest units by leaving `stripe__convert_values` disabled.
-  - Examples of currencies NOT using minor units include JPY (100 = 100 JPY), IDR (100 = 100 IDR), KRW (100 = 100 KRW).
+  - For information on how to enable the division, refer to the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#enabling-cent-to-dollar-conversion) on configuring the `stripe__convert_values` variable.
+  - Otherwise, amount-based fields will be brought through in their raw form.
+  - Examples of currencies using minor units (in which enabling `stripe__convert_values` is relevant) include United States Dollar (USD), Euro (EUR), and the Canadian Dollar (CAD).
+  - Examples of currencies NOT using minor units (in which it makes more sense to keep the amount-based fields in raw form) include Japanese Yen (JPY), Indonesian Rupiah (IDR), and Korean Won (KRW).
 
 ## Notes
-- Currently this package does not support multiple currencies, but we have created a [feature request to support multiple currencies](https://github.com/fivetran/dbt_stripe/issues/102) where you are welcome to provide feedback or contribute to the discussion.
+- This update is not providing multiple currency support; however, we're interested in exploring this functionality if there's a need. As such, we have created a [feature request to support multiple currencies](https://github.com/fivetran/dbt_stripe/issues/102) where you are welcome to provide feedback or contribute to the discussion.
 
 ## Under the Hood
 - Updated the `run_models.sh` script to test for when `stripe__convert_values` is set to True.
