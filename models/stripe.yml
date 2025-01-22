@@ -274,6 +274,26 @@ models:
         description: Customer's phone number. 
       - name: is_deleted
         description: Boolean reflecting whether the customer has been deleted in Stripe.
+      - name: customer_name
+        description: Customer name.
+      - name: bank_account_id
+        description: ID of the bank account associated with this customer.
+      - name: customer_balance
+        description: Current balance, if any, being stored on the customer. If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice. The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice. This balance is only taken into account as invoices are finalized.
+      - name: customer_address_state
+        description: '{{ doc("state") }}'
+      - name: customer_address_postal_code
+        description: '{{ doc("postal_code") }}'
+      - name: customer_address_line_1
+        description: '{{ doc("line_1") }}'
+      - name: customer_address_line_2
+        description: '{{ doc("line_2") }}'
+      - name: customer_address_country
+        description: '{{ doc("country") }}'
+      - name: customer_address_city
+        description: '{{ doc("city") }}'
+      - name: account_balance
+        description: Current balance, if any, being stored on the customer. If negative, the customer has credit to apply to their next invoice. If positive, the customer has an amount owed that will be added to their next invoice.
 
   - name: stripe__invoice_details
     description: Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.
@@ -347,8 +367,6 @@ models:
         description: Email of the customer.
       - name: subscription_id 
         description: ID of the subscription this invoice relates to.
-      - name: subscription_item_id 
-        description: ID of the subscription item this invoice item relates to.
       - name: subscription_billing 
         description: How the subscription is billed
       - name: subscription_start_date 
@@ -512,8 +530,18 @@ models:
     columns:
       - name: account_id
         description: The ID of the account tied to the balance.
+      - name: account_daily_id
+        description: A surrogate key made up of account_id and date_day.
       - name: date_day
         description: Day of record, taken from the date of each balance transaction.
+      - name: date_week
+        description: Week of record.
+      - name: date_month
+        description: Month of record.
+      - name: date_year
+        description: Year of record.
+      - name: date_index
+        description: Index indicating the relative position of the date to all other dates available in this model.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: total_daily_sales_amount
@@ -711,11 +739,11 @@ models:
       - name: currency	
         description: Three-letter ISO code for the currency in which gross, fee and net are defined.
       - name: gross	
-        description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Gross amount of the transaction. "{{ doc('convert_values') }}"
       - name: fee	
-        description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Fees paid for this transaction. "{{ doc('convert_values') }}"
       - name: net	
-        description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Net amount of the transaction. "{{ doc('convert_values') }}"
       - name: reporting_category	
         description: Reporting Category is a new categorization of balance transactions, meant to improve on the current type field.
       - name: source_id		
@@ -840,11 +868,11 @@ models:
       - name: currency
         description: Three-letter ISO code for the currency in which gross, fee and net are defined.
       - name: gross
-        description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Gross amount of the transaction. "{{ doc('convert_values') }}"
       - name: fee
-        description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Fees paid for this transaction. "{{ doc('convert_values') }}"
       - name: net
-        description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Net amount of the transaction. "{{ doc('convert_values') }}"
       - name: reporting_category
         description: Reporting Category is a new categorization of balance transactions, meant to improve on the current type field.
       - name: source_id
@@ -959,11 +987,11 @@ models:
       - name: currency		
         description: Three-letter ISO code for the currency in which gross, fee and net are defined.
       - name: gross		
-        description: Gross amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Gross amount of the transaction. "{{ doc('convert_values') }}"
       - name: fee
-        description: Fees paid for this transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Fees paid for this transaction. "{{ doc('convert_values') }}"
       - name: net		
-        description: Net amount of the transaction. Expressed in major units of the currency (e.g. dollars for USD, yen for JPY).
+        description: Net amount of the transaction. "{{ doc('convert_values') }}"
       - name: reporting_category		
         description: Reporting Category is a new categorization of balance transactions, meant to improve on the current type field.
       - name: balance_transaction_id		
