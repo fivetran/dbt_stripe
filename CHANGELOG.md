@@ -26,10 +26,6 @@ Stripe passes amount-based fields, such as `amount`, `net`, and `fee`, in the sm
 - Added Quickstart model counts to README. ([#103](https://github.com/fivetran/dbt_stripe/pull/103))
 - Corrected references to connectors and connections in the README. ([#103](https://github.com/fivetran/dbt_stripe/pull/103))
 
-## Under the Hood
-- Updated the `run_models.sh` script to test for when `stripe__convert_values` is set to True.
-- Added a consistency test for `stripe__customer_overview`.
-
 # dbt_stripe v0.15.1
 
 ## Bug Fixes
