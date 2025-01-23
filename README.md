@@ -1,4 +1,6 @@
-<p align="center">
+# Stripe Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_stripe/))
+
+<p align="left">
     <a alt="License"
         href="https://github.com/fivetran/dbt_stripe/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
@@ -13,7 +15,6 @@
         <img src="https://img.shields.io/badge/Fivetran_Quickstart_Compatible%3F-yes-green.svg" /></a>
 </p>
 
-# Stripe Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_stripe/))
 ## What does this dbt package do?
 - Produces modeled tables that leverage Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe) in the format described by [this ERD](https://fivetran.com/docs/applications/stripe#schemainformation) and build off the output of our [stripe source package](https://github.com/fivetran/dbt_stripe_source).
 - Enables you to better understand your Stripe transactions. The package achieves this by performing the following:
@@ -74,7 +75,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.15.0", "<0.16.0"]
+    version: [">=0.16.0", "<0.17.0"]
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
@@ -222,6 +223,17 @@ vars:
     stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
+#### Enabling Cent to Dollar Conversion
+
+Amount-based fields, such as `amount` and `net`, are typically displayed in the smallest denomination (e.g., cents for USD). By default, amount-based fields will be in this raw form. However, some currencies use major and minor units (for example, cents and dollars when using USD). In these cases, it may be useful to divide the amounts by 100, converting amounts to major units (dollars for USD). To enable the division, configure the `stripe__convert_values` to `true` in your project.yml: 
+
+```yml
+vars:
+    stripe__convert_values: true  # default is false 
+```
+
+If you are working in a currency that does not differentiate between minor and major units, such as JPY or KRW, it may make more sense to keep the amount-based fields in raw form and therefore the package can be ran without configuration. As `stripe__convert_values` is disabled by default, these fields will not be impacted.
+
 #### Change the build schema
 By default, this package builds the stripe staging models within a schema titled (`<target_schema>` + `_stg_stripe`) in your destination. If this is not where you would like your stripe staging data to be written to, add the following configuration to your root `dbt_project.yml` file:
 
@@ -256,7 +268,7 @@ This dbt package is dependent on the following dbt packages. These dependencies 
 ```yml
 packages:
     - package: fivetran/stripe_source
-      version: [">=0.12.0", "<0.13.0"]
+      version: [">=0.13.0", "<0.14.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]

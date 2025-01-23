@@ -81,21 +81,21 @@ select
     daily_account_balance_transactions.date_day,
     daily_account_balance_transactions.account_id,
     daily_account_balance_transactions.source_relation,
-    coalesce(daily_account_balance_transactions.total_daily_sales_amount/100.0,0) as total_daily_sales_amount,
-    coalesce(daily_account_balance_transactions.total_daily_refunds_amount/100.0,0) as total_daily_refunds_amount,
-    coalesce(daily_account_balance_transactions.total_daily_adjustments_amount/100.0,0) as total_daily_adjustments_amount,
-    coalesce(daily_account_balance_transactions.total_daily_other_transactions_amount/100.0,0) as total_daily_other_transactions_amount,
-    coalesce(daily_account_balance_transactions.total_daily_gross_transaction_amount/100.0,0) as total_daily_gross_transaction_amount,
-    coalesce(daily_account_balance_transactions.total_daily_net_transactions_amount/100.0,0) as total_daily_net_transactions_amount,
-    coalesce(daily_account_balance_transactions.total_daily_payout_fee_amount/100.0,0) as total_daily_payout_fee_amount,
-    coalesce(daily_account_balance_transactions.total_daily_gross_payout_amount/100.0,0) as total_daily_gross_payout_amount,
-    coalesce(daily_account_balance_transactions.daily_net_activity_amount/100.0,0) as daily_net_activity_amount,
-    coalesce((daily_account_balance_transactions.daily_net_activity_amount + daily_account_balance_transactions.total_daily_gross_payout_amount)/100.0, 0) as daily_end_balance_amount,
+    coalesce(daily_account_balance_transactions.total_daily_sales_amount,0) as total_daily_sales_amount,
+    coalesce(daily_account_balance_transactions.total_daily_refunds_amount,0) as total_daily_refunds_amount,
+    coalesce(daily_account_balance_transactions.total_daily_adjustments_amount,0) as total_daily_adjustments_amount,
+    coalesce(daily_account_balance_transactions.total_daily_other_transactions_amount,0) as total_daily_other_transactions_amount,
+    coalesce(daily_account_balance_transactions.total_daily_gross_transaction_amount,0) as total_daily_gross_transaction_amount,
+    coalesce(daily_account_balance_transactions.total_daily_net_transactions_amount,0) as total_daily_net_transactions_amount,
+    coalesce(daily_account_balance_transactions.total_daily_payout_fee_amount,0) as total_daily_payout_fee_amount,
+    coalesce(daily_account_balance_transactions.total_daily_gross_payout_amount,0) as total_daily_gross_payout_amount,
+    coalesce(daily_account_balance_transactions.daily_net_activity_amount,0) as daily_net_activity_amount,
+    coalesce((daily_account_balance_transactions.daily_net_activity_amount + daily_account_balance_transactions.total_daily_gross_payout_amount), 0) as daily_end_balance_amount,
     coalesce(daily_account_balance_transactions.total_daily_sales_count, 0) as total_daily_sales_count,
     coalesce(daily_account_balance_transactions.total_daily_payouts_count, 0) as total_daily_payouts_count,
     coalesce(daily_account_balance_transactions.total_daily_adjustments_count, 0) as total_daily_adjustments_count,
     coalesce(daily_failed_charges.total_daily_failed_charge_count, 0) as total_daily_failed_charge_count,
-    coalesce(daily_failed_charges.total_daily_failed_charge_amount/100, 0) as total_daily_failed_charge_amount
+    coalesce(daily_failed_charges.total_daily_failed_charge_amount, 0) as total_daily_failed_charge_amount
 
 from daily_account_balance_transactions
 left join daily_failed_charges
