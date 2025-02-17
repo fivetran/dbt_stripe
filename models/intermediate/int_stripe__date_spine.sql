@@ -1,7 +1,7 @@
 -- depends_on: {{ ref('stripe__balance_transactions') }}
 with spine as (
 
-    {% if execute %}
+    {% if execute and flags.WHICH in ('run', 'build') %}
 
     {%- set first_date_query %}
         select coalesce(
