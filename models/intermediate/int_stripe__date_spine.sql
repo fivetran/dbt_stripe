@@ -25,17 +25,17 @@ with spine as (
 
     {% else %}
 
-    {% set first_date = 'dbt.dateadd("month", -1, "current_date")' %}
-    {% set last_date = 'dbt.current_timestamp_backcompat()' %}
+    {% set first_date = dbt.dateadd("month", -1, "current_date") %}
+    {% set last_date = dbt.current_timestamp_backcompat() %}
 
     {% endif %}
 
     {{ dbt_utils.date_spine(
         datepart="day",
-        start_date="cast('" ~ first_date ~ "' as date)",
-        end_date=dbt.dateadd("day", 1, "cast('" ~ last_date  ~ "' as date)")
-        )
-    }}
+        start_date="cast(" ~ first_date ~ " as date)",
+        end_date=dbt.dateadd("day", 1, "cast(" ~ last_date ~ " as date)")
+    ) }}
+
 ),
 
 account as (

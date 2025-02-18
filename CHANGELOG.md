@@ -1,6 +1,7 @@
 # dbt_stripe v0.16.1
 
-## Bugfix: 
+## Bugfix
+Updated the `int_stripe__date_spine` to accommodate non `dbt run` or `dbt build` commands by leveraging default dates in order to ensure successful compilation.
 
 # dbt_stripe v0.16.0
 ## Breaking Change - Potential Change in Values May Impact Downstream Queries
