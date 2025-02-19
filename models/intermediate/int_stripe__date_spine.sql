@@ -52,11 +52,11 @@ account as (
 
 date_spine as (
     select
-        {{ dbt.date_trunc("day", "date_day") }} as date_day, 
-        {{ dbt.date_trunc("week", "date_day") }} as date_week, 
-        {{ dbt.date_trunc("month", "date_day") }} as date_month,
-        {{ dbt.date_trunc("year", "date_day") }} as date_year,  
-        row_number() over (order by {{ dbt.date_trunc("day", "date_day") }}) as date_index
+        cast({{ dbt.date_trunc("day", "date_day") }} as date) as date_day, 
+        cast({{ dbt.date_trunc("week", "date_day") }} as date) as date_week, 
+        cast({{ dbt.date_trunc("month", "date_day") }} as date) as date_month,
+        cast({{ dbt.date_trunc("year", "date_day") }} as date) as date_year,  
+        row_number() over (order by cast({{ dbt.date_trunc("day", "date_day") }} as date)) as date_index
     from spine
 ),
 
@@ -64,7 +64,7 @@ final as (
     select distinct
         account.account_id,
         account.source_relation,
-        cast(date_spine.date_day as date) as date_day,
+        date_spine.date_day,
         date_spine.date_week,
         date_spine.date_month,
         date_spine.date_year,
