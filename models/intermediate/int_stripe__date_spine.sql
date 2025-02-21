@@ -27,16 +27,11 @@ with spine as (
 
     {% else %}
 
-    {% if target.type == 'redshift' %}
-        {% set first_date = dbt.dateadd("month", -1, "current_date") %}
-        {% set last_date = dbt.current_timestamp_backcompat() %}
-    {% else %}
-        {% set first_date = dbt.dateadd("month", -1, "current_date") %}
-        {% set last_date = dbt.current_timestamp_backcompat() %}
-    {% endif %}
+    {% set first_date = dbt.dateadd("month", -1, "current_date") %}
+    {% set last_date = dbt.current_timestamp() %}
 
     {% endif %}
-    
+
     {{ dbt_utils.date_spine(
         datepart="day",
         start_date=first_date,
