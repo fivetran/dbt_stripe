@@ -4,6 +4,9 @@
 ## Bug Fix
 Updated the `int_stripe__date_spine` to accommodate non `dbt run` or `dbt build` commands by leveraging default dates in order to ensure successful compilation.
 
+## Under the Hood
+Replaced the deprecated `dbt.current_timestamp_backcompat()` function with `dbt.current_timestamp()` to ensure all timestamps are captured in UTC.
+
 # dbt_stripe v0.16.0
 ## Breaking Change - Potential Change in Values May Impact Downstream Queries
 - The aggregated net, gross, sale, charge, refund, and fee amount-based fields in `stripe__daily_overview` and `stripe__customer_overview` now reflect the raw smallest units (e.g., cents), following Stripe's raw data, instead of converted dollar amounts. This change standardizes values across all models.  
