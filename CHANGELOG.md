@@ -1,7 +1,7 @@
 # dbt_stripe v0.16.1
 [PR #105](https://github.com/fivetran/dbt_stripe/pull/105) includes the following updates:
 
-## Bugfix
+## Bug Fix
 Updated the `int_stripe__date_spine` to accommodate non `dbt run` or `dbt build` commands by leveraging default dates in order to ensure successful compilation.
 
 # dbt_stripe v0.16.0
