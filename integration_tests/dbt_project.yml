@@ -10,7 +10,7 @@ models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_20
+  stripe_schema: stripe_integrations_tests_21
   stripe__standardized_billing_model_enabled: true
   stripe__using_credit_notes: true
   stripe_source:
