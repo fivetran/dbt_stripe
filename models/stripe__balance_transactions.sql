@@ -57,6 +57,11 @@ with balance_transaction as (
     select *
     from {{ var('payout') }}
 
+), payout_balance_transaction as (
+    
+    select *
+    from {{ var('payout_balance_transaction') }}
+
 ), refund as (
     
     select *
@@ -114,6 +119,27 @@ with balance_transaction as (
     from order_disputes 
     where is_latest_status_dispute
     group by 1,2
+
+), mapped_payout as (
+
+    select 
+        coalesce(payout_balance_transaction.balance_transaction_id, payout.balance_transaction_id) as balance_transaction_id,
+        payout.payout_id,
+        payout.arrival_date_at,
+        payout.is_automatic,
+        payout.created_at,
+        payout.currency,
+        payout.description,
+        payout.destination_bank_account_id,
+        payout.destination_card_id,
+        payout.status,
+        payout.type,
+        payout.source_relation
+
+    from payout 
+    left join payout_balance_transaction
+        on payout.payout_id = payout_balance_transaction.payout_id
+        and payout.source_relation = payout_balance_transaction.source_relation
 )
 
 select
@@ -154,23 +180,23 @@ select
     latest_disputes.latest_dispute_amount_warning_needs_response,
     {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
     case
-        when payout.is_automatic = true then payout.payout_id 
+        when mapped_payout.is_automatic = true then mapped_payout.payout_id 
         else null
     end as automatic_payout_id,
-    payout.payout_id,
-    payout.created_at as payout_created_at,
-    payout.currency as payout_currency,
-    payout.is_automatic as payout_is_automatic,
-    payout.arrival_date_at as payout_arrival_date_at,
+    mapped_payout.payout_id,
+    mapped_payout.created_at as payout_created_at,
+    mapped_payout.currency as payout_currency,
+    mapped_payout.is_automatic as payout_is_automatic,
+    mapped_payout.arrival_date_at as payout_arrival_date_at,
     case
-        when payout.is_automatic = true then payout.arrival_date_at
+        when mapped_payout.is_automatic = true then mapped_payout.arrival_date_at
         else null
     end as automatic_payout_effective_at,
-    payout.type as payout_type,
-    payout.status as payout_status,
-    payout.description as payout_description,
-    payout.destination_bank_account_id,
-    payout.destination_card_id,
+    mapped_payout.type as payout_type,
+    mapped_payout.status as payout_status,
+    mapped_payout.description as payout_description,
+    mapped_payout.destination_bank_account_id,
+    mapped_payout.destination_card_id,
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.email as customer_email,
@@ -239,9 +265,9 @@ select
 
 from balance_transaction
 
-left join payout 
-    on payout.balance_transaction_id = balance_transaction.balance_transaction_id
-    and payout.source_relation = balance_transaction.source_relation
+left join mapped_payout 
+    on mapped_payout.balance_transaction_id = balance_transaction.balance_transaction_id
+    and mapped_payout.source_relation = balance_transaction.source_relation
 left join account connected_account
     on balance_transaction.connected_account_id = connected_account.account_id
     and balance_transaction.source_relation = connected_account.source_relation

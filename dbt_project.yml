@@ -25,6 +25,7 @@ vars:
     payment_method_card: "{{ ref('stg_stripe__payment_method_card') }}"
     payment_method: "{{ ref('stg_stripe__payment_method') }}"
     payout: "{{ ref('stg_stripe__payout') }}"
+    payout_balance_transaction: "{{ ref('stg_stripe__payout_balance_transaction') }}"
     price_plan: "{{ ref('stg_stripe__price_plan') }}"
     product: "{{ ref('stg_stripe__product') }}"
     refund: "{{ ref('stg_stripe__refund') }}"
