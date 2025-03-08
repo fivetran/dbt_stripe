@@ -10,9 +10,11 @@ models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_22
-  stripe__standardized_billing_model_enabled: true
-  stripe__using_credit_notes: true
+  # enable when generating docs
+  # stripe__standardized_billing_model_enabled: true
+  # stripe__using_credit_notes: true
+
+  stripe_schema: zstripe_integrations_tests_22
   stripe_source:
     stripe_account_identifier: "account_data"
     stripe_group_identifier: "group_data"
@@ -40,7 +42,6 @@ vars:
     stripe_credit_note_identifier: "credit_note_data"
     stripe_credit_note_line_item_identifier: "credit_note_line_item_data"
 
-  stripe__subscription_history: false
 
 seeds:
   stripe_integration_tests:
