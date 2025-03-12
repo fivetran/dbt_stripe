@@ -151,7 +151,6 @@ with balance_transaction as (
 )
 
 select
-    balance_transactions_payouts.source_relation,
     balance_transactions_payouts.balance_transaction_id,
     balance_transactions_payouts.created_at as balance_transaction_created_at,
     balance_transactions_payouts.available_on as balance_transaction_available_on,
@@ -272,6 +271,7 @@ select
         when charge.connected_account_id is not null then charge.charge_id
         else null
     end as connected_account_direct_charge_id
+    balance_transactions_payouts.source_relation,
 
 from balance_transactions_payouts
 
