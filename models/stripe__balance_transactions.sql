@@ -62,40 +62,6 @@ with balance_transaction as (
     select *
     from {{ var('payout_balance_transaction') }}
 
-{# ), balance_transaction_mapped as (
-
-    select
-        balance_transaction.balance_transaction_id,
-        -- the payout_id from BALANCE_TRANSACTION is deprecated--use from PAYOUT_BALANCE_TRANSACTION instead.
-        coalesce(payout_balance_transaction.payout_id, payout.payout_id) as payout_id,
-        balance_transaction.created_at,
-        balance_transaction.available_on,
-        balance_transaction.currency,
-        balance_transaction.amount,
-        balance_transaction.fee,
-        balance_transaction.net,
-        balance_transaction.source,
-        balance_transaction.description,
-        balance_transaction.type,
-        balance_transaction.reporting_category
-
-    from balance_transaction
-
-    {% if does_table_exist('payout_balance_transasctions') %}
-    left join payout_balance_transaction
-        on balance_transaction.balance_transaction_id = payout_balance_transaction.balance_transaction_id
-        and balance_transaction.source_relation = payout_balance_transaction.source_relation
-    left join payout
-        on payout_balance_transaction.payout_id = payout.payout_id
-        and payout_balance_transaction.source_relation = payout.source_relation
-
-    {% else %}
-    left join payout
-        on payout_balance_transaction.payout_id = payout.payout_id
-        and payout_balance_transaction.source_relation = payout.source_relation
-
-    {% endif %} #}
-
 ), refund as (
     
     select *
@@ -153,36 +119,66 @@ with balance_transaction as (
     from order_disputes 
     where is_latest_status_dispute
     group by 1,2
+
+), balance_transactions_payouts as (
+    select
+        balance_transaction.*,
+        coalesce(mapped_payout.payout_id, payout.payout_id) as payout_id,
+        coalesce(mapped_payout.created_at, payout.created_at) as payout_created_at,
+        coalesce(mapped_payout.currency, payout.currency) as payout_currency,
+        coalesce(mapped_payout.is_automatic, payout.is_automatic) as payout_is_automatic,
+        coalesce(mapped_payout.arrival_date_at, payout.arrival_date_at) as payout_arrival_date_at,
+        coalesce(mapped_payout.type, payout.type) as payout_type,
+        coalesce(mapped_payout.status, payout.status) as payout_status,
+        coalesce(mapped_payout.description, payout.description) as payout_description,
+        coalesce(mapped_payout.destination_bank_account_id, payout.destination_bank_account_id) as destination_bank_account_id,
+        coalesce(mapped_payout.destination_card_id, payout.destination_card_id) as destination_card_id
+
+    from balance_transaction
+
+    -- Using both method since there can be any combination if both sources exist.
+    left join payout_balance_transaction
+        on balance_transaction.balance_transaction_id = payout_balance_transaction.balance_transaction_id
+        and balance_transaction.source_relation = payout_balance_transaction.source_relation
+    left join payout as mapped_payout
+        on payout_balance_transaction.payout_id = mapped_payout.payout_id
+        and payout_balance_transaction.source_relation = mapped_payout.source_relation
+
+    -- DEPRECATED method
+    left join payout 
+        on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+        and payout.source_relation = balance_transaction.source_relation
 )
 
 select
-    balance_transaction.balance_transaction_id,
-    balance_transaction.created_at as balance_transaction_created_at,
-    balance_transaction.available_on as balance_transaction_available_on,
-    balance_transaction.currency as balance_transaction_currency,
-    balance_transaction.amount as balance_transaction_amount,
-    balance_transaction.fee as balance_transaction_fee,
-    balance_transaction.net as balance_transaction_net,
-    balance_transaction.source as balance_transaction_source_id,
-    balance_transaction.description as balance_transaction_description,
-    balance_transaction.type as balance_transaction_type,
-    coalesce(balance_transaction.reporting_category,
+    balance_transactions_payouts.source_relation,
+    balance_transactions_payouts.balance_transaction_id,
+    balance_transactions_payouts.created_at as balance_transaction_created_at,
+    balance_transactions_payouts.available_on as balance_transaction_available_on,
+    balance_transactions_payouts.currency as balance_transaction_currency,
+    balance_transactions_payouts.amount as balance_transaction_amount,
+    balance_transactions_payouts.fee as balance_transaction_fee,
+    balance_transactions_payouts.net as balance_transaction_net,
+    balance_transactions_payouts.source as balance_transaction_source_id,
+    balance_transactions_payouts.description as balance_transaction_description,
+    balance_transactions_payouts.type as balance_transaction_type,
+    coalesce(balance_transactions_payouts.reporting_category,
         case
-            when balance_transaction.type in ('charge', 'payment') then 'charge'
-            when balance_transaction.type in ('refund', 'payment_refund') then 'refund'
-            when balance_transaction.type in ('payout_cancel', 'payout_failure') then 'payout_reversal'
-            when balance_transaction.type in ('transfer', 'recipient_transfer') then 'transfer'
-            when balance_transaction.type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
-            else balance_transaction.type end)
-    as balance_transaction_reporting_category,
+            when balance_transactions_payouts.type in ('charge', 'payment') then 'charge'
+            when balance_transactions_payouts.type in ('refund', 'payment_refund') then 'refund'
+            when balance_transactions_payouts.type in ('payout_cancel', 'payout_failure') then 'payout_reversal'
+            when balance_transactions_payouts.type in ('transfer', 'recipient_transfer') then 'transfer'
+            when balance_transactions_payouts.type in ('transfer_cancel', 'transfer_failure', 'recipient_transfer_cancel', 'recipient_transfer_failure') then 'transfer_reversal'
+            else balance_transactions_payouts.type end
+    ) as balance_transaction_reporting_category,
     case
-        when balance_transaction.type in ('charge', 'payment') then charge.amount 
-        when balance_transaction.type in ('refund', 'payment_refund') then refund.amount
+        when balance_transactions_payouts.type in ('charge', 'payment') then charge.amount 
+        when balance_transactions_payouts.type in ('refund', 'payment_refund') then refund.amount
         when dispute_ids is not null then latest_disputes.latest_dispute_amount
         else null
     end as customer_facing_amount,
     case 
-        when balance_transaction.type = 'charge' then charge.currency 
+        when balance_transactions_payouts.type = 'charge' then charge.currency 
     end as customer_facing_currency,
     latest_disputes.latest_dispute_amount_won,
     latest_disputes.latest_dispute_amount_lost,
@@ -191,25 +187,27 @@ select
     latest_disputes.latest_dispute_amount_warning_closed,
     latest_disputes.latest_dispute_amount_warning_under_review,
     latest_disputes.latest_dispute_amount_warning_needs_response,
-    {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
+    {{ dbt.dateadd('day', 1, 'balance_transactions_payouts.available_on') }} as effective_at,
     case
-        when payout.is_automatic = true then payout.payout_id 
+        when balance_transactions_payouts.payout_is_automatic
+        then balance_transactions_payouts.payout_id 
         else null
     end as automatic_payout_id,
-    payout.payout_id,
-    payout.created_at as payout_created_at,
-    payout.currency as payout_currency,
-    payout.is_automatic as payout_is_automatic,
-    payout.arrival_date_at as payout_arrival_date_at,
+    balance_transactions_payouts.payout_id,
+    balance_transactions_payouts.payout_created_at,
+    balance_transactions_payouts.payout_currency,
+    balance_transactions_payouts.payout_is_automatic,
+    balance_transactions_payouts.payout_arrival_date_at,
     case
-        when payout.is_automatic = true then payout.arrival_date_at
+        when balance_transactions_payouts.payout_is_automatic
+        then balance_transactions_payouts.payout_arrival_date_at
         else null
     end as automatic_payout_effective_at,
-    payout.type as payout_type,
-    payout.status as payout_status,
-    payout.description as payout_description,
-    payout.destination_bank_account_id,
-    payout.destination_card_id,
+    balance_transactions_payouts.payout_type,
+    balance_transactions_payouts.payout_status,
+    balance_transactions_payouts.payout_description,
+    balance_transactions_payouts.destination_bank_account_id,
+    balance_transactions_payouts.destination_card_id,
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.email as customer_email,
@@ -268,35 +266,21 @@ select
     refund.refund_id,
     refund.reason as refund_reason,
     transfers.transfer_id,
-    coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id,
+    coalesce(balance_transactions_payouts.connected_account_id, charge.connected_account_id) as connected_account_id,
     connected_account.country as connected_account_country,
     case 
         when charge.connected_account_id is not null then charge.charge_id
         else null
-    end as connected_account_direct_charge_id,
-    balance_transaction.source_relation
+    end as connected_account_direct_charge_id
 
-from balance_transaction
-
-{% if does_table_exist('payout_balance_transactions') %}
-    left join payout_balance_transaction
-        on balance_transaction.balance_transaction_id = payout_balance_transaction.balance_transaction_id
-        and balance_transaction.source_relation = payout_balance_transaction.source_relation
-    left join payout
-        on payout_balance_transaction.payout_id = payout.payout_id
-        and payout_balance_transaction.source_relation = payout.source_relation
-{% else %}
-    left join payout 
-        on payout.balance_transaction_id = balance_transaction.balance_transaction_id
-        and payout.source_relation = balance_transaction.source_relation
-{% endif %}
+from balance_transactions_payouts
 
 left join account connected_account
-    on balance_transaction.connected_account_id = connected_account.account_id
-    and balance_transaction.source_relation = connected_account.source_relation
+    on balance_transactions_payouts.connected_account_id = connected_account.account_id
+    and balance_transactions_payouts.source_relation = connected_account.source_relation
 left join charge
-    on charge.balance_transaction_id = balance_transaction.balance_transaction_id
-    and charge.source_relation = balance_transaction.source_relation
+    on balance_transactions_payouts.balance_transaction_id = charge.balance_transaction_id
+    and balance_transactions_payouts.source_relation = charge.source_relation
 left join customer 
     on charge.customer_id = customer.customer_id
     and charge.source_relation = customer.source_relation
@@ -313,7 +297,7 @@ left join payment_method
     and charge.source_relation = payment_method.source_relation
 left join payment_method_card 
     on payment_method_card.payment_method_id = payment_method.payment_method_id
-    and charge.source_relation = balance_transaction.source_relation
+    and charge.source_relation = balance_transactions_payouts.source_relation
 {% endif %}
 
 {% if var('stripe__using_invoices', True) %}
@@ -329,11 +313,11 @@ left join subscription
 {% endif %}
 
 left join refund
-    on refund.balance_transaction_id = balance_transaction.balance_transaction_id
-    and refund.source_relation = balance_transaction.source_relation
+    on refund.balance_transaction_id = balance_transactions_payouts.balance_transaction_id
+    and refund.source_relation = balance_transactions_payouts.source_relation
 left join transfers 
-    on transfers.balance_transaction_id = balance_transaction.balance_transaction_id
-    and transfers.source_relation = balance_transaction.source_relation
+    on transfers.balance_transaction_id = balance_transactions_payouts.balance_transaction_id
+    and transfers.source_relation = balance_transactions_payouts.source_relation
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
     and refund.source_relation = refund_charge.source_relation
