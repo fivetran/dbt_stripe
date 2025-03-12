@@ -1,6 +1,6 @@
 {{ config(
     tags="fivetran_validations",
-    enabled=var('fivetran_validation_tests_enabled', false)
+    enabled=var('fivetran_validation_tests_enabled', false) and var('stripe__standardized_billing_model_enabled', false)
 ) }}
 
 with prod as (
