@@ -1,6 +1,3 @@
 packages:
-# - package: fivetran/stripe_source
-#   version: [">=0.14.0", "<0.15.0"]
-  - git: https://github.com/fivetran/dbt_stripe_source.git
-    revision: feature/payout-balance-transaction
-    warn-unpinned: false 
+- package: fivetran/stripe_source
+  version: [">=0.14.0", "<0.15.0"]
