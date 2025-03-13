@@ -194,6 +194,8 @@ models:
       description: Latest disputed amount that is currently of status `warning_needs_response` (early fraud warning has been escalated into formal dispute or card issuer has requested more information). Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed). "{{ doc('convert_values') }}"
     - name: dispute_count
       description: Count of disputes raised against this transaction. If > 1, join in `dispute` data for additional information on each dispute.
+    - name: payout_balance_transaction_is_current
+      description: Boolean if the current record matches the most recent balance_transaction_id recorded in the corresponding PAYOUT. 
 
   - name: stripe__customer_overview
     description: Each record represents a customer, enriched with metrics about their associated transactions.

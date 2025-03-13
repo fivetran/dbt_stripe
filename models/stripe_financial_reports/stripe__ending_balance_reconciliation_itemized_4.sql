@@ -2,7 +2,8 @@ with balance_transaction_enhanced as (
 
     select *
     from {{ ref('stripe__balance_transactions')}}
-    where is_current_payout_balance_transaction
+    where payout_balance_transaction_is_current
+    and payout_is_automatic
 
 )
 

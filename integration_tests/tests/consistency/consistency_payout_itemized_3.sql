@@ -4,12 +4,12 @@
 ) }}
 
 with prod as (
-    select balance_transaction_id, dispute_reasons
+    select *
     from {{ target.schema }}_stripe_prod.stripe__payout_itemized_3
 ),
 
 dev as (
-    select balance_transaction_id, dispute_reasons
+    select *
     from {{ target.schema }}_stripe_dev.stripe__payout_itemized_3
 ),
 

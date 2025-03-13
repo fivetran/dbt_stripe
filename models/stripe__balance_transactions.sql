@@ -192,7 +192,7 @@ select
     payout.destination_bank_account_id,
     payout.destination_card_id,
     -- Checks if this balance transaction matches the most recent balance_transaction_id recorded in PAYOUT. 
-    payout_balance_transaction_unified.balance_transaction_id = payout.balance_transaction_id as is_current_payout_balance_transaction,
+    payout_balance_transaction_unified.balance_transaction_id = payout.balance_transaction_id as payout_balance_transaction_is_current,
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.email as customer_email,
