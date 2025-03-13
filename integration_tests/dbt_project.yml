@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.16.1'
+version: '0.17.0'
 
 profile: 'integration_tests'
 
@@ -10,36 +10,38 @@ models:
   +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
-  stripe_schema: stripe_integrations_tests_22
-  stripe__standardized_billing_model_enabled: true
-  stripe__using_credit_notes: true
-  stripe_source:
-    stripe_account_identifier:                "account_data"
-    stripe_group_identifier:                  "group_data"
-    stripe_balance_transaction_identifier:    "balance_transaction_data"
-    stripe_card_identifier:                   "card_data"
-    stripe_charge_identifier:                 "charge_data"
-    stripe_customer_identifier:               "customer_data"
-    stripe_discount_identifier:               "discount_data"
-    stripe_dispute_identifier:                "dispute_data"
-    stripe_fee_identifier:                    "fee_data"
-    stripe_invoice_identifier:                "invoice_data"
-    stripe_invoice_line_item_identifier:      "invoice_line_item_data"
-    stripe_payment_intent_identifier:         "payment_intent_data"
-    stripe_payment_method_card_identifier:    "payment_method_card_data"
-    stripe_payment_method_identifier:         "payment_method_data"
-    stripe_payout_identifier:                 "payout_data"
-    stripe_plan_identifier:                   "plan_data"
-    stripe_price_identifier:                  "price_data"
-    stripe_product_identifier:                "product_data"
-    stripe_refund_identifier:                 "refund_data"
-    stripe_subscription_history_identifier:   "subscription_history_data"
-    stripe_subscription_identifier:           "subscription_data"
-    stripe_transfer_identifier:               "transfer_data"
-    stripe_credit_note_identifier:            "credit_note_data"
-    stripe_credit_note_line_item_identifier:  "credit_note_line_item_data"
+  # enable when generating docs
+  # stripe__standardized_billing_model_enabled: true
+  # stripe__using_credit_notes: true
 
-  stripe__subscription_history: false
+  stripe_schema: stripe_integrations_tests_22
+  stripe_source:
+    stripe_account_identifier: "account_data"
+    stripe_group_identifier: "group_data"
+    stripe_balance_transaction_identifier: "balance_transaction_data"
+    stripe_card_identifier: "card_data"
+    stripe_charge_identifier: "charge_data"
+    stripe_customer_identifier: "customer_data"
+    stripe_discount_identifier: "discount_data"
+    stripe_dispute_identifier: "dispute_data"
+    stripe_fee_identifier: "fee_data"
+    stripe_invoice_identifier: "invoice_data"
+    stripe_invoice_line_item_identifier: "invoice_line_item_data"
+    stripe_payment_intent_identifier: "payment_intent_data"
+    stripe_payment_method_card_identifier: "payment_method_card_data"
+    stripe_payment_method_identifier: "payment_method_data"
+    stripe_payout_identifier: "payout_data"
+    stripe_payout_balance_transaction_identifier: "payout_balance_transaction_data"
+    stripe_plan_identifier: "plan_data"
+    stripe_price_identifier: "price_data"
+    stripe_product_identifier: "product_data"
+    stripe_refund_identifier: "refund_data"
+    stripe_subscription_history_identifier: "subscription_history_data"
+    stripe_subscription_identifier: "subscription_data"
+    stripe_transfer_identifier: "transfer_data"
+    stripe_credit_note_identifier: "credit_note_data"
+    stripe_credit_note_line_item_identifier: "credit_note_line_item_data"
+
 
 seeds:
   stripe_integration_tests:

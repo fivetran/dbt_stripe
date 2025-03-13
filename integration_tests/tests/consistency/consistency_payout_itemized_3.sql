@@ -1,18 +1,16 @@
 {{ config(
     tags="fivetran_validations",
-    enabled=var('fivetran_validation_tests_enabled', false) and var('stripe__standardized_billing_model_enabled', false)
+    enabled=var('fivetran_validation_tests_enabled', false)
 ) }}
 
 with prod as (
     select *
-    except(fee_amount, refund_amount, transaction_type) --remove before merge
-    from {{ target.schema }}_stripe_prod.stripe__line_item_enhanced
+    from {{ target.schema }}_stripe_prod.stripe__payout_itemized_3
 ),
 
 dev as (
     select *
-    except(fee_amount, refund_amount, transaction_type) --remove before merge
-    from {{ target.schema }}_stripe_dev.stripe__line_item_enhanced
+    from {{ target.schema }}_stripe_dev.stripe__payout_itemized_3
 ),
 
 prod_not_in_dev as (

@@ -1,3 +1,24 @@
+# dbt_stripe v0.17.0
+[PR #107](https://github.com/fivetran/dbt_stripe/pull/107) includes the following updates:
+
+## Breaking Changes  
+- In alignment with the Fivetran Stripe connector [March 2025 update](https://fivetran.com/docs/connectors/applications/stripe/changelog#march2025), added:  
+  - Source:
+    - `PAYOUT_BALANCE_TRANSACTION`  
+  - Models:
+    - `stg_stripe__payout_balance_transaction`  
+    - `stg_stripe__payout_balance_transaction_tmp`
+- This is a new mapping table that provides all associated balance transactions for a payout, supporting the 1:many `payout → balance_transaction` relationship.  
+  - NOTE: The existing `balance_transaction_id` in `PAYOUT` only reflects the most recent associated record, necessitating this update. 
+- Updated `stripe__balance_transactions` to use the mapping table `stg_stripe__payout_balance_transaction`, expanding the balance transactions that can be mapped to a payout.
+  - Added the `payout_balance_transaction_is_current` field to identify the most recent balance transaction associated with a payout.
+- Updated financial report models `stripe__ending_balance_reconciliation_itemized_4` and `stripe__payout_itemized_3` to maintain existing behavior and prevent fanout from the `stripe__balance_transactions` updates.
+  - These models will continue referencing only the most recent balance transaction associated with a payout.  
+
+## Under the Hood (Maintainers Only)  
+- Added consistency test for `stripe__payout_itemized_3`.  
+- Added seed `payout_balance_transaction_data`. 
+
 # dbt_stripe v0.16.1
 [PR #105](https://github.com/fivetran/dbt_stripe/pull/105) includes the following updates:
 

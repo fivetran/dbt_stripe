@@ -57,6 +57,26 @@ with balance_transaction as (
     select *
     from {{ var('payout') }}
 
+), payout_balance_transaction as (
+    
+    select *
+    from {{ var('payout_balance_transaction') }}
+
+), payout_balance_transaction_unified as (
+    -- Create a unified mapping table to bridge records without mapping.
+    select 
+        balance_transaction.source_relation,
+        balance_transaction.balance_transaction_id,
+        coalesce(payout_balance_transaction.payout_id, payout.payout_id) as payout_id
+    from balance_transaction
+
+    left join payout_balance_transaction
+        on payout_balance_transaction.balance_transaction_id = balance_transaction.balance_transaction_id
+        and payout_balance_transaction.source_relation = balance_transaction.source_relation
+    left join payout
+        on payout.balance_transaction_id = balance_transaction.balance_transaction_id
+        and payout.source_relation = balance_transaction.source_relation
+
 ), refund as (
     
     select *
@@ -171,6 +191,8 @@ select
     payout.description as payout_description,
     payout.destination_bank_account_id,
     payout.destination_card_id,
+    -- Checks if this balance transaction matches the most recent balance_transaction_id recorded in PAYOUT. 
+    payout_balance_transaction_unified.balance_transaction_id = payout.balance_transaction_id as payout_balance_transaction_is_current,
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.email as customer_email,
@@ -239,9 +261,12 @@ select
 
 from balance_transaction
 
+left join payout_balance_transaction_unified 
+    on payout_balance_transaction_unified.balance_transaction_id = balance_transaction.balance_transaction_id
+    and payout_balance_transaction_unified.source_relation = balance_transaction.source_relation
 left join payout 
-    on payout.balance_transaction_id = balance_transaction.balance_transaction_id
-    and payout.source_relation = balance_transaction.source_relation
+    on payout.payout_id = payout_balance_transaction_unified.payout_id
+    and payout.source_relation = payout_balance_transaction_unified.source_relation
 left join account connected_account
     on balance_transaction.connected_account_id = connected_account.account_id
     and balance_transaction.source_relation = connected_account.source_relation
@@ -294,4 +319,3 @@ left join dispute_summary
 left join latest_disputes
     on charge.charge_id = latest_disputes.charge_id
     and charge.source_relation = latest_disputes.source_relation
-

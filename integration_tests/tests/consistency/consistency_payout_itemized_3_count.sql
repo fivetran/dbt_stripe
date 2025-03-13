@@ -8,14 +8,14 @@ with prod as (
     select 
         count(*) as prod_rows,
         sum(net) as net
-    from {{ target.schema }}_stripe_prod.stripe__ending_balance_reconciliation_itemized_4
+    from {{ target.schema }}_stripe_prod.stripe__payout_itemized_3
 ),
 
 dev as (
     select 
         count(*) as dev_rows,
         sum(net) as net
-    from {{ target.schema }}_stripe_dev.stripe__ending_balance_reconciliation_itemized_4
+    from {{ target.schema }}_stripe_dev.stripe__payout_itemized_3
 )
 
 -- test will return values and fail if the row counts don't match
