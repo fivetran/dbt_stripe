@@ -1,5 +1,5 @@
 # dbt_stripe v0.17.1
-[PR #108](https://github.com/fivetran/dbt_stripe/pull/108) includes the following updates:∂
+[PR #108](https://github.com/fivetran/dbt_stripe/pull/108) includes the following updates:
 
 ## Bug Fixes (from `dbt_stripe_source`)
 - Fixed a Snowflake error in the `does_table_exist` macro that could occur when another package using quoted table or column names runs concurrently.

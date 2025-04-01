@@ -1,6 +1,6 @@
 {{ config(
     tags="fivetran_validations",
-    enabled=var('stripe__using_invoices', true)
+    enabled=var('fivetran_validation_tests_enabled', false) and var('stripe__using_invoices', true)
 ) }}
 
 with prod as (
