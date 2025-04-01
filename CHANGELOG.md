@@ -15,7 +15,7 @@
 ## Under the Hood (from `dbt_stripe_source`)
 - Enhanced the `does_table_exist` macro:
   - Added a `dispatch` to prevent conflicts with macros of the same name in other packages.
-  - Modified the return value to `'exists'` only when the table is present, replacing the previous `'True'`/`'False'` behavior. This avoids issues where Jinja misinterpreted those strings as truthy values.
+  - Updated logic to return `'exists'` only when the table is present, replacing `'True'`/`'False'` string outputs. This prevents Jinja from misinterpreting them as truthy values and ensures reliable variable configuration based on exact `'exists'` matching.
 - Added consistency test for `stripe__invoice_line_item_details`.
 
 # dbt_stripe v0.17.0
