@@ -203,7 +203,7 @@ with invoice_line_item as (
 
     left join price_plan
 
-    {% if var('stripe__using_price', stripe_source.does_table_exist('price')) %}
+    {% if var('stripe__using_price', stripe_source.does_table_exist('price')=='exists') %}
         on invoice_line_item.price_id = price_plan.price_plan_id
     {% else %}
         on invoice_line_item.plan_id = price_plan.price_plan_id
