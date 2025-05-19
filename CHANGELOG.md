@@ -1,3 +1,9 @@
+# dbt_stripe v0.18.0
+[PR #109](https://github.com/fivetran/dbt_stripe/pull/108) includes the following changes:
+## Features
+- Enabled the `stripe__line_item_enhanced` model by default. Previously, this model required opting in via the `stripe__standardized_billing_model_enabled` variable. This change ensures the model is available by default for Quickstart users.
+  - Users can still disable the model by setting the variable to `false` in `dbt_project.yml`.
+
 # dbt_stripe v0.17.1
 [PR #108](https://github.com/fivetran/dbt_stripe/pull/108) includes the following updates:
 
