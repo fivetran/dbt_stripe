@@ -75,7 +75,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.17.0", "<0.18.0"]
+    version: [">=0.18.0", "<0.19.0"]
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
@@ -105,11 +105,11 @@ vars:
 <details open><summary>Expand to view configurations</summary>
 
 #### Enabling Standardized Billing Model
-This package contains the `stripe__line_item_enhanced` model which constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It’s designed to align with the schema of the `*__line_item_enhanced` model found in Recurly, Recharge, Stripe, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). For the time being, this model is disabled by default. If you would like to enable this model you will need to adjust the `stripe__standardized_billing_model_enabled` variable to be `true` within your `dbt_project.yml`:
+This package contains the `stripe__line_item_enhanced` model which constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It’s designed to align with the schema of the `*__line_item_enhanced` model found in Recurly, Recharge, Stripe, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). This model is enabled by default. To disable it, set the `stripe__standardized_billing_model_enabled` variable to `false` in your `dbt_project.yml`:
 
 ```yml
 vars:
-  stripe__standardized_billing_model_enabled: true # false by default.
+  stripe__standardized_billing_model_enabled: false # true by default.
 ```
 
 #### Unioning Multiple Stripe Connections
