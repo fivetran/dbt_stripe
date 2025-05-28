@@ -1,6 +1,6 @@
 {{ config(
     enabled=(
-        var('stripe__standardized_billing_model_enabled', False) and (var('stripe__using_invoices', True))
+        var('stripe__standardized_billing_model_enabled', True) and (var('stripe__using_invoices', True))
     )
 ) }}
 
