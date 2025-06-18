@@ -1,6 +1,6 @@
 # dbt_stripe v0.19.0
 
-[PR #](https://github.com/fivetran/dbt_stripe/pull/) incorporates the following updates:
+[PR #111](https://github.com/fivetran/dbt_stripe/pull/111) incorporates the following updates:
 
 ## Breaking Change for dbt Core < 1.9.5
 > *Note: This is not relevant to Fivetran Quickstart users.*
