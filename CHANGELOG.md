@@ -1,6 +1,6 @@
 # dbt_stripe v0.19.0
 
-[PR #110](https://github.com/fivetran/dbt_stripe/pull/110) includes the following updates:
+[PR #113](https://github.com/fivetran/dbt_stripe/pull/113) includes the following updates:
 
 ## Breaking Change for dbt Core < 1.9.6
 
