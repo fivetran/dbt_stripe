@@ -75,7 +75,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.18.0", "<0.19.0"]
+    version: [">=0.19.0", "<0.20.0"]
 ```
 Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
@@ -268,7 +268,7 @@ This dbt package is dependent on the following dbt packages. These dependencies 
 ```yml
 packages:
     - package: fivetran/stripe_source
-      version: [">=0.14.0", "<0.15.0"]
+      version: [">=0.15.0", "<0.16.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
