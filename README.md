@@ -43,12 +43,6 @@ The following table provides a detailed list of all tables materialized within t
 ### Example Visualizations
 Curious what these tables can do? Check out example visualizations from the [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) table in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/), and see how you can use these tables in your own reporting. Below is a screenshot of an example report—explore the app for more.
 
-<p align="center">
-<a href="https://fivetran-billing-model.streamlit.app/">
-    <img src="https://raw.githubusercontent.com/fivetran/dbt_stripe/main/images/streamlit_example.png" alt="Streamlit Billing Model App" width="75%">
-</a>
-</p>
-
 ### Materialized Models
 Each Quickstart transformation job run materializes 57 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
@@ -171,7 +165,6 @@ vars:
         stripe__using_invoice_line_sub_filter: false # Default = true
 ```
 
-
 #### Pivoting out Metadata Properties
 Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package will pivot out fields into their own columns within the respective staging models from the `dbt_stripe_source` package. The metadata variables accept dictionaries in addition to strings.
 
@@ -242,11 +235,11 @@ models:
     stripe_source:
       +schema: my_new_schema_name # leave blank for just the target_schema
 ```
-    
+
 #### Change the source table references
 If an individual source table has a different name than the package expects, add the table name as it appears in your destination to the respective variable:
 > IMPORTANT: See this project's [`dbt_project.yml`](https://github.com/fivetran/dbt_stripe_source/blob/main/dbt_project.yml) variable declarations to see the expected names.
-    
+
 ```yml
 vars:
     stripe_<default_source_table_name>_identifier: your_table_name 
@@ -257,14 +250,14 @@ vars:
 ### (Optional) Step 6: Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
-    
+
 Fivetran offers the ability for you to orchestrate your dbt project through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt). Learn how to set up your project for orchestration through Fivetran in our [Transformations for dbt Core setup guides](https://fivetran.com/docs/transformations/dbt#setupguide).
 </details>
 
 ## Does this package have dependencies?
 This dbt package is dependent on the following dbt packages. These dependencies are installed by default within this package. For more information on the following packages, refer to the [dbt hub](https://hub.getdbt.com/) site.
 > IMPORTANT: If you have any of these dependent packages in your own `packages.yml` file, we highly recommend that you remove them from your root `packages.yml` to avoid package version conflicts.
-    
+
 ```yml
 packages:
     - package: fivetran/stripe_source
