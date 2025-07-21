@@ -1,9 +1,12 @@
 # dbt_stripe v0.19.1
 
-[PR #??](https://github.com/fivetran/dbt_stripe/pull/??) includes the following updates:
+[PR #117](https://github.com/fivetran/dbt_stripe/pull/117) includes the following updates:
 
 ## Bug Fixes
 - Updated `stripe__line_item_enhanced` to ensure successful compilation `stripe__using_payment_method` is set to `false`.
+
+## Under the Hood
+- Added an integration test case to verify the `stripe__line_item_enhanced` model succeeds when `stripe__using_payment_method` is set to `false`.
 
 # dbt_stripe v0.19.0
 
