@@ -1,3 +1,13 @@
+# dbt_stripe v0.19.1
+
+[PR #117](https://github.com/fivetran/dbt_stripe/pull/117) includes the following updates:
+
+## Bug Fixes
+- Updated `stripe__line_item_enhanced` to ensure successful compilation `stripe__using_payment_method` is set to `false`.
+
+## Under the Hood
+- Added an integration test case to verify the `stripe__line_item_enhanced` model succeeds when `stripe__using_payment_method` is set to `false`.
+
 [PR #115](https://github.com/fivetran/dbt_stripe/pull/115) includes the following updates:
 
 ### Under the Hood - July 2025 Updates
@@ -7,14 +17,6 @@
 - Added `+docs: show: False` to `integration_tests/dbt_project.yml`.
 - Migrated `flags` (e.g., `send_anonymous_usage_stats`, `use_colors`) from `sample.profiles.yml` to `integration_tests/dbt_project.yml`.
 - Updated `maintainer_pull_request_template.md` with improved checklist.
-- Refreshed README tag block:
-  - Standardized Quickstart-compatible badge set
-  - Left-aligned and positioned below the H1 title.
-- Updated Python image version to `3.10.13` in `pipeline.yml`.
-- Added `CI_DATABRICKS_DBT_CATALOG` to:
-  - `.buildkite/hooks/pre-command` (as an export)
-  - `pipeline.yml` (under the `environment` block, after `CI_DATABRICKS_DBT_TOKEN`)
-- Added `certifi==2025.1.31` to `requirements.txt` (if missing).
 - Updated `.gitignore` to exclude additional DBT, Python, and system artifacts.
 
 # dbt_stripe v0.19.0

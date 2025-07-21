@@ -38,10 +38,13 @@ with invoice_line_item as (
     select *
     from {{ var('payment_intent') }} 
 
+{% if var('stripe__using_payment_method', True) %}
 ), payment_method as (
 
-    select * 
+    select *
     from {{ var('payment_method')}}
+
+{% endif %}
 
 ), fee as (
 
@@ -126,8 +129,8 @@ with invoice_line_item as (
         cast(invoice.total as {{ dbt.type_numeric() }}) as total_invoice_amount,
         cast(invoice_line_item.amount as {{ dbt.type_numeric() }}) as total_amount,
         cast(payment_intent.payment_intent_id as {{ dbt.type_string() }}) as payment_id,
-        cast(payment_method.payment_method_id as {{ dbt.type_string() }}) as payment_method_id,
-        cast(payment_method.type as {{ dbt.type_string() }}) as payment_method,
+        cast({{ "payment_method.payment_method_id" if var('stripe__using_payment_method', True) else 'null' }} as {{ dbt.type_string() }}) as payment_method_id,
+        cast({{ "payment_method.type" if var('stripe__using_payment_method', True) else 'null' }} as {{ dbt.type_string() }}) as payment_method,
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
         cast(coalesce(bt_charge.fee, 0) as {{ dbt.type_numeric() }}) + cast(coalesce(bt_refund.fee, 0) as {{ dbt.type_numeric() }}) as fee_amount,
         cast(refund.amount as {{ dbt.type_numeric() }}) as refund_amount,
@@ -187,9 +190,11 @@ with invoice_line_item as (
         on charge.payment_intent_id = payment_intent.payment_intent_id
         and charge.source_relation = payment_intent.source_relation
 
-    left join payment_method 
+    {% if var('stripe__using_payment_method', True) %}
+    left join payment_method
         on charge.payment_method_id = payment_method.payment_method_id
         and charge.source_relation = payment_method.source_relation
+    {% endif %}
 
     left join customer 
         on invoice.customer_id = customer.customer_id
