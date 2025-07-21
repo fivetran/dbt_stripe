@@ -1,3 +1,24 @@
+# dbt_stripe v0.19.1
+
+[PR #117](https://github.com/fivetran/dbt_stripe/pull/117) includes the following updates:
+
+## Bug Fixes
+- Updated `stripe__line_item_enhanced` to ensure successful compilation `stripe__using_payment_method` is set to `false`.
+
+## Under the Hood
+- Added an integration test case to verify the `stripe__line_item_enhanced` model succeeds when `stripe__using_payment_method` is set to `false`.
+
+[PR #115](https://github.com/fivetran/dbt_stripe/pull/115) includes the following updates:
+
+### Under the Hood - July 2025 Updates
+
+- Updated conditions in `.github/workflows/auto-release.yml`.
+- Added `.github/workflows/generate-docs.yml`.
+- Added `+docs: show: False` to `integration_tests/dbt_project.yml`.
+- Migrated `flags` (e.g., `send_anonymous_usage_stats`, `use_colors`) from `sample.profiles.yml` to `integration_tests/dbt_project.yml`.
+- Updated `maintainer_pull_request_template.md` with improved checklist.
+- Updated `.gitignore` to exclude additional DBT, Python, and system artifacts.
+
 # dbt_stripe v0.19.0
 
 [PR #113](https://github.com/fivetran/dbt_stripe/pull/113) includes the following updates:

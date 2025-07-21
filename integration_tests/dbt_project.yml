@@ -43,6 +43,8 @@ vars:
 
 
 seeds:
+  +docs:
+    show: False
   stripe_integration_tests:
     +quote_columns: "{{ true if target.type in ('redshift','postgres') else false }}"
     +column_types:
@@ -82,3 +84,5 @@ dispatch:
 
 flags:
   send_anonymous_usage_stats: False
+
+  use_colors: True
