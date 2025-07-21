@@ -11,7 +11,7 @@ models:
 
 vars:
   # enable when generating docs
-  # stripe__using_credit_notes: true
+  # stripe__using_credit_notes: true # @docs-include
 
   stripe_schema: stripe_integrations_tests_22
   stripe_source:
