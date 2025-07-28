@@ -38,7 +38,7 @@ body:
   - type: textarea
     attributes:
       label: Possible solution
-      description: Were you able to investigate and/or discover a potential fix to this bug in your investigation? If so, it would be much appreciated if you could submit code samples to show us how your fix resolved this issue. 
+      description: Were you able to investigate and/or discover a potential fix to this bug in your investigation? If so, it would be much appreciated if you could submit code samples to show us how your fix resolved this issue.
     validations:
       required: false
   - type: textarea
