@@ -1,3 +1,6 @@
 packages:
-- package: fivetran/stripe_source
-  version: [">=0.15.0", "<0.16.0"]
+# - package: fivetran/stripe_source
+#   version: [">=0.15.0", "<0.16.0"]
+  - git: https://github.com/fivetran/dbt_stripe_source.git
+    revision: bugfix/trailing-spaces
+    warn-unpinned: false 
