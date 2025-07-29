@@ -321,8 +321,6 @@ models:
         description: Date when payment for the invoice is due.
       - name: currency
         description: The currency that the invoice is in. Three-letter ISO currency code, in lowercase.
-      - name: amount_due
-        description: The amount, if any, that the customer has paid on the invoice. "{{ doc('convert_values') }}"
       - name: amount_paid
         description: The amount, if any, that the customer has paid on the invoice. "{{ doc('convert_values') }}"
       - name: amount_due
