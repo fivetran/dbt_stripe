@@ -294,11 +294,6 @@ models:
 
   - name: stripe__invoice_details
     description: Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - invoice_id
-            - source_relation
     columns:
       - name: invoice_id
         description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
