@@ -3,7 +3,7 @@
 with invoice_line_item as (
 
     select *
-    from {{ var('invoice_line_item') }} 
+    from {{ ref('stg_stripe__invoice_line_item') }} 
 
 ), invoice_details as (
 
@@ -14,12 +14,12 @@ with invoice_line_item as (
 ), subscription as (
 
     select *
-    from {{ var('subscription') }}  
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), price_plan as (
 
     select *
-    from {{ var('price_plan') }}  
+    from {{ ref('stg_stripe__price_plan') }}  
 
 {% endif %}
 )
@@ -82,7 +82,7 @@ left join subscription
 
 left join price_plan
 
-{% if var('stripe__using_price', stripe_source.does_table_exist('price')=='exists') %}
+{% if var('stripe__using_price', stripe.does_table_exist('price')=='exists') %}
     on invoice_line_item.price_id = price_plan.price_plan_id
 {% else %}
     on invoice_line_item.plan_id = price_plan.price_plan_id

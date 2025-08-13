@@ -69,9 +69,9 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=0.19.0", "<0.20.0"]
+    version: [">=1.0.0", "<1.1.0"]
 ```
-Do **NOT** include the `stripe_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
+> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
 ### Step 3: Define database and schema variables
 By default, this package runs using your destination and the `stripe` schema. If this is not where your stripe data is (for example, if your stripe schema is named `stripe_fivetran`), add the following configuration to your root `dbt_project.yml` file:
@@ -154,14 +154,14 @@ By default, this package will run on non-test data (`where livemode = true`) fro
 
 ```yml
 vars:
-    stripe_source:
+    stripe:
         stripe__using_livemode: false  # Default = true
 ```
 #### Including sub Invoice Line Items
 By default, this package will filter out any records from the `invoice_line_item` source table which include the string `sub_`. This is due to a legacy Stripe issue where `sub_` records were found to be duplicated. However, if you highly utilize these records you may wish they be included in the final output of the `stg_stripe__invoice_line_item` model. To do, so you may include the below variable configuration in your root `dbt_project.yml`:
 ```yml
 vars:
-    stripe_source:
+    stripe:
         stripe__using_invoice_line_sub_filter: false # Default = true
 ```
 
@@ -232,8 +232,10 @@ By default, this package builds the stripe staging models within a schema titled
 
 ```yml
 models:
-    stripe_source:
-      +schema: my_new_schema_name # leave blank for just the target_schema
+    stripe:
+      +schema: my_new_schema_name # Leave +schema: blank to use the default target_schema.
+      staging:
+        +schema: my_new_schema_name # Leave +schema: blank to use the default target_schema.
 ```
 
 #### Change the source table references
@@ -260,9 +262,6 @@ This dbt package is dependent on the following dbt packages. These dependencies 
 
 ```yml
 packages:
-    - package: fivetran/stripe_source
-      version: [">=0.15.0", "<0.16.0"]
-
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
 

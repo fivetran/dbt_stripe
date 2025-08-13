@@ -3,27 +3,27 @@
 with invoice as (
 
     select *
-    from {{ var('invoice') }}  
+    from {{ ref('stg_stripe__invoice') }}  
 
 ), charge as (
 
     select *
-    from {{ var('charge') }}  
+    from {{ ref('stg_stripe__charge') }}  
 
 ), invoice_line_item as (
 
     select *
-    from {{ var('invoice_line_item') }}  
+    from {{ ref('stg_stripe__invoice_line_item') }}  
 
 ), subscription as (
 
     select *
-    from {{ var('subscription') }}  
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), customer as (
 
     select *
-    from {{ var('customer') }}  
+    from {{ ref('stg_stripe__customer') }}  
 
 ), line_items_groups as (
 

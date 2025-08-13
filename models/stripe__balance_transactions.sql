@@ -1,66 +1,66 @@
 with balance_transaction as (
 
     select *
-    from {{ var('balance_transaction') }}
+    from {{ ref('stg_stripe__balance_transaction') }}
 
 ), account as (
 
     select *
-    from {{ var('account') }}
+    from {{ ref('stg_stripe__account') }}
 
 ), cards as (
 
     select *
-    from {{ var('card') }}
+    from {{ ref('stg_stripe__card') }}
 
 ), charge as (
     
     select *
-    from {{ var('charge') }}
+    from {{ ref('stg_stripe__charge') }}
 
 ), customer as (
     
     select *
-    from {{ var('customer') }}
+    from {{ ref('stg_stripe__customer') }}
 
 ), dispute as (
     
     select *
-    from {{ var('dispute') }}
+    from {{ ref('stg_stripe__dispute') }}
 
 {% if var('stripe__using_invoices', True) %}
 ), invoice as (
     
     select *
-    from {{ var('invoice') }}
+    from {{ ref('stg_stripe__invoice') }}
 
 {% endif %}
 ), payment_intent as (
     
     select *
-    from {{ var('payment_intent') }}
+    from {{ ref('stg_stripe__payment_intent') }}
 
 {% if var('stripe__using_payment_method', True) %}
 ), payment_method as (
     
     select *
-    from {{ var('payment_method') }}
+    from {{ ref('stg_stripe__payment_method') }}
 
 ), payment_method_card as (
 
     select *
-    from {{ var('payment_method_card')}}
+    from {{ ref('stg_stripe__payment_method_card') }}
 
 {% endif %}
 ), payout as (
     
     select *
-    from {{ var('payout') }}
+    from {{ ref('stg_stripe__payout') }}
 
 ), payout_balance_transaction as (
     
     select *
-    from {{ var('payout_balance_transaction') }}
+    from {{ ref('stg_stripe__payout_balance_transaction') }}
 
 ), payout_balance_transaction_unified as (
     -- Create a unified mapping table to bridge records without mapping.
@@ -80,19 +80,19 @@ with balance_transaction as (
 ), refund as (
     
     select *
-    from {{ var('refund') }}
+    from {{ ref('stg_stripe__refund') }}
 
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
     
     select *
-    from {{ var('subscription') }}
+    from {{ ref('stg_stripe__subscription') }}
 
 {% endif %}
 ), transfers as (
     
     select *
-    from {{ var('transfer') }}
+    from {{ ref('stg_stripe__transfer') }}
 
 ), dispute_summary as (
     /* Although rare, payments can be disputed multiple times. 
