@@ -16,7 +16,7 @@
 </p>
 
 ## What does this dbt package do?
-- Produces modeled tables that leverage Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe) in the format described by [this ERD](https://fivetran.com/docs/applications/stripe#schemainformation) and build off the output of our [stripe source package](https://github.com/fivetran/dbt_stripe_source).
+- Produces modeled tables that leverage Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe) in the format described by [this ERD](https://fivetran.com/docs/applications/stripe#schemainformation).
 - Enables you to better understand your Stripe transactions. The package achieves this by performing the following:
     - Enhance the balance transaction entries with useful fields from related tables. 
     - Generate a metrics tables allow you to better understand your account activity over time or at a customer level. These time-based metrics are available on a daily, weekly, monthly, and quarterly level.
@@ -42,6 +42,12 @@ The following table provides a detailed list of all tables materialized within t
 
 ### Example Visualizations
 Curious what these tables can do? Check out example visualizations from the [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) table in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/), and see how you can use these tables in your own reporting. Below is a screenshot of an example report—explore the app for more.
+
+<p align="center">
+<a href="https://fivetran-billing-model.streamlit.app/">
+    <img src="https://raw.githubusercontent.com/fivetran/dbt_stripe/main/images/streamlit_example.png" alt="Streamlit Billing Model App" width="75%">
+</a>
+</p>
 
 ### Materialized Models
 Each Quickstart transformation job run materializes 57 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
@@ -166,7 +172,7 @@ vars:
 ```
 
 #### Pivoting out Metadata Properties
-Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package will pivot out fields into their own columns within the respective staging models from the `dbt_stripe_source` package. The metadata variables accept dictionaries in addition to strings.
+Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package will pivot out fields into their own columns within the respective staging models. The metadata variables accept dictionaries in addition to strings.
 
 Additionally, you may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field. Below are examples of how you would add the respective fields.
 
@@ -227,6 +233,22 @@ vars:
 
 If you are working in a currency that does not differentiate between minor and major units, such as JPY or KRW, it may make more sense to keep the amount-based fields in raw form and therefore the package can be ran without configuration. As `stripe__convert_values` is disabled by default, these fields will not be impacted.
 
+#### Passing Through Additional Fields
+This package includes all source columns defined in the macros folder. You can add more columns using our pass-through column variables. These variables allow for the pass-through fields to be aliased (`alias`) and casted (`transform_sql`) if desired, but not required. Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring the respective pass-through variables:
+
+```yml
+# dbt_project.yml
+
+vars:
+  stripe:
+    card_pass_through_columns:
+      - name: "description"
+      - name: "iin"
+      - name: "issuer"
+        alias: "card_issuer"  # optional: define an alias for the column 
+        transform_sql: "cast(card_issuer as string)" # optional: apply transformation to column. must reference the alias if provided
+```
+
 #### Change the build schema
 By default, this package builds the stripe staging models within a schema titled (`<target_schema>` + `_stg_stripe`) in your destination. If this is not where you would like your stripe staging data to be written to, add the following configuration to your root `dbt_project.yml` file:
 
@@ -240,7 +262,7 @@ models:
 
 #### Change the source table references
 If an individual source table has a different name than the package expects, add the table name as it appears in your destination to the respective variable:
-> IMPORTANT: See this project's [`dbt_project.yml`](https://github.com/fivetran/dbt_stripe_source/blob/main/dbt_project.yml) variable declarations to see the expected names.
+> IMPORTANT: See this project's [`dbt_project.yml`](https://github.com/fivetran/dbt_stripe/blob/main/dbt_project.yml) variable declarations to see the expected names.
 
 ```yml
 vars:
