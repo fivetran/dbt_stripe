@@ -1,4 +1,4 @@
-# Stripe Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_stripe/))
+# Stripe dbt Package ([Docs](https://fivetran.github.io/dbt_stripe/))
 
 <p align="left">
     <a alt="License"
