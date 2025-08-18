@@ -10,7 +10,8 @@ models:
     intermediate:
       +materialized: table
     staging:
-      +schema: stripe_source
+      +materialized: table
+      +schema: stg_stripe
       tmp:
         +materialized: view
 
