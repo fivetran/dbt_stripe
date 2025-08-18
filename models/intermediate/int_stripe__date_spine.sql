@@ -42,7 +42,7 @@ with spine as (
 
 account as (
     select *
-    from {{ var('account') }}
+    from {{ ref('stg_stripe__account') }}
 ),
 
 date_spine as (

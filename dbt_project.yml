@@ -1,33 +1,40 @@
 config-version: 2
 name: 'stripe'
-
-version: '0.19.2'
+version: '1.0.0'
 require-dbt-version: [">=1.3.0", "<2.0.0"]
+
 models:
   stripe:
     +schema: stripe
     +materialized: table
     intermediate:
       +materialized: table
+    staging:
+      +schema: stripe_source
+      tmp:
+        +materialized: view
+
 vars:
   stripe:
-    account: "{{ ref('stg_stripe__account') }}"
-    balance_transaction: "{{ ref('stg_stripe__balance_transaction') }}"
-    card: "{{ ref('stg_stripe__card') }}"
-    charge: "{{ ref('stg_stripe__charge') }}"
-    customer: "{{ ref('stg_stripe__customer') }}"
-    dispute: "{{ ref('stg_stripe__dispute') }}"
-    discount: "{{ ref('stg_stripe__discount') }}"
-    fee: "{{ ref('stg_stripe__fee') }}"
-    invoice: "{{ ref('stg_stripe__invoice') }}"
-    invoice_line_item: "{{ ref('stg_stripe__invoice_line_item') }}"
-    payment_intent: "{{ ref('stg_stripe__payment_intent') }}"
-    payment_method_card: "{{ ref('stg_stripe__payment_method_card') }}"
-    payment_method: "{{ ref('stg_stripe__payment_method') }}"
-    payout: "{{ ref('stg_stripe__payout') }}"
-    payout_balance_transaction: "{{ ref('stg_stripe__payout_balance_transaction') }}"
-    price_plan: "{{ ref('stg_stripe__price_plan') }}"
-    product: "{{ ref('stg_stripe__product') }}"
-    refund: "{{ ref('stg_stripe__refund') }}"
-    subscription: "{{ ref('stg_stripe__subscription') }}"
-    transfer: "{{ ref('stg_stripe__transfer') }}"
+    account: "{{ source('stripe', 'account') }}"
+    balance_transaction: "{{ source('stripe', 'balance_transaction') }}"
+    card: "{{ source('stripe', 'card') }}"
+    charge: "{{ source('stripe', 'charge') }}"
+    customer: "{{ source('stripe', 'customer') }}"
+    dispute: "{{ source('stripe', 'dispute') }}"
+    discount: "{{ source('stripe', 'discount') }}"
+    fee: "{{ source('stripe', 'fee') }}"
+    invoice: "{{ source('stripe', 'invoice') }}"
+    invoice_line_item: "{{ source('stripe', 'invoice_line_item') }}"
+    payment_intent: "{{ source('stripe', 'payment_intent') }}"
+    payment_method_card: "{{ source('stripe', 'payment_method_card') }}"
+    payment_method: "{{ source('stripe', 'payment_method') }}"
+    payout: "{{ source('stripe', 'payout') }}"
+    payout_balance_transaction: "{{ source('stripe', 'payout_balance_transaction') }}"
+    price_plan: "{{ source('stripe', 'price_plan') }}"
+    product: "{{ source('stripe', 'product') }}"
+    refund: "{{ source('stripe', 'refund') }}"
+    subscription: "{{ source('stripe', 'subscription') }}"
+    transfer: "{{ source('stripe', 'transfer') }}"
+
+    card_pass_through_columns: []

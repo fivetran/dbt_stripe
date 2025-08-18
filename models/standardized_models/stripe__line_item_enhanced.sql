@@ -8,63 +8,63 @@
 with invoice_line_item as (
 
     select *
-    from {{ var('invoice_line_item') }} 
+    from {{ ref('stg_stripe__invoice_line_item') }} 
 
 ), invoice as (
 
     select *
-    from {{ var('invoice') }}
+    from {{ ref('stg_stripe__invoice') }}
 
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
 
     select *
-    from {{ var('subscription') }}  
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), price_plan as (
 
     select *
-    from {{ var('price_plan') }}  
+    from {{ ref('stg_stripe__price_plan') }}  
 
 ), product as (
 
     select *
-    from {{ var('product') }}
+    from {{ ref('stg_stripe__product') }}
 
 {% endif %}
 
 ), payment_intent as (
 
     select *
-    from {{ var('payment_intent') }} 
+    from {{ ref('stg_stripe__payment_intent') }} 
 
 {% if var('stripe__using_payment_method', True) %}
 ), payment_method as (
 
     select *
-    from {{ var('payment_method')}}
+    from {{ ref('stg_stripe__payment_method') }}
 
 {% endif %}
 
 ), fee as (
 
     select *
-    from {{ var('fee') }} 
+    from {{ ref('stg_stripe__fee') }} 
 
 ), account as (
 
     select *
-    from {{ var('account') }}
+    from {{ ref('stg_stripe__account') }}
 
 ), balance_transaction as (
 
     select *
-    from {{ var('balance_transaction') }} 
+    from {{ ref('stg_stripe__balance_transaction') }} 
 
 ), charge as (
 
     select *
-    from {{ var('charge') }} 
+    from {{ ref('stg_stripe__charge') }} 
 
 ), discount as (
 
@@ -72,7 +72,7 @@ with invoice_line_item as (
         invoice_id,
         source_relation,
         sum(amount) as total_discount_amount
-    from {{ var('discount') }}
+    from {{ ref('stg_stripe__discount') }}
     group by 1, 2
 
 ), line_item_aggregate as (
@@ -81,18 +81,18 @@ with invoice_line_item as (
         invoice_id,
         source_relation,
         sum(amount) as total_line_item_amount
-    from {{ var('invoice_line_item') }}
+    from {{ ref('stg_stripe__invoice_line_item') }}
     group by 1, 2
 
 ), refund as (
 
     select *
-    from {{ var('refund') }} 
+    from {{ ref('stg_stripe__refund') }} 
 
 ), customer as (
 
     select *
-    from {{ var('customer') }} 
+    from {{ ref('stg_stripe__customer') }} 
 
 ), enhanced as (
 
@@ -208,7 +208,7 @@ with invoice_line_item as (
 
     left join price_plan
 
-    {% if var('stripe__using_price', stripe_source.does_table_exist('price')=='exists') %}
+    {% if var('stripe__using_price', stripe.does_table_exist('price')=='exists') %}
         on invoice_line_item.price_id = price_plan.price_plan_id
     {% else %}
         on invoice_line_item.plan_id = price_plan.price_plan_id

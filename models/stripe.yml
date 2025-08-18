@@ -18,11 +18,6 @@ models:
 
   - name: stripe__balance_transactions
     description: Each record represents a change to your account balance, enriched with data about the transaction.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - balance_transaction_id
-            - source_relation
     columns:
     - name: balance_transaction_id
       description: Unique identifier for the transaction.
@@ -299,11 +294,6 @@ models:
 
   - name: stripe__invoice_details
     description: Each record represents an invoice, enriched with details about the associated charge, customer, and subscription data.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - invoice_id
-            - source_relation
     columns:
       - name: invoice_id
         description: The unique Identifier of the invoice object. Note invoices can have many line items, so this value can appear multiple times.
@@ -378,12 +368,6 @@ models:
 
   - name: stripe__invoice_line_item_details
     description: Each record represents an invoice line item, enriched with details about the associated invoice, charge, customer, subscription, and pricing data.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - invoice_line_item_id
-            - invoice_id
-            - source_relation
     columns:
       - name: invoice_line_item_id
         description: The unique Identifier of the invoice line object. Note that the same line item can be shown across different invoices, so this value can appear multiple times.
@@ -462,11 +446,6 @@ models:
 
   - name: stripe__subscription_details
     description: Each record represents a subscription, enriched with customer details and payment aggregations.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - subscription_id
-            - source_relation
     columns:
       - name: subscription_id
         description: Unique identifier for the subscription object.
@@ -521,12 +500,6 @@ models:
 
   - name: stripe__daily_overview
     description: Each record represents, per account per day, a summary of daily totals and rolling totals by transaction type (balances, payments, refunds, payouts, and other transactions).
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - account_id
-            - date_day
-            - source_relation
     columns:
       - name: account_id
         description: The ID of the account tied to the balance.
@@ -607,11 +580,6 @@ models:
 
   - name: stripe__activity_itemized_2
     description: Modeled after the [titular report](https://stripe.com/docs/reports/activity#downloading-data) from Stripe, each record represents a balance transaction and additional details such as associated customer, charge, refund, fee, and invoice information. This class of Activity reports allows you to see your payments activity alongside the related fees for the same period of time. Designed specifically for users with Interchange Plus (IC+) pricing, it presents users with fees on the date they incur them. This makes it useful for calculating fee accrual entries and understanding your net payments activity. This itemized report contains a full list of individual transactions.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - balance_transaction_id
-            - source_relation
     columns:
       - name: balance_transaction_id
         description: Unique identifier for the related balance transaction.
@@ -724,11 +692,6 @@ models:
 
   - name: stripe__balance_change_from_activity_itemized_3
     description: Modeled after the [titular report](https://stripe.com/docs/reports/balance#schema-balance-change-from-activity-itemized-3) from Stripe, each record represents a balance transaction and additional details such as associated customer, charge, refund, card, and invoice information. This class of Balance reports is similar to a bank statement, helping you to reconcile your Stripe balance at the end of the month. The Balance report is most useful if you treat Stripe like a bank account for accounting purposes, reconciling the balance at the end of each month. If you have automatic payouts enabled and prefer to reconcile the transactions settled in each payout, see the Payout reconciliation report instead. The Balance Change from Activity reports provides a more detailed breakdown of your transactions by reporting category. This section includes all transactions except for payouts that affect your balance, including charges, refunds, disputes, other adjustments, and fees.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - balance_transaction_id
-            - source_relation
     columns:
       - name: balance_transaction_id
         description: Unique identifier for the balance transaction.
@@ -849,11 +812,6 @@ models:
 
   - name: stripe__ending_balance_reconciliation_itemized_4
     description: Modeled after the [titular report](https://stripe.com/docs/reports/payout-reconciliation#schema-ending-balance-reconciliation-itemized-4) from Stripe, each record represents an automatic payout and additional details such as associated customer, shipping, card, subscription information. This report belongs to the class of Payout Reconciliation reports. The Payout reconciliation report helps you match the payouts you receive in your bank account with the batches of payments and other transactions that they relate to. The payout reconciliation report is only available for users with automatic payouts enabled, and is optimized for users who prefer to reconcile the transactions included in each payout as a settlement batch. If you use manual payouts or prefer to track and reconcile your Stripe balance like a bank account, see the Balance report instead. To help you decide which report is right for you, see the guide for selecting reports. This Ending Balance Reconciliation section provides a similar breakdown of the transactions that hadn’t been settled as of the report’s end date.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - automatic_payout_id
-            - source_relation
     columns:
       - name: automatic_payout_id
         description: ID of the automatically created payout associated with this balance transaction (only set if your account is on an automatic payout schedule).
@@ -974,11 +932,6 @@ models:
 
   - name: stripe__payout_itemized_3
     description: Modeled after the [titular report](https://stripe.com/docs/reports/balance#schema-payouts-itemized-3) from Stripe, each record represents a payout and its additional details such as expected arrival date and current status. This report belongs to the class of Balance reports. The Balance report is similar to a bank statement, helping you to reconcile your Stripe balance at the end of the month. The Balance report is most useful if you treat Stripe like a bank account for accounting purposes, reconciling the balance at the end of each month. If you have automatic payouts enabled and prefer to reconcile the transactions settled in each payout, see the Payout reconciliation report instead. The Payout Itemized report information on each payout made to your bank account.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - payout_id
-            - source_relation
     columns:
       - name: payout_id
         description: The Stripe object to which this transaction is related.

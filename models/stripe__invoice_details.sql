@@ -3,12 +3,12 @@
 with invoice as (
 
     select *
-    from {{ var('invoice') }}  
+    from {{ ref('stg_stripe__invoice') }}  
 
 ), charge as (
 
     select *
-    from {{ var('charge') }}  
+    from {{ ref('stg_stripe__charge') }}  
 
 ), invoice_line_item as (
 
@@ -18,25 +18,25 @@ with invoice as (
         coalesce(count(distinct unique_invoice_line_item_id),0) as number_of_line_items,
         coalesce(sum(quantity),0) as total_quantity
 
-    from {{ var('invoice_line_item') }}  
+    from {{ ref('stg_stripe__invoice_line_item') }}  
     group by 1,2
 
 ), customer as (
 
     select *
-    from {{ var('customer') }}  
+    from {{ ref('stg_stripe__customer') }}  
 
 {% if var('stripe__using_subscriptions', True) %}
 
 ), subscription as (
 
     select *
-    from {{ var('subscription') }}  
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), price_plan as (
 
     select *
-    from {{ var('price_plan') }}  
+    from {{ ref('stg_stripe__price_plan') }}  
 
 {% endif %}
 )

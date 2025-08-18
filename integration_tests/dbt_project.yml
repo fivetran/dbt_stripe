@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '0.19.2'
+version: '1.0.0'
 
 profile: 'integration_tests'
 
@@ -14,7 +14,7 @@ vars:
   # stripe__using_credit_notes: true # @docs-include
 
   stripe_schema: stripe_integrations_tests_22
-  stripe_source:
+  stripe:
     stripe_account_identifier: "account_data"
     stripe_group_identifier: "group_data"
     stripe_balance_transaction_identifier: "balance_transaction_data"

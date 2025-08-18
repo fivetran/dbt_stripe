@@ -1,7 +1,7 @@
 with charge as (
 
     select *
-    from {{ var('charge')}}
+    from {{ ref('stg_stripe__charge') }}
 
 )
 
