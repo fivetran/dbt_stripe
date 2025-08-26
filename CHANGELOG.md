@@ -1,3 +1,9 @@
+# dbt_stripe v1.0.1
+[PR #124](https://github.com/fivetran/dbt_stripe/pull/124) includes the following updates:
+
+## Bug Fix
+- Corrects the source `var` names introduced during the consolidation of the source and transform packages.
+
 # dbt_stripe v1.0.0
 
 [PR #122](https://github.com/fivetran/dbt_stripe/pull/122) includes the following updates:
