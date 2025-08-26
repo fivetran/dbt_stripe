@@ -1,6 +1,6 @@
 config-version: 2
 name: 'stripe'
-version: '1.0.0'
+version: '1.0.1'
 require-dbt-version: [">=1.3.0", "<2.0.0"]
 
 models:
@@ -21,9 +21,11 @@ vars:
     balance_transaction: "{{ source('stripe', 'balance_transaction') }}"
     card: "{{ source('stripe', 'card') }}"
     charge: "{{ source('stripe', 'charge') }}"
+    credit_note: "{{ source('stripe', 'credit_note') }}"
+    credit_note_line_item: "{{ source('stripe', 'credit_note_line_item') }}"
     customer: "{{ source('stripe', 'customer') }}"
-    dispute: "{{ source('stripe', 'dispute') }}"
     discount: "{{ source('stripe', 'discount') }}"
+    dispute: "{{ source('stripe', 'dispute') }}"
     fee: "{{ source('stripe', 'fee') }}"
     invoice: "{{ source('stripe', 'invoice') }}"
     invoice_line_item: "{{ source('stripe', 'invoice_line_item') }}"
@@ -32,9 +34,11 @@ vars:
     payment_method: "{{ source('stripe', 'payment_method') }}"
     payout: "{{ source('stripe', 'payout') }}"
     payout_balance_transaction: "{{ source('stripe', 'payout_balance_transaction') }}"
-    price_plan: "{{ source('stripe', 'price_plan') }}"
+    plan: "{{ source('stripe', 'plan') }}"
+    price: "{{ source('stripe', 'price') }}"
     product: "{{ source('stripe', 'product') }}"
     refund: "{{ source('stripe', 'refund') }}"
+    subscription_history: "{{ source('stripe', 'subscription_history') }}"
     subscription: "{{ source('stripe', 'subscription') }}"
     transfer: "{{ source('stripe', 'transfer') }}"
 
