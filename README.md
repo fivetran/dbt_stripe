@@ -50,7 +50,7 @@ Curious what these tables can do? Check out example visualizations from the [str
 </p>
 
 ### Materialized Models
-Each Quickstart transformation job run materializes 57 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
+Each Quickstart transformation job run materializes 58 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
 
 ## How do I use the dbt package?
@@ -212,6 +212,9 @@ vars:
   stripe__subscription_metadata:
     - name: 567
       alias: five_six_seven
+  stripe__subscription_item_metadata:
+    - name: 568
+      alias: five_six_eight
 
 ```
 

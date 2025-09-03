@@ -1,3 +1,28 @@
+# dbt_stripe v1.1.1
+[PR #](https://github.com/fivetran/dbt_stripe/pull/) includes the following updates:
+
+## Breaking Changes
+- In alignment with the Fivetran Stripe connector [July 2025 update](https://fivetran.com/docs/connectors/applications/stripe/changelog#july2025), added:  
+  - Source:
+    - `SUBSCRIPTION_ITEM`  
+  - Models:
+    - `stg_stripe__subscription_item`  
+    - `stg_stripe__subscription_item_tmp`
+- This is the source of the current_period_start and current_period_end fields in the current version of the Stripe API 
+  - These fields are still supported for the subscription_history table. Source depends on the customer version.
+  - Customers on the latest version will need to resync to backfill historic data in these columns
+
+## Schema/Data Changes
+**2 total changes • 2 possible breaking changes**
+| **Data Model** | **Change type** | **Old name** | **New name** | **Notes** |
+| ---------------- | --------------- | ------------ | ------------ | --------- |
+| [`stg_stripe__subscription_line_item_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.) | New Model | | stg_stripe__subscription_item_tmp||
+| ['stg_stripe__subscription_line_item'](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.) | New Model | | stg_stripe__subscription_item | now source for current_period_start/end fields, replacing subscription/subscription_history
+
+## Under the Hood
+- As of July 31, 2025, current_period_start and current_period_end fields are populated in the subscription_item table, but will continue to be supported in the subscription_history table for customers on older versions of the Stripe API
+  - This package includes both sources, so fields should populate regardless of customer version.
+
 # dbt_stripe v1.0.1
 [PR #124](https://github.com/fivetran/dbt_stripe/pull/124) includes the following updates:
 
