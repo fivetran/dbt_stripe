@@ -24,6 +24,19 @@ with invoice as (
 
     select *
     from {{ ref('stg_stripe__subscription_item') }}
+  
+--SUBSCRIPTION_ITEM allows for one-to-many relationships between subscriptions and plans, so we need to dedupe to the subscription_id level
+
+), subscription_item_deduped as (
+
+       select
+        subscription_id,
+        source_relation,
+        min(current_period_start) as current_period_start,
+        max(current_period_end) as current_period_end
+        
+    from subscription_item
+    group by subscription_id, source_relation
 
 ), customer as (
 
@@ -78,8 +91,9 @@ select
   subscription.billing_cycle_anchor,
   subscription.canceled_at,
   subscription.created_at,
-  coalesce(subscription_item.current_period_start, subscription.current_period_start) as current_period_start,
-  coalesce(subscription_item.current_period_end, subscription.current_period_end) as current_period_end,
+  --Newer Stripe connections will store current_period_start/end fields in SUBSCRIPTION_ITEM while older ones house these fields in SUBSCRIPTION_HISTORY -> grab both and coalesce
+  coalesce(subscription_item_deduped.current_period_start, subscription.current_period_start) as current_period_start,
+  coalesce(subscription_item_deduped.current_period_end, subscription.current_period_end) as current_period_end,
   subscription.days_until_due,
   subscription.is_cancel_at_period_end,
   subscription.cancel_at,
@@ -93,9 +107,9 @@ select
   avg_num_line_items,
   subscription.source_relation
 from subscription
-left join subscription_item
-  on subscription.subscription_id = subscription_item.subscription_id
-  and subscription.source_relation = subscription_item.source_relation
+left join subscription_item_deduped
+  on subscription.subscription_id = subscription_item_deduped.subscription_id
+  and subscription.source_relation = subscription_item_deduped.source_relation
 left join grouped_by_subscription 
   on subscription.subscription_id = grouped_by_subscription.subscription_id
   and subscription.source_relation = grouped_by_subscription.source_relation

@@ -176,7 +176,7 @@ Oftentimes you may have custom fields within your source tables that is stored a
 
 Additionally, you may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field. Below are examples of how you would add the respective fields.
 
-The `metadata` JSON field is present within the `customer`, `charge`, `card`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, and `subscription` source tables. To pivot these fields out and include in the respective downstream staging model, add the relevant variable(s) to your root `dbt_project.yml` file like below.
+The `metadata` JSON field is present within the `customer`, `charge`, `card`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include in the respective downstream staging model, add the relevant variable(s) to your root `dbt_project.yml` file like below.
 
 ```yml
 vars: 

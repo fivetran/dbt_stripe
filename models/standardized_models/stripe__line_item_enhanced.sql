@@ -27,24 +27,25 @@ with invoice_line_item as (
     from {{ ref('stg_stripe__subscription_item') }}  
 
 /*
-current_period_start/end fields currently exist in both subscription_item and subscription tables. Source depends on customer version of Stripe API
-current_period_start/end fields are deprecated from subscription table in most recent API versions so both sources are needed
-subscription_item allows for one-to-many relationships between invoice_id and plan, causing duplication at the line item level 
-select distinct on subscription_id to handle duplication and prioritize current_period_start/end from subscription_item table
-*/  
+Newer Stripe connections will store current_period_start/end fields in SUBSCRIPTION_ITEM while older ones house these fields in SUBSCRIPTION_HISTORY -> grab both and coalesce
+SUBSCRIPTION_ITEM allows for one-to-many relationships between subscriptions and plans, so we need to dedupe to the subscription_id level
+*/
 
 ), subscription_item_deduped as (
 
-    select distinct (subscription_id)
+       select
         subscription_id,
         source_relation,
-        current_period_start,
-        current_period_end
+        min(current_period_start) as current_period_start,
+        max(current_period_end) as current_period_end
+        
     from subscription_item
+    group by subscription_id, source_relation
 
 
 ), subscription_item_merge as (
-    select coalesce(deduped.subscription_id, subscription.subscription_id) as subscription_id,
+    select 
+           coalesce(deduped.subscription_id, subscription.subscription_id) as subscription_id,
            subscription.status,
            coalesce(deduped.source_relation, subscription.source_relation) as source_relation,
            coalesce(deduped.current_period_start, subscription.current_period_start) as current_period_start,
