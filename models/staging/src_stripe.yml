@@ -756,7 +756,7 @@ sources:
             description: The ID of the plan associated with this subscription_item.
           - name: subscription_id
             description: The ID of the subscription this item belongs to. Join key to the subscription_history table.
-          - name: created_at
+          - name: created
             description: Time at which the object was created
           - name: current_period_start
             description: Start of the current period that the subscription has been invoiced for.

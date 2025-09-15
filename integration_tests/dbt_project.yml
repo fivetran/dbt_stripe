@@ -86,4 +86,4 @@ dispatch:
 flags:
   send_anonymous_usage_stats: False
 
-  use_colors: True
+  use_colors: True 

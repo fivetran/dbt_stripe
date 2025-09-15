@@ -10,7 +10,7 @@ with prod as (
 
 dev as (
     select *
-    from {{ target.schema }}_stripe_prod.stripe__subscription_details
+    from {{ target.schema }}_stripe_dev.stripe__subscription_details
 ),
 
 prod_not_in_dev as (

@@ -53,6 +53,7 @@ SUBSCRIPTION_ITEM allows for one-to-many relationships between subscriptions and
     from subscription
     left join  subscription_item_deduped as deduped
         on deduped.subscription_id = subscription.subscription_id
+        and deduped.source_relation = subscription.source_relation
 
 ), price_plan as (
 
