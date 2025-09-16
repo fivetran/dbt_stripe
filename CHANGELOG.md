@@ -5,7 +5,7 @@
 **2 total changes • 2 possible breaking changes**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | ---------------- | --------------- | ------------ | ------------ | --------- |
-| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`. |
+| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`. These tables can be  these enabled/disabled via the `stripe__using_subscriptions` variable.|
 | [`stg_stripe__subscription_item_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item_tmp) | New Staging Model | | | |
 
 - For customers using the >= July 31st version of the connector, `current_period_start/end` fields will only populate in the `subscription_item` table

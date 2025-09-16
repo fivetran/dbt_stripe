@@ -98,7 +98,7 @@ This package takes into consideration that not every Stripe account utilizes the
 vars:
     stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
     stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
-    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan/price tables.
+    stripe__using_subscriptions:   False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
 ```
 ### (Optional) Step 5: Additional configurations

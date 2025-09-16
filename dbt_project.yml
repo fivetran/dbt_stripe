@@ -9,6 +9,8 @@ models:
     +materialized: table
     intermediate:
       +materialized: table
+      int_stripe__deduped_subscription_item:
+        +materialized: ephemeral
     staging:
       +materialized: table
       +schema: stg_stripe
