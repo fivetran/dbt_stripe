@@ -14,6 +14,8 @@
   - `current_period_start/end` fields will populate in the `subscription_history` table for customers using earlier versions of the connector.
   - Customers using the >= July 31st version of the connector will need to resync to backfill historic data in these columns.
 
+## Under the Hood
+- Updated the `current_period_start/end` fields to be cast as `dbt.type_timestamp()` within the `stg_stripe__subscription` model. This helps ensure an accurate and consistent datatype.
 
 # dbt_stripe v1.0.1
 [PR #124](https://github.com/fivetran/dbt_stripe/pull/124) includes the following updates:
