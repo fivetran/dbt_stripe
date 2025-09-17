@@ -50,7 +50,7 @@ Curious what these tables can do? Check out example visualizations from the [str
 </p>
 
 ### Materialized Models
-Each Quickstart transformation job run materializes 57 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
+Each Quickstart transformation job run materializes 58 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
 
 ## How do I use the dbt package?
@@ -75,7 +75,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=1.0.0", "<1.1.0"]
+    version: [">=1.1.0", "<1.2.0"]
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
@@ -98,7 +98,7 @@ This package takes into consideration that not every Stripe account utilizes the
 vars:
     stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables
     stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables
-    stripe__using_subscriptions:   False  #Disable if you are not using the subscription and plan/price tables.
+    stripe__using_subscriptions:   False  #Disable if you are not using the subscription, and plan/price tables.
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
 ```
 ### (Optional) Step 5: Additional configurations
@@ -176,7 +176,7 @@ Oftentimes you may have custom fields within your source tables that is stored a
 
 Additionally, you may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field. Below are examples of how you would add the respective fields.
 
-The `metadata` JSON field is present within the `customer`, `charge`, `card`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, and `subscription` source tables. To pivot these fields out and include in the respective downstream staging model, add the relevant variable(s) to your root `dbt_project.yml` file like below.
+The `metadata` JSON field is present within the `customer`, `charge`, `card`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include in the respective downstream staging model, add the relevant variable(s) to your root `dbt_project.yml` file like below.
 
 ```yml
 vars: 
@@ -212,6 +212,9 @@ vars:
   stripe__subscription_metadata:
     - name: 567
       alias: five_six_seven
+  stripe__subscription_item_metadata:
+    - name: 568
+      alias: five_six_eight
 
 ```
 

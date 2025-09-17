@@ -20,6 +20,11 @@ with invoice as (
     select *
     from {{ ref('stg_stripe__subscription') }}  
 
+), subscription_item as (
+
+    select *
+    from {{ ref('int_stripe__deduped_subscription_item') }} 
+
 ), customer as (
 
     select *
@@ -73,8 +78,9 @@ select
   subscription.billing_cycle_anchor,
   subscription.canceled_at,
   subscription.created_at,
-  subscription.current_period_start,
-  subscription.current_period_end,
+  --Newer Stripe connections will store current_period_start/end fields in SUBSCRIPTION_ITEM while older ones house these fields in SUBSCRIPTION_HISTORY -> grab both and coalesce
+  coalesce(subscription.current_period_start, subscription_item.current_period_start) as current_period_start,
+  coalesce(subscription.current_period_end, subscription_item.current_period_end) as current_period_end,
   subscription.days_until_due,
   subscription.is_cancel_at_period_end,
   subscription.cancel_at,
@@ -88,6 +94,9 @@ select
   avg_num_line_items,
   subscription.source_relation
 from subscription
+left join subscription_item
+  on subscription.subscription_id = subscription_item.subscription_id
+  and subscription.source_relation = subscription_item.source_relation
 left join grouped_by_subscription 
   on subscription.subscription_id = grouped_by_subscription.subscription_id
   and subscription.source_relation = grouped_by_subscription.source_relation

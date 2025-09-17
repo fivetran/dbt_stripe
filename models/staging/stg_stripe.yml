@@ -606,6 +606,30 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 
+  - name: stg_stripe__subscription_item
+    description: Subscription items allow you to create customer subscriptions with more than one plan, making it easy to represent complex billing relationships.
+    columns:
+      - name: subscription_item_id
+        description: Unique identifier for the object.
+        tests:
+          - not_null
+      - name: plan_id
+        description: The ID of the plan associated with this subscription_item.
+      - name: subscription_id
+        description: The ID of the subscription this item belongs to. Join key to the subscription_history table.
+      - name: created_at
+        description: Time at which the object was created
+      - name: current_period_start
+        description: Start of the current period that the subscription has been invoiced for.
+      - name: current_period_end
+        description: End of the current period that the subscription has been invoiced for. At the end of this period, a new invoice will be created.
+      - name: metadata
+        description: Custom metadata added to the record, in JSON string format
+      - name: quantity
+        description: The quantity of the plan to which the customer is subscribed.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+
   - name: stg_stripe__price_plan
     description: This model defines the base price, currency, and billing cycle for recurring purchases of products. Please note that the Prices API replaced the Plans API in Stripe, so if you have migrated and choose to use the Price object then these columns come from the Price object. Otherwise, these will come from the Plan object. For how to configure, refer to the README.
     columns:

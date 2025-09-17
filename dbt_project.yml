@@ -1,6 +1,6 @@
 config-version: 2
 name: 'stripe'
-version: '1.0.1'
+version: '1.1.0'
 require-dbt-version: [">=1.3.0", "<2.0.0"]
 
 models:
@@ -9,6 +9,8 @@ models:
     +materialized: table
     intermediate:
       +materialized: table
+      int_stripe__deduped_subscription_item:
+        +materialized: ephemeral
     staging:
       +materialized: table
       +schema: stg_stripe
@@ -40,6 +42,7 @@ vars:
     refund: "{{ source('stripe', 'refund') }}"
     subscription_history: "{{ source('stripe', 'subscription_history') }}"
     subscription: "{{ source('stripe', 'subscription') }}"
+    subscription_item: "{{ source('stripe', 'subscription_item') }}"
     transfer: "{{ source('stripe', 'transfer') }}"
 
     card_pass_through_columns: []

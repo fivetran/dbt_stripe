@@ -197,6 +197,7 @@ sources:
         description: Customer objects allow you to perform recurring charges, and to track multiple charges, that are associated with the same customer.
         config:
           freshness: null
+
         columns:
           - name: id
             description: Unique identifier for the object.
@@ -742,6 +743,29 @@ sources:
             description: The payment collection behavior for this subscription while paused. One of keep_as_draft, mark_uncollectible, or void.
           - name: pause_collection_resumes_at
             description: The time after which the subscription will resume collecting payments.
+
+      - name: subscription_item
+        identifier: "{{ var('stripe_subscription_item_identifier', 'subscription_item')}}"
+        description: Subscription items allow you to create customer subscriptions with more than one plan, making it easy to represent complex billing relationships.
+        config:
+          freshness: null
+        columns:
+          - name: id
+            description: Unique identifier for the object.
+          - name: plan_id
+            description: The ID of the plan associated with this subscription_item.
+          - name: subscription_id
+            description: The ID of the subscription this item belongs to. Join key to the subscription_history table.
+          - name: created
+            description: Time at which the object was created
+          - name: current_period_start
+            description: Start of the current period that the subscription has been invoiced for.
+          - name: current_period_end
+            description: End of the current period that the subscription has been invoiced for. At the end of this period, a new invoice will be created.
+          - name: metadata
+            description: Custom metadata added to the record, in JSON string format
+          - name: quantity
+            description: The quantity of the plan to which the customer is subscribed.
 
       - name: plan
         identifier: "{{ var('stripe_plan_identifier', 'plan')}}"

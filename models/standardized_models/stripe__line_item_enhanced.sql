@@ -21,6 +21,24 @@ with invoice_line_item as (
     select *
     from {{ ref('stg_stripe__subscription') }}  
 
+), subscription_item as (
+
+    select *
+    from {{ ref('int_stripe__deduped_subscription_item') }}  
+
+--Newer Stripe connections will store current_period_start/end fields in SUBSCRIPTION_ITEM while older ones house these fields in SUBSCRIPTION_HISTORY -> grab both and coalesce
+), subscription_item_merge as (
+    select 
+           coalesce(subscription.subscription_id, subscription_item.subscription_id) as subscription_id,
+           subscription.status,
+           coalesce(subscription.source_relation, subscription_item.source_relation) as source_relation,
+           coalesce(subscription.current_period_start, subscription_item.current_period_start) as current_period_start,
+           coalesce(subscription.current_period_end, subscription_item.current_period_end) as current_period_end
+    from subscription
+    left join subscription_item
+        on subscription.subscription_id = subscription_item.subscription_id
+        and subscription.source_relation = subscription_item.source_relation
+
 ), price_plan as (
 
     select *
@@ -137,9 +155,9 @@ with invoice_line_item as (
         cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
         cast({{ "product.name" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as subscription_plan,
-        cast({{ "subscription.current_period_start" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
-        cast({{ "subscription.current_period_end" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
-        cast({{ "subscription.status" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as subscription_status,
+        cast({{ "subscription_item_merge.current_period_start" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_timestamp() }}) as subscription_period_started_at,
+        cast({{ "subscription_item_merge.current_period_end" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_timestamp() }}) as subscription_period_ended_at,
+        cast({{ "subscription_item_merge.status" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as subscription_status,
 
         cast(invoice.customer_id as {{ dbt.type_string() }}) as customer_id,
         cast(customer.created_at as {{ dbt.type_timestamp() }}) as customer_created_at,
@@ -202,9 +220,9 @@ with invoice_line_item as (
 
     {% if var('stripe__using_subscriptions', True) %}
 
-    left join subscription
-        on invoice.subscription_id = subscription.subscription_id
-        and invoice.source_relation = subscription.source_relation
+    left join subscription_item_merge
+        on invoice.subscription_id = subscription_item_merge.subscription_id
+        and invoice.source_relation = subscription_item_merge.source_relation
 
     left join price_plan
 
