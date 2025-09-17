@@ -30,8 +30,8 @@ final as (
         plan_id,
         subscription_id,
         cast(created as {{ dbt.type_timestamp() }}) as created_at,
-        current_period_start,
-        current_period_end,
+        cast(current_period_start as {{ dbt.type_timestamp() }}) as current_period_start,
+        cast(current_period_end as {{ dbt.type_timestamp() }}) as current_period_end,
         metadata,
         quantity,
         source_relation
