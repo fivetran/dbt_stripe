@@ -1,5 +1,3 @@
-{{ config(enabled=var('stripe__using_subscriptions', True)) }}
-
 {{
     fivetran_utils.union_data(
         table_identifier='subscription_item', 

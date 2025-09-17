@@ -1,5 +1,4 @@
-with subscription_item as (
-{{ config(enabled=var('stripe__using_subscriptions', True)) }}    
+with subscription_item as ( 
 
     select * 
     from {{ ref('stg_stripe__subscription_item') }}
@@ -17,4 +16,4 @@ select
     max(current_period_end) as current_period_end
         
 from subscription_item
-group by subscription_id, source_relation
+group by 1, 2

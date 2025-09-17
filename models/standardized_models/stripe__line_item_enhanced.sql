@@ -35,7 +35,7 @@ with invoice_line_item as (
            coalesce(subscription.current_period_start, subscription_item.current_period_start) as current_period_start,
            coalesce(subscription.current_period_end, subscription_item.current_period_end) as current_period_end
     from subscription
-    left join  subscription_item
+    left join subscription_item
         on subscription.subscription_id = subscription_item.subscription_id
         and subscription.source_relation = subscription_item.source_relation
 

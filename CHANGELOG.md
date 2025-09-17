@@ -5,13 +5,14 @@
 **2 total changes • 2 possible breaking changes**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | ---------------- | --------------- | ------------ | ------------ | --------- |
-| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`. These tables can be  these enabled/disabled via the `stripe__using_subscriptions` variable.|
+| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`.|
 | [`stg_stripe__subscription_item_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item_tmp) | New Staging Model | | | |
+| [`stripe__subscription_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe_subscription_details) | New Source Data | `current_period_start/end` fields sourced from `stg_stripe__subscription_history`  | `current_period_start/end` fields sourced from both `stg_stripe__subscription_history` and `stg_stripe__subscription_item. | Fields have been coalesced to reference either table, so the package will work for all versions.|
+| [`stripe__line_item_enhanced`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe_line_item_enhanced) | New Source Data |`current_period_start/end` fields sourced from `stg_stripe__subscription_history`  |`current_period_start/end` fields sourced from both `stg_stripe__subscription_history` and `stg_stripe__subscription_item. |Fields have been coalesced to reference either table, so the package will work for all versions. |
 
-- For customers using the >= July 31st version of the connector, `current_period_start/end` fields will only populate in the `subscription_item` table
-  - `current_period_start/end` fields will populate in the `subscription_history` table for customers using earlier versions of the connector
-  - Customers using the >= July 31st version of the connector will need to resync to backfill historic data in these columns
-  - Fields have been coalesced to reference either table, so the package will work for all versions.
+- For customers using the >= July 31st version of the connector, `current_period_start/end` fields will only populate in the `subscription_item` table.
+  - `current_period_start/end` fields will populate in the `subscription_history` table for customers using earlier versions of the connector.
+  - Customers using the >= July 31st version of the connector will need to resync to backfill historic data in these columns.
 
 
 # dbt_stripe v1.0.1
