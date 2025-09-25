@@ -1229,7 +1229,7 @@ sources:
 
 </details>
 
-3. If you want all of your source tables to appear in your project's DAG, add the following variable configuration to your `dbt_project.yml`:
+3. Add the following variable configuration to your `dbt_project.yml`:
 
 ```yml
 # dbt_project.yml
