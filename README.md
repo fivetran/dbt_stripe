@@ -114,7 +114,7 @@ vars:
 ```
 
 #### Unioning Multiple Stripe Connections
-If you have multiple Stripe connections you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connections will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables. Please also make sure the single-source `stripe_database` and `stripe_schema` variables are removed.
+If you have multiple Stripe connections you would like to use this package on simultaneously, we have added the ability to do so. Data from disparate connections will be unioned together and be passed downstream to the end models. The `source_relation` column will specify where each record comes from. To use this functionality, you will need to either set the `stripe_union_schemas` or `stripe_union_databases` variables.
 
 ```yml
 # dbt_project.yml
@@ -1228,7 +1228,6 @@ sources:
 ```
 
 </details>
-<br>
 
 3. If you want all of your source tables to appear in your project's DAG, add the following variable configuration to your `dbt_project.yml`:
 
