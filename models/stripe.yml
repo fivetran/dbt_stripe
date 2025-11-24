@@ -936,7 +936,7 @@ models:
       - name: payout_id
         description: The Stripe object to which this transaction is related.
       - name: effective_at
-        description: For automatic payouts, this is the date we expect funds to arrive in your bank account. For manual payouts, this is the date the payout was initiated. In both cases, it’s the date the paid-out funds are deducted from your Stripe balance. All dates in the requested timezone, or UTC if not provided.
+        description: For automatic payouts, this is the date we expect funds to arrive in your bank account. For manual payouts, this is the date the payout was initiated. In both cases, it's the date the paid-out funds are deducted from your Stripe balance. All dates in the requested timezone, or UTC if not provided.
       - name: currency
         description: Three-letter ISO code for the currency in which gross, fee and net are defined.
       - name: gross
@@ -956,7 +956,7 @@ models:
       - name: payout_status
         description: Current status of the payout (paid, pending, in_transit, canceled or failed). A payout will be pending until it is submitted to the bank, at which point it becomes in_transit. It will then change to paid if the transaction goes through. If it does not go through successfully, its status will change to failed or canceled.
       - name: payout_reversed_at
-        description: Typically this field will be empty. However, if the payout’s status is canceled or failed, this field will reflect the time at which it entered that status. Times in the requested timezone, or UTC if not provided.
+        description: Typically this field will be empty. However, if the payout's status is canceled or failed, this field will reflect the time at which it entered that status. Times in the requested timezone, or UTC if not provided.
       - name: payout_type
         description: Can be bank_account or card.
       - name: payout_description
@@ -965,3 +965,45 @@ models:
         description: ID of the bank account or card the payout was sent to.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
+
+  - name: stripe__subscription_item_mrr_report
+    description: Each record represents a subscription item for a given month with monthly recurring revenue (MRR) metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: subscription_item_id
+        description: Unique identifier for the subscription item.
+      - name: subscription_id
+        description: Unique identifier for the subscription.
+      - name: customer_id
+        description: ID of the customer who owns the subscription.
+      - name: product_id
+        description: ID of the product associated with this subscription item.
+      - name: subscription_status
+        description: Current status of the subscription. Possible values are incomplete, incomplete_expired, trialing, active, past_due, canceled, or unpaid.
+      - name: currency
+        description: Three-letter ISO currency code, in lowercase.
+      - name: subscription_year
+        description: Year of the subscription period.
+      - name: subscription_month
+        description: Month of the subscription period.
+      - name: current_month_mrr
+        description: Monthly recurring revenue for this subscription item in the current month. "{{ doc('convert_values') }}"
+      - name: previous_month_mrr
+        description: Monthly recurring revenue for this subscription item in the previous month. "{{ doc('convert_values') }}"
+      - name: item_month_number
+        description: Sequential month number for this subscription item, starting from 1 for the first month.
+      - name: mrr_type
+        description: Classification of the MRR change for this month. Possible values are new (first month with MRR), expansion (MRR increased), contraction (MRR decreased but still positive), churned (MRR went to zero), reactivation (MRR returned after being zero), unchanged (MRR stayed the same), or unknown.
+
+  - name: stripe__arr_snapshot
+    description: Each record represents an annual recurring revenue (ARR) snapshot for the last month of each calendar year by currency. ARR is calculated by multiplying the total MRR by 12.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: recurring_rev_year
+        description: Calendar year for this ARR snapshot.
+      - name: currency
+        description: Three-letter ISO currency code, in lowercase.
+      - name: total_arr
+        description: Total annual recurring revenue, calculated as MRR multiplied by 12 and rounded to two decimal places. "{{ doc('convert_values') }}"
