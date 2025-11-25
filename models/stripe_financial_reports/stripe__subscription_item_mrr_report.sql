@@ -5,6 +5,7 @@ with subscription_item as (
     select *
     from {{ ref('stg_stripe__subscription_item') }}
 
+
 ),
 
 subscription as (
@@ -49,7 +50,7 @@ base as (
         on subscription_item.subscription_id = subscription.subscription_id
         and subscription_item.source_relation = subscription.source_relation
     left join price_plan
-        on cast(subscription_item.plan_id as {{ dbt.type_string() }}) = cast(price_plan.price_plan_id as {{ dbt.type_string() }})
+        on subscription_item.plan_id = price_plan.price_plan_id
         and subscription_item.source_relation = price_plan.source_relation
 
 ),
@@ -158,10 +159,9 @@ classified as (
             when (current_month_mrr = 0 or current_month_mrr is null)
                  and previous_month_mrr > 0
                 then 'churned'
---might want to remove reactivation altogether and just call it new or expansion
-            when previous_month_mrr = 0
-                 and current_month_mrr > 0
-                 and item_month_number >= 3
+
+            when (previous_month_mrr = 0 and current_month_mrr > 0 
+                and item_month_number >= 3) 
                 then 'reactivation'
 
             when current_month_mrr = previous_month_mrr
