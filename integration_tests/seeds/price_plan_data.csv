@@ -1,7 +1,0 @@
-id,_fivetran_synced,active,billing_scheme,created,currency,is_deleted,livemode,metadata,nickname,product_id,recurring_aggregate_usage,recurring_interval,recurring_interval_count,recurring_usage_type,unit_amount,unit_amount_decimal
-price_plan_1,2024-01-15 10:30:00,TRUE,per_unit,2023-06-01 12:00:00,usd,FALSE,TRUE,{},,prod_001,,month,1,licensed,2999,2999
-price_plan_2,2024-01-15 10:30:00,TRUE,per_unit,2023-06-01 12:00:00,usd,FALSE,TRUE,{},Premium Plan,prod_002,,month,1,licensed,9999,9999
-price_plan_3,2024-01-15 10:30:00,TRUE,per_unit,2023-07-15 14:30:00,usd,FALSE,TRUE,{},Annual Plan,prod_003,,year,1,licensed,299900,299900
-price_plan_4,2024-01-15 10:30:00,TRUE,per_unit,2023-08-20 09:15:00,eur,FALSE,TRUE,{},Quarterly Plan,prod_004,,month,3,licensed,8000,8000
-price_plan_5,2024-01-15 10:30:00,FALSE,per_unit,2023-05-10 16:45:00,usd,FALSE,TRUE,{},Legacy Plan,prod_005,,month,1,licensed,1999,1999
-price_plan_6,2024-01-15 10:30:00,TRUE,per_unit,2023-09-01 11:00:00,usd,TRUE,TRUE,{},Deleted Plan,prod_006,,month,1,licensed,4999,4999
