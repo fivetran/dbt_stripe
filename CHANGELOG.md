@@ -1,3 +1,10 @@
+# dbt_stripe v1.2.0
+
+[PR #137](https://github.com/fivetran/dbt_stripe/pull/137) includes the following updates:
+
+## Features
+  - Increases the required dbt version upper limit to v3.0.0
+
 # dbt_stripe v1.1.0
 [PR #125](https://github.com/fivetran/dbt_stripe/pull/125) includes the following updates:
 
