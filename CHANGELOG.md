@@ -1,5 +1,5 @@
 # dbt_stripe v1.2.0
-[PR #XXX](https://github.com/fivetran/dbt_stripe/pull/XXX) includes the following updates:
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
 
 ## Schema/Data Change
 **2 total changes • 0 possible breaking changes**
