@@ -158,7 +158,7 @@ classified as (
             when (current_month_mrr = 0 or current_month_mrr is null)
                  and previous_month_mrr > 0
                 then 'churned'
---might want to remove reactivation altogether and just call it new or expansion
+
             when previous_month_mrr = 0
                  and current_month_mrr > 0
                  and item_month_number >= 3

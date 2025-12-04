@@ -5,7 +5,6 @@
 
 -- this test ensures the subscription_item_mrr_report end model matches the prior version
 -- aggregated on the subscription_month, subscription_year, and source_relation grain
--- the below iterates through the prod and dev names to reduce redundancy of logic
 with
 {% for prod_or_dev in ('prod', 'dev') %}
     {% set cols = adapter.get_columns_in_relation(ref('stripe__subscription_item_mrr_report')) %}

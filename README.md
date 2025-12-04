@@ -33,6 +33,7 @@ The following table provides a detailed list of all tables materialized within t
 | [`stripe__invoice_line_item_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details) | Includes line items with charge, customer, subscription, and pricing details.<br><br>**Example Analytics Questions:**<br>• Which products or services contribute most to total invoiced revenue?<br>• Are there any products consistently discounted or refunded? |
 | [`stripe__daily_overview`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview) | Summarizes daily and rolling Stripe transaction totals by type.<br><br>**Example Analytics Questions:**<br>• What is the trend in daily net payments and refunds?<br>• What is the MRR trend over the last 6 months? |
 | [`stripe__subscription_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details) | Contains subscription records with customer and payment metrics.<br><br>**Example Analytics Questions:**<br>• How many active subscriptions are there by plan or product?<br>• What is the average customer subscription length before cancellation? |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Tracks monthly recurring revenue (MRR) at the subscription item level with movement classification.<br><br>**Example Analytics Questions:**<br>• What is the total MRR and how is it trending month over month?<br>• What portion of MRR is from expansion vs new customers vs churn? |
 | [`stripe__customer_overview`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview) | Shows customer-level metrics with transaction details and associations.<br><br>**Example Analytics Questions:**<br>• Who are the top 10 customers by total lifetime value?<br>• How many customers made a payment in the last 90 days? |
 | [`stripe__activity_itemized_2`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__activity_itemized_2) | Lists balance transactions with invoice, fee, refund, and customer data.<br><br>**Example Analytics Questions:**<br>• What are the exact transaction-level fees for each invoice or customer?<br>• How much are we paying in interchange and platform fees per transaction? |
 | [`stripe__balance_change_from_activity_itemized_3`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_change_from_activity_itemized_3) | Reconciles Stripe balance changes like a detailed bank statement.<br><br>**Example Analytics Questions:**<br>• What was the source of each Stripe balance change over the last month?<br>• How accurate is my accounting ledger compared to Stripe's balance records? |
@@ -76,7 +77,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=1.2.0", "<1.3.0"]
+    version: [">=1.3.0", "<1.4.0"]
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
