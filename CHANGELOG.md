@@ -1,4 +1,5 @@
 # dbt_stripe v1.3.0
+
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
 
 ## Schema/Data Change
@@ -8,6 +9,9 @@
 | ---------- | ----------- | -------- | -------- | ----- |
 | [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. |
 | [`stripe__arr_snapshot`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__arr_snapshot) | New End Model | | | Each record represents an ARR snapshot for the last month of each calendar year by currency. ARR is calculated by multiplying the total MRR by 12. |
+
+## Bug Fix
+- Fixed a circular reference in `stg_stripe__price_plan` where the model incorrectly references itself instead of `stg_stripe__price_plan_tmp`, causing compilation errors.
 
 ## Documentation
 - Added comprehensive column documentation for both new models in `stripe.yml`.
