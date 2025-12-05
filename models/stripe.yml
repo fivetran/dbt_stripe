@@ -995,15 +995,3 @@ models:
         description: Sequential month number for this subscription item, starting from 1 for the first month.
       - name: mrr_type
         description: Classification of the MRR change for this month. Possible values are new (first month with MRR), expansion (MRR increased), contraction (MRR decreased but still positive), churned (MRR went to zero), reactivation (MRR returned after being zero), unchanged (MRR stayed the same), or unknown.
-
-  - name: stripe__arr_snapshot
-    description: Each record represents an annual recurring revenue (ARR) snapshot for the last month of each calendar year by currency. ARR is calculated by multiplying the total MRR by 12.
-    columns:
-      - name: source_relation
-        description: "{{ doc('source_relation') }}"
-      - name: recurring_rev_year
-        description: Calendar year for this ARR snapshot.
-      - name: currency
-        description: Three-letter ISO currency code, in lowercase.
-      - name: total_arr
-        description: Total annual recurring revenue, calculated as MRR multiplied by 12 and rounded to two decimal places. "{{ doc('convert_values') }}"

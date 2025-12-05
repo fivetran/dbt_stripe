@@ -9,21 +9,21 @@
 | [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. |
 
 ## Feature Update
-- Added new analysis folder with compiled SQL for advanced revenue reporting:
+- Adds new analysis folder with compiled SQL for advanced revenue reporting:
   - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
   - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
   - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
 
 ## Bug Fix
-- Fixed a circular reference in `stg_stripe__price_plan` where the model incorrectly references itself instead of `stg_stripe__price_plan_tmp`, causing compilation errors.
+- Fixes a circular reference in `stg_stripe__price_plan` where the model incorrectly references itself instead of `stg_stripe__price_plan_tmp`, causing compilation errors.
 
 ## Documentation
-- Added comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.
-- Added README in the analysis folder with instructions on how to compile and use the analysis SQL.
+- Adds comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.
+- Adds README in the analysis folder with instructions on how to compile and use the analysis SQL.
 
 ## Under the Hood
-- Added consistency test for `stripe__subscription_item_mrr_report` model.
-- Updated `integration_tests/seeds/price_data.csv` with additional test data.
+- Adds consistency test for `stripe__subscription_item_mrr_report` model.
+- Updates `integration_tests/seeds/price_data.csv` with additional test data.
 
 # dbt_stripe v1.2.0
 
