@@ -9,7 +9,7 @@
 | [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. |
 
 ## Feature Update
-- Adds new analysis folder with compiled SQL for advanced revenue reporting:
+- Adds new analyses folder with compiled SQL for advanced revenue reporting:
   - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
   - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
   - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
