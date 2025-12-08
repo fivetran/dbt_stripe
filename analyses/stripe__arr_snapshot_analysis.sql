@@ -1,3 +1,5 @@
+{{ config(enabled=var('stripe__using_subscriptions', True)) }}
+
 with mrr_by_item as (
     select *
     from {{ ref('stripe__subscription_item_mrr_report') }}
