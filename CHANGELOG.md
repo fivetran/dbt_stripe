@@ -1,3 +1,9 @@
+# dbt_stripe v1.3.0-a2
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+## Under the Hood
+- Adds `stripe__subscription_item_mrr_report` model to quickstart.yml public models list.
+
 # dbt_stripe v1.3.0-a1
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
 
