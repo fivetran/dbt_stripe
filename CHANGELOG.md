@@ -1,3 +1,10 @@
+
+# dbt_stripe v1.3.0-a3
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+## Under the Hood
+- Adds docs.
+
 # dbt_stripe v1.3.0-a2
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
 
