@@ -1,5 +1,58 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
+{% if execute %}
+
+  {%- set first_month_query -%}
+    select coalesce(
+      min(
+        cast(
+          {{ dbt.date_trunc(
+              'month',
+              "coalesce(subscription_item.current_period_start, subscription.current_period_start)"
+          ) }} as date
+        )
+      ),
+      cast({{ dbt.dateadd('month', -1, 'current_date') }} as date)
+    ) as min_month
+    from {{ ref('stg_stripe__subscription_item') }} as subscription_item
+    left join {{ ref('stg_stripe__subscription') }} as subscription
+      on subscription_item.subscription_id = subscription.subscription_id
+      and subscription_item.source_relation = subscription.source_relation
+  {%- endset -%}
+
+  {%- set last_month_query -%}
+    select coalesce(
+      max(
+        cast(
+          {{ dbt.date_trunc(
+              'month',
+              "coalesce(subscription_item.current_period_end, subscription.current_period_end)"
+          ) }} as date
+        )
+      ),
+      cast({{ dbt.date_trunc('month', 'current_date') }} as date)
+    ) as max_month
+    from {{ ref('stg_stripe__subscription_item') }} as subscription_item
+    left join {{ ref('stg_stripe__subscription') }} as subscription
+      on subscription_item.subscription_id = subscription.subscription_id
+      and subscription_item.source_relation = subscription.source_relation
+  {%- endset -%}
+
+  {# dbt_utils.get_single_value returns a string, so cast it back to date #}
+  {% set first_month_pre = dbt_utils.get_single_value(first_month_query) %}
+  {% set last_month_pre  = dbt_utils.get_single_value(last_month_query) %}
+
+  {% set first_month = "cast('" ~ first_month_pre ~ "' as date)" %}
+  {% set last_month  = "cast('"  ~ last_month_pre  ~ "' as date)" %}
+
+{% else %}
+
+  {# Fallback for compile / docs / parsing #}
+  {% set first_month = dbt.dateadd('month', -1, 'current_date') %}
+  {% set last_month  = dbt.date_trunc('month', 'current_date') %}
+
+{% endif %}
+
 with subscription_item as (
 
     select *
@@ -14,7 +67,6 @@ subscription as (
 
 ),
 
-
 price_plan as (
 
     select *
@@ -22,10 +74,24 @@ price_plan as (
 
 ),
 
+
 date_spine as (
-    
-    select *
-    from {{ ref('int_stripe__date_spine') }}
+
+    {{ dbt_utils.date_spine(
+        datepart = "month",
+        start_date = first_month,
+        end_date = dbt.dateadd("month", 1, last_month)
+    ) }}
+
+),
+
+-- Only keep month and year
+date_dimensions as (
+
+    select
+        cast(date_month as date) as subscription_month,
+        cast({{ dbt.date_trunc('year', 'date_month') }} as date) as subscription_year
+    from date_spine
 
 ),
 
@@ -33,7 +99,7 @@ base as (
 
     select
         subscription_item.source_relation,
-        subscription_item.subscription_item_id as subscription_item_id,
+        subscription_item.subscription_item_id,
         subscription_item.subscription_id,
         subscription.customer_id,
         subscription.status as subscription_status,
@@ -86,13 +152,13 @@ item_months as (
         normalized.product_id,
         normalized.subscription_status,
         normalized.currency,
-        date_spine.date_year as subscription_year,
-        date_spine.date_month as subscription_month,
+        date_dimensions.subscription_year,
+        date_dimensions.subscription_month,
         normalized.mrr
     from normalized
-    join date_spine
-        on date_spine.date_month >=  cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
-       and date_spine.date_month <  cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
+    join date_dimensions
+        on date_dimensions.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
+        and date_dimensions.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
 
 ),
 

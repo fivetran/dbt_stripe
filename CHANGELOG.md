@@ -1,9 +1,14 @@
-
-# dbt_stripe v1.3.0-a3
-[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+# dbt_stripe v1.3.0-a4
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
 
 ## Under the Hood
-- Adds docs.
+- Removes dependency on `int_stripe__date_spine` from `stripe__supscription_item_mrr_report` so users do not need to have the account table enabled to use the MRR report.
+
+# dbt_stripe v1.3.0-a3
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
+
+## Under the Hood
+- Adds docs with the updated manifest to ensure deployment of our Quickstart models.
 
 # dbt_stripe v1.3.0-a2
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:

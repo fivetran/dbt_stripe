@@ -18,8 +18,8 @@
 ## What does this dbt package do?
 - Produces modeled tables that leverage Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe) in the format described by [this ERD](https://fivetran.com/docs/applications/stripe#schemainformation).
 - Enables you to better understand your Stripe transactions. The package achieves this by performing the following:
-    - Enhance the balance transaction entries with useful fields from related tables. 
-    - Generate a metrics tables allow you to better understand your account activity over time or at a customer level. These time-based metrics are available on a daily, weekly, monthly, and quarterly level.
+    - Enhance the balance transaction entries with useful fields from related tables.
+    - Generate metrics tables that allow you to better understand your account activity over time or at a customer level. These time-based metrics are available on a daily, weekly, monthly, and quarterly level.
 - Generates a comprehensive data dictionary of your source and modeled Stripe data through the [dbt docs site](https://fivetran.github.io/dbt_stripe/).
 
 <!--section="stripe_transformation_model"-->
@@ -768,9 +768,9 @@ sources:
           - name: livemode
             description: Indicates if this is a test invoice.
           - name: period_start
-            description: Start of the usage period during for which the invoice was created.
+            description: Start of the usage period for which the invoice was created.
           - name: period_end
-            description: End of the usage period during for which the invoice was created.
+            description: End of the usage period for which the invoice was created.
           - name: default_payment_method_id
             description: ID of the default payment method in this invoice.
           - name: payment_intent_id
