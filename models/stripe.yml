@@ -987,9 +987,9 @@ models:
         description: Year of the subscription period.
       - name: subscription_month
         description: Month of the subscription period.
-      - name: current_month_mrr
+      - name: month_mrr
         description: Monthly recurring revenue for this subscription item in the current month. "{{ doc('convert_values') }}"
-      - name: previous_month_mrr
+      - name: prior_month_mrr
         description: Monthly recurring revenue for this subscription item in the previous month. "{{ doc('convert_values') }}"
       - name: item_month_number
         description: Sequential month number for this subscription item, starting from 1 for the first month.

@@ -12,26 +12,40 @@ customer_mrr as (
         subscription_year,
         subscription_month,
         currency,
-        sum(current_month_mrr)  as current_month_mrr,
-        sum(previous_month_mrr) as previous_month_mrr
+        sum(month_mrr)  as month_mrr
     from item_mrr
     group by
       1,2,3,4,5
+),
+
+customer_mrr_lagged as (
+    select
+        source_relation,
+        customer_id,
+        subscription_year,
+        subscription_month,
+        currency,
+        month_mrr,
+        lag(month_mrr) over (
+            partition by source_relation, customer_id, currency
+            order by subscription_year, subscription_month
+        ) as prior_month_mrr
+    from customer_mrr
 )
 
 select
     *,
     case
-        when previous_month_mrr is null 
-             and current_month_mrr > 0 then 'new'
-        when current_month_mrr > previous_month_mrr then 'expansion'
-        when previous_month_mrr > current_month_mrr
-             and current_month_mrr > 0 then 'contraction'
-        when (current_month_mrr = 0 or current_month_mrr is null)
-             and previous_month_mrr > 0 then 'churned'
-        when previous_month_mrr = 0
-             and current_month_mrr > 0 then 'reactivation'
-        when current_month_mrr = previous_month_mrr then 'unchanged'
+        when prior_month_mrr is null
+             and month_mrr > 0 then 'new'
+        when month_mrr > prior_month_mrr then 'expansion'
+        when prior_month_mrr > month_mrr
+             and month_mrr > 0 then 'contraction'
+        when (month_mrr = 0 or month_mrr is null)
+             and prior_month_mrr > 0 then 'churned'
+        when prior_month_mrr = 0
+             and month_mrr > 0 then 'reactivation'
+        when month_mrr = prior_month_mrr then 'unchanged'
         else 'unknown'
     end as customer_mrr_type
-from customer_mrr
+from customer_mrr_lagged

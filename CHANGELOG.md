@@ -2,7 +2,8 @@
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
 
 ## Under the Hood
-- Removes dependency on `int_stripe__date_spine` from `stripe__supscription_item_mrr_report` so users do not need to have the account table enabled to use the MRR report.
+- Removes dependency on `int_stripe__date_spine` from `stripe__subscription_item_mrr_report` so users do not need to have the account table enabled to use the MRR report.
+- Explicitly casts `recurring_interval` field as string to avoid datatype errors.
 
 # dbt_stripe v1.3.0-a3
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:

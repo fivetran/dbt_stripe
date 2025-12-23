@@ -1,6 +1,8 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
-{% if execute %}
+{% set post_churn_months = var('stripe__mrr_post_churn_months', 3) %}
+
+{% if execute and flags.WHICH in ('run', 'build') %}
 
   {%- set first_month_query -%}
     select coalesce(
@@ -74,13 +76,12 @@ price_plan as (
 
 ),
 
-
 date_spine as (
 
     {{ dbt_utils.date_spine(
         datepart = "month",
         start_date = first_month,
-        end_date = dbt.dateadd("month", 1, last_month)
+        end_date = dbt.dateadd("month", post_churn_months + 1, last_month)
     ) }}
 
 ),
@@ -142,23 +143,65 @@ normalized as (
 
 ),
 
+-- Get distinct subscription items with their earliest and latest periods
+-- Extend the timeline 3 months past the last active period to track churn
+subscription_item_periods as (
+
+    select
+        source_relation,
+        subscription_item_id,
+        subscription_id,
+        customer_id,
+        product_id,
+        subscription_status,
+        currency,
+        min(cast({{ dbt.date_trunc('month', 'current_period_start') }} as date)) as first_active_month,
+        cast({{ dbt.dateadd('month', 3, 'max(cast(' ~ dbt.date_trunc('month', 'current_period_end') ~ ' as date))') }} as date) as last_month_to_track
+    from normalized
+    {{ dbt_utils.group_by(7) }}
+
+),
+
+-- Create all possible month combinations for each subscription item
+all_item_months as (
+
+    select
+        subscription_item_periods.source_relation,
+        subscription_item_periods.subscription_item_id,
+        subscription_item_periods.subscription_id,
+        subscription_item_periods.customer_id,
+        subscription_item_periods.product_id,
+        subscription_item_periods.subscription_status,
+        subscription_item_periods.currency,
+        date_dimensions.subscription_year,
+        date_dimensions.subscription_month
+    from subscription_item_periods
+    cross join date_dimensions
+    where date_dimensions.subscription_month >= subscription_item_periods.first_active_month
+        and date_dimensions.subscription_month < subscription_item_periods.last_month_to_track
+
+),
+
+-- Join back to normalized to determine if subscription was active in each month
 item_months as (
 
     select
-        normalized.source_relation,
-        normalized.subscription_item_id,
-        normalized.subscription_id,
-        normalized.customer_id,
-        normalized.product_id,
-        normalized.subscription_status,
-        normalized.currency,
-        date_dimensions.subscription_year,
-        date_dimensions.subscription_month,
-        normalized.mrr
-    from normalized
-    join date_dimensions
-        on date_dimensions.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
-        and date_dimensions.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
+        all_item_months.source_relation,
+        all_item_months.subscription_item_id,
+        all_item_months.subscription_id,
+        all_item_months.customer_id,
+        all_item_months.product_id,
+        all_item_months.subscription_status,
+        all_item_months.currency,
+        all_item_months.subscription_year,
+        all_item_months.subscription_month,
+        coalesce(normalized.mrr, 0) as mrr
+    from all_item_months
+    left join normalized
+        on all_item_months.source_relation = normalized.source_relation
+        and all_item_months.subscription_item_id = normalized.subscription_item_id
+        and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
+        and all_item_months.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
 
 ),
 
@@ -174,7 +217,7 @@ item_mrr_by_month as (
         currency,
         subscription_year,
         subscription_month,
-        sum(mrr) as current_month_mrr
+        sum(mrr) as month_mrr
     from item_months
     {{ dbt_utils.group_by(9) }}
 
@@ -192,11 +235,11 @@ lagged as (
         currency,
         subscription_month,
         subscription_year,
-        current_month_mrr,
-        lag(current_month_mrr) over (
+        month_mrr,
+        lag(month_mrr) over (
             partition by source_relation, subscription_item_id
             order by subscription_year, subscription_month
-        ) as previous_month_mrr,
+        ) as prior_month_mrr,
         row_number() over (
             partition by source_relation, subscription_item_id
             order by subscription_year, subscription_month
@@ -210,34 +253,33 @@ classified as (
     select
         *,
         case
-            when previous_month_mrr is null 
-                 and current_month_mrr > 0
+            when prior_month_mrr is null 
+                 and month_mrr > 0
                 then 'new'
 
-            when current_month_mrr > previous_month_mrr
+            when month_mrr > prior_month_mrr
                 then 'expansion'
 
-            when previous_month_mrr > current_month_mrr
-                 and current_month_mrr > 0
+            when prior_month_mrr > month_mrr
+                 and month_mrr > 0
                 then 'contraction'
 
-            when (current_month_mrr = 0 or current_month_mrr is null)
-                 and previous_month_mrr > 0
+            when (month_mrr = 0 or month_mrr is null)
+                 and prior_month_mrr > 0
                 then 'churned'
 
-            when previous_month_mrr = 0
-                 and current_month_mrr > 0
+            when prior_month_mrr = 0
+                 and month_mrr > 0
                  and item_month_number >= 3
                 then 'reactivation'
 
-            when current_month_mrr = previous_month_mrr
+            when month_mrr = prior_month_mrr
                 then 'unchanged'
 
             else 'unknown'
         end as mrr_type
     from lagged
 )
-
 
 select *
 from classified

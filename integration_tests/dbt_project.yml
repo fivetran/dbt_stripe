@@ -7,13 +7,13 @@ profile: 'integration_tests'
 
 # For use with validations
 models:
-  +schema: "stripe_{{ var('directed_schema','test') }}"
+  +schema: "stripe_{{ var('directed_schema','dev') }}"
 
 vars:
   # enable when generating docs
   # stripe__using_credit_notes: true # @docs-include
 
-  stripe_schema: stripe_integrations_tests_22
+  stripe_schema: stripe_integrations_tests
   stripe:
     stripe_account_identifier: "account_data"
     stripe_group_identifier: "group_data"

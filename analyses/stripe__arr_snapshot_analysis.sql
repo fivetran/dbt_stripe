@@ -12,7 +12,7 @@ monthly_rollup as (
         subscription_month as recurring_rev_month,
         subscription_year as recurring_rev_year,
         currency,
-        sum(current_month_mrr) as total_mrr
+        sum(month_mrr) as total_mrr
     from mrr_by_item
      {{ dbt_utils.group_by(4) }}
 
