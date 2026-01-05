@@ -135,8 +135,12 @@ normalized as (
         currency,
         amount,
         case
-            when recurring_interval = 'month' then amount
-            when recurring_interval = 'year' then amount / 12
+            when recurring_interval = 'week' then
+                amount * {{ dbt_utils.safe_divide('52', '12') }}
+            when recurring_interval = 'month' then
+                amount            
+            when recurring_interval = 'year' then
+                {{ dbt_utils.safe_divide('amount', '12') }}
             else null
         end as mrr
     from base
