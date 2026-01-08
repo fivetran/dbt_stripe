@@ -108,6 +108,7 @@ base as (
         coalesce(subscription_item.current_period_end, subscription.current_period_end) as current_period_end,
         subscription_item.quantity,
         price_plan.product_id,
+        price_plan.price_plan_id,
         price_plan.recurring_interval,
         price_plan.currency,
         {{ convert_values('price_plan.unit_amount * coalesce(subscription_item.quantity, 1)', alias='amount') }}
@@ -131,6 +132,7 @@ normalized as (
         current_period_start,
         current_period_end,
         product_id,
+        price_plan_id,
         recurring_interval,
         currency,
         amount,
@@ -157,12 +159,13 @@ subscription_item_periods as (
         subscription_id,
         customer_id,
         product_id,
+        price_plan_id,
         subscription_status,
         currency,
         min(cast({{ dbt.date_trunc('month', 'current_period_start') }} as date)) as first_active_month,
         cast({{ dbt.dateadd('month', 3, 'max(cast(' ~ dbt.date_trunc('month', 'current_period_end') ~ ' as date))') }} as date) as last_month_to_track
     from normalized
-    {{ dbt_utils.group_by(7) }}
+    {{ dbt_utils.group_by(8) }}
 
 ),
 
@@ -175,6 +178,7 @@ all_item_months as (
         subscription_item_periods.subscription_id,
         subscription_item_periods.customer_id,
         subscription_item_periods.product_id,
+        subscription_item_periods.price_plan_id,
         subscription_item_periods.subscription_status,
         subscription_item_periods.currency,
         date_dimensions.subscription_year,
@@ -195,6 +199,7 @@ item_months as (
         all_item_months.subscription_id,
         all_item_months.customer_id,
         all_item_months.product_id,
+        all_item_months.price_plan_id,
         all_item_months.subscription_status,
         all_item_months.currency,
         all_item_months.subscription_year,
@@ -204,6 +209,7 @@ item_months as (
     left join normalized
         on all_item_months.source_relation = normalized.source_relation
         and all_item_months.subscription_item_id = normalized.subscription_item_id
+        and all_item_months.price_plan_id = normalized.price_plan_id
         and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
         and all_item_months.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
 
@@ -217,13 +223,14 @@ item_mrr_by_month as (
         subscription_id,
         customer_id,
         product_id,
+        price_plan_id,
         subscription_status,
         currency,
         subscription_year,
         subscription_month,
         sum(mrr) as month_mrr
     from item_months
-    {{ dbt_utils.group_by(9) }}
+    {{ dbt_utils.group_by(10) }}
 
 ),
 
@@ -235,6 +242,7 @@ lagged as (
         subscription_id,
         customer_id,
         product_id,
+        price_plan_id,
         subscription_status,
         currency,
         subscription_month,
