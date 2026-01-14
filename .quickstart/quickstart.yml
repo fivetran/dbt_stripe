@@ -17,6 +17,15 @@ table_variables:
     - credit_note_line_item
     - credit_note
 
+  _fivetran_quickstart_account:
+    - account
+  _fivetran_quickstart_credit_note:
+    - credit_note
+  _fivetran_quickstart_credit_note_line_item:
+    - credit_note_line_item
+  _fivetran_quickstart_fee:
+    - fee
+
 destination_configurations:
   databricks:
     dispatch:
@@ -35,3 +44,28 @@ public_models: [
   "stripe__payout_itemized_3",
   "stripe__line_item_enhanced"
 ]
+
+supported_vars:
+  stripe__customer_metadata:
+    type: dictionary
+    description: "`CUSTOMER.metadata` properties that will be pivoted into columns in `stripe__customer_overview`"
+    display_name: "Customer Metadata Properties"
+
+  stripe__convert_values:
+    type: boolean
+    value: false
+    description: "Amount-based fields are displayed in the smallest denomination (e.g., cents for USD). Set to TRUE to divide amount fields by 100 to convert and major units (dollars for USD)"
+    display_name: "Convert to Major Monetary Units"
+
+  stripe__using_livemode:
+    type: boolean
+    value: true
+    description: "Transform non-test data only. Set to FALSE to run solely on test data"
+    display_name: "Use Live Mode"
+
+  stripe__using_invoice_line_sub_filter:
+    type: boolean
+    value: true
+    description: "Filter out potentially duplicative `INVOICE_LINE_ITEM` records in which the `id` begins with the string `sub`"
+    display_name: "Filter Invoice Line Items"
+
