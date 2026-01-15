@@ -19,10 +19,6 @@ table_variables:
 
   _fivetran_quickstart_account:
     - account
-  _fivetran_quickstart_credit_note:
-    - credit_note
-  _fivetran_quickstart_credit_note_line_item:
-    - credit_note_line_item
   _fivetran_quickstart_fee:
     - fee
 

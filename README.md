@@ -63,7 +63,7 @@ By default, this package materializes the following final tables:
 ---
 
 ## Visualizations
-Many of the above reports are now configurable for [visualization via Streamlit](https://github.com/fivetran/streamlit_stripe). Check out some [sample reports here](https://fivetran-stripe.streamlit.app/).
+Many of the above reports are now configurable for [visualization via Streamlit](https://github.com/fivetran/streamlit_fivetran_billing_model). Check out some [sample reports here](https://fivetran-billing-model.streamlit.app/).
 
 <p align="center">
 <a href="https://fivetran-billing-model.streamlit.app/">
