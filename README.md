@@ -1,4 +1,5 @@
-# Stripe dbt Package ([Docs](https://fivetran.github.io/dbt_stripe/))
+<!--section="stripe_transformation_model"-->
+# Stripe dbt Package
 
 <p align="left">
     <a alt="License"
@@ -11,38 +12,58 @@
     <a alt="PRs">
         <img src="https://img.shields.io/badge/Contributions-welcome-blueviolet" /></a>
     <a alt="Fivetran Quickstart Compatible"
-        href="https://fivetran.com/docs/transformations/dbt/quickstart">
+        href="https://fivetran.com/docs/transformations/data-models/quickstart-management#quickstartmanagement">
         <img src="https://img.shields.io/badge/Fivetran_Quickstart_Compatible%3F-yes-green.svg" /></a>
 </p>
 
+This dbt package transforms data from Fivetran's Stripe connector into analytics-ready tables.
+
+## Resources
+
+- Number of materialized models¹: 58
+- Connector documentation
+  - [Stripe connector documentation](https://fivetran.com/docs/connectors/applications/stripe)
+  - [Stripe ERD](https://fivetran.com/docs/connectors/applications/stripe#schemainformation)
+- dbt package documentation
+  - [GitHub repository](https://github.com/fivetran/dbt_stripe)
+  - [dbt Docs](https://fivetran.github.io/dbt_stripe/#!/overview)
+  - [DAG](https://fivetran.github.io/dbt_stripe/#!/overview?g_v=1)
+  - [Changelog](https://github.com/fivetran/dbt_stripe/blob/main/CHANGELOG.md)
+
 ## What does this dbt package do?
-- Produces modeled tables that leverage Stripe data from [Fivetran's connector](https://fivetran.com/docs/applications/stripe) in the format described by [this ERD](https://fivetran.com/docs/applications/stripe#schemainformation).
-- Enables you to better understand your Stripe transactions. The package achieves this by performing the following:
-    - Enhance the balance transaction entries with useful fields from related tables. 
-    - Generate a metrics tables allow you to better understand your account activity over time or at a customer level. These time-based metrics are available on a daily, weekly, monthly, and quarterly level.
-- Generates a comprehensive data dictionary of your source and modeled Stripe data through the [dbt docs site](https://fivetran.github.io/dbt_stripe/).
+This package enables you to better understand your Stripe transactions, enhance balance transaction entries with useful fields, and generate metrics tables for account activity analysis. It creates enriched models with metrics focused on transaction analysis, customer insights, and revenue tracking.
 
-<!--section="stripe_transformation_model"-->
-The following table provides a detailed list of all tables materialized within this package by default.
-> TIP: See more details about these tables in the package's [dbt docs site](https://fivetran.github.io/dbt_stripe/#!/overview?g_v=1).
+### Output schema
+Final output tables are generated in the following target schema:
 
-| **Table** | **Details** |
-|-----------|-------------|
-| [`stripe__balance_transactions`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions) | Represents each change to your Stripe balance with transaction context.<br><br>**Example Analytics Questions:**<br>• What types of transactions are most impacting my Stripe balance?<br>• How much did fees, refunds, or disputes reduce net revenue this quarter? |
-| [`stripe__invoice_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details) | Contains invoice records with associated charge, customer, and subscription data.<br><br>**Example Analytics Questions:**<br>• What is the average invoice value by customer segment?<br>• Which customers have the highest outstanding invoices? |
-| [`stripe__invoice_line_item_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details) | Includes line items with charge, customer, subscription, and pricing details.<br><br>**Example Analytics Questions:**<br>• Which products or services contribute most to total invoiced revenue?<br>• Are there any products consistently discounted or refunded? |
-| [`stripe__daily_overview`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview) | Summarizes daily and rolling Stripe transaction totals by type.<br><br>**Example Analytics Questions:**<br>• What is the trend in daily net payments and refunds?<br>• What is the MRR trend over the last 6 months? |
-| [`stripe__subscription_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details) | Contains subscription records with customer and payment metrics.<br><br>**Example Analytics Questions:**<br>• How many active subscriptions are there by plan or product?<br>• What is the average customer subscription length before cancellation? |
-| [`stripe__customer_overview`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview) | Shows customer-level metrics with transaction details and associations.<br><br>**Example Analytics Questions:**<br>• Who are the top 10 customers by total lifetime value?<br>• How many customers made a payment in the last 90 days? |
-| [`stripe__activity_itemized_2`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__activity_itemized_2) | Lists balance transactions with invoice, fee, refund, and customer data.<br><br>**Example Analytics Questions:**<br>• What are the exact transaction-level fees for each invoice or customer?<br>• How much are we paying in interchange and platform fees per transaction? |
-| [`stripe__balance_change_from_activity_itemized_3`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_change_from_activity_itemized_3) | Reconciles Stripe balance changes like a detailed bank statement.<br><br>**Example Analytics Questions:**<br>• What was the source of each Stripe balance change over the last month?<br>• How accurate is my accounting ledger compared to Stripe's balance records? |
-| [`stripe__ending_balance_reconciliation_itemized_4`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__ending_balance_reconciliation_itemized_4) | Matches bank payouts with unsettled Stripe transactions.<br><br>**Example Analytics Questions:**<br>• Which transactions remain unsettled as of the last payout?<br>• Do all automatic payouts reconcile fully with balance changes? |
-| [`stripe__payout_itemized_3`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__payout_itemized_3) | Details expected and actual payout amounts and statuses.<br><br>**Example Analytics Questions:**<br>• When should I expect my next payout, and for how much?<br>• Are there any delayed or failed payouts that need follow-up? |
-| [`stripe__line_item_enhanced`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) | Provides unified reporting across billing platforms on product, customer, and revenue metrics. See the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/) for more details.<br><br>**Example Analytics Questions:**<br>• What are the top revenue-generating products or SKUs?<br>• What is the average revenue per user (ARPU) by subscription plan? |
+```
+<your_database>.<connector/schema_name>_stripe
+```
 
+### Final output tables
 
-### Example Visualizations
-Curious what these tables can do? Check out example visualizations from the [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) table in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/), and see how you can use these tables in your own reporting. Below is a screenshot of an example report—explore the app for more.
+By default, this package materializes the following final tables:
+
+| Table | Description |
+| :---- | :---- |
+| [stripe__balance_transactions](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_transactions) | Represents each change to your Stripe balance with transaction context.<br><br>**Example Analytics Questions:**<br><ul><li>What types of transactions are most impacting my Stripe balance?</li><li>How much did fees, refunds, or disputes reduce net revenue this quarter?</li></ul> |
+| [stripe__invoice_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_details) | Contains invoice records with associated charge, customer, and subscription data.<br><br>**Example Analytics Questions:**<br><ul><li>What is the average invoice value by customer segment?</li><li>Which customers have the highest outstanding invoices?</li></ul> |
+| [stripe__invoice_line_item_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__invoice_line_item_details) | Includes line items with charge, customer, subscription, and pricing details.<br><br>**Example Analytics Questions:**<br><ul><li>Which products or services contribute most to total invoiced revenue?</li><li>Are there any products consistently discounted or refunded?</li></ul> |
+| [stripe__daily_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__daily_overview) | Summarizes daily and rolling Stripe transaction totals by type.<br><br>**Example Analytics Questions:**<br><ul><li>What is the trend in daily net payments and refunds?</li><li>What is the MRR trend over the last 6 months?</li></ul> |
+| [stripe__subscription_details](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_details) | Contains subscription records with customer and payment metrics.<br><br>**Example Analytics Questions:**<br><ul><li>How many active subscriptions are there by plan or product?</li><li>What is the average customer subscription length before cancellation?</li></ul> |
+| [stripe__customer_overview](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__customer_overview) | Shows customer-level metrics with transaction details and associations.<br><br>**Example Analytics Questions:**<br><ul><li>Who are the top 10 customers by total lifetime value?</li><li>How many customers made a payment in the last 90 days?</li></ul> |
+| [stripe__activity_itemized_2](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__activity_itemized_2) | Lists balance transactions with invoice, fee, refund, and customer data.<br><br>**Example Analytics Questions:**<br><ul><li>What are the exact transaction-level fees for each invoice or customer?</li><li>How much are we paying in interchange and platform fees per transaction?</li></ul> |
+| [stripe__balance_change_from_activity_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__balance_change_from_activity_itemized_3) | Reconciles Stripe balance changes like a detailed bank statement.<br><br>**Example Analytics Questions:**<br><ul><li>What was the source of each Stripe balance change over the last month?</li><li>How accurate is my accounting ledger compared to Stripe's balance records?</li></ul> |
+| [stripe__ending_balance_reconciliation_itemized_4](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__ending_balance_reconciliation_itemized_4) | Matches bank payouts with unsettled Stripe transactions.<br><br>**Example Analytics Questions:**<br><ul><li>Which transactions remain unsettled as of the last payout?</li><li>Do all automatic payouts reconcile fully with balance changes?</li></ul> |
+| [stripe__payout_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__payout_itemized_3) | Details expected and actual payout amounts and statuses.<br><br>**Example Analytics Questions:**<br><ul><li>When should I expect my next payout, and for how much?</li><li>Are there any delayed or failed payouts that need follow-up?</li></ul> |
+| [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) | Provides unified reporting across billing platforms on product, customer, and revenue metrics. See the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/) for more details.<br><br>**Example Analytics Questions:**<br><ul><li>What are the top revenue-generating products or SKUs?</li><li>What is the average revenue per user (ARPU) by subscription plan?</li></ul> |
+
+¹ Each Quickstart transformation job run materializes these models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
+
+---
+
+## Visualizations
+Many of the above reports are now configurable for [visualization via Streamlit](https://github.com/fivetran/streamlit_fivetran_billing_model). Check out some [sample reports here](https://fivetran-billing-model.streamlit.app/).
 
 <p align="center">
 <a href="https://fivetran-billing-model.streamlit.app/">
@@ -50,17 +71,29 @@ Curious what these tables can do? Check out example visualizations from the [str
 </a>
 </p>
 
-### Materialized Models
-Each Quickstart transformation job run materializes 58 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
-<!--section-end-->
-
-## How do I use the dbt package?
-
-### Step 1: Prerequisites
+## Prerequisites
 To use this dbt package, you must have the following:
 
 - At least one Fivetran Stripe connection syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **Databricks**, or **PostgreSQL** destination.
+
+## How do I use the dbt package?
+You can either add this dbt package in the Fivetran dashboard or import it into your dbt project:
+
+- To add the package in the Fivetran dashboard, follow our [Quickstart guide](https://fivetran.com/docs/transformations/data-models/quickstart-management).
+- To add the package to your dbt project, follow the setup instructions in the dbt package's [README file](https://github.com/fivetran/dbt_stripe/blob/main/README.md#how-do-i-use-the-dbt-package) to use this package.
+
+<!--section-end-->
+
+### Install the package
+Include the following stripe package version in your `packages.yml` file:
+> TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
+```yaml
+packages:
+  - package: fivetran/stripe
+    version: [">=1.3.0", "<1.4.0"]
+```
+> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
 #### Databricks Dispatch Configuration
 If you are using a Databricks destination with this package you will need to add the below (or a variation of the below) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils` packages respectively.
@@ -70,17 +103,7 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 ```
 
-### Step 2: Install the package
-Include the following stripe package version in your `packages.yml` file:
-> TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
-```yaml
-packages:
-  - package: fivetran/stripe
-    version: [">=1.2.0", "<1.3.0"]
-```
-> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
-
-### Step 3: Define database and schema variables
+### Define database and schema variables
 By default, this package runs using your destination and the `stripe` schema. If this is not where your stripe data is (for example, if your stripe schema is named `stripe_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
 ```yml
@@ -89,7 +112,7 @@ vars:
     stripe_schema: your_schema_name 
 ```
 
-### Step 4: Disable models for non-existent sources
+### Disable models for non-existent sources
 This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
 
 ```yml
@@ -102,11 +125,11 @@ vars:
     stripe__using_subscriptions:   False  #Disable if you are not using the subscription, and plan/price tables.
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
 ```
-### (Optional) Step 5: Additional configurations
+### (Optional) Additional configurations
 <details open><summary>Expand to view configurations</summary>
 
 #### Enabling Standardized Billing Model
-This package contains the `stripe__line_item_enhanced` model which constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It’s designed to align with the schema of the `*__line_item_enhanced` model found in Recurly, Recharge, Stripe, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). This model is enabled by default. To disable it, set the `stripe__standardized_billing_model_enabled` variable to `false` in your `dbt_project.yml`:
+This package contains the `stripe__line_item_enhanced` model which constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It's designed to align with the schema of the `*__line_item_enhanced` model found in Recurly, Recharge, Stripe, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). This model is enabled by default. To disable it, set the `stripe__standardized_billing_model_enabled` variable to `false` in your `dbt_project.yml`:
 
 ```yml
 vars:
@@ -163,7 +186,7 @@ sources:
           - name: amount
             description: Gross amount of the transaction, in cents.
           - name: available_on
-            description: The date the transaction’s net funds will become available in the Stripe balance.
+            description: The date the transaction's net funds will become available in the Stripe balance.
           - name: connected_account_id
             description: The ID of the account connected to the transaction.
           - name: created
@@ -183,7 +206,7 @@ sources:
           - name: source
             description: The Stripe object to which this transaction is related.
           - name: status
-            description: If the transaction’s net funds are available in the Stripe balance yet. Either 'available' or 'pending'.
+            description: If the transaction's net funds are available in the Stripe balance yet. Either 'available' or 'pending'.
           - name: type
             description: The type of transaction.  Possible values are adjustment, advance, advance_funding, application_fee, application_fee_refund, charge, connect_collection_transfer, issuing_authorization_hold, issuing_authorization_release, issuing_dispute, issuing_transaction, payment, payment_failure_refund, payment_refund, payout, payout_cancel, payout_failure, refund, refund_failure, reserve_transaction, reserved_funds, stripe_fee, stripe_fx_fee, tax_fee, topup, topup_reversal, transfer, transfer_cancel, transfer_failure, or transfer_refund.
 
@@ -210,7 +233,7 @@ sources:
           - name: brand
             description: Card brand. Can be American Express, Diners Club, Discover, JCB, MasterCard, UnionPay, Visa, or Unknown.
           - name: country
-            description: Two-letter ISO code representing the country of the card. You could use this attribute to get a sense of the international breakdown of cards you’ve collected.
+            description: Two-letter ISO code representing the country of the card. You could use this attribute to get a sense of the international breakdown of cards you've collected.
           - name: created
             description: '{{ doc("created") }}'
           - name: customer_id
@@ -301,7 +324,7 @@ sources:
           - name: source_transfer
             description: The transfer ID which created this charge. Only present if the charge came from another Stripe account.
           - name: statement_descriptor
-            description: Extra information about a source. This will appear on your customer’s statement every time you charge the source.
+            description: Extra information about a source. This will appear on your customer's statement every time you charge the source.
           - name: invoice_id
             description: The id of the invoice associated with this charge.
           - name: currency
@@ -313,7 +336,7 @@ sources:
           - name: payment_method_id
             description: Unique identifier for the payment method object used in this charge.
           - name: calculated_statement_descriptor
-            description: The full statement descriptor that is passed to card networks, and that is displayed on your customers’ credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
+            description: The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
           - name: billing_detail_address_city
             description: City, district, suburb, town, or village.
           - name: billing_detail_address_country
@@ -367,11 +390,11 @@ sources:
           - name: default_card_id
             description: ID for the default card used by the customer.
           - name: delinquent
-            description: When the customer’s latest invoice is billed by charging automatically, delinquent is true if the invoice’s latest charge is failed. When the customer’s latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
+            description: When the customer's latest invoice is billed by charging automatically, delinquent is true if the invoice's latest charge is failed. When the customer's latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
           - name: description
             description: An arbitrary string attached to the object. Often useful for displaying to users.
           - name: email
-            description: The customer’s email address.
+            description: The customer's email address.
           - name: metadata
             description: Custom metadata added to the record, in JSON string format
           - name: name
@@ -426,7 +449,7 @@ sources:
           - name: evidence_cancellation_policy_disclosure
             description: An explanation of how and when the customer was shown your refund policy prior to purchase. Has a maximum character count of 20,000.
           - name: evidence_cancellation_rebuttal
-            description: A justification for why the customer’s subscription was not canceled. Has a maximum character count of 20,000.
+            description: A justification for why the customer's subscription was not canceled. Has a maximum character count of 20,000.
           - name: evidence_customer_communication
             description: (ID of a file upload) Any communication with the customer that you feel is relevant to your case. Examples include emails proving that the customer received the product or service, or demonstrating their use of or satisfaction with the product or service.
           - name: evidence_customer_email_address
@@ -436,9 +459,9 @@ sources:
           - name: evidence_customer_purchase_ip
             description: The IP address that the customer used when making the purchase.
           - name: evidence_customer_signature
-            description: (ID of a file upload) A relevant document or contract showing the customer’s signature.
+            description: (ID of a file upload) A relevant document or contract showing the customer's signature.
           - name: evidence_details_due_by
-            description: Date by which evidence must be submitted in order to successfully challenge dispute. Will be 0 if the customer’s bank or credit card company doesn’t allow a response for this particular dispute.
+            description: Date by which evidence must be submitted in order to successfully challenge dispute. Will be 0 if the customer's bank or credit card company doesn't allow a response for this particular dispute.
           - name: evidence_details_has_evidence
             description: Whether evidence has been staged for this dispute.
           - name: evidence_details_past_due
@@ -472,7 +495,7 @@ sources:
           - name: evidence_shipping_date
             description: The date on which a physical product began its route to the shipping address, in a clear human-readable format.
           - name: evidence_shipping_documentation
-            description: (ID of a file upload) Documentation showing proof that a product was shipped to the customer at the same address the customer provided to you. This could include a copy of the shipment receipt, shipping label, etc. It should show the customer’s full shipping address, if possible.
+            description: (ID of a file upload) Documentation showing proof that a product was shipped to the customer at the same address the customer provided to you. This could include a copy of the shipment receipt, shipping label, etc. It should show the customer's full shipping address, if possible.
           - name: evidence_shipping_tracking_number
             description: The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, please separate them with commas.
           - name: evidence_uncategorized_file
@@ -532,7 +555,7 @@ sources:
           - name: cancellation_reason
             description: Reason for cancellation of this PaymentIntent, either user-provided (duplicate, fraudulent, requested_by_customer, or abandoned) or generated by Stripe internally (failed_invoice, void_invoice, or automatic).
           - name: capture_method
-            description: Controls when the funds will be captured from the customer’s account.
+            description: Controls when the funds will be captured from the customer's account.
           - name: confirmation_method
             description: Whether confirmed automatically or manually
           - name: currency
@@ -548,7 +571,7 @@ sources:
           - name: receipt_email
             description: Email address that the receipt for the resulting payment will be sent to.
           - name: statement_descriptor
-            description: For non-card charges, you can use this value as the complete description that appears on your customers’ statements.
+            description: For non-card charges, you can use this value as the complete description that appears on your customers' statements.
           - name: status
             description: Status of this PaymentIntent, one of requires_payment_method, requires_confirmation, requires_action, processing, requires_capture, canceled, or succeeded.
           - name: livemode
@@ -721,7 +744,7 @@ sources:
           - name: id
             description: Unique identifier for the object.
           - name: amount_due
-            description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
+            description: Final amount due at this time for this invoice. If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
           - name: amount_paid
             description: The amount, in cents, that was paid.
           - name: amount_remaining
@@ -729,7 +752,7 @@ sources:
           - name: attempt_count
             description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
           - name: auto_advance
-            description: Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice’s state will not automatically advance without an explicit action.
+            description: Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice's state will not automatically advance without an explicit action.
           - name: billing_reason
             description: Indicates the reason why the invoice was created.
           - name: charge_id
@@ -741,15 +764,15 @@ sources:
           - name: customer_id
             description: The ID of the customer who will be billed.
           - name: description
-            description: An arbitrary string attached to the object. Often useful for displaying to users. Referenced as ‘memo’ in the Dashboard.
+            description: An arbitrary string attached to the object. Often useful for displaying to users. Referenced as 'memo' in the Dashboard.
           - name: due_date
             description: The date on which payment for this invoice is due. This value will be null for invoices where collection_method=charge_automatically.
           - name: metadata
             description: Custom metadata added to the record, in JSON string format
           - name: number
-            description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
+            description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer's unique invoice_prefix if it is specified.
           - name: paid
-            description: Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer’s account balance.
+            description: Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
           - name: receipt_number
             description: This is the transaction number that appears on email receipts sent for this invoice.
           - name: status
@@ -937,7 +960,7 @@ sources:
 
       - name: credit_note
         identifier: "{{ var('stripe_credit_note_identifier', 'credit_note')}}"
-        description: Credit notes are documents that decrease the amount owed on an invoice. They’re the only way to adjust the amount of a finalized invoice other than voiding and recreating the invoice.
+        description: Credit notes are documents that decrease the amount owed on an invoice. They're the only way to adjust the amount of a finalized invoice other than voiding and recreating the invoice.
         config:
           freshness: null
         columns:
@@ -1087,15 +1110,15 @@ sources:
           - name: company_address_state
             description: State, county, province, or region.
           - name: company_name
-            description: The company’s legal name.
+            description: The company's legal name.
           - name: company_phone
-            description: The company’s phone number (used for verification).
+            description: The company's phone number (used for verification).
           - name: country
             description: The account's country.
           - name: created
             description: '{{ doc("created") }}'
           - name: default_currency
-            description: Three-letter ISO currency code representing the default currency for the account. This must be a currency that Stripe supports in the account’s country.
+            description: Three-letter ISO currency code representing the default currency for the account. This must be a currency that Stripe supports in the account's country.
           - name: email
             description: An email address associated with the account. You can treat this as metadata; it is not used for authentication or messaging account holders.
           - name: is_deleted
@@ -1166,7 +1189,7 @@ sources:
           - name: deactivate_on
             description: List of dates when the product will be deactivated.
           - name: description
-            description: The product’s description, meant to be displayable to the customer.
+            description: The product's description, meant to be displayable to the customer.
           - name: images
             description: A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
           - name: is_deleted
@@ -1174,11 +1197,11 @@ sources:
           - name: livemode
             description: Indicates if this is a test product.
           - name: name
-            description: The product’s name, meant to be displayable to the customer.
+            description: The product's name, meant to be displayable to the customer.
           - name: shippable
             description: Whether this product is shipped (i.e., physical goods).
           - name: statement_descriptor
-            description: Extra information about a product which will appear on your customer’s credit card statement.
+            description: Extra information about a product which will appear on your customer's credit card statement.
           - name: type
             description: The type of the product (e.g., good, service).
           - name: unit_label
@@ -1198,7 +1221,7 @@ sources:
           - name: id
             description: The ID of the discount object.
           - name: type
-            description: String representing the object’s type.
+            description: String representing the object's type.
           - name: type_id
             description: Identifier of the related object type (e.g., coupon ID, promotion code).
           - name: amount
@@ -1216,9 +1239,9 @@ sources:
           - name: end
             description: If the coupon has a duration of repeating, the date that this discount will end. If the coupon has a duration of once or forever, this attribute will be null.
           - name: invoice_id
-            description: The invoice that the discount’s coupon was applied to, if it was applied directly to a particular invoice.
+            description: The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
           - name: invoice_item_id
-            description: The invoice item id (or invoice line item id for invoice line items of type=‘subscription’) that the discount’s coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
+            description: The invoice item id (or invoice line item id for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
           - name: promotion_code
             description: The promotion code applied to create this discount.
           - name: start
@@ -1387,11 +1410,11 @@ vars:
 
 </details>
 
-### (Optional) Step 6: Orchestrate your models with Fivetran Transformations for dbt Core™
+### (Optional) Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
 
-Fivetran offers the ability for you to orchestrate your dbt project through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt). Learn how to set up your project for orchestration through Fivetran in our [Transformations for dbt Core setup guides](https://fivetran.com/docs/transformations/dbt#setupguide).
+Fivetran offers the ability for you to orchestrate your dbt project through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore). Learn how to set up your project for orchestration through Fivetran in our [Transformations for dbt Core setup guides](https://fivetran.com/docs/transformations/dbt/setup-guide#transformationsfordbtcoresetupguide).
 </details>
 
 ## Does this package have dependencies?
@@ -1409,14 +1432,19 @@ packages:
     - package: dbt-labs/spark_utils
       version: [">=0.3.0", "<0.4.0"]
 ```
+
+<!--section="stripe_maintenance"-->
 ## How is this package maintained and can I contribute?
+
 ### Package Maintenance
-The Fivetran team maintaining this package _only_ maintains the latest version of the package. We highly recommend you stay consistent with the [latest version](https://hub.getdbt.com/fivetran/stripe/latest/) of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_stripe/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
+The Fivetran team maintaining this package only maintains the [latest version](https://hub.getdbt.com/fivetran/stripe/latest/) of the package. We highly recommend you stay consistent with the latest version of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_stripe/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
 
 ### Contributions
 A small team of analytics engineers at Fivetran develops these dbt packages. However, the packages are made better by community contributions.
 
-We highly encourage and welcome contributions to this package. Check out [this dbt Discourse article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) on the best workflow for contributing to a package.
+We highly encourage and welcome contributions to this package. Learn how to contribute to a package in dbt's [Contributing to an external dbt package article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657).
+
+<!--section-end-->
 
 ## Are there any resources available?
 - If you have questions or want to reach out for help, see the [GitHub Issue](https://github.com/fivetran/dbt_stripe/issues/new/choose) section to find the right avenue of support for you.
