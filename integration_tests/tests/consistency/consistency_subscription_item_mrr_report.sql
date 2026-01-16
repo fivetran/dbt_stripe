@@ -13,7 +13,7 @@ with
             subscription_month,
             subscription_year,
             source_relation
-            {% for col in cols if col.name not in ["subscription_item_id", "subscription_id", "customer_id", "product_id", "subscription_status", "currency", "subscription_month", "subscription_year", "source_relation", "item_month_number", "mrr_type"] %}
+            {% for col in cols if col.name not in ["subscription_item_id", "subscription_id", "customer_id", "product_id", "subscription_status", "currency", "subscription_month", "subscription_year", "source_relation", "item_month_number", "contract_mrr_type"] %}
                 , floor(sum({{ col.name }})) as summed_{{ col.name }} -- floor and sum is to keep consistency between dev and prod aggs
             {% endfor %}
         from {{ target.schema }}_stripe_{{ prod_or_dev }}.stripe__subscription_item_mrr_report
