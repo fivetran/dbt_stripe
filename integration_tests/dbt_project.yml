@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '1.3.0'
+version: '1.4.0'
 
 profile: 'integration_tests'
 
@@ -58,6 +58,11 @@ seeds:
     balance_transaction_data:
       +column_types:
         available_on: timestamp
+    coupon_data:
+      +column_types:
+        created: timestamp
+        redeem_by: timestamp
+        _fivetran_synced: timestamp
     charge_data:
       +column_types:
         balance_transaction_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"

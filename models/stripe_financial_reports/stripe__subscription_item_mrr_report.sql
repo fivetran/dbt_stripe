@@ -76,6 +76,16 @@ price_plan as (
 
 ),
 
+{% if var('stripe__using_coupons', True) %}
+subscription_discount as (
+
+    select *
+    from {{ ref('int_stripe__subscription_discount') }}
+
+),
+{% endif %}
+
+
 date_spine as (
 
     {{ dbt_utils.date_spine(
@@ -110,6 +120,7 @@ base as (
         price_plan.product_id,
         price_plan.price_plan_id,
         price_plan.recurring_interval,
+        cast(price_plan.recurring_interval_count as {{ dbt.type_int() }}) as recurring_interval_count,
         price_plan.currency,
         {{ convert_values('price_plan.unit_amount * coalesce(subscription_item.quantity, 1)', alias='amount') }}
     from subscription_item
@@ -134,15 +145,28 @@ normalized as (
         product_id,
         price_plan_id,
         recurring_interval,
+        recurring_interval_count,
         currency,
         amount,
         case
             when recurring_interval = 'week' then
-                amount * {{ dbt_utils.safe_divide('52', '12') }}
+                {{ dbt_utils.safe_divide(
+                    "amount * " ~ dbt_utils.safe_divide('52', '12'),
+                    "coalesce(recurring_interval_count, 1)"
+                ) }}
+
             when recurring_interval = 'month' then
-                amount            
+                {{ dbt_utils.safe_divide(
+                    "amount",
+                    "coalesce(recurring_interval_count, 1)"
+                ) }}
+
             when recurring_interval = 'year' then
-                {{ dbt_utils.safe_divide('amount', '12') }}
+                {{ dbt_utils.safe_divide(
+                    "amount",
+                    "12 * coalesce(recurring_interval_count, 1)"
+                ) }}
+
             else null
         end as mrr
     from base
@@ -234,29 +258,181 @@ item_mrr_by_month as (
 
 ),
 
+subscription_billing_cycle as (
+
+    select
+        normalized.source_relation,
+        normalized.subscription_id,
+
+        max(
+            case
+                when normalized.recurring_interval = 'week' then
+                    coalesce(normalized.recurring_interval_count, 1) * {{ dbt_utils.safe_divide('52', '12') }}
+                when normalized.recurring_interval = 'month' then
+                    coalesce(normalized.recurring_interval_count, 1)
+                when normalized.recurring_interval = 'year' then
+                    12 * coalesce(normalized.recurring_interval_count, 1)
+                else null
+            end
+        ) as subscription_cycle_months
+    from normalized
+    {{ dbt_utils.group_by(2) }}
+
+),
+
+subscription_month_contracted as (
+
+    select
+        item_mrr_by_month.source_relation,
+        item_mrr_by_month.subscription_id,
+        item_mrr_by_month.currency,
+        item_mrr_by_month.subscription_month,
+        sum(item_mrr_by_month.month_mrr) as subscription_month_contracted_mrr
+    from item_mrr_by_month
+    {{ dbt_utils.group_by(4) }}
+
+),
+
+{% if var('stripe__using_coupons', True) %}
+subscription_month_discount_amount as (
+
+    select
+        subscription_month_contracted.source_relation,
+        subscription_month_contracted.subscription_id,
+        subscription_month_contracted.subscription_month,
+
+        sum(coalesce(subscription_discount.discount_amount, 0)) as discount_amount
+    from subscription_month_contracted
+    left join subscription_discount
+        on subscription_month_contracted.source_relation = subscription_discount.source_relation
+        and subscription_month_contracted.subscription_id = subscription_discount.subscription_id
+        and subscription_month_contracted.subscription_month >= subscription_discount.start_month
+        and (
+            subscription_discount.end_month is null
+            or subscription_month_contracted.subscription_month < subscription_discount.end_month
+        )
+    group by
+        subscription_month_contracted.source_relation,
+        subscription_month_contracted.subscription_id,
+        subscription_month_contracted.subscription_month
+
+),
+
+subscription_month_discount_mrr as (
+
+    select
+        subscription_month_discount_amount.source_relation,
+        subscription_month_discount_amount.subscription_id,
+        subscription_month_discount_amount.subscription_month,
+        subscription_month_discount_amount.discount_amount,
+
+        {{ dbt_utils.safe_divide(
+            "subscription_month_discount_amount.discount_amount",
+            "coalesce(subscription_billing_cycle.subscription_cycle_months, 1)"
+        ) }} as subscription_month_discount_mrr
+
+    from subscription_month_discount_amount
+    left join subscription_billing_cycle
+        on subscription_month_discount_amount.source_relation = subscription_billing_cycle.source_relation
+        and subscription_month_discount_amount.subscription_id = subscription_billing_cycle.subscription_id
+
+),
+{% endif %}
+
+item_mrr_with_discounts as (
+
+    select
+        item_mrr_by_month.source_relation,
+        item_mrr_by_month.subscription_item_id,
+        item_mrr_by_month.subscription_id,
+        item_mrr_by_month.customer_id,
+        item_mrr_by_month.product_id,
+        item_mrr_by_month.price_plan_id,
+        item_mrr_by_month.subscription_status,
+        item_mrr_by_month.currency,
+        item_mrr_by_month.subscription_year,
+        item_mrr_by_month.subscription_month,
+
+        -- rename for clarity
+        item_mrr_by_month.month_mrr as month_contract_mrr,
+
+        -- allocation share (by contracted monthly MRR)
+        {{ dbt_utils.safe_divide(
+            "item_mrr_by_month.month_mrr",
+            "subscription_month_contracted.subscription_month_contracted_mrr"
+        ) }} as discount_allocation_share,
+
+        -- allocated discount at item grain (monthly)
+        (
+            coalesce(subscription_month_discount_mrr.subscription_month_discount_mrr, 0)
+            * {{ dbt_utils.safe_divide(
+                "item_mrr_by_month.month_mrr",
+                "subscription_month_contracted.subscription_month_contracted_mrr"
+            ) }}
+        ) as month_discount_applied,
+
+        -- net / invoiced monthly MRR at item grain
+        (
+            item_mrr_by_month.month_mrr
+            - (
+                coalesce(subscription_month_discount_mrr.subscription_month_discount_mrr, 0)
+                * {{ dbt_utils.safe_divide(
+                    "item_mrr_by_month.month_mrr",
+                    "subscription_month_contracted.subscription_month_contracted_mrr"
+                ) }}
+              )
+        ) as month_billed_mrr
+
+    from item_mrr_by_month
+    left join subscription_month_contracted
+        on item_mrr_by_month.source_relation = subscription_month_contracted.source_relation
+        and item_mrr_by_month.subscription_id = subscription_month_contracted.subscription_id
+        and item_mrr_by_month.currency = subscription_month_contracted.currency
+        and item_mrr_by_month.subscription_month = subscription_month_contracted.subscription_month
+    {% if var('stripe__using_coupons', True) %}
+    left join subscription_month_discount_mrr
+        on item_mrr_by_month.source_relation = subscription_month_discount_mrr.source_relation
+        and item_mrr_by_month.subscription_id = subscription_month_discount_mrr.subscription_id
+        and item_mrr_by_month.subscription_month = subscription_month_discount_mrr.subscription_month
+    {% endif %}
+
+),
+
 lagged as (
 
     select
-        source_relation,
-        subscription_item_id,
-        subscription_id,
-        customer_id,
-        product_id,
-        price_plan_id,
-        subscription_status,
-        currency,
-        subscription_month,
-        subscription_year,
-        month_mrr,
-        lag(month_mrr) over (
-            partition by source_relation, subscription_item_id
-            order by subscription_year, subscription_month
-        ) as prior_month_mrr,
+        item_mrr_with_discounts.source_relation,
+        item_mrr_with_discounts.subscription_item_id,
+        item_mrr_with_discounts.subscription_id,
+        item_mrr_with_discounts.customer_id,
+        item_mrr_with_discounts.product_id,
+        item_mrr_with_discounts.price_plan_id,
+        item_mrr_with_discounts.subscription_status,
+        item_mrr_with_discounts.currency,
+        item_mrr_with_discounts.subscription_month,
+        item_mrr_with_discounts.subscription_year,
+        item_mrr_with_discounts.month_contract_mrr,
+        item_mrr_with_discounts.month_discount_applied,
+        item_mrr_with_discounts.month_billed_mrr,
+        lag(item_mrr_with_discounts.month_contract_mrr) over (
+            partition by
+                item_mrr_with_discounts.source_relation,
+                item_mrr_with_discounts.subscription_item_id,
+                item_mrr_with_discounts.price_plan_id
+            order by
+                item_mrr_with_discounts.subscription_year,
+                item_mrr_with_discounts.subscription_month
+        ) as prior_month_contract_mrr,
         row_number() over (
-            partition by source_relation, subscription_item_id
-            order by subscription_year, subscription_month
+            partition by
+                item_mrr_with_discounts.source_relation,
+                item_mrr_with_discounts.subscription_item_id,
+                item_mrr_with_discounts.price_plan_id
+            order by
+                item_mrr_with_discounts.subscription_year,
+                item_mrr_with_discounts.subscription_month
         ) as item_month_number
-    from item_mrr_by_month
+    from item_mrr_with_discounts
 
 ),
 
@@ -265,31 +441,31 @@ classified as (
     select
         *,
         case
-            when prior_month_mrr is null 
-                 and month_mrr > 0
+            when prior_month_contract_mrr is null 
+                 and month_contract_mrr > 0
                 then 'new'
 
-            when month_mrr > prior_month_mrr
+            when month_contract_mrr > prior_month_contract_mrr
                 then 'expansion'
 
-            when prior_month_mrr > month_mrr
-                 and month_mrr > 0
+            when prior_month_contract_mrr > month_contract_mrr
+                 and month_contract_mrr > 0
                 then 'contraction'
 
-            when (month_mrr = 0 or month_mrr is null)
-                 and prior_month_mrr > 0
+            when (month_contract_mrr = 0 or month_contract_mrr is null)
+                 and prior_month_contract_mrr > 0
                 then 'churned'
 
-            when prior_month_mrr = 0
-                 and month_mrr > 0
+            when prior_month_contract_mrr = 0
+                 and month_contract_mrr > 0
                  and item_month_number >= 3
                 then 'reactivation'
 
-            when month_mrr = prior_month_mrr
+            when month_contract_mrr = prior_month_contract_mrr
                 then 'unchanged'
 
             else 'unknown'
-        end as mrr_type
+        end as contract_mrr_type
     from lagged
 )
 

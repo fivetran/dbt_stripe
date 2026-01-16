@@ -1,6 +1,6 @@
 config-version: 2
 name: 'stripe'
-version: '1.3.0'
+version: '1.4.0'
 require-dbt-version: [">=1.3.0", "<3.0.0"]
 
 models:
@@ -23,6 +23,7 @@ vars:
     balance_transaction: "{{ source('stripe', 'balance_transaction') }}"
     card: "{{ source('stripe', 'card') }}"
     charge: "{{ source('stripe', 'charge') }}"
+    coupon: "{{ source('stripe', 'coupon') }}"
     credit_note: "{{ source('stripe', 'credit_note') }}"
     credit_note_line_item: "{{ source('stripe', 'credit_note_line_item') }}"
     customer: "{{ source('stripe', 'customer') }}"

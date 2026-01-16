@@ -954,8 +954,6 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 
-
-
   - name: stg_stripe__discount
     description: Properties belonging to a Stripe discount.
     columns:
@@ -992,3 +990,34 @@ models:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
 
+  - name: stg_stripe__coupon
+    description: Properties belonging to a Stripe coupon.
+    columns:
+      - name: coupon_id
+        description: Unique identifier for the object.
+      - name: amount_off
+        description: The amount taken off the total price in the selected currency.
+      - name: created_at
+        description: Time at which the object was created.
+      - name: currency
+        description: Three-letter ISO currency code, in lowercase.
+      - name: duration
+        description: The duration of the coupon. Typically "forever," "once," or "repeating."
+      - name: duration_in_months
+        description: If the coupon does not last forever, the duration in months you can apply it. For a forever coupon, this attribute is null.
+      - name: livemode
+        description: True if the coupon is live.
+      - name: max_redemptions
+        description: The maximum number of times this coupon can be redeemed.
+      - name: coupon_name
+        description: Name of the coupon or promotion.
+      - name: percent_off
+        description: The percentage taken off the total price.
+      - name: redeem_by
+        description: The date by which the coupon must be redeemed.
+      - name: times_redeemed
+        description: The number of times this coupon has been redeemed.
+      - name: valid
+        description: Indicates whether the coupon can still be applied to a customer.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"

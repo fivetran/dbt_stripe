@@ -979,19 +979,25 @@ models:
         description: ID of the customer who owns the subscription.
       - name: product_id
         description: ID of the product associated with this subscription item.
+      - name: price_plan_id
+        description: ID of the price plan associated with this subscription item.
       - name: subscription_status
         description: Current status of the subscription. Possible values are incomplete, incomplete_expired, trialing, active, past_due, canceled, or unpaid.
       - name: currency
         description: Three-letter ISO currency code, in lowercase.
-      - name: subscription_year
-        description: Year of the subscription period.
       - name: subscription_month
         description: Month of the subscription period.
-      - name: month_mrr
-        description: Monthly recurring revenue for this subscription item in the current month. "{{ doc('convert_values') }}"
-      - name: prior_month_mrr
-        description: Monthly recurring revenue for this subscription item in the previous month. "{{ doc('convert_values') }}"
+      - name: subscription_year
+        description: Year of the subscription period.
+      - name: month_contract_mrr
+        description: Contracted monthly recurring revenue for this subscription item in the current month before discounts are applied. "{{ doc('convert_values') }}"
+      - name: month_discount_applied
+        description: Discount amount applied to this subscription item in the current month, allocated proportionally based on the item's share of the subscription's total contracted MRR. "{{ doc('convert_values') }}"
+      - name: month_billed_mrr
+        description: Net monthly recurring revenue for this subscription item in the current month after discounts are applied (month_contract_mrr minus month_discount_applied). "{{ doc('convert_values') }}"
+      - name: prior_month_contract_mrr
+        description: Contracted monthly recurring revenue for this subscription item in the previous month before discounts are applied. "{{ doc('convert_values') }}"
       - name: item_month_number
         description: Sequential month number for this subscription item, starting from 1 for the first month.
-      - name: mrr_type
-        description: Classification of the MRR change for this month. Possible values are new (first month with MRR), expansion (MRR increased), contraction (MRR decreased but still positive), churned (MRR went to zero), reactivation (MRR returned after being zero), unchanged (MRR stayed the same), or unknown.
+      - name: contract_mrr_type
+        description: Classification of the contracted MRR change for this month based on month_contract_mrr. Possible values are new (first month with MRR), expansion (MRR increased), contraction (MRR decreased but still positive), churned (MRR went to zero), reactivation (MRR returned after being zero for at least 3 months), unchanged (MRR stayed the same), or unknown.
