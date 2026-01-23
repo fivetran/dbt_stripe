@@ -300,8 +300,7 @@ subscription_month_discount_amount as (
         subscription_month_contracted.source_relation,
         subscription_month_contracted.subscription_id,
         subscription_month_contracted.subscription_month,
-
-        sum(coalesce(subscription_discount.discount_amount, 0)) as discount_amount
+        sum(coalesce(cast(nullif(subscription_discount.discount_amount, '') as {{ dbt.type_numeric() }}), 0)) as discount_amount
     from subscription_month_contracted
     left join subscription_discount
         on subscription_month_contracted.source_relation = subscription_discount.source_relation
