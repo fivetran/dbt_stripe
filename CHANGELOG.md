@@ -1,4 +1,84 @@
 # dbt_stripe v1.3.0
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+## Schema/Data Change
+**1 total change • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Modified Model | | | Adds discount amount field that applies coupon-based discounts to MRR calculations. Discount logic is controlled by the new `stripe__using_coupons` variable (enabled by default). |
+
+## Feature Update
+- Adds new staging model `stg_stripe__coupon` to bring in coupon data from the Stripe connector.
+- Adds new intermediate model `int_stripe__subscription_discount` that combines coupon and discount data to calculate discount amounts by subscription and month.
+- Adds new analyses folder with compiled SQL for advanced revenue reporting:
+ - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
+ - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
+ - These analysis files reference the `stripe__subscription_item_mrr_report` model. You can compile them using `dbt compile` and execute the compiled SQL directly in your data warehouse.
+
+## Bug Fix
+- Fixes a circular reference in `stg_stripe__price_plan` where the model incorrectly references itself instead of `stg_stripe__price_plan_tmp`, causing compilation errors.
+
+## Documentation
+- Adds comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.
+- Adds README in the analyses folder with instructions on how to compile and use the analysis SQL.
+
+## Under the Hood
+- Removes dependency on `int_stripe__date_spine` from `stripe__subscription_item_mrr_report` so users do not need to have the account table enabled to use the MRR report.
+- Explicitly casts `recurring_interval` field as string to avoid datatype errors.
+- Adds `stripe__subscription_item_mrr_report` model to quickstart.yml public models list.
+- Adds docs with the updated manifest to ensure deployment of Quickstart models.
+- Adds consistency test for `stripe__subscription_item_mrr_report` model.
+- Updates `integration_tests/seeds/price_data.csv` with additional test data.
+
+# dbt_stripe v1.3.0-a4
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
+
+## Under the Hood
+- Removes dependency on `int_stripe__date_spine` from `stripe__subscription_item_mrr_report` so users do not need to have the account table enabled to use the MRR report.
+- Explicitly casts `recurring_interval` field as string to avoid datatype errors.
+
+# dbt_stripe v1.3.0-a3
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
+
+## Under the Hood
+- Adds docs with the updated manifest to ensure deployment of our Quickstart models.
+
+# dbt_stripe v1.3.0-a2
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+
+## Under the Hood
+- Adds `stripe__subscription_item_mrr_report` model to quickstart.yml public models list.
+
+# dbt_stripe v1.3.0-a1
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+## Schema/Data Change
+**1 total change • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. |
+
+## Feature Update
+- Adds new analyses folder with compiled SQL for advanced revenue reporting:
+ - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
+ - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
+ - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
+
+## Bug Fix
+- Fixes a circular reference in `stg_stripe__price_plan` where the model incorrectly references itself instead of `stg_stripe__price_plan_tmp`, causing compilation errors.
+
+## Documentation
+- Adds comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.
+- Adds README in the analysis folder with instructions on how to compile and use the analysis SQL.
+
+## Under the Hood
+- Adds consistency test for `stripe__subscription_item_mrr_report` model.
+- Updates `integration_tests/seeds/price_data.csv` with additional test data.
+
+# dbt_stripe v1.3.0
 
 [PR #139](https://github.com/fivetran/dbt_stripe/pull/139) includes the following updates:
 
