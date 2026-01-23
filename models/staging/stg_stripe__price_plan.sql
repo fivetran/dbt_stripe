@@ -32,7 +32,7 @@ final as (
         {{ stripe.convert_values('unit_amount') }},
         currency,
         cast(recurring_interval as {{ dbt.type_string() }}) as recurring_interval,
-        recurring_interval_count,
+        cast(recurring_interval_count as {{ dbt.type_int() }}) as recurring_interval_count,
         recurring_usage_type,
         recurring_aggregate_usage,
         metadata,
