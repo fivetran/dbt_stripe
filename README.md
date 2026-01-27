@@ -20,7 +20,7 @@ This dbt package transforms data from Fivetran's Stripe connector into analytics
 
 ## Resources
 
-- Number of materialized models¹: 58
+- Number of materialized models¹: 59
 - Connector documentation
   - [Stripe connector documentation](https://fivetran.com/docs/connectors/applications/stripe)
   - [Stripe ERD](https://fivetran.com/docs/connectors/applications/stripe#schemainformation)
@@ -57,6 +57,7 @@ By default, this package materializes the following final tables:
 | [stripe__ending_balance_reconciliation_itemized_4](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__ending_balance_reconciliation_itemized_4) | Matches bank payouts with unsettled Stripe transactions.<br><br>**Example Analytics Questions:**<br><ul><li>Which transactions remain unsettled as of the last payout?</li><li>Do all automatic payouts reconcile fully with balance changes?</li></ul> |
 | [stripe__payout_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__payout_itemized_3) | Details expected and actual payout amounts and statuses.<br><br>**Example Analytics Questions:**<br><ul><li>When should I expect my next payout, and for how much?</li><li>Are there any delayed or failed payouts that need follow-up?</li></ul> |
 | [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) | Provides unified reporting across billing platforms on product, customer, and revenue metrics. See the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/) for more details.<br><br>**Example Analytics Questions:**<br><ul><li>What are the top revenue-generating products or SKUs?</li><li>What is the average revenue per user (ARPU) by subscription plan?</li></ul> |
+| [stripe__subscription_item_mrr_report](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Shows both contracted and billed MRR (monthly recurring revenue) with discounts applied at the subscription item level. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged.<br><br>**Example Analytics Questions:**<br><ul><li>What percentage of subscription customers are churning each month as compared to new?</li><li>How much subscription revenue was lost last year due to discounts?</li></ul> |
 
 ¹ Each Quickstart transformation job run materializes these models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 
@@ -1249,6 +1250,40 @@ sources:
             description: The date that the coupon was applied.
           - name: subscription_id
             description: The subscription that this coupon is applied to, if it is applied to a particular subscription.
+
+
+        - name: coupon
+        identifier: "{{ var('stripe_coupon_identifier', 'coupon') }}"
+        description: A coupon represents a discount that can be applied to a subscription or invoice. It contains information about the coupon's duration, amount, and applicability.
+        config:
+          freshness: null
+        columns:
+          - name: id
+            description: The ID of the coupon.
+          - name: amount_off
+            description: The amount taken off the total price in the selected currency.
+          - name: created
+            description: Time at which the object was created.
+          - name: currency
+            description: Three-letter ISO currency code, in lowercase.
+          - name: duration
+            description: The duration of the coupon. Typically "forever," "once," or "repeating."
+          - name: duration_in_months
+            description: If the coupon does not last forever, the duration in months you can apply it. For a forever coupon, this attribute is null.
+          - name: livemode
+            description: Indicates whether the coupon is in live mode or test mode.
+          - name: max_redemptions
+            description: The maximum number of times this coupon can be redeemed.
+          - name: name
+            description: Name of the coupon or promotion.
+          - name: percent_off
+            description: The percentage taken off the total price.
+          - name: redeem_by
+            description: The date by which the coupon must be redeemed.
+          - name: times_redeemed
+            description: The number of times this coupon has been redeemed.
+          - name: valid
+            description: Indicates whether the coupon can still be applied to a customer.
 ```
 
 </details>

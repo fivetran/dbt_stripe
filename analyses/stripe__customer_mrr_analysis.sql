@@ -16,8 +16,7 @@ customer_mrr as (
         sum(month_discount_applied) as month_discount_applied,
         sum(month_billed_mrr) as month_billed_mrr
     from item_mrr
-    group by
-      1,2,3,4,5
+    {{ dbt_utils.group_by(5) }}
 ),
 
 customer_mrr_lagged as (

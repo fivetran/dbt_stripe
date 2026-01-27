@@ -2,24 +2,15 @@
     tags="fivetran_validations",
     enabled=var('fivetran_validation_tests_enabled', false)
 ) }}
+with prod as (
+    select *
+    from {{ target.schema }}_stripe_prod.stripe__subscription_item_mrr_report
+),
 
--- this test ensures the subscription_item_mrr_report end model matches the prior version
--- aggregated on the subscription_month, subscription_year, and source_relation grain
-with
-{% for prod_or_dev in ('prod', 'dev') %}
-    {% set cols = adapter.get_columns_in_relation(ref('stripe__subscription_item_mrr_report')) %}
-    {{ prod_or_dev }} as (
-        select
-            subscription_month,
-            subscription_year,
-            source_relation
-            {% for col in cols if col.name not in ["subscription_item_id", "subscription_id", "customer_id", "product_id", "subscription_status", "currency", "subscription_month", "subscription_year", "source_relation", "item_month_number", "contract_mrr_type"] %}
-                , floor(sum({{ col.name }})) as summed_{{ col.name }} -- floor and sum is to keep consistency between dev and prod aggs
-            {% endfor %}
-        from {{ target.schema }}_stripe_{{ prod_or_dev }}.stripe__subscription_item_mrr_report
-        group by 1,2,3
-    ),
-{% endfor %}
+dev as (
+    select *
+    from {{ target.schema }}_stripe_dev.stripe__subscription_item_mrr_report
+),
 
 prod_not_in_dev as (
     -- rows from prod not found in dev

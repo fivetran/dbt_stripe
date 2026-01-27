@@ -1,7 +1,5 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
-{% set post_churn_months = var('stripe__mrr_post_churn_months', 3) %}
-
 {% if execute and flags.WHICH in ('run', 'build') %}
 
   {%- set first_month_query -%}
@@ -91,7 +89,7 @@ date_spine as (
     {{ dbt_utils.date_spine(
         datepart = "month",
         start_date = first_month,
-        end_date = dbt.dateadd("month", post_churn_months + 1, last_month)
+        end_date = dbt.dateadd("month", 4, last_month)
     ) }}
 
 ),
@@ -120,7 +118,7 @@ base as (
         price_plan.product_id,
         price_plan.price_plan_id,
         price_plan.recurring_interval,
-        cast(price_plan.recurring_interval_count as {{ dbt.type_int() }}) as recurring_interval_count,
+        price_plan.recurring_interval_count,
         price_plan.currency,
         {{ convert_values('price_plan.unit_amount * coalesce(subscription_item.quantity, 1)', alias='amount') }}
     from subscription_item
@@ -128,7 +126,7 @@ base as (
         on subscription_item.subscription_id = subscription.subscription_id
         and subscription_item.source_relation = subscription.source_relation
     left join price_plan
-        on cast(subscription_item.plan_id as {{ dbt.type_string() }}) = cast(price_plan.price_plan_id as {{ dbt.type_string() }})
+        on subscription_item.plan_id = price_plan.price_plan_id
         and subscription_item.source_relation = price_plan.source_relation
 
 ),
@@ -149,19 +147,19 @@ normalized as (
         currency,
         amount,
         case
-            when recurring_interval = 'week' then
+            when lower(recurring_interval) = 'week' then
                 {{ dbt_utils.safe_divide(
                     "amount * " ~ dbt_utils.safe_divide('52', '12'),
                     "coalesce(recurring_interval_count, 1)"
                 ) }}
 
-            when recurring_interval = 'month' then
+            when lower(recurring_interval) = 'month' then
                 {{ dbt_utils.safe_divide(
                     "amount",
                     "coalesce(recurring_interval_count, 1)"
                 ) }}
 
-            when recurring_interval = 'year' then
+            when lower(recurring_interval) = 'year' then
                 {{ dbt_utils.safe_divide(
                     "amount",
                     "12 * coalesce(recurring_interval_count, 1)"
@@ -263,7 +261,6 @@ subscription_billing_cycle as (
     select
         normalized.source_relation,
         normalized.subscription_id,
-
         max(
             case
                 when normalized.recurring_interval = 'week' then
@@ -310,11 +307,7 @@ subscription_month_discount_amount as (
             subscription_discount.end_month is null
             or subscription_month_contracted.subscription_month < subscription_discount.end_month
         )
-    group by
-        subscription_month_contracted.source_relation,
-        subscription_month_contracted.subscription_id,
-        subscription_month_contracted.subscription_month
-
+        {{ dbt_utils.group_by(3) }}
 ),
 
 subscription_month_discount_mrr as (
@@ -351,8 +344,6 @@ item_mrr_with_discounts as (
         item_mrr_by_month.currency,
         item_mrr_by_month.subscription_year,
         item_mrr_by_month.subscription_month,
-
-        -- rename for clarity
         item_mrr_by_month.month_mrr as month_contract_mrr,
 
         -- allocation share (by contracted monthly MRR)
@@ -378,7 +369,7 @@ item_mrr_with_discounts as (
                 * {{ dbt_utils.safe_divide(
                     "item_mrr_by_month.month_mrr",
                     "subscription_month_contracted.subscription_month_contracted_mrr"
-                ) }}
+                    ) }}
               )
         ) as month_billed_mrr
 
@@ -441,23 +432,23 @@ classified as (
         *,
         case
             when prior_month_contract_mrr is null 
-                 and month_contract_mrr > 0
+                and month_contract_mrr > 0
                 then 'new'
 
             when month_contract_mrr > prior_month_contract_mrr
                 then 'expansion'
 
             when prior_month_contract_mrr > month_contract_mrr
-                 and month_contract_mrr > 0
+                and month_contract_mrr > 0
                 then 'contraction'
 
             when (month_contract_mrr = 0 or month_contract_mrr is null)
-                 and prior_month_contract_mrr > 0
+                and prior_month_contract_mrr > 0
                 then 'churned'
 
             when prior_month_contract_mrr = 0
-                 and month_contract_mrr > 0
-                 and item_month_number >= 3
+                and month_contract_mrr > 0
+                and item_month_number >= 3
                 then 'reactivation'
 
             when month_contract_mrr = prior_month_contract_mrr

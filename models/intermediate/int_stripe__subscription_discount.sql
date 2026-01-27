@@ -1,51 +1,16 @@
 {{ config(enabled=var('stripe__using_coupons', True)) }}
 
-with stg_stripe__discount as (
+with discount as (
 
     select *
     from {{ ref('stg_stripe__discount') }}
 
 ),
 
-stg_stripe__coupon as (
+coupon as (
 
     select *
     from {{ ref('stg_stripe__coupon') }}
-
-),
-
-discount_normalized as (
-
-    select
-        discount_id,
-        subscription_id,
-        customer_id,
-        coupon_id,
-        start_at,
-        end_at,
-        amount as discount_amount,
-        type,
-        invoice_id,
-        invoice_item_id,
-        promotion_code,
-        coalesce(source_relation, '') as source_relation
-    from stg_stripe__discount
-    where subscription_id is not null
-      and coupon_id is not null
-      and start_at is not null
-
-),
-
-coupon_normalized as (
-
-    select
-        coupon_id,
-        duration,
-        duration_in_months,
-        currency,
-        valid,
-        coalesce(source_relation, '') as source_relation
-    from stg_stripe__coupon
 
 ),
 
@@ -58,18 +23,21 @@ discount amount for that episode.
 
 Using MAX(discount_amount) prevents double counting when duplicates exist.
 */
-coupon_discount as (
+discount_dedupe as (
 
     select
-        discount_normalized.source_relation,
-        discount_normalized.subscription_id,
-        discount_normalized.customer_id,
-        discount_normalized.coupon_id,
-        cast({{ dbt.date_trunc('month', 'discount_normalized.start_at') }} as date) as start_month,
-        min(discount_normalized.start_at) as start_at,
-        max(discount_normalized.end_at) as end_at,
-        max(discount_normalized.discount_amount) as discount_amount
-    from discount_normalized
+        source_relation,
+        subscription_id,
+        customer_id,
+        coupon_id,
+        cast({{ dbt.date_trunc('month', 'discount.start_at') }} as date) as start_month,
+        min(start_at) as start_at,
+        max(end_at) as end_at,
+        max(amount) as discount_amount
+    from discount
+    where subscription_id is not null
+      and coupon_id is not null
+      and start_at is not null
     {{ dbt_utils.group_by(5) }}
 
 ),
@@ -77,21 +45,21 @@ coupon_discount as (
 subscription_discount_schedule as (
 
     select
-        coupon_discount.source_relation,
-        coupon_discount.subscription_id,
-        coupon_discount.customer_id,
-        coupon_discount.coupon_id,
-        coupon_discount.start_at,
-        coupon_discount.end_at,
-        coupon_discount.start_month,
-        coupon_discount.discount_amount,
-        coupon_normalized.duration,
-        coupon_normalized.duration_in_months,
-        coupon_normalized.currency as coupon_currency
-    from coupon_discount
-    left join coupon_normalized
-      on coupon_discount.source_relation = coupon_normalized.source_relation
-     and coupon_discount.coupon_id = coupon_normalized.coupon_id
+        discount_dedupe.source_relation,
+        discount_dedupe.subscription_id,
+        discount_dedupe.customer_id,
+        discount_dedupe.coupon_id,
+        discount_dedupe.start_at,
+        discount_dedupe.end_at,
+        discount_dedupe.start_month,
+        discount_dedupe.discount_amount,
+        coupon.duration,
+        coupon.duration_in_months,
+        coupon.currency as coupon_currency
+    from discount_dedupe
+    left join coupon
+      on discount_dedupe.source_relation = coupon.source_relation
+      and discount_dedupe.coupon_id = coupon.coupon_id
 
 ),
 

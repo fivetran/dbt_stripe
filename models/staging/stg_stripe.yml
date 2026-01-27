@@ -1005,8 +1005,6 @@ models:
         description: The duration of the coupon. Typically "forever," "once," or "repeating."
       - name: duration_in_months
         description: If the coupon does not last forever, the duration in months you can apply it. For a forever coupon, this attribute is null.
-      - name: livemode
-        description: True if the coupon is live.
       - name: max_redemptions
         description: The maximum number of times this coupon can be redeemed.
       - name: coupon_name

@@ -27,7 +27,7 @@ fields as (
 final as (
 
     select
-        id as price_plan_id,
+        cast(id as {{ dbt.type_string() }}) as price_plan_id,
         is_active,
         {{ stripe.convert_values('unit_amount') }},
         currency,

@@ -12,10 +12,13 @@ table_variables:
     - payment_method
   stripe__using_subscriptions:
     - subscription_history
+    - subscription_item
     - product
   stripe__using_credit_notes:
     - credit_note_line_item
     - credit_note
+  stripe__using_coupons:
+    - coupon
 
   _fivetran_quickstart_account:
     - account

@@ -16,7 +16,7 @@ monthly_rollup as (
         sum(month_discount_applied) as total_discount_applied,
         sum(month_billed_mrr) as total_billed_mrr
     from mrr_by_item
-     {{ dbt_utils.group_by(4) }}
+    {{ dbt_utils.group_by(4) }}
 
 ),
 

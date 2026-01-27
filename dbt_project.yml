@@ -11,6 +11,8 @@ models:
       +materialized: table
       int_stripe__deduped_subscription_item:
         +materialized: ephemeral
+      int_stripe__subscription_discount:
+        +materialized: ephemeral
     staging:
       +materialized: table
       +schema: stg_stripe
