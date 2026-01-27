@@ -1,3 +1,5 @@
+{{ config(enabled=var('stripe__using_payouts', True)) }}
+
 with base as (
     select * 
     from {{ ref('stg_stripe__payout_balance_transaction_tmp') }}

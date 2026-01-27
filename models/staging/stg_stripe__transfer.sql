@@ -1,3 +1,4 @@
+{{ config(enabled=var('stripe__using_transfers', True)) }}
 
 with base as (
 
@@ -53,4 +54,4 @@ final as (
 )
 
 select *
-from final
+from final 

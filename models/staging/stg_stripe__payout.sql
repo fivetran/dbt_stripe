@@ -1,3 +1,4 @@
+{{ config(enabled=var('stripe__using_payouts', True)) }}
 
 with base as (
 

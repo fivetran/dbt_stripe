@@ -127,6 +127,8 @@ vars:
     stripe__using_subscriptions:   False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
     stripe__using_coupons:         False  #Disable if you are not using coupon codes to apply discounts.
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
+    stripe_using_transfers:        False  #Disable if to turn off the transfer table temporarily.
+    stripe_using_payouts:          False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
 ```
 ### (Optional) Additional configurations
 <details open><summary>Expand to view configurations</summary>

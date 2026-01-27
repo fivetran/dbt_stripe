@@ -16,7 +16,12 @@ with balance_transaction as (
 ), charge as (
     
     select *
-    from {{ ref('stg_stripe__charge') }}
+    {% if var('stripe__charge_metadata',[]) %}
+      {% for metadata in var('stripe__charge_metadata') %}
+          ,charge.{{ metadata }} as charge_{{ metadata }}
+      {% endfor %}
+    {% endif %}
+    from {{ ref('stg_stripe__charge') }} 
 
 ), customer as (
     
@@ -52,6 +57,8 @@ with balance_transaction as (
     from {{ ref('stg_stripe__payment_method_card') }}
 
 {% endif %}
+
+{% if var('stripe__using_payouts', True) %}   
 ), payout as (
     
     select *
@@ -61,6 +68,8 @@ with balance_transaction as (
     
     select *
     from {{ ref('stg_stripe__payout_balance_transaction') }}
+    
+{% endif %}
 
 ), payout_balance_transaction_unified as (
     -- Create a unified mapping table to bridge records without mapping.
@@ -89,10 +98,14 @@ with balance_transaction as (
     from {{ ref('stg_stripe__subscription') }}
 
 {% endif %}
+
+{% if var('stripe__using_transfers', True) %}    
 ), transfers as (
-    
+
     select *
     from {{ ref('stg_stripe__transfer') }}
+
+{% endif %}
 
 ), dispute_summary as (
     /* Although rare, payments can be disputed multiple times. 
