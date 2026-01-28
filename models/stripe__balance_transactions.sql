@@ -15,13 +15,13 @@ with balance_transaction as (
 
 ), charge as (
     
-    select *
-    {% if var('stripe__charge_metadata',[]) %}
-      {% for metadata in var('stripe__charge_metadata') %}
-          ,charge.{{ metadata }} as charge_{{ metadata }}
-      {% endfor %}
-    {% endif %}
-    from {{ ref('stg_stripe__charge') }} 
+    charge.*  
+    {% if var('stripe__charge_metadata', []) %}
+         {% for metadata in var('stripe__charge_metadata') %}
+           , charge.{{ metadata }} as charge_{{ metadata }}
+         {% endfor %}
+       {% endif %}
+    from {{ ref('stg_stripe__charge') }} as charge
 
 ), customer as (
     
@@ -253,6 +253,11 @@ select
     cards.card_address_country,
     coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
+    {% if var('stripe__charge_metadata', []) %}
+      {% for metadata in var('stripe__charge_metadata') %}
+        charge_{{ metadata }},
+      {% endfor %}
+    {% endif %}
     payment_intent.payment_intent_id,
 
     {% if var('stripe__using_invoices', True) %}
@@ -273,7 +278,7 @@ select
     cards.brand as card_brand,
     cards.funding as card_funding,
     cards.country as card_country,
-    charge.statement_descriptor as charge_statement_descriptor ,
+    charge.statement_descriptor as charge_statement_descriptor,
     dispute_summary.dispute_ids,
     dispute_summary.dispute_reasons,
     dispute_summary.dispute_count,
