@@ -2,7 +2,7 @@
 
 with price_plan as (
 
-    select * 
+    select *
     from {{ ref('stg_stripe__price_plan_tmp') }}
 ),
 
@@ -26,13 +26,13 @@ fields as (
 
 final as (
 
-    select 
-        id as price_plan_id,
+    select
+        cast(id as {{ dbt.type_string() }}) as price_plan_id,
         is_active,
         {{ stripe.convert_values('unit_amount') }},
         currency,
-        recurring_interval,
-        recurring_interval_count,
+        cast(recurring_interval as {{ dbt.type_string() }}) as recurring_interval,
+        cast(recurring_interval_count as {{ dbt.type_int() }}) as recurring_interval_count,
         recurring_usage_type,
         recurring_aggregate_usage,
         metadata,

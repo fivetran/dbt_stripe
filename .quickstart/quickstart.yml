@@ -16,6 +16,8 @@ table_variables:
   stripe__using_credit_notes:
     - credit_note_line_item
     - credit_note
+  stripe__using_coupons:
+    - coupon
 
   _fivetran_quickstart_account:
     - account
@@ -38,7 +40,8 @@ public_models: [
   "stripe__balance_change_from_activity_itemized_3",
   "stripe__ending_balance_reconciliation_itemized_4",
   "stripe__payout_itemized_3",
-  "stripe__line_item_enhanced"
+  "stripe__line_item_enhanced",
+  "stripe__subscription_item_mrr_report"
 ]
 
 supported_vars:
