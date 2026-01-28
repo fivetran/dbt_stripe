@@ -9,15 +9,15 @@
 | [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics for both contract and billed/net mrr, movement classification, and monthly discounts applied. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. |
 | [`stg_stripe__coupon`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__coupon) | New Staging Model | | | Staging model for Stripe coupon data. |
 | [`stg_stripe__coupon_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__coupon_tmp) | New Staging Model | | | |
+| [`stg_stripe__price_plan`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__price_plan) | Explicitly casts`recurring_interval` field as string, `recurring_interval_count` field as integer, and `price_plan_id` field as string.| | | Avoids datatype errors. |
+| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item) | Explicitly casts `plan_id` field as string. | | | Avoids datatype errors. |
 
-- Explicitly casts `recurring_interval` field from the `stg_stripe__price_plan` model as string to avoid datatype errors.
-- Explicitly casts `recurring_interval_count` field from the `stg_stripe__price_plan` model as integer to avoid datatype errors.
 
 ## Feature Update
 - Adds new analyses folder with compiled SQL for advanced revenue reporting:
- - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
- - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
- - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
+  - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
+  - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
+   - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
 
 ## Documentation
 - Adds comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.

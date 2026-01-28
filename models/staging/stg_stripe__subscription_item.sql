@@ -1,3 +1,5 @@
+{{ config(enabled=var('stripe__using_subscriptions', True)) }}
+
 with base as (
 
     select * 

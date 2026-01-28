@@ -990,13 +990,13 @@ models:
       - name: subscription_year
         description: Year of the subscription period.
       - name: month_contract_mrr
-        description: Contracted monthly recurring revenue for this subscription item in the current month before discounts are applied. "{{ doc('convert_values') }}"
+        description: Contracted monthly recurring revenue for this subscription item for this subscription month before discounts are applied. "{{ doc('convert_values') }}"
       - name: month_discount_applied
-        description: Discount amount applied to this subscription item in the current month, allocated proportionally based on the item's share of the subscription's total contracted MRR. "{{ doc('convert_values') }}"
+        description: Discount amount applied to this subscription item for this month, allocated proportionally based on the item's share of the subscription's total contracted MRR. "{{ doc('convert_values') }}"
       - name: month_billed_mrr
-        description: Net monthly recurring revenue for this subscription item in the current month after discounts are applied (month_contract_mrr minus month_discount_applied). "{{ doc('convert_values') }}"
+        description: Net monthly recurring revenue for this subscription item for this subscription month after discounts are applied (month_contract_mrr minus month_discount_applied). "{{ doc('convert_values') }}"
       - name: prior_month_contract_mrr
-        description: Contracted monthly recurring revenue for this subscription item in the previous month before discounts are applied. "{{ doc('convert_values') }}"
+        description: Contracted monthly recurring revenue for this subscription item for the previous subscription month before discounts are applied. "{{ doc('convert_values') }}"
       - name: item_month_number
         description: Sequential month number for this subscription item, starting from 1 for the first month.
       - name: contract_mrr_type

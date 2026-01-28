@@ -45,9 +45,6 @@ final as (
     from fields
 
     {{ livemode_predicate() }}
-    {% if var('stripe__using_coupons', stripe.does_table_exist('coupon')=='exists') %}
-        and coalesce(_fivetran_active, true)
-    {% endif %}
 )
 
 select * 

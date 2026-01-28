@@ -29,6 +29,7 @@ This dbt package transforms data from Fivetran's Stripe connector into analytics
   - [dbt Docs](https://fivetran.github.io/dbt_stripe/#!/overview)
   - [DAG](https://fivetran.github.io/dbt_stripe/#!/overview?g_v=1)
   - [Changelog](https://github.com/fivetran/dbt_stripe/blob/main/CHANGELOG.md)
+  - [Decisionlog](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md)
 
 ## What does this dbt package do?
 This package enables you to better understand your Stripe transactions, enhance balance transaction entries with useful fields, and generate metrics tables for account activity analysis. It creates enriched models with metrics focused on transaction analysis, customer insights, and revenue tracking.
