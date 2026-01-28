@@ -20,7 +20,7 @@ This dbt package transforms data from Fivetran's Stripe connector into analytics
 
 ## Resources
 
-- Number of materialized models¹: 59
+- Number of materialized models¹: 61
 - Connector documentation
   - [Stripe connector documentation](https://fivetran.com/docs/connectors/applications/stripe)
   - [Stripe ERD](https://fivetran.com/docs/connectors/applications/stripe#schemainformation)

@@ -346,13 +346,8 @@ item_mrr_with_discounts as (
         item_mrr_by_month.subscription_month,
         item_mrr_by_month.month_mrr as month_contract_mrr,
 
-        -- allocation share (by contracted monthly MRR)
-        {{ dbt_utils.safe_divide(
-            "item_mrr_by_month.month_mrr",
-            "subscription_month_contracted.subscription_month_contracted_mrr"
-        ) }} as discount_allocation_share,
-
-        -- allocated discount at item grain (monthly)
+        -- applied discount at item grain (monthly)
+        {% if var('stripe__using_coupons', True) %}
         (
             coalesce(subscription_month_discount_mrr.subscription_month_discount_mrr, 0)
             * {{ dbt_utils.safe_divide(
@@ -360,8 +355,12 @@ item_mrr_with_discounts as (
                 "subscription_month_contracted.subscription_month_contracted_mrr"
             ) }}
         ) as month_discount_applied,
+        {% else %}
+        0 as month_discount_applied,
+        {% endif %}
 
         -- net / invoiced monthly MRR at item grain
+        {% if var('stripe__using_coupons', True) %}
         (
             item_mrr_by_month.month_mrr
             - (
@@ -372,6 +371,9 @@ item_mrr_with_discounts as (
                     ) }}
               )
         ) as month_billed_mrr
+        {% else %}
+        item_mrr_by_month.month_mrr as month_billed_mrr
+        {% endif %}
 
     from item_mrr_by_month
     left join subscription_month_contracted
