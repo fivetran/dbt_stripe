@@ -10,7 +10,7 @@
 | [`stg_stripe__coupon`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__coupon) | New Staging Model | | | Staging model for Stripe coupon data. |
 | [`stg_stripe__coupon_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__coupon_tmp) | New Temp Model | | | |
 | [`stg_stripe__price_plan`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__price_plan) | Datatype casts`| | recurring_interval` field as `string`<br>`recurring_interval_count` field as `integer`<br>`price_plan_id` field as `string` | Avoids datatype errors. |
-| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item) | Datatype casts `plan_id` field as `string` | | | Avoids datatype errors. |
+| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item) | Datatype casts | |  `plan_id` field as `string` | Avoids datatype errors. |
 
 
 ## Feature Update
