@@ -1,3 +1,8 @@
+{% set charge_cols = adapter.get_columns_in_relation(ref('stg_stripe__charge')) | map(attribute='name') | list %}
+{% set invoice_cols = adapter.get_columns_in_relation(ref('stg_stripe__invoice')) | map(attribute='name') | list %}
+{% set subscription_cols = adapter.get_columns_in_relation(ref('stg_stripe__subscription')) | map(attribute='name') | list %}
+{% set customer_cols = adapter.get_columns_in_relation(ref('stg_stripe__customer')) | map(attribute='name') | list %}
+
 with balance_transaction as (
 
     select *
@@ -15,18 +20,37 @@ with balance_transaction as (
 
 ), charge as (
     
-    charge.*  
-    {% if var('stripe__charge_metadata', []) %}
-         {% for metadata in var('stripe__charge_metadata') %}
-           , charge.{{ metadata }} as charge_{{ metadata }}
-         {% endfor %}
-       {% endif %}
-    from {{ ref('stg_stripe__charge') }} as charge
+   select
+      charge.*
+      {% for metadata in var('stripe__charge_metadata', []) %}
+        {% if metadata in charge_cols %}
+          , charge.{{ metadata }} as charge_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__charge') }} as charge
 
 ), customer as (
-    
+
+   select
+      customer.*
+      {% for metadata in var('stripe__customer_metadata', []) %}
+        {% if metadata in customer_cols %}
+          , customer.{{ metadata }} as customer_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__customer') }} as customer
+
+), dispute as (
+
     select *
-    from {{ ref('stg_stripe__customer') }}
+    from {{ ref('stg_stripe__dispute') }}
+
+{% if var('stripe__using_invoices', True) %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__invoice') }} as invoice
 
 ), dispute as (
     
@@ -35,9 +59,16 @@ with balance_transaction as (
 
 {% if var('stripe__using_invoices', True) %}
 ), invoice as (
-    
-    select *
-    from {{ ref('stg_stripe__invoice') }}
+
+   select
+      invoice.*
+      {% for metadata in var('stripe__invoice_metadata', []) %}
+        {% if metadata in invoice_cols %}
+          , invoice.{{ metadata }} as invoice_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__invoice') }} as invoice
 
 {% endif %}
 ), payment_intent as (
@@ -93,9 +124,16 @@ with balance_transaction as (
 
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
-    
-    select *
-    from {{ ref('stg_stripe__subscription') }}
+
+    select
+      subscription.*
+      {% for metadata in var('stripe__subscription_metadata', []) %}
+        {% if metadata in subscription_cols %}
+          , subscription.{{ metadata }} as subscription_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__subscription') }} as subscription
 
 {% endif %}
 
@@ -239,6 +277,11 @@ select
     customer.customer_address_state,
     customer.customer_address_postal_code,
     customer.customer_address_country,
+    {% for metadata in var('stripe__customer_metadata', []) %}
+      {% if metadata in customer_cols %}
+        customer.customer_{{ metadata }} as customer_{{ metadata }},
+      {% endif %}
+    {% endfor %}
     charge.shipping_address_line_1 as charge_shipping_address_line_1,
     charge.shipping_address_line_2 as charge_shipping_address_line_2,
     charge.shipping_address_city as charge_shipping_address_city,
@@ -253,20 +296,31 @@ select
     cards.card_address_country,
     coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
-    {% if var('stripe__charge_metadata', []) %}
-      {% for metadata in var('stripe__charge_metadata') %}
-        charge_{{ metadata }},
-      {% endfor %}
-    {% endif %}
+    {% for metadata in var('stripe__charge_metadata', []) %}
+      {% if metadata in charge_cols %}
+        charge.charge_{{ metadata }} as charge_{{ metadata }},
+      {% endif %}
+    {% endfor %}
+
     payment_intent.payment_intent_id,
 
     {% if var('stripe__using_invoices', True) %}
     invoice.invoice_id,
     invoice.number as invoice_number,
+    {% for metadata in var('stripe__invoice_metadata', []) %}
+      {% if metadata in invoice_cols %}
+        invoice.invoice_{{ metadata }} as invoice_{{ metadata }},
+      {% endif %}
+    {% endfor %}
     {% endif %}
 
     {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
+    {% for metadata in var('stripe__subscription_metadata', []) %}
+      {% if metadata in subscription_cols %}
+        subscription.subscription_{{ metadata }} as subscription_{{ metadata }},t
+      {% endif %}
+    {% endfor %}
     {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}

@@ -1,34 +1,67 @@
 {{ config(enabled=fivetran_utils.enabled_vars(['stripe__using_invoices','stripe__using_subscriptions'])) }}
 
+{% set charge_cols = adapter.get_columns_in_relation(ref('stg_stripe__charge')) | map(attribute='name') | list %}
+{% set invoice_cols = adapter.get_columns_in_relation(ref('stg_stripe__invoice')) | map(attribute='name') | list %}
+{% set subscription_cols = adapter.get_columns_in_relation(ref('stg_stripe__subscription')) | map(attribute='name') | list %}
+{% set customer_cols = adapter.get_columns_in_relation(ref('stg_stripe__customer')) | map(attribute='name') | list %}
+
 with invoice as (
 
-    select *
-    from {{ ref('stg_stripe__invoice') }}  
+   select
+      invoice.*
+      {% for metadata in var('stripe__invoice_metadata', []) %}
+        {% if metadata in invoice_cols %}
+          , invoice.{{ metadata }} as invoice_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__invoice') }} as invoice
 
 ), charge as (
 
-    select *
-    from {{ ref('stg_stripe__charge') }}  
+   select
+      charge.*
+      {% for metadata in var('stripe__charge_metadata', []) %}
+        {% if metadata in charge_cols %}
+          , charge.{{ metadata }} as charge_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__charge') }} as charge
 
 ), invoice_line_item as (
 
     select *
-    from {{ ref('stg_stripe__invoice_line_item') }}  
+    from {{ ref('stg_stripe__invoice_line_item') }}
 
 ), subscription as (
 
-    select *
-    from {{ ref('stg_stripe__subscription') }}  
+   select
+      subscription.*
+      {% for metadata in var('stripe__subscription_metadata', []) %}
+        {% if metadata in subscription_cols %}
+          , subscription.{{ metadata }} as subscription_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__subscription') }} as subscription
 
 ), subscription_item as (
 
     select *
-    from {{ ref('int_stripe__deduped_subscription_item') }} 
+    from {{ ref('int_stripe__deduped_subscription_item') }}
 
 ), customer as (
 
-    select *
-    from {{ ref('stg_stripe__customer') }}  
+   select
+      customer.*
+      {% for metadata in var('stripe__customer_metadata', []) %}
+        {% if metadata in customer_cols %}
+          , customer.{{ metadata }} as customer_{{ metadata }}
+        {% else %}
+        {% endif %}
+      {% endfor %}
+   from {{ ref('stg_stripe__customer') }} as customer  
 
 ), line_items_groups as (
 
@@ -71,6 +104,11 @@ select
   subscription.customer_id,
   customer.description as customer_description,
   customer.email as customer_email,
+  {% for metadata in var('stripe__customer_metadata', []) %}
+    {% if metadata in customer_cols %}
+      customer.customer_{{ metadata }} as customer_{{ metadata }},
+    {% endif %}
+  {% endfor %}
   subscription.status,
   subscription.start_date_at,
   subscription.ended_at,
@@ -84,6 +122,11 @@ select
   subscription.days_until_due,
   subscription.is_cancel_at_period_end,
   subscription.cancel_at,
+  {% for metadata in var('stripe__subscription_metadata', []) %}
+    {% if metadata in subscription_cols %}
+      subscription.subscription_{{ metadata }} as subscription_{{ metadata }},
+    {% endif %}
+  {% endfor %}
   number_invoices_generated,
   total_amount_billed,
   total_amount_paid,

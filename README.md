@@ -1400,6 +1400,44 @@ vars:
     stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
 
+#### Including Metadata Fields in End Models
+Once metadata fields are pivoted out in the staging models, you can configure which metadata fields to include in the end models. This allows you to automatically enrich the final output tables with custom metadata fields from charge, invoice, subscription, and customer records.
+
+The following end models support metadata field inclusion:
+- `stripe__balance_transactions` - supports metadata from charge, invoice, subscription, and customer
+- `stripe__invoice_details` - supports metadata from charge, invoice, subscription, and customer
+- `stripe__subscription_details` - supports metadata from invoice, charge, subscription, and customer
+- `stripe__invoice_line_item_details` - supports metadata from subscription
+- `stripe__customer_overview` - supports metadata from customer
+
+To include metadata fields in these end models, specify the field names in your `dbt_project.yml`. The field names should match the metadata field names you configured for pivoting in the staging layer (using the field name, not the alias if you specified one).
+
+```yml
+vars:
+  stripe__charge_metadata: ['metadata_field_1', 'metadata_field_2']
+  stripe__invoice_metadata: ['metadata_field_3', 'metadata_field_4']
+  stripe__subscription_metadata: ['metadata_field_5', 'metadata_field_6']
+  stripe__customer_metadata: ['metadata_field_7', 'metadata_field_8']
+```
+
+When included in end models, metadata fields are automatically prefixed with their entity name to avoid column name conflicts:
+- Charge metadata fields appear as `charge_metadata_field_1`, `charge_metadata_field_2`, etc.
+- Invoice metadata fields appear as `invoice_metadata_field_3`, `invoice_metadata_field_4`, etc.
+- Subscription metadata fields appear as `subscription_metadata_field_5`, `subscription_metadata_field_6`, etc.
+- Customer metadata fields appear as `customer_metadata_field_7`, `customer_metadata_field_8`, etc.
+
+**Example:**
+
+If you have a `sales_region` metadata field in the customer table and a `campaign_id` metadata field in the charge table, configure them like this:
+
+```yml
+vars:
+  stripe__customer_metadata: ['sales_region']
+  stripe__charge_metadata: ['campaign_id']
+```
+
+In the `stripe__balance_transactions` model, these fields will automatically appear as `customer_sales_region` and `charge_campaign_id`.
+
 #### Enabling Cent to Dollar Conversion
 
 Amount-based fields, such as `amount` and `net`, are typically displayed in the smallest denomination (e.g., cents for USD). By default, amount-based fields will be in this raw form. However, some currencies use major and minor units (for example, cents and dollars when using USD). In these cases, it may be useful to divide the amounts by 100, converting amounts to major units (dollars for USD). To enable the division, configure the `stripe__convert_values` to `true` in your project.yml: 
