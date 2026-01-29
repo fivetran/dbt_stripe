@@ -27,7 +27,7 @@ final as (
     
     select 
         id as subscription_item_id,
-        plan_id,
+        cast(plan_id as {{ dbt.type_string() }}) as plan_id,
         subscription_id,
         cast(created as {{ dbt.type_timestamp() }}) as created_at,
         cast(current_period_start as {{ dbt.type_timestamp() }}) as current_period_start,

@@ -1,3 +1,80 @@
+# dbt_stripe v1.4.0
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+## Schema/Data Change
+**3 total change • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics for both contract and billed/net mrr, movement classification, and monthly discounts applied. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. If you notice any discrepencies in MRR calculations with this new model, please open up a [support ticket](https://support.fivetran.com/hc/en-us). |
+| [`stg_stripe__coupon`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__coupon) | New Staging Model | | | Staging model for Stripe coupon data. |
+| [`stg_stripe__coupon_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__coupon_tmp) | New Temp Model | | | |
+| [`stg_stripe__price_plan`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__price_plan) | Datatype casts| | `recurring_interval` field as `string`<br>`recurring_interval_count` field as `integer`<br>`price_plan_id` field as `string` | Avoids datatype errors. |
+| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item) | Datatype casts | |  `plan_id` field as `string` | Avoids datatype errors. |
+
+
+## Feature Update
+- Adds new analyses folder with advanced revenue reporting:
+  - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
+  - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
+   - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
+
+## Documentation
+- Adds comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.
+- Adds README in the analysis folder with instructions on how to compile and use the analysis SQL.
+
+## Under the Hood
+- Adds consistency test for `stripe__subscription_item_mrr_report` model.
+- Updates `integration_tests/seeds/price_data.csv` with additional test data.
+- Adds `stripe__subscription_item_mrr_report` model to quickstart.yml public models list.
+
+# dbt_stripe v1.3.0-a4
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
+
+## Under the Hood
+- Removes dependency on `int_stripe__date_spine` from `stripe__subscription_item_mrr_report` so users do not need to have the account table enabled to use the MRR report.
+- Explicitly casts `recurring_interval` field as string to avoid datatype errors.
+
+# dbt_stripe v1.3.0-a3
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following update:
+
+## Under the Hood
+- Adds docs with the updated manifest to ensure deployment of our Quickstart models.
+
+# dbt_stripe v1.3.0-a2
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+
+## Under the Hood
+- Adds `stripe__subscription_item_mrr_report` model to quickstart.yml public models list.
+
+# dbt_stripe v1.3.0-a1
+[PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
+
+## Schema/Data Change
+**1 total change • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | New End Model | | | Each record represents a subscription item for a given month with MRR metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. |
+
+## Feature Update
+- Adds new analyses folder with compiled SQL for advanced revenue reporting:
+ - `stripe__arr_snapshot_analysis`: Generates a high-level ARR snapshot report for the entire business for revenue forecasting.
+ - `stripe__customer_mrr_analysis`: Generates an MRR report at the customer level for retention reporting and cohort analysis.
+ - These analysis files reference the `stripe__subscription_item_mrr_report` model and can be compiled using `dbt compile` and executed directly in your data warehouse.
+
+## Bug Fix
+- Fixes a circular reference in `stg_stripe__price_plan` where the model incorrectly references itself instead of `stg_stripe__price_plan_tmp`, causing compilation errors.
+
+## Documentation
+- Adds comprehensive column documentation for `stripe__subscription_item_mrr_report` in `stripe.yml`.
+- Adds README in the analysis folder with instructions on how to compile and use the analysis SQL.
+
+## Under the Hood
+- Adds consistency test for `stripe__subscription_item_mrr_report` model.
+- Updates `integration_tests/seeds/price_data.csv` with additional test data.
+
 # dbt_stripe v1.3.0
 
 [PR #139](https://github.com/fivetran/dbt_stripe/pull/139) includes the following updates:
@@ -24,8 +101,8 @@
 **2 total changes • 2 possible breaking changes**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | ---------------- | --------------- | ------------ | ------------ | --------- |
-| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`.|
-| [`stg_stripe__subscription_item_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_line_item_tmp) | New Staging Model | | | |
+| [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`.|
+| [`stg_stripe__subscription_item_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item_tmp) | New Staging Model | | | |
 | [`stripe__subscription_details`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe_subscription_details) | New Source Data | `current_period_start/end` fields sourced from `stg_stripe__subscription_history`  | `current_period_start/end` fields sourced from both `stg_stripe__subscription_history` and `stg_stripe__subscription_item`. | Fields have been coalesced to reference either table, so the package will work for all versions.|
 | [`stripe__line_item_enhanced`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe_line_item_enhanced) | New Source Data |`current_period_start/end` fields sourced from `stg_stripe__subscription_history`  |`current_period_start/end` fields sourced from both `stg_stripe__subscription_history` and `stg_stripe__subscription_item`. |Fields have been coalesced to reference either table, so the package will work for all versions. |
 
