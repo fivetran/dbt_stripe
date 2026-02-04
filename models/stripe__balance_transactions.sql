@@ -91,7 +91,7 @@ with balance_transaction as (
 ), subscription as (
 
    select *
-   from {{ ref('stg_stripe__subscription') }} as subscription
+   from {{ ref('stg_stripe__subscription') }}
 
 {% endif %}
 
