@@ -1,7 +1,5 @@
 {{ config(enabled=var('stripe__using_invoices', True)) }}
 
-{% set subscription_cols = adapter.get_columns_in_relation(ref('stg_stripe__subscription')) | map(attribute='name') | list %}
-
 with invoice_line_item as (
 
     select *
@@ -15,15 +13,8 @@ with invoice_line_item as (
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
 
-   select
-      subscription.*
-      {% for metadata in var('stripe__subscription_metadata', []) %}
-        {% if metadata in subscription_cols %}
-          , subscription.{{ metadata }} as subscription_{{ metadata }}
-        {% else %}
-        {% endif %}
-      {% endfor %}
-   from {{ ref('stg_stripe__subscription') }} as subscription  
+   select *
+   from {{ ref('stg_stripe__subscription') }}
 
 ), price_plan as (
 
@@ -67,11 +58,7 @@ select
     subscription.billing as subscription_billing,
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
-    {% for metadata in var('stripe__subscription_metadata', []) %}
-      {% if metadata in subscription_cols %}
-        subscription.subscription_{{ metadata }} as subscription_{{ metadata }},
-      {% endif %}
-    {% endfor %}
+    {{ select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
     price_plan.is_active as price_plan_is_active,
     price_plan.unit_amount as price_plan_amount,
     price_plan.recurring_interval as price_plan_interval,

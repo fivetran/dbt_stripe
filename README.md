@@ -93,7 +93,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=1.4.0", "<1.5.0"]
+    version: [">=1.5.0", "<1.6.0"]
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
@@ -127,7 +127,7 @@ vars:
     stripe__using_subscriptions:   False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
     stripe__using_coupons:         False  #Disable if you are not using coupon codes to apply discounts.
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
-    stripe_using_transfers:        False  #Disable if to turn off the transfer table temporarily.
+    stripe_using_transfers:        False  #Disable to turn off the transfer table temporarily.
     stripe_using_payouts:          False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
 ```
 ### (Optional) Additional configurations
@@ -1347,7 +1347,7 @@ vars:
 ```
 
 #### Pivoting out Metadata Properties
-Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package will pivot out fields into their own columns within the respective staging models. The metadata variables accept dictionaries in addition to strings.
+Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package will pivot out fields into their own columns within the respective staging models. The metadata variables accept dictionaries in addition to strings.The expectation is that you will only ever input single level key value pairs into the JSON.
 
 Additionally, you may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field. Below are examples of how you would add the respective fields.
 
@@ -1415,7 +1415,7 @@ To include metadata fields in these end models, specify the field names in your 
 ```yml
 vars:
   stripe__charge_metadata: ['metadata_field_1', 'metadata_field_2']
-  stripe__invoice_metadata: ['metadata_field_3', 'metadata_field_4']
+  stripe__invoice_metadata: ['metadata_field_3', 'metadata_field_4'] 
   stripe__subscription_metadata: ['metadata_field_5', 'metadata_field_6']
   stripe__customer_metadata: ['metadata_field_7', 'metadata_field_8']
 ```

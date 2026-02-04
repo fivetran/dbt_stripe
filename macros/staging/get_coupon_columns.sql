@@ -10,6 +10,7 @@
     {"name": "id", "datatype": dbt.type_string()},
     {"name": "livemode", "datatype": "boolean"},
     {"name": "max_redemptions", "datatype": dbt.type_int()},
+    {"name": "metadata", "datatype": dbt.type_string()},
     {"name": "name", "datatype": dbt.type_string()},
     {"name": "percent_off", "datatype": dbt.type_float()},
     {"name": "redeem_by", "datatype": dbt.type_timestamp()},

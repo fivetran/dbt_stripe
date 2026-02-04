@@ -20,6 +20,7 @@
         default_variable='account',
         union_schema_variable='stripe_union_schemas',
         union_database_variable='stripe_union_databases'
+
     )
 }}
 

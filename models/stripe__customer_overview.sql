@@ -1,5 +1,3 @@
-{% set customer_cols = adapter.get_columns_in_relation(ref('stg_stripe__customer')) | map(attribute='name') | list %}
-
 with balance_transaction_joined as (
 
     select *
@@ -12,15 +10,8 @@ with balance_transaction_joined as (
 
 ), customer as (
 
-   select
-      customer.*
-      {% for metadata in var('stripe__customer_metadata', []) %}
-        {% if metadata in customer_cols %}
-          , customer.{{ metadata }} as customer_{{ metadata }}
-        {% else %}
-        {% endif %}
-      {% endfor %}
-   from {{ ref('stg_stripe__customer') }} as customer  
+   select *
+   from {{ ref('stg_stripe__customer') }} 
 
 ), transactions_grouped as (
 
@@ -156,12 +147,8 @@ with balance_transaction_joined as (
       'No Associated Customer' as customer_description,
       customer.created_at as customer_created_at,
       customer.currency as customer_currency,
-      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
-      {% for metadata in var('stripe__customer_metadata', []) %}
-        {% if metadata in customer_cols %}
-          customer.customer_{{ metadata }} as customer_{{ metadata }},
-        {% endif %}
-      {% endfor %}
+      {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation'] + var('stripe__customer_metadata', [])) }},
       coalesce(transactions_grouped.total_sales, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount, 0) as total_gross_transaction_amount,
@@ -198,12 +185,8 @@ with balance_transaction_joined as (
       customer.description as customer_description,
       customer.created_at as customer_created_at,
       customer.currency as customer_currency,
-      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
-      {% for metadata in var('stripe__customer_metadata', []) %}
-        {% if metadata in customer_cols %}
-          customer.customer_{{ metadata }} as customer_{{ metadata }},
-        {% endif %}
-      {% endfor %}
+      {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation'] + var('stripe__customer_metadata', [])) }},
       coalesce(transactions_grouped.total_sales, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount, 0) as total_gross_transaction_amount,

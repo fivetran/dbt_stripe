@@ -6,7 +6,7 @@
 
 {% macro default__stripe_union_connections(connection_dictionary, single_source_name, single_table_name, default_identifier=single_table_name) %}
 
-{%- set exception_warning = "\n\nPlease be aware: The " ~ single_source_name|upper ~ "." ~ single_table_name|upper ~ " table was not found in your schema(s). The Fivetran Data Model will create a completely empty staging model as to not break downstream transformations. To turn off these warnings, set the `fivetran__remove_empty_table_warnings` variable to TRUE (see https://xero.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source for details).\n"%}
+{%- set exception_warning = "\n\nPlease be aware: The " ~ single_source_name|upper ~ "." ~ single_table_name|upper ~ " table was not found in your schema(s). The Fivetran Data Model will create a completely empty staging model as to not break downstream transformations. To turn off these warnings, set the `fivetran__remove_empty_table_warnings` variable to TRUE (https://github.com/fivetran/dbt_fivetran_utils/tree/v0.4.11?tab=readme-ov-file#union_data-source).\n"%}
 {%- set using_empty_table_warnings = (execute and not var('fivetran__remove_empty_table_warnings', false)) %}
 {%- set connections = var(connection_dictionary, []) %}
 {%- set using_unioning = connections | length > 0 %}
@@ -45,7 +45,7 @@
     {%- endfor -%}
 
     {%- if relations != [] -%}
-        {{ xero.xero_union_relations(relations) }}
+        {{ stripe.stripe_union_relations(relations) }}
 
     {%- else -%}
         {{ exceptions.warn(exception_warning) if using_empty_table_warnings }}
