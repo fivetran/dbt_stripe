@@ -104,12 +104,16 @@ seeds:
         recurring_usage_type: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
     discount_data:
       +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
+      +column_types:
+        amount: bigint
     discount_data_snowflake:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'snowflake' else false }}"
     discount_data_postgres:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'postgres' else false }}"
+      +column_types:
+        amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
 
 
 dispatch:
