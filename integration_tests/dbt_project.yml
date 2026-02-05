@@ -67,6 +67,14 @@ seeds:
       +column_types:
         balance_transaction_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         created: timestamp
+        captured: "{{ 'boolean' if target.type in ('redshift','postgres') else 'boolean'}}"
+        livemode: "{{ 'boolean' if target.type in ('redshift','postgres') else 'boolean'}}"
+        paid: "{{ 'boolean' if target.type in ('redshift','postgres') else 'boolean'}}"
+        refunded: "{{ 'boolean' if target.type in ('redshift','postgres') else 'boolean'}}"
+        amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'int'}}"
+        amount_refunded: "{{ 'bigint' if target.type in ('redshift','postgres') else 'int'}}"
+        application_fee_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'int'}}"
+        outcome_risk_score: "{{ 'float' if target.type in ('redshift','postgres') else 'float'}}"
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
