@@ -1,3 +1,4 @@
+{{ config(enabled=var('stripe__using_payouts', True)) }}
 
 with base as (
 
@@ -15,10 +16,7 @@ fields as (
             )
         }}
 
-        {{ fivetran_utils.source_relation(
-            union_schema_variable='stripe_union_schemas',
-            union_database_variable='stripe_union_databases')
-        }}
+        {{ stripe.apply_source_relation() }}
         
     from base
 ),

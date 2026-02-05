@@ -16,6 +16,11 @@ table_variables:
   stripe__using_credit_notes:
     - credit_note_line_item
     - credit_note
+  stripe__using_transfers:
+    - transfer
+  stripe__using_payouts:
+    - payout
+    - payout_balance_transaction
   stripe__using_coupons:
     - coupon
 

@@ -1,17 +1,17 @@
 with balance_transaction_joined as (
 
     select *
-    from {{ ref('stripe__balance_transactions') }}  
+    from {{ ref('stripe__balance_transactions') }}
 
 ), incomplete_charges as (
 
     select *
-    from {{ ref('int_stripe__incomplete_charges') }}  
+    from {{ ref('int_stripe__incomplete_charges') }}
 
 ), customer as (
 
-    select *
-    from {{ ref('stg_stripe__customer') }}  
+   select *
+   from {{ ref('stg_stripe__customer') }} 
 
 ), transactions_grouped as (
 
@@ -147,14 +147,15 @@ with balance_transaction_joined as (
       'No Associated Customer' as customer_description,
       customer.created_at as customer_created_at,
       customer.currency as customer_currency,
-      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
+      {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation'] + var('stripe__customer_metadata', [])) }},
       coalesce(transactions_grouped.total_sales, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount, 0) as total_gross_transaction_amount,
       coalesce(transactions_grouped.total_fees, 0) as total_fees,
       coalesce(transactions_grouped.total_net_transaction_amount, 0) as total_net_transaction_amount,
       coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,
-      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,    
+      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,
       coalesce(transactions_grouped.sales_this_month, 0) as sales_this_month,
       coalesce(transactions_grouped.refunds_this_month, 0) as refunds_this_month,
       coalesce(transactions_grouped.gross_transaction_amount_this_month, 0) as gross_transaction_amount_this_month,
@@ -184,14 +185,15 @@ with balance_transaction_joined as (
       customer.description as customer_description,
       customer.created_at as customer_created_at,
       customer.currency as customer_currency,
-      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
+      {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
+      {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation'] + var('stripe__customer_metadata', [])) }},
       coalesce(transactions_grouped.total_sales, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds, 0) as total_refunds,
       coalesce(transactions_grouped.total_gross_transaction_amount, 0) as total_gross_transaction_amount,
       coalesce(transactions_grouped.total_fees, 0) as total_fees,
       coalesce(transactions_grouped.total_net_transaction_amount, 0) as total_net_transaction_amount,
       coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,
-      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,    
+      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,
       coalesce(transactions_grouped.sales_this_month, 0) as sales_this_month,
       coalesce(transactions_grouped.refunds_this_month, 0) as refunds_this_month,
       coalesce(transactions_grouped.gross_transaction_amount_this_month, 0) as gross_transaction_amount_this_month,

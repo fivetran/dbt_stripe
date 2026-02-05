@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '1.4.0'
+version: '1.5.0'
 
 profile: 'integration_tests'
 
@@ -20,6 +20,7 @@ vars:
     stripe_balance_transaction_identifier: "balance_transaction_data"
     stripe_card_identifier: "card_data"
     stripe_charge_identifier: "charge_data"
+    stripe_coupon_identifier: "coupon_data"
     stripe_customer_identifier: "customer_data"
     stripe_discount_identifier: "discount_data"
     stripe_dispute_identifier: "dispute_data"
@@ -67,26 +68,60 @@ seeds:
       +column_types:
         balance_transaction_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         created: timestamp
+        captured: boolean
+        livemode: boolean
+        paid: boolean
+        refunded: boolean
+        amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        amount_refunded: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        application_fee_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        outcome_risk_score: "{{ 'float' if target.type in ('redshift','postgres') else 'FLOAT64' if target.type == 'bigquery' else 'float'}}"
     customer_data:
       +column_types:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+    invoice_data:
+      +column_types:
+        due_date: timestamp
+        paid: boolean
+        auto_advance: boolean
+        amount_due: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        amount_paid: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        amount_remaining: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        subtotal: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        tax: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        total: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        attempt_count: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        number: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        post_payment_credit_notes_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        pre_payment_credit_notes_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     payout_data:
       +column_types:
         destination_bank_account_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         destination_card_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+    plan_data:
+      +column_types:
+        interval_count: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     price_data:
       +column_types:
         recurring_interval: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
         recurring_aggregate_usage: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
         recurring_usage_type: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
+        recurring_interval_count: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+    subscription_item_data:
+      +column_types:
+        quantity: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     discount_data:
       +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
+      +column_types:
+        amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     discount_data_snowflake:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'snowflake' else false }}"
     discount_data_postgres:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'postgres' else false }}"
+      +column_types:
+        amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
 
 
 dispatch:

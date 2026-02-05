@@ -8,6 +8,7 @@ sources:
 
     config:
       loaded_at_field: _fivetran_synced
+      enabled: "{{ var('stripe_sources', []) == [] }}"
       freshness:
         warn_after: { count: 72, period: hour }
         error_after: { count: 168, period: hour }
@@ -416,6 +417,8 @@ sources:
       - name: payment_method_card
         identifier: "{{ var('stripe_payment_method_card_identifier', 'payment_method_card')}}"
         description: Table with the relationships between a payment method and a card
+        config:
+          enabled: "{{ var('stripe__using_payment_method', true) }}"
         columns:
           - name: payment_method_id
             description: ID of the payment method
@@ -434,6 +437,7 @@ sources:
         identifier: "{{ var('stripe_payment_method_identifier', 'payment_method')}}"
         description: PaymentMethod objects represent your customer's payment instruments. They can be used with PaymentIntents to collect payments or saved to Customer objects to store instrument details for future payments.
         config:
+          enabled: "{{ var('stripe__using_payment_method', true) }}"
           freshness: null
         columns:
           - name: id
@@ -452,6 +456,8 @@ sources:
       - name: payout
         identifier: "{{ var('stripe_payout_identifier', 'payout')}}"
         description: A Payout object is created when you receive funds from Stripe, or when you initiate a payout to either a bank account or debit card of a connected Stripe account.
+        config:
+          enabled: "{{ var('stripe__using_payouts', true) }}"
         columns:
           - name: id
             description: Unique identifier for the object.
@@ -491,6 +497,8 @@ sources:
         description: >
           Table that contains the complete mapping between `payout_id` and `balance_transaction_id`.
           The payout to balance_transaction relationship is 1:many.
+        config:
+          enabled: "{{ var('stripe__using_payouts', true) }}"
         columns:
           - name: payout_id
             description: Unique identifier for the payout.
@@ -536,6 +544,7 @@ sources:
         identifier: "{{ var('stripe_invoice_line_item_identifier', 'invoice_line_item')}}"
         description: The different items that an invoice contains
         config:
+          enabled: "{{ var('stripe__using_invoices', true) }}"
           freshness: null
         columns:
           - name: id
@@ -575,6 +584,7 @@ sources:
         identifier: "{{ var('stripe_invoice_identifier', 'invoice')}}"
         description: Invoices are statements of amounts owed by a customer, and are either generated one-off, or generated periodically from a subscription.
         config:
+          enabled: "{{ var('stripe__using_invoices', true) }}"
           freshness: null
         columns:
           - name: id
@@ -798,6 +808,7 @@ sources:
         identifier: "{{ var('stripe_credit_note_identifier', 'credit_note')}}"
         description: Credit notes are documents that decrease the amount owed on an invoice. They’re the only way to adjust the amount of a finalized invoice other than voiding and recreating the invoice.
         config:
+          enabled: "{{ var('stripe__using_credit_notes', true) }}"
           freshness: null
         columns:
           - name: id
@@ -843,6 +854,7 @@ sources:
         identifier: "{{ var('stripe_credit_note_line_item_identifier', 'credit_note_line_item')}}"
         description: The different items that a credit note contains.
         config:
+          enabled: "{{ var('stripe__using_credit_notes', true) }}"
           freshness: null
         columns:
           - name: id
@@ -970,6 +982,8 @@ sources:
       - name: transfer
         identifier: "{{ var('stripe_transfer_identifier', 'transfer')}}"
         description: A Transfer object is created when you move funds between Stripe accounts as part of Connect. Before April 6, 2017, transfers also represented movement of funds from a Stripe account to a card or bank account. That has since been moved to the Payout object. The Payout object represents money moving from a Stripe account to an external account (bank or debit card). The Transfer object now only represents money moving between Stripe accounts on a Connect platform.
+        config:
+          enabled: "{{ var('stripe__using_transfers', true) }}"
         columns:
           - name: id
             description: Unique identifier for the object.
@@ -1089,6 +1103,7 @@ sources:
         identifier: "{{ var('stripe_coupon_identifier', 'coupon') }}"
         description: A coupon represents a discount that can be applied to a subscription or invoice. It contains information about the coupon's duration, amount, and applicability.
         config:
+          enabled: "{{ var('stripe__using_coupons', true) }}"
           freshness: null
         columns:
           - name: id

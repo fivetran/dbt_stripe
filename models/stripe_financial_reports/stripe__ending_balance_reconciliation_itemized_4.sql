@@ -1,3 +1,5 @@
+{{ config(enabled=var('stripe__using_payouts', True)) }}
+
 with balance_transaction_enhanced as (
 
     select *

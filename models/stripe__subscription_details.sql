@@ -2,38 +2,39 @@
 
 with invoice as (
 
-    select *
-    from {{ ref('stg_stripe__invoice') }}  
+   select *
+   from {{ ref('stg_stripe__invoice') }}
 
 ), charge as (
 
-    select *
-    from {{ ref('stg_stripe__charge') }}  
+   select *
+   from {{ ref('stg_stripe__charge') }}
 
 ), invoice_line_item as (
 
     select *
-    from {{ ref('stg_stripe__invoice_line_item') }}  
+    from {{ ref('stg_stripe__invoice_line_item') }}
 
 ), subscription as (
 
-    select *
-    from {{ ref('stg_stripe__subscription') }}  
+   select *
+   from {{ ref('stg_stripe__subscription') }}
 
 ), subscription_item as (
 
     select *
-    from {{ ref('int_stripe__deduped_subscription_item') }} 
+    from {{ ref('int_stripe__deduped_subscription_item') }}
 
 ), customer as (
 
-    select *
-    from {{ ref('stg_stripe__customer') }}  
+   select *
+   from {{ ref('stg_stripe__customer') }} 
 
 ), line_items_groups as (
 
   select
     invoice.invoice_id,
+    {{ select_metadata_columns('invoice', 'stripe__invoice_metadata') }}
     invoice.amount_due,
     invoice.amount_paid,
     invoice.amount_remaining,
@@ -43,9 +44,9 @@ with invoice as (
     coalesce(sum(invoice_line_item.amount),0) as total_line_item_amount,
     coalesce(count(distinct invoice_line_item.unique_invoice_line_item_id),0) as number_of_line_items
   from invoice_line_item
-  join invoice 
+  join invoice
     on invoice.invoice_id = invoice_line_item.invoice_id
-  group by 1, 2, 3, 4, 5, 6
+  {{ dbt_utils.group_by(6 + (var('stripe__invoice_metadata', []) | length)) }}
 
 ), grouped_by_subscription as (
 
@@ -71,6 +72,7 @@ select
   subscription.customer_id,
   customer.description as customer_description,
   customer.email as customer_email,
+  {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
   subscription.status,
   subscription.start_date_at,
   subscription.ended_at,
@@ -84,6 +86,7 @@ select
   subscription.days_until_due,
   subscription.is_cancel_at_period_end,
   subscription.cancel_at,
+  {{ select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
   number_invoices_generated,
   total_amount_billed,
   total_amount_paid,

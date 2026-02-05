@@ -1,11 +1,11 @@
-id,amount_off,created,currency,duration,duration_in_months,livemode,max_redemptions,name,percent_off,redeem_by,times_redeemed,valid,_fivetran_synced
-coupon_1,1000,2024-01-15 10:30:00,usd,once,1,true,1,New Year Sale,,,45,true,2024-01-15 11:00:00
-coupon_2,,2024-02-01 09:15:00,eur,forever,,true,,Forever Discount,15.5,,120,true,2024-02-01 09:30:00
-coupon_3,500,2024-02-14 14:20:00,gbp,repeating,6,false,5,Valentine Special,,,12,true,2024-02-14 15:00:00
-coupon_4,,2024-03-10 08:45:00,usd,once,1,true,2,Spring Sale,25.0,2024-04-30 23:59:59,87,true,2024-03-10 09:00:00
-coupon_5,2000,2024-03-20 16:30:00,cad,forever,,true,,Loyal Customer,,,203,true,2024-03-20 17:00:00
-coupon_6,,2024-04-05 11:00:00,jpy,repeating,3,true,7,Quarter Discount,10.0,,34,true,2024-04-05 11:30:00
-coupon_7,750,2024-05-01 13:15:00,aud,once,1,false,1,May Madness,,,91,true,2024-05-01 13:45:00
-coupon_8,,2024-06-15 10:00:00,usd,forever,,true,,Summer Forever,20.0,,156,true,2024-06-15 10:30:00
-coupon_9,1500,2024-07-04 12:30:00,usd,repeating,8,true,5,Independence Day,,,278,true,2024-07-04 13:00:00
-coupon_10,,2024-08-01 09:00:00,inr,once,1,false,10,Monsoon Sale,30.5,2024-08-31 23:59:59,63,true,2024-08-01 09:30:00
+id,amount_off,created,currency,duration,duration_in_months,livemode,max_redemptions,metadata,name,percent_off,redeem_by,times_redeemed,valid,_fivetran_synced
+coupon_1,1000,2024-01-15 10:30:00,usd,once,1,true,1,,New Year Sale,,,45,true,2024-01-15 11:00:00
+coupon_2,,2024-02-01 09:15:00,eur,forever,,true,,,Forever Discount,15.5,,120,true,2024-02-01 09:30:00
+coupon_3,500,2024-02-14 14:20:00,gbp,repeating,6,false,5,,Valentine Special,,,12,true,2024-02-14 15:00:00
+coupon_4,,2024-03-10 08:45:00,usd,once,1,true,2,,Spring Sale,25.0,2024-04-30 23:59:59,87,true,2024-03-10 09:00:00
+coupon_5,2000,2024-03-20 16:30:00,cad,forever,,true,,,Loyal Customer,,,203,true,2024-03-20 17:00:00
+coupon_6,,2024-04-05 11:00:00,jpy,repeating,3,true,7,,Quarter Discount,10.0,,34,true,2024-04-05 11:30:00
+coupon_7,750,2024-05-01 13:15:00,aud,once,1,false,1,,May Madness,,,91,true,2024-05-01 13:45:00
+coupon_8,,2024-06-15 10:00:00,usd,forever,,true,,,Summer Forever,20.0,,156,true,2024-06-15 10:30:00
+coupon_9,1500,2024-07-04 12:30:00,usd,repeating,8,true,5,,Independence Day,,,278,true,2024-07-04 13:00:00
+coupon_10,,2024-08-01 09:00:00,inr,once,1,false,10,,Monsoon Sale,30.5,2024-08-31 23:59:59,63,true,2024-08-01 09:30:00
