@@ -80,8 +80,17 @@ seeds:
         description: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     invoice_data:
       +column_types:
+        due_date: timestamp
         paid: boolean
         auto_advance: boolean
+        amount_due: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        amount_paid: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        amount_remaining: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        subtotal: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        tax: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        total: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        attempt_count: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        number: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         post_payment_credit_notes_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         pre_payment_credit_notes_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     payout_data:
