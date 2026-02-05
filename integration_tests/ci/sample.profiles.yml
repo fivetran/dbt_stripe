@@ -12,7 +12,7 @@ integration_tests:
       pass: "{{ env_var('CI_REDSHIFT_DBT_PASS') }}"
       dbname: "{{ env_var('CI_REDSHIFT_DBT_DBNAME') }}"
       port: 5439
-      schema: stripe_integrations_tests_22
+      schema: stripe_integrations_tests
       threads: 8
     bigquery:
       type: bigquery
