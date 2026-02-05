@@ -97,15 +97,22 @@ seeds:
       +column_types:
         destination_bank_account_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
         destination_card_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
+    plan_data:
+      +column_types:
+        interval_count: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     price_data:
       +column_types:
         recurring_interval: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
         recurring_aggregate_usage: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
         recurring_usage_type: "{{ 'varchar(100)' if target.type in ('redshift','postgres') else 'string'}}"
+        recurring_interval_count: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+    subscription_item_data:
+      +column_types:
+        quantity: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     discount_data:
       +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
       +column_types:
-        amount: bigint
+        amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
     discount_data_snowflake:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'snowflake' else false }}"
