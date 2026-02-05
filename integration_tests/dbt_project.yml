@@ -20,6 +20,7 @@ vars:
     stripe_balance_transaction_identifier: "balance_transaction_data"
     stripe_card_identifier: "card_data"
     stripe_charge_identifier: "charge_data"
+    stripe_coupon_identifier: "coupon_data"
     stripe_customer_identifier: "customer_data"
     stripe_discount_identifier: "discount_data"
     stripe_dispute_identifier: "dispute_data"
