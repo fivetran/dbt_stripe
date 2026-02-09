@@ -203,20 +203,6 @@ select
     payout.destination_card_id,
     -- Checks if this balance transaction matches the most recent balance_transaction_id recorded in PAYOUT.
     payout_balance_transaction_unified.balance_transaction_id = payout.balance_transaction_id as payout_balance_transaction_is_current,
-    {% else %}
-    null as automatic_payout_id,
-    null as payout_id,
-    null as payout_created_at,
-    null as payout_currency,
-    null as payout_is_automatic,
-    null as payout_arrival_date_at,
-    null as automatic_payout_effective_at,
-    null as payout_type,
-    null as payout_status,
-    null as payout_description,
-    null as destination_bank_account_id,
-    null as destination_card_id,
-    null as payout_balance_transaction_is_current,
     {% endif %}
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
@@ -279,11 +265,7 @@ select
     dispute_summary.dispute_count,
     refund.refund_id,
     refund.reason as refund_reason,
-    {% if var('stripe__using_transfers', True) %}
     transfers.transfer_id,
-    {% else %}
-    null as transfer_id,
-    {% endif %}
     coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id,
     connected_account.country as connected_account_country,
     case 

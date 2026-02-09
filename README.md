@@ -313,7 +313,7 @@ Once metadata fields are pivoted out in the staging models, you can configure wh
 The following end models support metadata field inclusion:
 - `stripe__balance_transactions` - supports metadata from charge, invoice, subscription, and customer
 - `stripe__invoice_details` - supports metadata from charge, invoice, subscription, and customer
-- `stripe__subscription_details` - supports metadata from invoice, charge, subscription, and customer
+- `stripe__subscription_details` - supports metadata from subscription and customer
 - `stripe__invoice_line_item_details` - supports metadata from subscription
 - `stripe__customer_overview` - supports metadata from customer
 

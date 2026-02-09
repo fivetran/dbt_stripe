@@ -7,7 +7,7 @@ profile: 'integration_tests'
 
 # For use with validations
 models:
-  +schema: "stripe_{{ var('directed_schema','dev') }}"
+  +schema: "stripe_{{ var('directed_schema','dev') }}" 
 
 vars:
   # enable when generating docs
