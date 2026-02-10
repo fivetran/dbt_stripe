@@ -19,8 +19,12 @@ select
     balance_transaction_description as description,
     customer_facing_amount,
     customer_facing_currency,
+
+    {% if var('stripe__using_payouts', True) %}
     automatic_payout_id,
     automatic_payout_effective_at,
+    {% endif %} 
+    
     customer_id,
     customer_email,
     customer_name,
