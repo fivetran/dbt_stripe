@@ -206,7 +206,13 @@ vars:
   stripe:
     has_defined_sources: true
 ```
-
+#### Considerations: Unioning Multiple Schemas
+Please note, If the source table is not found in any of the provided schemas/databases, union_data will return a completely empty table (ie limit 0) with just one string column (_dbt_source_relation). A compiler warning message will be output, highlighting that the expected source table was not found and its respective staging model is empty. The compiler warning can be turned off by the end user by setting the `fivetran__remove_empty_table_warnings` variable to True.
+```yml
+# dbt_project.yml
+vars:
+  fivetran__remove_empty_table_warnings: true  # false by default
+```
 #### Leveraging Plan vs Price Sources
 
 Customers using Fivetran with the newer [Stripe Price API](https://stripe.com/docs/billing/migration/migrating-prices) will have a `price` table, and possibly a `plan` table if that was used previously. Therefore to accommodate two different source tables we added logic to check if there exists a `price` table by default. If not, it will leverage the `plan` table. However if you wish to use the `plan` table instead, you may set `stripe__using_price` to `false` in your `dbt_project.yml` to override the macro.
