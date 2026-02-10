@@ -265,7 +265,11 @@ select
     dispute_summary.dispute_count,
     refund.refund_id,
     refund.reason as refund_reason,
+
+    {% if var('stripe__using_transfers', True) %}
     transfers.transfer_id,
+    {% endif %}
+    
     coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id,
     connected_account.country as connected_account_country,
     case 
