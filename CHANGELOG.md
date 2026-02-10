@@ -135,7 +135,7 @@ vars:
 [PR #125](https://github.com/fivetran/dbt_stripe/pull/125) includes the following updates:
 
 ## Schema/Data Changes
-
+**2 total changes • 2 possible breaking changes**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | ---------------- | --------------- | ------------ | ------------ | --------- |
 | [`stg_stripe__subscription_item`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_item) | New Staging Model | |  | As of July 31, 2025, new Stripe connections store the subscription `current_period_start` and `current_period_end` fields in the `SUBSCRIPTION_ITEM` source table instead of in `SUBSCRIPTION_HISTORY`.|
