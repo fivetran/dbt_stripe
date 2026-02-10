@@ -7,6 +7,7 @@
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
 
 ## Feature Update
+- Adds table variables for `stripe__using_transfers` and `stripe__using_payouts` to quickstart.yml.
 - Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead, which can be configured as such:
 
 ```yml
@@ -26,14 +27,12 @@ vars:
 - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
 - Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured. 
   - Adds select_metadata_columns macro to handle both dictionary and alias variable metadata inputs.
-  - The expectation is that customers will only ever input single level key value pairs into the variables.
-  - Currently, metadata fields from `stge_stripe__customer`, `stg_stripe__charge`, `stg_stripe__invoice`, and `stge_stripe__subscription` are supported. We are open to supporting others, but require feedback. Please open a [support ticket](https://support.fivetran.com/hc/en-us) to request metadata fields from additional staging models.
+  - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
 
 ## Under the Hood
 - Updates all tmp staging models to conditionally use either the new `stripe_union_connections` macro (when `stripe_sources` is configured) or the legacy `fivetran_utils.union_data` macro (for backward compatibility).
 - Updates all staging models to use the new `stripe.apply_source_relation()` macro instead of `fivetran_utils.source_relation()`.
 - Adds `metadata` column to `get_coupon_columns()` macro and `coupon_data.csv` seed file.
-- Adds table variables for `stripe__using_transfers` and `stripe__using_payouts` to quickstart.yml.
 - Updates integration test seed data for customer and invoice tables.
 
 # dbt_stripe v1.4.0

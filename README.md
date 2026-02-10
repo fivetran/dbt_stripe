@@ -129,6 +129,8 @@ vars:
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
     stripe_using_transfers:        False  #Disable to turn off the transfer table temporarily.
     stripe_using_payouts:          False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
+    stripe__using_transfers:        False  #Disable to turn off the transfer table temporarily.  
+    stripe__using_payouts:          False  #Disable to turn off the payout or payout_balance_transaction table temporarily. 
 ```
 ### (Optional) Additional configurations
 <details open><summary>Expand to view configurations</summary>
@@ -174,7 +176,7 @@ vars:
 > Previous versions of this package employed two separate, mutually exclusive variables for unioning: `union_schemas` and `union_databases`. While these variables are still supported, `stripe_sources` is the recommended variable to configure.
 
 ##### Recommended: Incorporate unioned sources into DAG
-> *If you are running the package through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore), the below step is necessary in order to synchronize model runs with your stripe connections. Alternatively, you may choose to run the package through Fivetran [Quickstart](https://fivetran.com/docs/transformations/quickstart), which would create separate sets of models for each Stripe source rather than one set of unioned models.*
+> *If you are running the package through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore), the below step is necessary in order to synchronize model runs with your Stripe connections. Alternatively, you may choose to run the package through Fivetran [Quickstart](https://fivetran.com/docs/transformations/quickstart), which would create separate sets of models for each Stripe source rather than one set of unioned models.*
 
 By default, this package defines one single-connection source, called `stripe`, which will be disabled if you are unioning multiple connections. This means that your DAG will not include your Stripe sources, though the package will run successfully.
 
@@ -182,7 +184,7 @@ To properly incorporate all of your Stripe connections into your project's DAG:
 1. Define each of your sources in a `.yml` file in your project. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions from the package's `src_stripe.yml` [file](https://github.com/fivetran/dbt_stripe/blob/main/models/staging/src_stripe.yml).
 
 ```yml
-# a .yml file in your root project
+# a .yml file in your root project models folder
 
 version: 2
 
@@ -258,30 +260,29 @@ vars:
     stripe:
         stripe__using_invoice_line_sub_filter: false # Default = true
 ```
+#### Pivoting Out and Using Metadata Properties
+Oftentimes you may have custom fields within your source tables stored as a JSON object that you wish to pass through to your analytics models. By leveraging the `metadata` variables, this package will pivot out fields into their own columns within the respective staging models and automatically include them in relevant end models with prefixed column names.
 
-#### Pivoting out Metadata Properties
-Oftentimes you may have custom fields within your source tables that is stored as a JSON object that you wish to pass through. By leveraging the `metadata` variable, this package will pivot out fields into their own columns within the respective staging models. The metadata variables accept dictionaries in addition to strings.The expectation is that you will only ever input single level key value pairs into the JSON.
+##### Configuration
+The `metadata` JSON field is present within the `account`, `card`, `coupon`, `charge`, `customer`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include them in downstream models, add the relevant variable(s) to your root `dbt_project.yml` file.
 
-Additionally, you may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field. Below are examples of how you would add the respective fields.
-
-The `metadata` JSON field is present within the `customer`, `charge`, `card`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include in the respective downstream staging model, add the relevant variable(s) to your root `dbt_project.yml` file like below.
+The metadata variables accept dictionaries in addition to strings. The expectation is that you will only input single-level key-value pairs from the JSON. You may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field.
 
 ```yml
-vars: 
+vars:
   stripe__account_metadata:
     - name: metadata_field
     - name: another_metadata_field
-    - name: and_another_metadata_field
   stripe__charge_metadata:
-    - name: metadata_field_1
+    - name: campaign_id
   stripe__card_metadata:
     - name: metadata_field_10
   stripe__customer_metadata:
-    - name: metadata_field_6
-      alias: metadata_field_six
-  stripe__invoice_metadata: 
-    - name: metadata_field_2
-  stripe__invoice_line_item_metadata: 
+    - name: sales_region
+      alias: customer_region  # optional: rename the field
+  stripe__invoice_metadata:
+    - name: invoice_type
+  stripe__invoice_line_item_metadata:
     - name: metadata_field_20
   stripe__payment_intent_metadata:
     - name: incompatible.field
@@ -293,63 +294,55 @@ vars:
     - name: 123
       alias: one_two_three
   stripe__price_plan_metadata: ## Used for both Price and Plan sources
-    - name: rename_price
-      alias: renamed_field_price
+    - name: pricing_tier
   stripe__refund_metadata:
-    - name: metadata_field_3
+    - name: refund_reason_code
   stripe__subscription_metadata:
-    - name: 567
-      alias: five_six_seven
+    - name: subscription_tier
   stripe__subscription_item_metadata:
-    - name: 568
-      alias: five_six_eight
+    - name: item_category
 
 ```
-
-Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following configuration as well.
+Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following simplified configuration:
 
 ```yml
 vars:
-    stripe__subscription_metadata: ['the', 'list', 'of', 'property', 'fields'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
+    stripe__subscription_metadata: ['subscription_tier', 'contract_length', 'renewal_date'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
+Once configured, metadata fields automatically flow through the package in two stages:
 
-#### Including Metadata Fields in End Models
-Once metadata fields are pivoted out in the staging models, you can configure which metadata fields to include in the end models. This allows you to automatically enrich the final output tables with custom metadata fields from charge, invoice, subscription, and customer records.
+1. **Staging Models**: Metadata fields are pivoted out from JSON into individual columns using the field name (or alias if specified). For example, if you configure `stripe__customer_metadata: ['sales_region']`, the `stg_stripe__customer` model will include a `sales_region` column.
 
-The following end models support metadata field inclusion:
-- `stripe__balance_transactions` - supports metadata from charge, invoice, subscription, and customer
-- `stripe__invoice_details` - supports metadata from charge, invoice, subscription, and customer
-- `stripe__subscription_details` - supports metadata from subscription and customer
-- `stripe__invoice_line_item_details` - supports metadata from subscription
-- `stripe__customer_overview` - supports metadata from customer
+2. **End Models**: Metadata fields are automatically included in relevant end models with an entity prefix to avoid column name conflicts. The same `sales_region` field will appear as `customer_sales_region` in end models that join to the customer table.
 
-To include metadata fields in these end models, specify the field names in your `dbt_project.yml`. The field names should match the metadata field names you configured for pivoting in the staging layer (using the field name, not the alias if you specified one).
+The following end models automatically include metadata fields from their respective entities:
 
-```yml
-vars:
-  stripe__charge_metadata: ['metadata_field_1', 'metadata_field_2']
-  stripe__invoice_metadata: ['metadata_field_3', 'metadata_field_4'] 
-  stripe__subscription_metadata: ['metadata_field_5', 'metadata_field_6']
-  stripe__customer_metadata: ['metadata_field_7', 'metadata_field_8']
-```
+| End Model | Supported Metadata Entities |
+| --------- | --------------------------- |
+| `stripe__balance_transactions` | customer, charge, invoice, subscription |
+| `stripe__invoice_details` | customer, charge, invoice, subscription |
+| `stripe__subscription_details` | customer, subscription |
+| `stripe__invoice_line_item_details` | subscription |
+| `stripe__customer_overview` | customer |
 
-When included in end models, metadata fields are automatically prefixed with their entity name to avoid column name conflicts:
-- Charge metadata fields appear as `charge_metadata_field_1`, `charge_metadata_field_2`, etc.
-- Invoice metadata fields appear as `invoice_metadata_field_3`, `invoice_metadata_field_4`, etc.
-- Subscription metadata fields appear as `subscription_metadata_field_5`, `subscription_metadata_field_6`, etc.
-- Customer metadata fields appear as `customer_metadata_field_7`, `customer_metadata_field_8`, etc.
+Metadata fields are automatically prefixed with their entity name to avoid column name conflicts:
+- Customer metadata appears as `customer_<field_name>` (e.g., `customer_sales_region`)
+- Charge metadata appears as `charge_<field_name>` (e.g., `charge_campaign_id`)
+- Invoice metadata appears as `invoice_<field_name>` (e.g., `invoice_invoice_type`)
+- Subscription metadata appears as `subscription_<field_name>` (e.g., `subscription_subscription_tier`)
+
+**Important**: When referencing metadata fields, always use the original field name (not the alias) in the variable configuration. The alias only applies within the staging model, but the original field name determines which metadata fields flow to end models.
 
 **Example:**
 
-If you have a `sales_region` metadata field in the customer table and a `campaign_id` metadata field in the charge table, configure them like this:
+If you have a `sales_region` metadata field in the customer table and a `campaign_id` metadata field in the charge table, configure them once in your `dbt_project.yml`:
 
 ```yml
 vars:
   stripe__customer_metadata: ['sales_region']
   stripe__charge_metadata: ['campaign_id']
 ```
-
-In the `stripe__balance_transactions` model, these fields will automatically appear as `customer_sales_region` and `charge_campaign_id`.
+Currently, metadata fields from `stg_stripe__customer`, `stg_stripe__charge`, `stg_stripe__invoice`, and `stg_stripe__subscription` are supported in end models. We are open to supporting others based on customer feedback. Please open a [support ticket](https://support.fivetran.com/hc/en-us) to request metadata fields from additional staging models.
 
 #### Enabling Cent to Dollar Conversion
 
