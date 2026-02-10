@@ -140,7 +140,7 @@ This package contains the `stripe__line_item_enhanced` model which constructs a 
 vars:
   stripe__standardized_billing_model_enabled: false # true by default.
 ```
-> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/xero_source` in your `packages.yml` since this package has been deprecated.
+> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
 #### Option A: Single connection
 By default, this package runs using your destination and the `stripe` schema. If this is not where your Stripe data is (for example, if your Stripe schema is named `stripe_fivetran`), add the following configuration to your root `dbt_project.yml` file:
@@ -160,7 +160,7 @@ To use this functionality, you will need to set the `stripe_sources` variable in
 # dbt_project.yml
 
 vars:
-  xero:
+  stripe:
     stripe_sources:
       - database: connection_1_destination_name # Required
         schema: connection_1_schema_name # Required
@@ -197,7 +197,7 @@ sources:
         warn_after: {count: 72, period: hour}
         error_after: {count: 168, period: hour}
 
-    tables: # copy and paste from xero/models/staging/src_stripe.yml - see https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/ for how to use anchors to only do so once
+    tables: # copy and paste from stripe/models/staging/src_stripe.yml - see https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/ for how to use anchors to only do so once
 ```
 2. Set the `has_defined_sources` variable (scoped to the `stripe` package) to `True` in your root project, like such:
 ```yml
