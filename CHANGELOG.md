@@ -30,7 +30,6 @@ vars:
 ```
     - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
 - Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured. 
-  - Adds select_metadata_columns macro to handle both dictionary and alias variable metadata inputs.
   - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
 
 ## Under the Hood
