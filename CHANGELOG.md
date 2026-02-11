@@ -12,6 +12,7 @@
   - `stripe__using_transfers` disables the Transfers source and any relevant downstream components.
   - `stripe__using_payouts` disables both the Payouts and Payout Balance Transactions sources, along with any related downstream components.
 - Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead, which can be configured as such:
+  - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
 
 ```yml
 # dbt_project.yml
