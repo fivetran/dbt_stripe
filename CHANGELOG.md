@@ -1,10 +1,11 @@
 # dbt_stripe v1.5.0
 
 ## Schema Change
-**1 total change • 1 possible breaking change**
+**2 total change • 1 possible breaking change**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | -------------- | --------------- | ------------ | ------------ | --------- |
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
+| stg_stripe__coupon | New column |  | `metadata` | optional custom JSON field |
 
 ## Feature Update
 - Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`.
@@ -26,7 +27,7 @@ vars:
         schema: connection_2_schema_name
         name: connection_2_source_name
 ```
-  - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
+    - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
 - Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured. 
   - Adds select_metadata_columns macro to handle both dictionary and alias variable metadata inputs.
   - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
