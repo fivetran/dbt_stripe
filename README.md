@@ -115,7 +115,7 @@ vars:
 ```
 
 ### Disable models for non-existent sources
-This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
+This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, `transfer`, `payout`, `payout_balance_transaction`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
 
 ```yml
 # dbt_project.yml
@@ -129,8 +129,6 @@ vars:
     stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
     stripe_using_transfers:        False  #Disable to turn off the transfer table temporarily.
     stripe_using_payouts:          False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
-    stripe__using_transfers:        False  #Disable to turn off the transfer table temporarily.  
-    stripe__using_payouts:          False  #Disable to turn off the payout or payout_balance_transaction table temporarily. 
 ```
 ### (Optional) Additional configurations
 <details open><summary>Expand to view configurations</summary>
@@ -321,29 +319,6 @@ Alternatively, if you only have strings in your JSON object, the metadata variab
 vars:
     stripe__subscription_metadata: ['subscription_tier', 'contract_length', 'renewal_date'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
-Once configured, metadata fields automatically flow through the package in two stages:
-
-1. **Staging Models**: Metadata fields are pivoted out from JSON into individual columns using the field name (or alias if specified). For example, if you configure `stripe__customer_metadata: ['sales_region']`, the `stg_stripe__customer` model will include a `sales_region` column.
-
-2. **End Models**: Metadata fields are automatically included in relevant end models with an entity prefix to avoid column name conflicts. The same `sales_region` field will appear as `customer_sales_region` in end models that join to the customer table.
-
-The following end models automatically include metadata fields from their respective entities:
-
-| End Model | Supported Metadata Entities |
-| --------- | --------------------------- |
-| `stripe__balance_transactions` | customer, charge, invoice, subscription |
-| `stripe__invoice_details` | customer, charge, invoice, subscription |
-| `stripe__subscription_details` | customer, subscription |
-| `stripe__invoice_line_item_details` | subscription |
-| `stripe__customer_overview` | customer |
-
-Metadata fields are automatically prefixed with their entity name to avoid column name conflicts:
-- Customer metadata appears as `customer_<field_name>` (e.g., `customer_sales_region`)
-- Charge metadata appears as `charge_<field_name>` (e.g., `charge_campaign_id`)
-- Invoice metadata appears as `invoice_<field_name>` (e.g., `invoice_invoice_type`)
-- Subscription metadata appears as `subscription_<field_name>` (e.g., `subscription_subscription_tier`)
-
-**Important**: When referencing metadata fields, always use the original field name (not the alias) in the variable configuration. The alias only applies within the staging model, but the original field name determines which metadata fields flow to end models.
 
 **Example:**
 
