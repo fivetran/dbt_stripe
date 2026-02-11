@@ -36,6 +36,7 @@ vars:
 ## Under the Hood
 - Updates all tmp staging models to conditionally use either the new `stripe_union_connections` macro (when `stripe_sources` is configured) or the legacy `fivetran_utils.union_data` macro (for backward compatibility).
 - Updates all staging models to use the new `stripe.apply_source_relation()` macro instead of `fivetran_utils.source_relation()`.
+- Adds `stripe.select_metadata_columns()` macro to handle both dictionary and alias variable metadata inputs.
 - Adds `metadata` column to `get_coupon_columns()` macro and `coupon_data.csv` seed file.
 - Updates integration test seed data for customer and invoice tables.
 
