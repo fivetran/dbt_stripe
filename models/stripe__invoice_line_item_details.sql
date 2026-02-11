@@ -58,7 +58,7 @@ select
     subscription.billing as subscription_billing,
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
-    {{ select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
+    {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
     price_plan.is_active as price_plan_is_active,
     price_plan.unit_amount as price_plan_amount,
     price_plan.recurring_interval as price_plan_interval,

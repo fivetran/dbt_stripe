@@ -264,7 +264,7 @@ Oftentimes you may have custom fields within your source tables stored as a JSON
 ##### Configuration
 The `metadata` JSON field is present within the `account`, `card`, `coupon`, `charge`, `customer`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include them in the respective **staging models**, add the relevant variable(s) to your root `dbt_project.yml` file.
 
-The following **end models** automatically include metadata fields from their respective entities with an entity prefix (eg. `customer_<metadata_field_name>`) to avoid column name conflicts:
+The following **end models** automatically include metadata fields from their respective entities with an entity prefix (eg. `invoice_<metadata_field_name>`) to avoid column name conflicts with the exception of the `stripe__customer_overview` model which retains the metafield name/alias:
 
 | End Model | Supported Metadata Entities |
 | --------- | --------------------------- |
@@ -329,7 +329,6 @@ vars:
   stripe__customer_metadata: ['sales_region']
   stripe__charge_metadata: ['campaign_id']
 ```
-Currently, metadata fields from `stg_stripe__customer`, `stg_stripe__charge`, `stg_stripe__invoice`, and `stg_stripe__subscription` are supported in end models. We are open to supporting others based on customer feedback. Please open a [support ticket](https://support.fivetran.com/hc/en-us) to request metadata fields from additional staging models.
 
 #### Enabling Cent to Dollar Conversion
 

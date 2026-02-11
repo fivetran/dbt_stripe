@@ -221,7 +221,7 @@ select
     customer.customer_address_state,
     customer.customer_address_postal_code,
     customer.customer_address_country,
-    {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
+    {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
     charge.shipping_address_line_1 as charge_shipping_address_line_1,
     charge.shipping_address_line_2 as charge_shipping_address_line_2,
     charge.shipping_address_city as charge_shipping_address_city,
@@ -236,18 +236,18 @@ select
     cards.card_address_country,
     coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
-    {{ select_metadata_columns('charge', 'stripe__charge_metadata') }}
+    {{ stripe.select_metadata_columns('charge', 'stripe__charge_metadata') }}
      payment_intent.payment_intent_id,
 
     {% if var('stripe__using_invoices', True) %}
      invoice.invoice_id,
      invoice.number as invoice_number,
-    {{ select_metadata_columns('invoice', 'stripe__invoice_metadata') }}
+    {{ stripe.select_metadata_columns('invoice', 'stripe__invoice_metadata') }}
     {% endif %}
 
     {% if var('stripe__using_subscriptions', True) %}
      subscription.subscription_id ,
-    {{ select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
+    {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
     {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}

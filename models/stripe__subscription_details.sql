@@ -71,7 +71,7 @@ select
   subscription.customer_id,
   customer.description as customer_description,
   customer.email as customer_email,
-  {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
+  {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
   subscription.status,
   subscription.start_date_at,
   subscription.ended_at,
@@ -85,7 +85,7 @@ select
   subscription.days_until_due,
   subscription.is_cancel_at_period_end,
   subscription.cancel_at,
-  {{ select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
+  {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
   number_invoices_generated,
   total_amount_billed,
   total_amount_paid,
