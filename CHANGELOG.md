@@ -7,7 +7,9 @@
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
 
 ## Feature Update
-- Adds table variables for `stripe__using_transfers` and `stripe__using_payouts` to quickstart.yml.
+- Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`.
+  - `stripe__using_transfers` disables the Transfers source and any relevant downstream components.
+  - `stripe__using_payouts` disables both the Payouts and Payout Balance Transactions sources, along with any related downstream components.
 - Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead, which can be configured as such:
 
 ```yml

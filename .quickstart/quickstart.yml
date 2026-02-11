@@ -55,17 +55,17 @@ supported_vars:
     description: "`CUSTOMER.metadata` properties that will be pivoted into columns in `stripe__customer_overview`, `stripe__balance_transactions`, `stripe__invoice_details`, and `stripe__subscription_details`."
     display_name: "Customer Metadata Properties"
 
-    stripe__charge_metadata:
+  stripe__charge_metadata:
     type: dictionary
     description: "`CHARGE.metadata` properties that will be pivoted into columns in `stripe__balance_transactions` and `stripe__invoice_details`."
     display_name: "Charge Metadata Properties"
 
-    stripe__invoice_metadata:
+  stripe__invoice_metadata:
     type: dictionary
     description: "`INVOICE.metadata` properties that will be pivoted into columns in `stripe__invoice_details` and `stripe__balance_transactions`."
     display_name: "Invoice Metadata Properties"
 
-    stripe__subscription_metadata:
+  stripe__subscription_metadata:
     type: dictionary
     description: "`SUBSCRIPTION.metadata` properties that will be pivoted into columns in `stripe__subscription_details`, `stripe__balance_transactions`, `stripe__invoice_line_item_details`, and `stripe__invoice_details`."
     display_name: "Subscription Metadata Properties"

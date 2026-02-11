@@ -261,10 +261,22 @@ vars:
         stripe__using_invoice_line_sub_filter: false # Default = true
 ```
 #### Pivoting Out and Using Metadata Properties
-Oftentimes you may have custom fields within your source tables stored as a JSON object that you wish to pass through to your analytics models. By leveraging the `metadata` variables, this package will pivot out fields into their own columns within the respective staging models and automatically include them in relevant end models with prefixed column names.
+Oftentimes you may have custom fields within your source tables stored as a JSON object via the `metadata` column that you wish to pass through to your analytics models. By leveraging the `metadata` variables, this package will pivot out fields into their own columns within the respective staging models and for supported variables those columns will persist in end models with prefixed column names.
 
 ##### Configuration
-The `metadata` JSON field is present within the `account`, `card`, `coupon`, `charge`, `customer`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include them in downstream models, add the relevant variable(s) to your root `dbt_project.yml` file.
+The `metadata` JSON field is present within the `account`, `card`, `coupon`, `charge`, `customer`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include them in the respective **staging models**, add the relevant variable(s) to your root `dbt_project.yml` file.
+
+The following **end models** automatically include metadata fields from their respective entities with an entity prefix (eg. `customer_<metadata_field_name>`) to avoid column name conflicts:
+
+| End Model | Supported Metadata Entities |
+| --------- | --------------------------- |
+| `stripe__balance_transactions` | customer, charge, invoice, subscription |
+| `stripe__invoice_details` | customer, charge, invoice, subscription |
+| `stripe__subscription_details` | customer, subscription |
+| `stripe__invoice_line_item_details` | subscription |
+| `stripe__customer_overview` | customer |
+
+> We're open to supporting others based on customer feedback. Please open a [support ticket](https://support.fivetran.com/hc/en-us) to request metadata fields from additional staging models.
 
 The metadata variables accept dictionaries in addition to strings. The expectation is that you will only input single-level key-value pairs from the JSON. You may `alias` your field if you happen to be using a reserved word as a metadata field, any otherwise incompatible name, or just wish to rename your field.
 

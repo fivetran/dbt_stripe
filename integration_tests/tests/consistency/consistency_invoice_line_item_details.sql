@@ -4,12 +4,12 @@
 ) }}
 
 with prod as (
-   select {{ dbt_utils.star(from=ref('stripe_invoice_line_item_details'), except=var('consistency_test_exclude_fields', '[]')) }}
+   select {{ dbt_utils.star(from=ref('stripe__invoice_line_item_details'), except=var('consistency_test_exclude_fields', '[]')) }}
     from {{ target.schema }}_stripe_prod.stripe__invoice_line_item_details
 ),
 
 dev as (
-    select {{ dbt_utils.star(from=ref('stripe_invoice_line_items'), except=var('consistency_test_exclude_fields', '[]')) }}
+    select {{ dbt_utils.star(from=ref('stripe__invoice_line_item_details'), except=var('consistency_test_exclude_fields', '[]')) }}
     from {{ target.schema }}_stripe_dev.stripe__invoice_line_item_details
 ),
 
