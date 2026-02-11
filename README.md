@@ -319,17 +319,6 @@ Alternatively, if you only have strings in your JSON object, the metadata variab
 vars:
     stripe__subscription_metadata: ['subscription_tier', 'contract_length', 'renewal_date'] # Note: this is case-SENSITIVE and must match the casing of the property as it appears in the JSON
 ```
-
-**Example:**
-
-If you have a `sales_region` metadata field in the customer table and a `campaign_id` metadata field in the charge table, configure them once in your `dbt_project.yml`:
-
-```yml
-vars:
-  stripe__customer_metadata: ['sales_region']
-  stripe__charge_metadata: ['campaign_id']
-```
-
 #### Enabling Cent to Dollar Conversion
 
 Amount-based fields, such as `amount` and `net`, are typically displayed in the smallest denomination (e.g., cents for USD). By default, amount-based fields will be in this raw form. However, some currencies use major and minor units (for example, cents and dollars when using USD). In these cases, it may be useful to divide the amounts by 100, converting amounts to major units (dollars for USD). To enable the division, configure the `stripe__convert_values` to `true` in your project.yml: 
