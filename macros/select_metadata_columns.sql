@@ -1,4 +1,10 @@
-{% macro select_metadata_columns(relation_alias, var_name, prefix=None) %}
+{% macro select_metadata_columns(relation_alias, var_name, prefix=None) -%}
+
+{{ adapter.dispatch('select_metadata_columns', 'stripe')(relation_alias, var_name, prefix)  }}
+
+{%- endmacro %}
+
+{% macro default__select_metadata_columns(relation_alias, var_name, prefix=None) %}
   {%- set properties = var(var_name, []) -%}
   {%- set prefix = prefix if prefix is not none else relation_alias -%}
 
