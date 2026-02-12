@@ -7,7 +7,7 @@ with invoice as (
 
 ), charge as (
 
-    select *
+   select *
    from {{ ref('stg_stripe__charge') }}
 
 ), invoice_line_item as (
