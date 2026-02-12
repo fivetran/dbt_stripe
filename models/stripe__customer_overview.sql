@@ -184,7 +184,6 @@ with balance_transaction_joined as (
       customer.description as customer_description,
       customer.created_at as customer_created_at,
       customer.currency as customer_currency,
-      {{ select_metadata_columns('customer', 'stripe__customer_metadata') }}
       {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation'] + var('stripe__customer_metadata', [])) }},
       coalesce(transactions_grouped.total_sales, 0) as total_sales,
       coalesce(transactions_grouped.total_refunds, 0) as total_refunds,
