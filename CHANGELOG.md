@@ -7,12 +7,11 @@
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
 | stg_stripe__coupon | New column |  | `metadata` | optional custom JSON field |
 
-## Feature Update
+## Feature Updates
 - Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`.
   - `stripe__using_transfers` disables the Transfers source and any relevant downstream components.
   - `stripe__using_payouts` disables both the Payouts and Payout Balance Transactions sources, along with any related downstream components.
-- Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead, which can be configured as such:
-  - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
+- Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead. See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
 
 ```yml
 # dbt_project.yml
@@ -28,8 +27,7 @@ vars:
         schema: connection_2_schema_name
         name: connection_2_source_name
 ```
-- Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured. 
-  - See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
+- Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured.  See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
 
 ## Under the Hood
 - Updates all tmp staging models to conditionally use either the new `stripe_union_connections` macro (when `stripe_sources` is configured) or the legacy `fivetran_utils.union_data` macro (for backward compatibility).

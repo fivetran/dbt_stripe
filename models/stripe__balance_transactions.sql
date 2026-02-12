@@ -237,23 +237,23 @@ select
     coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
     {{ stripe.select_metadata_columns('charge', 'stripe__charge_metadata') }}
-     payment_intent.payment_intent_id,
+    payment_intent.payment_intent_id,
 
     {% if var('stripe__using_invoices', True) %}
-     invoice.invoice_id,
-     invoice.number as invoice_number,
+    invoice.invoice_id,
+    invoice.number as invoice_number,
     {{ stripe.select_metadata_columns('invoice', 'stripe__invoice_metadata') }}
     {% endif %}
 
     {% if var('stripe__using_subscriptions', True) %}
-     subscription.subscription_id ,
+    subscription.subscription_id,
     {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
     {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}
-     payment_method.type as payment_method_type,
-     payment_method_card.brand as payment_method_brand,
-     payment_method_card.funding as payment_method_funding,
+    payment_method.type as payment_method_type,
+    payment_method_card.brand as payment_method_brand,
+    payment_method_card.funding as payment_method_funding,
     {% endif %}
 
     cards.brand as card_brand,

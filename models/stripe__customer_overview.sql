@@ -10,8 +10,8 @@ with balance_transaction_joined as (
 
 ), customer as (
 
-   select *
-   from {{ ref('stg_stripe__customer') }} 
+    select *
+    from {{ ref('stg_stripe__customer') }} 
 
 ), transactions_grouped as (
 

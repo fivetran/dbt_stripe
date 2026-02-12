@@ -262,7 +262,7 @@ vars:
 Oftentimes you may have custom fields within your source tables stored as a JSON object via the `metadata` column that you wish to pass through to your analytics models. By leveraging the `metadata` variables, this package will pivot out fields into their own columns within the respective staging models and for supported variables those columns will persist in end models with prefixed column names.
 
 ##### Configuration
-The `metadata` JSON field is present within the `account`, `card`, `coupon`, `charge`, `customer`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, and `subscription_item` source tables. To pivot these fields out and include them in the respective **staging models**, add the relevant variable(s) to your root `dbt_project.yml` file.
+This package provides the ability to pivot out these `metadata` fields for the `account`, `card`, `coupon`, `charge`, `customer`, `dispute`, `invoice`, `invoice_line_item`, `payment_intent`, `payment_method`, `payout`, `plan`, `price`, `refund`, `subscription`, `subscription_item`, and `transfer` source tables. To pivot these fields out and include them in the respective **staging models**, add the relevant variable(s) to your root `dbt_project.yml` file.
 
 The following **end models** automatically include metadata fields from their respective entities with an entity prefix (eg. `invoice_<metadata_field_name>`) to avoid column name conflicts with the exception of the `stripe__customer_overview` model which retains the metafield name/alias:
 
@@ -313,7 +313,7 @@ vars:
     - name: item_category
 
 ```
-Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following simplified configuration:
+**For dbt Core users**: Alternatively, if you only have strings in your JSON object, the metadata variable accepts the following simplified configuration:
 
 ```yml
 vars:

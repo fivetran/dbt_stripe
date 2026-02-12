@@ -45,7 +45,7 @@ with invoice as (
   from invoice_line_item
   join invoice
     on invoice.invoice_id = invoice_line_item.invoice_id
-    group by 1, 2, 3, 4, 5, 6
+ group by 1, 2, 3, 4, 5, 6
 
 ), grouped_by_subscription as (
 

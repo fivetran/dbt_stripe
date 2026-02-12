@@ -13,8 +13,8 @@ with invoice_line_item as (
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
 
-   select *
-   from {{ ref('stg_stripe__subscription') }}
+    select *
+    from {{ ref('stg_stripe__subscription') }}
 
 ), price_plan as (
 
