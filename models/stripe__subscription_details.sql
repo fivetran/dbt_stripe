@@ -32,20 +32,20 @@ with invoice as (
 
 ), line_items_groups as (
 
-  select
-    invoice.invoice_id,
-    invoice.amount_due,
-    invoice.amount_paid,
-    invoice.amount_remaining,
-    invoice.created_at,
-    invoice.source_relation,
-    max(invoice_line_item.subscription_id) as subscription_id,
-    coalesce(sum(invoice_line_item.amount),0) as total_line_item_amount,
-    coalesce(count(distinct invoice_line_item.unique_invoice_line_item_id),0) as number_of_line_items
-  from invoice_line_item
-  join invoice
-    on invoice.invoice_id = invoice_line_item.invoice_id
- group by 1, 2, 3, 4, 5, 6
+   select
+     invoice.invoice_id,
+     invoice.amount_due,
+     invoice.amount_paid,
+     invoice.amount_remaining,
+     invoice.created_at,
+     invoice.source_relation,
+     max(invoice_line_item.subscription_id) as subscription_id,
+     coalesce(sum(invoice_line_item.amount),0) as total_line_item_amount,
+     coalesce(count(distinct invoice_line_item.unique_invoice_line_item_id),0) as number_of_line_items
+   from invoice_line_item
+   join invoice
+     on invoice.invoice_id = invoice_line_item.invoice_id
+   group by 1, 2, 3, 4, 5, 6
 
 ), grouped_by_subscription as (
 
