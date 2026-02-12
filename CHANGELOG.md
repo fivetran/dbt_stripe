@@ -5,7 +5,7 @@
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | -------------- | --------------- | ------------ | ------------ | --------- |
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
-| stg_stripe__coupon | New column |  | `metadata` | optional custom JSON field |
+| `stg_stripe__coupon` | New column |  | `metadata` | optional custom JSON field |
 
 ## Feature Updates
 - Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`, which are set to true by default. For dbt Core users, [See the README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disable-models-for-non-existent-sources) for more details on how to disable these variables. 
