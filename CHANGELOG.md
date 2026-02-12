@@ -1,7 +1,7 @@
 # dbt_stripe v1.5.0
 
-## Schema Change
-**2 total change • 1 possible breaking change**
+## Schema Changes
+**2 total changes • 2 possible breaking changes**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | -------------- | --------------- | ------------ | ------------ | --------- |
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
