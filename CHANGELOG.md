@@ -8,7 +8,7 @@
 | stg_stripe__coupon | New column |  | `metadata` | optional custom JSON field |
 
 ## Feature Updates
-- Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`.
+- Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`, which are set to true by default. For dbt Core users, [See the README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disable-models-for-non-existent-sources) for more details on how to disable these variables. 
   - `stripe__using_transfers` disables the Transfers source and any relevant downstream components.
   - `stripe__using_payouts` disables both the Payouts and Payout Balance Transactions sources, along with any related downstream components.
 - Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead. See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
