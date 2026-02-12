@@ -2,13 +2,13 @@
 
 with invoice as (
 
-   select *
-   from {{ ref('stg_stripe__invoice') }}
+    select *
+    from {{ ref('stg_stripe__invoice') }}  
 
 ), charge as (
 
-   select *
-   from {{ ref('stg_stripe__charge') }}
+    select *
+    from {{ ref('stg_stripe__charge') }}  
 
 ), invoice_line_item as (
 
@@ -18,20 +18,20 @@ with invoice as (
         coalesce(count(distinct unique_invoice_line_item_id),0) as number_of_line_items,
         coalesce(sum(quantity),0) as total_quantity
 
-    from {{ ref('stg_stripe__invoice_line_item') }}
+    from {{ ref('stg_stripe__invoice_line_item') }}  
     group by 1,2
 
 ), customer as (
 
-   select *
-   from {{ ref('stg_stripe__customer') }}
+    select *
+    from {{ ref('stg_stripe__customer') }}  
 
 {% if var('stripe__using_subscriptions', True) %}
 
 ), subscription as (
 
-   select *
-   from {{ ref('stg_stripe__subscription') }}  
+    select *
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), price_plan as (
 
@@ -41,7 +41,7 @@ with invoice as (
 {% endif %}
 )
 
-select
+select 
     invoice.invoice_id,
     invoice.number as invoice_number,
     invoice.created_at as invoice_created_at,
@@ -62,9 +62,9 @@ select
     invoice_line_item.number_of_line_items,
     invoice_line_item.total_quantity,
     charge.balance_transaction_id,
-    charge.amount as charge_amount,
+    charge.amount as charge_amount, 
     charge.status as charge_status,
-    charge.connected_account_id,
+    charge.connected_account_id, 
     charge.created_at as charge_created_at,
     charge.is_refunded as charge_is_refunded,
     {{ stripe.select_metadata_columns('charge', 'stripe__charge_metadata') }}
@@ -75,12 +75,14 @@ select
     customer.is_delinquent as customer_is_delinquent,
     customer.email as customer_email,
     {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
+
     {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
     subscription.billing as subscription_billing,
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
     {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
+
     {% endif %}
     invoice.source_relation
 

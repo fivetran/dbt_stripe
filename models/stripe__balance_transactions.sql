@@ -14,14 +14,14 @@ with balance_transaction as (
     from {{ ref('stg_stripe__card') }}
 
 ), charge as (
-    
-   select *
-   from {{ ref('stg_stripe__charge') }} 
+
+    select *
+    from {{ ref('stg_stripe__charge') }}
 
 ), customer as (
 
-   select *
-   from {{ ref('stg_stripe__customer') }}
+    select *
+    from {{ ref('stg_stripe__customer') }}
 
 ), dispute as (
 
@@ -31,8 +31,8 @@ with balance_transaction as (
 {% if var('stripe__using_invoices', True) %}
 ), invoice as (
 
-   select *
-   from {{ ref('stg_stripe__invoice') }} 
+    select *
+    from {{ ref('stg_stripe__invoice') }}
 
 {% endif %}
 
@@ -90,12 +90,12 @@ with balance_transaction as (
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
 
-   select *
-   from {{ ref('stg_stripe__subscription') }}
+    select *
+    from {{ ref('stg_stripe__subscription') }}
 
 {% endif %}
 
-{% if var('stripe__using_transfers', True) %}    
+{% if var('stripe__using_transfers', True) %}
 ), transfers as (
 
     select *

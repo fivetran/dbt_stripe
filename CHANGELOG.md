@@ -1,7 +1,7 @@
 # dbt_stripe v1.5.0
 
 ## Schema Changes
-**2 total changes • 2 possible breaking changes**
+**2 total changes • 1 possible breaking change**
 | **Data Model** | **Change type** | **Old** | **New** | **Notes** |
 | -------------- | --------------- | ------------ | ------------ | --------- |
 | All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
@@ -30,11 +30,8 @@ vars:
 - Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured.  See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
 
 ## Quickstart Updates
-- Creates table variables for sources `transfer`,`payout`, and `payout_balance_transactions`, which customers may want to enable and disable on a different schedule than the connector sync schedule.
-  - These source tables must be selected in the Fievetran connector UI for the variables to be set to True and the dependent models to be run.
-- Adds `stripe__charge_metadata`, `stripe__invoice_metatdata`, and `stripe__subscription_metadata` to `supported_vars` as optional properties to be pivoted into columns in various end models. See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details. 
-  - These variables can be configured directly through the `supportedVars` section in the Quickstart UI.
-
+- Creates table variables for sources `transfer`,`payout`, and `payout_balance_transactions`. These source tables must be selected in the Fievetran connector UI for the variables to be set to True and the dependent models to be run.
+- Adds `stripe__charge_metadata`, `stripe__invoice_metatdata`, and `stripe__subscription_metadata` to `supported_vars` as optional properties to be pivoted into columns in various end models. These variables can be configured directly through the `supportedVars` section in the Quickstart UI.
 
 ## Under the Hood
 - Updates all tmp staging models to conditionally use either the new `stripe_union_connections` macro (when `stripe_sources` is configured) or the legacy `fivetran_utils.union_data` macro (for backward compatibility).

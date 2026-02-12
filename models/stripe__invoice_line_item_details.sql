@@ -3,7 +3,7 @@
 with invoice_line_item as (
 
     select *
-    from {{ ref('stg_stripe__invoice_line_item') }}
+    from {{ ref('stg_stripe__invoice_line_item') }} 
 
 ), invoice_details as (
 
@@ -14,7 +14,7 @@ with invoice_line_item as (
 ), subscription as (
 
     select *
-    from {{ ref('stg_stripe__subscription') }}
+    from {{ ref('stg_stripe__subscription') }}  
 
 ), price_plan as (
 
