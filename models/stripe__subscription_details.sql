@@ -49,59 +49,59 @@ with invoice as (
 
 ), grouped_by_subscription as (
 
-  select
-    subscription_id,
-    source_relation,
-    count(distinct invoice_id) as number_invoices_generated,
-    sum(amount_due) as total_amount_billed,
-    sum(amount_paid) as total_amount_paid,
-    sum(amount_remaining) total_amount_remaining,
-    max(created_at) as most_recent_invoice_created_at,
-    avg(amount_due) as average_invoice_amount,
-    avg(total_line_item_amount) as average_line_item_amount,
-    avg(number_of_line_items) as avg_num_line_items
-  from line_items_groups
-  group by 1, 2
+   select
+     subscription_id,
+     source_relation,
+     count(distinct invoice_id) as number_invoices_generated,
+     sum(amount_due) as total_amount_billed,
+     sum(amount_paid) as total_amount_paid,
+     sum(amount_remaining) total_amount_remaining,
+     max(created_at) as most_recent_invoice_created_at,
+     avg(amount_due) as average_invoice_amount,
+     avg(total_line_item_amount) as average_line_item_amount,
+     avg(number_of_line_items) as avg_num_line_items
+   from line_items_groups
+   group by 1, 2
 
 )
 
 
-select
-  subscription.subscription_id,
-  subscription.customer_id,
-  customer.description as customer_description,
-  customer.email as customer_email,
-  {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
-  subscription.status,
-  subscription.start_date_at,
-  subscription.ended_at,
-  subscription.billing,
-  subscription.billing_cycle_anchor,
-  subscription.canceled_at,
-  subscription.created_at,
-  --Newer Stripe connections will store current_period_start/end fields in SUBSCRIPTION_ITEM while older ones house these fields in SUBSCRIPTION_HISTORY -> grab both and coalesce
-  coalesce(subscription.current_period_start, subscription_item.current_period_start) as current_period_start,
-  coalesce(subscription.current_period_end, subscription_item.current_period_end) as current_period_end,
-  subscription.days_until_due,
-  subscription.is_cancel_at_period_end,
-  subscription.cancel_at,
-  {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
-  number_invoices_generated,
-  total_amount_billed,
-  total_amount_paid,
-  total_amount_remaining,
-  most_recent_invoice_created_at,
-  average_invoice_amount,
-  average_line_item_amount,
-  avg_num_line_items,
-  subscription.source_relation
-from subscription
-left join subscription_item
-  on subscription.subscription_id = subscription_item.subscription_id
-  and subscription.source_relation = subscription_item.source_relation
-left join grouped_by_subscription 
-  on subscription.subscription_id = grouped_by_subscription.subscription_id
-  and subscription.source_relation = grouped_by_subscription.source_relation
-left join customer
-  on subscription.customer_id = customer.customer_id
-  and subscription.source_relation = customer.source_relation
+ select
+   subscription.subscription_id,
+   subscription.customer_id,
+   customer.description as customer_description,
+   customer.email as customer_email,
+   {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
+   subscription.status,
+   subscription.start_date_at,
+   subscription.ended_at,
+   subscription.billing,
+   subscription.billing_cycle_anchor,
+   subscription.canceled_at,
+   subscription.created_at,
+   --Newer Stripe connections will store current_period_start/end fields in SUBSCRIPTION_ITEM while older ones house these fields in SUBSCRIPTION_HISTORY -> grab both and coalesce
+   coalesce(subscription.current_period_start, subscription_item.current_period_start) as current_period_start,
+   coalesce(subscription.current_period_end, subscription_item.current_period_end) as current_period_end,
+   subscription.days_until_due,
+   subscription.is_cancel_at_period_end,
+   subscription.cancel_at,
+   {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
+   number_invoices_generated,
+   total_amount_billed,
+   total_amount_paid,
+   total_amount_remaining,
+   most_recent_invoice_created_at,
+   average_invoice_amount,
+   average_line_item_amount,
+   avg_num_line_items,
+   subscription.source_relation
+ from subscription
+ left join subscription_item
+   on subscription.subscription_id = subscription_item.subscription_id
+   and subscription.source_relation = subscription_item.source_relation
+ left join grouped_by_subscription 
+   on subscription.subscription_id = grouped_by_subscription.subscription_id
+   and subscription.source_relation = grouped_by_subscription.source_relation
+ left join customer
+   on subscription.customer_id = customer.customer_id
+   and subscription.source_relation = customer.source_relation
