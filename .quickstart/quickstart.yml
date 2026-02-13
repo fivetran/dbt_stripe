@@ -16,6 +16,11 @@ table_variables:
   stripe__using_credit_notes:
     - credit_note_line_item
     - credit_note
+  stripe__using_transfers:
+    - transfer
+  stripe__using_payouts:
+    - payout
+    - payout_balance_transaction
   stripe__using_coupons:
     - coupon
 
@@ -47,8 +52,23 @@ public_models: [
 supported_vars:
   stripe__customer_metadata:
     type: dictionary
-    description: "`CUSTOMER.metadata` properties that will be pivoted into columns in `stripe__customer_overview`"
+    description: "`customer.metadata` properties that will be pivoted into columns in `stripe__customer_overview`, `stripe__balance_transactions`, `stripe__invoice_details`, and `stripe__subscription_details`."
     display_name: "Customer Metadata Properties"
+
+  stripe__charge_metadata:
+    type: dictionary
+    description: "`charge.metadata` properties that will be pivoted into columns in `stripe__balance_transactions` and `stripe__invoice_details`."
+    display_name: "Charge Metadata Properties"
+
+  stripe__invoice_metadata:
+    type: dictionary
+    description: "`invoice.metadata` properties that will be pivoted into columns in `stripe__invoice_details` and `stripe__balance_transactions`."
+    display_name: "Invoice Metadata Properties"
+
+  stripe__subscription_metadata:
+    type: dictionary
+    description: "`subscription.metadata` properties that will be pivoted into columns in `stripe__subscription_details`, `stripe__balance_transactions`, `stripe__invoice_line_item_details`, and `stripe__invoice_details`."
+    display_name: "Subscription Metadata Properties"
 
   stripe__convert_values:
     type: boolean

@@ -58,6 +58,7 @@ select
     coalesce(invoice.amount_remaining,0) as amount_remaining,
     coalesce(invoice.attempt_count,0) as attempt_count,
     invoice.description as invoice_memo,
+    {{ stripe.select_metadata_columns('invoice', 'stripe__invoice_metadata') }}
     invoice_line_item.number_of_line_items,
     invoice_line_item.total_quantity,
     charge.balance_transaction_id,
@@ -66,18 +67,21 @@ select
     charge.connected_account_id, 
     charge.created_at as charge_created_at,
     charge.is_refunded as charge_is_refunded,
+    {{ stripe.select_metadata_columns('charge', 'stripe__charge_metadata') }}
     customer.customer_id,
     customer.description as customer_description,
     customer.account_balance as customer_account_balance,
     customer.currency as customer_currency,
     customer.is_delinquent as customer_is_delinquent,
     customer.email as customer_email,
-    
+    {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
+
     {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
     subscription.billing as subscription_billing,
     subscription.start_date_at as subscription_start_date,
     subscription.ended_at as subscription_ended_at,
+    {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
 
     {% endif %}
     invoice.source_relation

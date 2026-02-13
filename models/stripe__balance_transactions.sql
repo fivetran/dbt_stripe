@@ -14,27 +14,28 @@ with balance_transaction as (
     from {{ ref('stg_stripe__card') }}
 
 ), charge as (
-    
+
     select *
     from {{ ref('stg_stripe__charge') }}
 
 ), customer as (
-    
+
     select *
     from {{ ref('stg_stripe__customer') }}
 
 ), dispute as (
-    
+
     select *
     from {{ ref('stg_stripe__dispute') }}
 
 {% if var('stripe__using_invoices', True) %}
 ), invoice as (
-    
+
     select *
     from {{ ref('stg_stripe__invoice') }}
 
 {% endif %}
+
 ), payment_intent as (
     
     select *
@@ -52,19 +53,21 @@ with balance_transaction as (
     from {{ ref('stg_stripe__payment_method_card') }}
 
 {% endif %}
+
+{% if var('stripe__using_payouts', True) %}
 ), payout as (
-    
+
     select *
     from {{ ref('stg_stripe__payout') }}
 
 ), payout_balance_transaction as (
-    
+
     select *
     from {{ ref('stg_stripe__payout_balance_transaction') }}
 
 ), payout_balance_transaction_unified as (
     -- Create a unified mapping table to bridge records without mapping.
-    select 
+    select
         balance_transaction.source_relation,
         balance_transaction.balance_transaction_id,
         coalesce(payout_balance_transaction.payout_id, payout.payout_id) as payout_id
@@ -77,6 +80,8 @@ with balance_transaction as (
         on payout.balance_transaction_id = balance_transaction.balance_transaction_id
         and payout.source_relation = balance_transaction.source_relation
 
+{% endif %}
+
 ), refund as (
     
     select *
@@ -84,15 +89,19 @@ with balance_transaction as (
 
 {% if var('stripe__using_subscriptions', True) %}
 ), subscription as (
-    
+
     select *
     from {{ ref('stg_stripe__subscription') }}
 
 {% endif %}
+
+{% if var('stripe__using_transfers', True) %}
 ), transfers as (
-    
+
     select *
     from {{ ref('stg_stripe__transfer') }}
+
+{% endif %}
 
 ), dispute_summary as (
     /* Although rare, payments can be disputed multiple times. 
@@ -173,8 +182,9 @@ select
     latest_disputes.latest_dispute_amount_warning_under_review,
     latest_disputes.latest_dispute_amount_warning_needs_response,
     {{ dbt.dateadd('day', 1, 'balance_transaction.available_on') }} as effective_at,
+    {% if var('stripe__using_payouts', True) %}
     case
-        when payout.is_automatic = true then payout.payout_id 
+        when payout.is_automatic = true then payout.payout_id
         else null
     end as automatic_payout_id,
     payout.payout_id,
@@ -191,8 +201,9 @@ select
     payout.description as payout_description,
     payout.destination_bank_account_id,
     payout.destination_card_id,
-    -- Checks if this balance transaction matches the most recent balance_transaction_id recorded in PAYOUT. 
+    -- Checks if this balance transaction matches the most recent balance_transaction_id recorded in PAYOUT.
     payout_balance_transaction_unified.balance_transaction_id = payout.balance_transaction_id as payout_balance_transaction_is_current,
+    {% endif %}
     coalesce(charge.customer_id, refund_charge.customer_id) as customer_id,
     charge.receipt_email,
     customer.email as customer_email,
@@ -210,6 +221,7 @@ select
     customer.customer_address_state,
     customer.customer_address_postal_code,
     customer.customer_address_country,
+    {{ stripe.select_metadata_columns('customer', 'stripe__customer_metadata') }}
     charge.shipping_address_line_1 as charge_shipping_address_line_1,
     charge.shipping_address_line_2 as charge_shipping_address_line_2,
     charge.shipping_address_city as charge_shipping_address_city,
@@ -224,15 +236,18 @@ select
     cards.card_address_country,
     coalesce(charge.charge_id, refund.charge_id, dispute_summary.charge_id) as charge_id,
     charge.created_at as charge_created_at,
+    {{ stripe.select_metadata_columns('charge', 'stripe__charge_metadata') }}
     payment_intent.payment_intent_id,
 
     {% if var('stripe__using_invoices', True) %}
     invoice.invoice_id,
     invoice.number as invoice_number,
+    {{ stripe.select_metadata_columns('invoice', 'stripe__invoice_metadata') }}
     {% endif %}
 
     {% if var('stripe__using_subscriptions', True) %}
     subscription.subscription_id,
+    {{ stripe.select_metadata_columns('subscription', 'stripe__subscription_metadata') }}
     {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}
@@ -244,13 +259,17 @@ select
     cards.brand as card_brand,
     cards.funding as card_funding,
     cards.country as card_country,
-    charge.statement_descriptor as charge_statement_descriptor ,
+    charge.statement_descriptor as charge_statement_descriptor,
     dispute_summary.dispute_ids,
     dispute_summary.dispute_reasons,
     dispute_summary.dispute_count,
     refund.refund_id,
     refund.reason as refund_reason,
+
+    {% if var('stripe__using_transfers', True) %}
     transfers.transfer_id,
+    {% endif %}
+    
     coalesce(balance_transaction.connected_account_id, charge.connected_account_id) as connected_account_id,
     connected_account.country as connected_account_country,
     case 
@@ -261,12 +280,15 @@ select
 
 from balance_transaction
 
-left join payout_balance_transaction_unified 
+{% if var('stripe__using_payouts', True) %}
+left join payout_balance_transaction_unified
     on payout_balance_transaction_unified.balance_transaction_id = balance_transaction.balance_transaction_id
     and payout_balance_transaction_unified.source_relation = balance_transaction.source_relation
-left join payout 
+left join payout
     on payout.payout_id = payout_balance_transaction_unified.payout_id
     and payout.source_relation = payout_balance_transaction_unified.source_relation
+{% endif %}
+
 left join account connected_account
     on balance_transaction.connected_account_id = connected_account.account_id
     and balance_transaction.source_relation = connected_account.source_relation
@@ -307,9 +329,13 @@ left join subscription
 left join refund
     on refund.balance_transaction_id = balance_transaction.balance_transaction_id
     and refund.source_relation = balance_transaction.source_relation
-left join transfers 
+
+{% if var('stripe__using_transfers', True) %}
+left join transfers
     on transfers.balance_transaction_id = balance_transaction.balance_transaction_id
     and transfers.source_relation = balance_transaction.source_relation
+{% endif %}
+
 left join charge as refund_charge 
     on refund.charge_id = refund_charge.charge_id
     and refund.source_relation = refund_charge.source_relation

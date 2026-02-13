@@ -25,7 +25,10 @@ select
     subscription_id,
     {% endif %}
 
+    {% if var('stripe__using_transfers', True) %}
     transfer_id,
+    {% endif %}
+
     customer_id,
     customer_email,
     customer_name,
@@ -54,8 +57,10 @@ select
     card_address_state,
     card_address_postal_code,
     card_address_country,
+    {% if var('stripe__using_payouts', True) %}
     automatic_payout_id,
     automatic_payout_effective_at,
+    {% endif %}
 
     {% if var('stripe__using_payment_method', True) %}
     payment_method_type,

@@ -1,17 +1,17 @@
 {{ config(
     tags="fivetran_validations",
-    enabled=var('fivetran_validation_tests_enabled', false) and var('stripe__using_invoices', true)
+    enabled=var('fivetran_validation_tests_enabled', false) and var('stripe__using_invoices', true) 
 ) }}
 
 with prod as (
-    select *
+   select {{ dbt_utils.star(from=ref('stripe__invoice_line_item_details'), except=var('consistency_test_exclude_fields', '[]')) }}
     from {{ target.schema }}_stripe_prod.stripe__invoice_line_item_details
 ),
 
 dev as (
-    select *
+    select {{ dbt_utils.star(from=ref('stripe__invoice_line_item_details'), except=var('consistency_test_exclude_fields', '[]')) }}
     from {{ target.schema }}_stripe_dev.stripe__invoice_line_item_details
-), 
+),
 
 prod_not_in_dev as (
     -- rows from prod not found in dev

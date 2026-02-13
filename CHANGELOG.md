@@ -1,3 +1,45 @@
+# dbt_stripe v1.5.0
+
+## Schema Changes
+**2 total changes • 1 possible breaking change**
+| **Data Model** | **Change type** | **Old** | **New** | **Notes** |
+| -------------- | --------------- | ------------ | ------------ | --------- |
+| All models | Single-connection `source_relation` value | Empty string (`''`) | `<stripe_database>.<stripe_schema>` |  |
+| `stg_stripe__coupon` | New column |  | `metadata` | optional custom JSON field |
+
+## Feature Updates
+- Adds configurable table variables `stripe__using_transfers` and `stripe__using_payouts`, which are set to true by default. For dbt Core users, [See the README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disable-models-for-non-existent-sources) for more details on how to disable these variables. 
+  - `stripe__using_transfers` disables the Transfers source and any relevant downstream components.
+  - `stripe__using_payouts` disables both the Payouts and Payout Balance Transactions sources, along with any related downstream components.
+- Introduces support for the newer, more flexible unioning framework. Previously, to run the package on multiple Stripe sources at once, you could only use the `union_schemas` variable OR `union_databases` (mutually exclusive). While these setups are still supported for backwards compatibility, we recommend using `stripe_sources` instead. See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#option-b-union-multiple-connections) for more details.
+
+```yml
+# dbt_project.yml
+
+vars:
+  stripe:
+    stripe_sources:
+      - database: connection_1_destination_name # Required
+        schema: connection_1_schema_name # Required
+        name: connection_1_source_name # Required only if following this step: https://github.com/fivetran/dbt_stripe/blob/main/README.md#recommended-incorporate-unioned-sources-into-dag
+
+      - database: connection_2_destination_name
+        schema: connection_2_schema_name
+        name: connection_2_source_name
+```
+- Updates end models (`stripe__balance_transactions`, `stripe__customer_overview`, `stripe__invoice_details`, `stripe__invoice_line_item_details`, `stripe__subscription_details`) to dynamically include metadata fields from staging models when metadata variables are configured.  See the [README](https://github.com/fivetran/dbt_stripe/blob/main/README.md#pivoting-out-metadata-properties) for more details.
+
+## Quickstart Updates
+- Creates table variables for sources `transfer`, `payout`, and `payout_balance_transaction`. These source tables must be selected in the Fievetran connector UI for the variables to be set to True and the dependent models to be run.
+- Adds `stripe__charge_metadata`, `stripe__invoice_metadata`, and `stripe__subscription_metadata` to `supported_vars` as optional properties to be pivoted into columns in various end models. These variables can be configured directly through the `supportedVars` section in the Quickstart UI.
+
+## Under the Hood
+- Updates all tmp staging models to conditionally use either the new `stripe_union_connections` macro (when `stripe_sources` is configured) or the legacy `fivetran_utils.union_data` macro (for backward compatibility).
+- Updates all staging models to use the new `stripe.apply_source_relation()` macro instead of `fivetran_utils.source_relation()`.
+- Adds `stripe.select_metadata_columns()` macro to handle both dictionary and alias variable metadata inputs.
+- Adds `metadata` column to `get_coupon_columns()` macro and `coupon_data.csv` seed file.
+- Updates integration test seed data for customer and invoice tables.
+
 # dbt_stripe v1.4.0
 [PR #138](https://github.com/fivetran/dbt_stripe/pull/138) includes the following updates:
 
@@ -422,8 +464,6 @@ Stripe passes amount-based fields, such as `amount`, `net`, and `fee`, in the sm
     - additional invoice fields
   - Updated `customer_facing_amount` to include for refunds and disputes as well
   - Updated `charge_id` to charge, refund, then dispute objects consecutively
-
-
 
 ## Under the Hood:
 

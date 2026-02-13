@@ -1,6 +1,6 @@
 config-version: 2
 name: 'stripe'
-version: '1.4.0'
+version: '1.5.0'
 require-dbt-version: [">=1.3.0", "<3.0.0"]
 
 models:
@@ -49,3 +49,4 @@ vars:
     transfer: "{{ source('stripe', 'transfer') }}"
 
     card_pass_through_columns: []
+    stripe_sources: []
