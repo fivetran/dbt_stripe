@@ -77,7 +77,6 @@ subscription_deduped as (
                 partition by subscription_id {{ stripe.partition_by_source_relation() }}
                 order by created_at desc) as rn
         from subscription
-    ) as subscription
     where rn = 1
 
 ),
