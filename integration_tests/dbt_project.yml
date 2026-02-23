@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '1.5.0'
+version: '1.6.0'
 
 profile: 'integration_tests'
 
@@ -122,6 +122,14 @@ seeds:
       +enabled: "{{ true if target.type == 'postgres' else false }}"
       +column_types:
         amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+    subscription_discount_data:
+      +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
+    subscription_discount_data_snowflake:
+      +alias: subscription_discount_data
+      +enabled: "{{ true if target.type == 'snowflake' else false }}"
+    subscription_discount_data_postgres:
+      +alias: subscription_discount_data
+      +enabled: "{{ true if target.type == 'postgres' else false }}"
 
 
 dispatch:

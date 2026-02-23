@@ -1,0 +1,4 @@
+id,_fivetran_synced,checkout_session_id,coupon_id,customer_id,END,invoice_id,invoice_item_id,START,subscription_id
+di_test1,2022-09-19 05:50:07.000000,,coupon_test1,cus_MSXtGSAxxtYWe1,2023-09-19 05:50:07.000000,,,2022-09-19 05:50:07.000000,sub_1LjcrrDZlKRVG8Gnv1Bjosun
+di_test2,2022-10-15 08:30:00.000000,,coupon_test2,cus_twelve,,,,2022-10-15 08:30:00.000000,sub_nine
+di_test3,2023-01-20 12:00:00.000000,,coupon_test1,cus_MSXtGSAxxtYWe1,2024-01-20 12:00:00.000000,,,2023-01-20 12:00:00.000000,sub_1LjcrrDZlKRVG8Gnv1Bjosun

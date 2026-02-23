@@ -989,6 +989,30 @@ models:
         description: The subscription that this coupon is applied to, if it is applied to a particular subscription.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
+  
+  - name: stg_stripe__subscription_discount
+    description: Properties belonging to a Stripe subscription discount.
+    columns:
+      - name: subscription_discount_id
+        description: The ID of the subscription discount object.
+      - name: checkout_session_id
+        description: The Checkout session that this discount is applied to, if it is applied to a particular session in payment mode.
+      - name: coupon_id
+        description: The ID of the coupon applied to create this discount.
+      - name: customer_id
+        description: The ID of the customer associated with this discount.
+      - name: end_at
+        description: If the coupon has a duration of repeating, the date that this discount will end. If the coupon has a duration of once or forever, this attribute will be null.
+      - name: invoice_id
+        description: The invoice that the discount’s coupon was applied to, if it was applied directly to a particular invoice.
+      - name: invoice_item_id
+        description: The invoice item id (or invoice line item id for invoice line items of type=‘subscription’) that the discount’s coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
+      - name: start_at
+        description: The date that the coupon was applied.
+      - name: subscription_id
+        description: The subscription that this coupon is applied to, if it is applied to a particular subscription.
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
 
   - name: stg_stripe__coupon
     description: Properties belonging to a Stripe coupon.
