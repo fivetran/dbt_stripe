@@ -23,7 +23,7 @@ fields as (
 final as (
     
     select
-        id as subscriptiondiscount_id,
+        id as subscription_discount_id,
         checkout_session_id,
         coupon_id,
         customer_id,
