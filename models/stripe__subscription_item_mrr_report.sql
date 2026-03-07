@@ -8,7 +8,7 @@
         cast(
           {{ dbt.date_trunc(
               'month',
-              "coalesce(subscription_item.current_period_start, subscription.current_period_start)"
+              "coalesce(subscription_item.current_period_start, subscription.current_period_start)" 
           ) }} as date
         )
       ),
@@ -67,6 +67,22 @@ subscription as (
 
 ),
 
+subscription_deduped as (
+
+    select *
+    from (
+        select
+            subscription.*,
+            row_number() over (
+                partition by subscription_id {{ stripe.partition_by_source_relation() }}
+                order by created_at desc) as rn
+        from subscription
+    ) as subscription
+    where rn = 1
+
+),
+--deduping is necessary in cases where subscription_history table is used, multiple records can exist for the same subscription
+
 price_plan as (
 
     select *
@@ -122,7 +138,7 @@ base as (
         price_plan.currency,
         {{ convert_values('price_plan.unit_amount * coalesce(subscription_item.quantity, 1)', alias='amount') }}
     from subscription_item
-    left join subscription
+    left join subscription_deduped as subscription
         on subscription_item.subscription_id = subscription.subscription_id
         and subscription_item.source_relation = subscription.source_relation
     left join price_plan
@@ -297,7 +313,10 @@ subscription_month_discount_amount as (
         subscription_month_contracted.source_relation,
         subscription_month_contracted.subscription_id,
         subscription_month_contracted.subscription_month,
-        sum(coalesce(cast(nullif(cast(subscription_discount.discount_amount as {{ dbt.type_string() }}), '') as {{ dbt.type_numeric() }} ), 0)) as discount_amount
+        subscription_month_contracted.currency,
+        subscription_month_contracted.subscription_month_contracted_mrr,
+        sum(coalesce(cast(subscription_discount.amount_off as {{ dbt.type_numeric() }}), 0)) as amount_off,
+        max(coalesce(cast(subscription_discount.percent_off as {{ dbt.type_numeric() }}), 0)) as percent_off
     from subscription_month_contracted
     left join subscription_discount
         on subscription_month_contracted.source_relation = subscription_discount.source_relation
@@ -307,7 +326,7 @@ subscription_month_discount_amount as (
             subscription_discount.end_month is null
             or subscription_month_contracted.subscription_month < subscription_discount.end_month
         )
-        {{ dbt_utils.group_by(3) }}
+        {{ dbt_utils.group_by(5) }}
 ),
 
 subscription_month_discount_mrr as (
@@ -316,12 +335,39 @@ subscription_month_discount_mrr as (
         subscription_month_discount_amount.source_relation,
         subscription_month_discount_amount.subscription_id,
         subscription_month_discount_amount.subscription_month,
-        subscription_month_discount_amount.discount_amount,
+        subscription_month_discount_amount.amount_off,
+        subscription_month_discount_amount.percent_off,
 
+        -- Monthly discount from amount_off (spread across billing cycle)
         {{ dbt_utils.safe_divide(
-            "subscription_month_discount_amount.discount_amount",
+            "subscription_month_discount_amount.amount_off",
             "coalesce(subscription_billing_cycle.subscription_cycle_months, 1)"
-        ) }} as subscription_month_discount_mrr
+        ) }} as amount_off_monthly_discount,
+
+        -- Monthly discount from percent_off (applies directly to monthly contracted MRR)
+        (
+            subscription_month_discount_amount.subscription_month_contracted_mrr
+            * {{ dbt_utils.safe_divide("subscription_month_discount_amount.percent_off", "100") }}
+        ) as percent_off_monthly_discount,
+
+        -- Total monthly discount to allocate to items
+        (
+            coalesce(
+                {{ dbt_utils.safe_divide(
+                    "subscription_month_discount_amount.amount_off",
+                    "coalesce(subscription_billing_cycle.subscription_cycle_months, 1)"
+                ) }},
+                0
+            )
+            +
+            coalesce(
+                (
+                    subscription_month_discount_amount.subscription_month_contracted_mrr
+                    * {{ dbt_utils.safe_divide("subscription_month_discount_amount.percent_off", "100") }}
+                ),
+                0
+            )
+        ) as subscription_month_discount_mrr
 
     from subscription_month_discount_amount
     left join subscription_billing_cycle

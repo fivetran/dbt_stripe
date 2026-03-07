@@ -1,3 +1,19 @@
+# dbt_stripe v1.6.0-a1
+[PR #141](https://github.com/fivetran/dbt_stripe/pull/141) is a pre-release that includes the following updates:
+
+## Schema/Data Change
+**2 total changes • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stg_stripe__subscription_discount`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount) | New Staging Model |  |  | Staging model for subscription discount data.
+| [`stg_stripe__subscription_discount_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount_tmp) | New Temp Model |  |  |  |
+
+## Under the Hood
+- Updates `int_stripe__subscription_discount` to source from the `SUBSCRIPTION_DISCOUNT` table via the new `stg_stripe__subscription_discount` staging model, instead of sourcing from the `DISCOUNT` table via `stg_stripe__discount`.
+- Updates `stripe__subscription_item_mrr_report` to incorporate discount data from the `SUBSCRIPTION_DISCOUNT` table rather than the `DISCOUNT` table.
+- Adds integration test seed files `subscription_discount_data.csv`, `subscription_discount_data_snowflake.csv`, and `subscription_discount_data_postgres.csv`.
+
 # dbt_stripe v1.5.0
 
 ## Schema Changes
