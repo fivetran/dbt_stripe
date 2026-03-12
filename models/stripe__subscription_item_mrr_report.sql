@@ -136,7 +136,7 @@ base as (
         price_plan.recurring_interval,
         price_plan.recurring_interval_count,
         price_plan.currency,
-        {{ convert_values('price_plan.unit_amount * coalesce(subscription_item.quantity, 1)', alias='amount') }}
+        price_plan.unit_amount * coalesce(subscription_item.quantity, 1) as amount
     from subscription_item
     left join subscription_deduped as subscription
         on subscription_item.subscription_id = subscription.subscription_id
