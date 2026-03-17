@@ -36,6 +36,7 @@ vars:
     stripe_price_identifier: "price_data"
     stripe_product_identifier: "product_data"
     stripe_refund_identifier: "refund_data"
+    stripe_subscription_discount_identifier: "subscription_discount_data"
     stripe_subscription_history_identifier: "subscription_history_data"
     stripe_subscription_identifier: "subscription_data"
     stripe_subscription_item_identifier: "subscription_item_data"
