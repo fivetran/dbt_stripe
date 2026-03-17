@@ -12,9 +12,9 @@
 
 ## Bug Fix
 - Removes `convert_values` macro from `amount` calculation in `stripe__subscription_item_mrr_report`. The macro is already applied at the staging layer and applying it to the metric calculation was causing a double conversion, leading to potential undercalculation of MRR values when `stripe__convert_values` was set to true.
+- Adds `convert_values` macro to `amount_off` field value in `stg_stripe__coupon` table to ensure correct conversion of discounted amount when customers have the variable set to true.
 
 ## Under the Hood
-- Adds `convert_values` macro to `amount_off` field value in `stg_stripe__coupon` table to ensure correct conversion of discounted amount when customers have the variable set to true.
 - Updates `int_stripe__subscription_discount` to source from the `subscription_discount` table via the new `stg_stripe__subscription_discount` staging model, instead of sourcing from the `discount` table via `stg_stripe__discount`.
 - Adds integration test seed files `subscription_discount_data.csv`, `subscription_discount_data_snowflake.csv`, and `subscription_discount_data_postgres.csv`.
 

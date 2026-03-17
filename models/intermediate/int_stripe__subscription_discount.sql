@@ -1,4 +1,4 @@
-{{ config(enabled=var('stripe__using_coupons', True)) }}
+{{ config(enabled=var('stripe__using_subscription_discounts', True) and var('stripe__using_coupons', True)) }}
 
 with subscription_discount as (
 

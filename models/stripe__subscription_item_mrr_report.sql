@@ -62,25 +62,19 @@ with subscription_item as (
 
 subscription as (
 
-    select *
+    select *,
+         row_number() over (partition by subscription_id {{ stripe.partition_by_source_relation() }}
+             order by created_at desc) as rn
     from {{ ref('stg_stripe__subscription') }}
-
 ),
 
 subscription_deduped as (
 
     select *
-    from (
-        select
-            subscription.*,
-            row_number() over (
-                partition by subscription_id {{ stripe.partition_by_source_relation() }}
-                order by created_at desc) as rn
-        from subscription
-    ) as subscription
+    from subscription
     where rn = 1
-
 ),
+
 --deduping is necessary in cases where subscription_history table is used, multiple records can exist for the same subscription
 
 price_plan as (
@@ -90,7 +84,7 @@ price_plan as (
 
 ),
 
-{% if var('stripe__using_coupons', True) %}
+{% if var('stripe__using_coupons', True) and var('stripe__using_subscription_discounts', True) %}
 subscription_discount as (
 
     select *
@@ -306,7 +300,7 @@ subscription_month_contracted as (
 
 ),
 
-{% if var('stripe__using_coupons', True) %}
+{% if var('stripe__using_coupons', True) and var('stripe__using_subscription_discounts', True) %}
 subscription_month_discount_amount as (
 
     select
@@ -380,7 +374,7 @@ item_mrr_with_discounts as (
         item_mrr_by_month.month_mrr as month_contract_mrr,
 
         -- applied discount at item grain (monthly)
-        {% if var('stripe__using_coupons', True) %}
+        {% if var('stripe__using_coupons', True) and var('stripe__using_subscription_discounts', True) %}
         (
             coalesce(subscription_month_discount_mrr.subscription_month_discount_mrr, 0)
             * {{ dbt_utils.safe_divide(
@@ -393,7 +387,7 @@ item_mrr_with_discounts as (
         {% endif %}
 
         -- net / invoiced monthly MRR at item grain
-        {% if var('stripe__using_coupons', True) %}
+        {% if var('stripe__using_coupons', True) and var('stripe__using_subscription_discounts', True) %}
         (
             item_mrr_by_month.month_mrr
             - (
@@ -414,7 +408,7 @@ item_mrr_with_discounts as (
         and item_mrr_by_month.subscription_id = subscription_month_contracted.subscription_id
         and item_mrr_by_month.currency = subscription_month_contracted.currency
         and item_mrr_by_month.subscription_month = subscription_month_contracted.subscription_month
-    {% if var('stripe__using_coupons', True) %}
+    {% if var('stripe__using_coupons', True) and var('stripe__using_subscription_discounts', True) %}
     left join subscription_month_discount_mrr
         on item_mrr_by_month.source_relation = subscription_month_discount_mrr.source_relation
         and item_mrr_by_month.subscription_id = subscription_month_discount_mrr.subscription_id

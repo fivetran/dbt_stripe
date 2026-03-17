@@ -1,3 +1,4 @@
+{{ config(enabled=var('stripe__using_subscription_discounts', True)) }}
 
 with base as (
 

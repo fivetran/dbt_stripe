@@ -1103,6 +1103,7 @@ sources:
         identifier: "{{ var('stripe_subscription_discount_identifier', 'subscription_discount') }}"
         description: A subscription discount represents the application of a coupon or promotion code specifically applied to a subscription. It contains information about when the discount began, when it will end, and what it is applied to.
         config:
+          enabled: "{{ var('stripe__using_subscription_discounts', true) }}"
           freshness: null
         columns:
           - name: id

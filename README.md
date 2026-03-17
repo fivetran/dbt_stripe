@@ -115,20 +115,21 @@ vars:
 ```
 
 ### Disable models for non-existent sources
-This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, `transfer`, `payout`, `payout_balance_transaction`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
+This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, `subscription_discount`, `transfer`, `payout`, `payout_balance_transaction`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
 
 ```yml
 # dbt_project.yml
 
 ...
 vars:
-    stripe__using_invoices:        False  #Disable if you are not using the invoice and invoice_line_item tables.
-    stripe__using_payment_method:  False  #Disable if you are not using the payment_method and payment_method_card tables.
-    stripe__using_subscriptions:   False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
-    stripe__using_coupons:         False  #Disable if you are not using coupon codes to apply discounts.
-    stripe__using_credit_notes:    True   #Enable if you are using the credit note tables.
-    stripe__using_transfers:       False  #Disable to turn off the transfer table temporarily.
-    stripe__using_payouts:         False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
+    stripe__using_invoices:                False  #Disable if you are not using the invoice and invoice_line_item tables.
+    stripe__using_payment_method:          False  #Disable if you are not using the payment_method and payment_method_card tables.
+    stripe__using_subscriptions:           False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
+    stripe__using_coupons:                 False  #Disable if you are not using coupon codes to apply discounts.
+    stripe__using_subscription_discounts:  False  #Disable if you are not using the subscription_discount table.
+    stripe__using_credit_notes:            True   #Enable if you are using the credit note tables.
+    stripe__using_transfers:               False  #Disable to turn off the transfer table temporarily.
+    stripe__using_payouts:                 False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
 ```
 ### (Optional) Additional configurations
 <details open><summary>Expand to view configurations</summary>

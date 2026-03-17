@@ -1,3 +1,5 @@
+{{ config(enabled=var('stripe__using_subscription_discounts', True)) }}
+
 {% if var('stripe_sources') != [] %}
 
 {{
