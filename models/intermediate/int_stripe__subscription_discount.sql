@@ -33,7 +33,7 @@ subscription_discount_schedule as (
     left join coupon
       on subscription_discount.source_relation = coupon.source_relation
       and subscription_discount.coupon_id = coupon.coupon_id
-      where subscription_discount.coupon_id is not null
+    where subscription_discount.coupon_id is not null
       and subscription_discount.start_at is not null
 
 ),

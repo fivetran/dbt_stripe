@@ -1108,7 +1108,7 @@ sources:
           - name: id
             description: The ID of the subscription discount object.
           - name: checkout_session_id
-            description: The Checkout session that this discount is applied to, if it is applied to a particular session in payment mode.
+            description: The Checkout Session that this discount is applied to, if it is applied to a particular session in payment mode.
           - name: coupon_id
             description: The ID of the coupon applied to create this discount.
           - name: customer_id

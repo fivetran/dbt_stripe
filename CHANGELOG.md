@@ -6,7 +6,7 @@
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ---------- | ----------- | -------- | -------- | ----- |
-| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Changed data | Discount sourced from `DISCOUNT` table | Discount sourced from `SUBSCRIPTION_DISCOUNT` table | Affects discount-based MRR calculations for subscriptions with active coupons. |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Changed data | Discount sourced from `discount` table | Discount sourced from `subscription_discount` table | Affects discount-based MRR calculations for subscriptions with active coupons. |
 | [`stg_stripe__subscription_discount`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount) | New Staging Model |  |  | Staging model for subscription discount data. |
 | [`stg_stripe__subscription_discount_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount_tmp) | New Temp Model |  |  |  |
 
@@ -15,7 +15,7 @@
 
 ## Under the Hood
 - Adds `convert_values` macro to `amount_off` field value in `stg_stripe__coupon` table to ensure correct conversion of discounted amount when customers have the variable set to true.
-- Updates `int_stripe__subscription_discount` to source from the `SUBSCRIPTION_DISCOUNT` table via the new `stg_stripe__subscription_discount` staging model, instead of sourcing from the `DISCOUNT` table via `stg_stripe__discount`.
+- Updates `int_stripe__subscription_discount` to source from the `subscription_discount` table via the new `stg_stripe__subscription_discount` staging model, instead of sourcing from the `discount` table via `stg_stripe__discount`.
 - Adds integration test seed files `subscription_discount_data.csv`, `subscription_discount_data_snowflake.csv`, and `subscription_discount_data_postgres.csv`.
 
 # dbt_stripe v1.6.0-a1

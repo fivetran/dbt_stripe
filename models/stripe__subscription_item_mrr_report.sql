@@ -345,28 +345,15 @@ subscription_month_discount_mrr as (
         ) }} as amount_off_monthly_discount,
 
         -- Monthly discount from percent_off (applies directly to monthly contracted MRR)
-        (
-            subscription_month_discount_amount.subscription_month_contracted_mrr
+        (subscription_month_discount_amount.subscription_month_contracted_mrr
             * {{ dbt_utils.safe_divide("subscription_month_discount_amount.percent_off", "100") }}
         ) as percent_off_monthly_discount,
 
         -- Total monthly discount to allocate to items
-        (
-            coalesce(
-                {{ dbt_utils.safe_divide(
-                    "subscription_month_discount_amount.amount_off",
-                    "coalesce(subscription_billing_cycle.subscription_cycle_months, 1)"
-                ) }},
-                0
-            )
-            +
-            coalesce(
-                (
-                    subscription_month_discount_amount.subscription_month_contracted_mrr
-                    * {{ dbt_utils.safe_divide("subscription_month_discount_amount.percent_off", "100") }}
-                ),
-                0
-            )
+        (coalesce({{ dbt_utils.safe_divide("subscription_month_discount_amount.amount_off",
+                    "coalesce(subscription_billing_cycle.subscription_cycle_months, 1)") }}, 0)
+        + coalesce((subscription_month_discount_amount.subscription_month_contracted_mrr
+                    * {{ dbt_utils.safe_divide("subscription_month_discount_amount.percent_off", "100") }}), 0)
         ) as subscription_month_discount_mrr
 
     from subscription_month_discount_amount
