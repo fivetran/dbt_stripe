@@ -31,7 +31,7 @@ final as (
         cast(redeem_by as {{ dbt.type_timestamp() }}) as redeem_by,
         duration,
         duration_in_months,
-        amount_off,
+        {{ stripe.convert_values('amount_off') }}, 
         percent_off,
         currency,
         metadata,

@@ -1,6 +1,6 @@
 config-version: 2
 name: 'stripe'
-version: '1.5.0'
+version: '1.6.0'
 require-dbt-version: [">=1.3.0", "<3.0.0"]
 
 models:
@@ -45,6 +45,7 @@ vars:
     refund: "{{ source('stripe', 'refund') }}"
     subscription_history: "{{ source('stripe', 'subscription_history') }}"
     subscription: "{{ source('stripe', 'subscription') }}"
+    subscription_discount: "{{ source('stripe', 'subscription_discount') }}"
     subscription_item: "{{ source('stripe', 'subscription_item') }}"
     transfer: "{{ source('stripe', 'transfer') }}"
 

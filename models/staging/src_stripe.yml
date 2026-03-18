@@ -1099,6 +1099,32 @@ sources:
           - name: subscription_id
             description: The subscription that this coupon is applied to, if it is applied to a particular subscription.
 
+      - name: subscription_discount
+        identifier: "{{ var('stripe_subscription_discount_identifier', 'subscription_discount') }}"
+        description: A subscription discount represents the application of a coupon or promotion code specifically applied to a subscription. It contains information about when the discount began, when it will end, and what it is applied to.
+        config:
+          enabled: "{{ var('stripe__using_subscription_discounts', true) }}"
+          freshness: null
+        columns:
+          - name: id
+            description: The ID of the subscription discount object.
+          - name: checkout_session_id
+            description: The Checkout Session that this discount is applied to, if it is applied to a particular session in payment mode.
+          - name: coupon_id
+            description: The ID of the coupon applied to create this discount.
+          - name: customer_id
+            description: The ID of the customer associated with this discount.
+          - name: end
+            description: If the coupon has a duration of repeating, the date that this discount will end. If the coupon has a duration of once or forever, this attribute will be null.
+          - name: invoice_id
+            description: The invoice that the discount’s coupon was applied to, if it was applied directly to a particular invoice.
+          - name: invoice_item_id
+            description: The invoice item id (or invoice line item id for invoice line items of type=‘subscription’) that the discount’s coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
+          - name: start
+            description: The date that the coupon was applied.
+          - name: subscription_id
+            description: The subscription that this coupon is applied to, if it is applied to a particular subscription.
+
       - name: coupon
         identifier: "{{ var('stripe_coupon_identifier', 'coupon') }}"
         description: A coupon represents a discount that can be applied to a subscription or invoice. It contains information about the coupon's duration, amount, and applicability.

@@ -1,3 +1,39 @@
+# dbt_stripe v1.6.0
+[PR #141](https://github.com/fivetran/dbt_stripe/pull/141) includes the following updates:
+
+## Schema/Data Changes
+**3 total changes • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Changed data | Discount sourced from `discount` table | Discount sourced from `subscription_discount` table | Affects discount-based MRR calculations for subscriptions with active coupons. |
+| [`stg_stripe__subscription_discount`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount) | New Staging Model |  |  | Staging model for subscription discount data. This table is enabled by default, and can be disabled via variable configurability. See the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disable-models-for-non-existent-sources) for more details.|
+| [`stg_stripe__subscription_discount_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount_tmp) | New Temp Model |  |  |  |
+
+## Bug Fixes
+- Removes `convert_values` macro from `amount` calculation in `stripe__subscription_item_mrr_report`. The macro is already applied at the staging layer and applying it to the metric calculation was causing a double conversion, leading to potential undercalculation of MRR values when `stripe__convert_values` was set to true.
+- Adds `convert_values` macro to `amount_off` field value in `stg_stripe__coupon` table to ensure correct conversion of discounted amount when customers have the variable set to true.
+
+## Under the Hood
+- Updates `int_stripe__subscription_discount` to source from the `subscription_discount` table via the new `stg_stripe__subscription_discount` staging model, instead of sourcing from the `discount` table via `stg_stripe__discount`.
+- Adds integration test seed files `subscription_discount_data.csv`, `subscription_discount_data_snowflake.csv`, and `subscription_discount_data_postgres.csv`.
+
+# dbt_stripe v1.6.0-a1
+[PR #141](https://github.com/fivetran/dbt_stripe/pull/141) is a pre-release that includes the following updates:
+
+## Schema/Data Change
+**2 total changes • 0 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| [`stg_stripe__subscription_discount`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount) | New Staging Model |  |  | Staging model for subscription discount data.
+| [`stg_stripe__subscription_discount_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount_tmp) | New Temp Model |  |  |  |
+
+## Under the Hood
+- Updates `int_stripe__subscription_discount` to source from the `SUBSCRIPTION_DISCOUNT` table via the new `stg_stripe__subscription_discount` staging model, instead of sourcing from the `DISCOUNT` table via `stg_stripe__discount`.
+- Updates `stripe__subscription_item_mrr_report` to incorporate discount data from the `SUBSCRIPTION_DISCOUNT` table rather than the `DISCOUNT` table.
+- Adds integration test seed files `subscription_discount_data.csv`, `subscription_discount_data_snowflake.csv`, and `subscription_discount_data_postgres.csv`.
+
 # dbt_stripe v1.5.0
 
 ## Schema Changes

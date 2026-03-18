@@ -23,6 +23,8 @@ table_variables:
     - payout_balance_transaction
   stripe__using_coupons:
     - coupon
+  stripe__using_subscription_discounts:
+    - subscription_discount
 
   _fivetran_quickstart_account:
     - account
@@ -87,4 +89,3 @@ supported_vars:
     value: true
     description: "Filter out potentially duplicative `INVOICE_LINE_ITEM` records in which the `id` begins with the string `sub`"
     display_name: "Filter Invoice Line Items"
-

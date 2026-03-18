@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'stripe_integration_tests'
-version: '1.5.0'
+version: '1.6.0'
 
 profile: 'integration_tests'
 
@@ -39,6 +39,7 @@ vars:
     stripe_price_identifier: "price_data"
     stripe_product_identifier: "product_data"
     stripe_refund_identifier: "refund_data"
+    stripe_subscription_discount_identifier: "subscription_discount_data"
     stripe_subscription_history_identifier: "subscription_history_data"
     stripe_subscription_identifier: "subscription_data"
     stripe_subscription_item_identifier: "subscription_item_data"
@@ -125,6 +126,14 @@ seeds:
       +enabled: "{{ true if target.type == 'postgres' else false }}"
       +column_types:
         amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+    subscription_discount_data:
+      +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
+    subscription_discount_data_snowflake:
+      +alias: subscription_discount_data
+      +enabled: "{{ true if target.type == 'snowflake' else false }}"
+    subscription_discount_data_postgres:
+      +alias: subscription_discount_data
+      +enabled: "{{ true if target.type == 'postgres' else false }}"
 
 
 dispatch:
