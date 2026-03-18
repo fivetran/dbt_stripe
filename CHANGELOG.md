@@ -7,7 +7,7 @@
 | Data Model(s) | Change type | Old | New | Notes |
 | ---------- | ----------- | -------- | -------- | ----- |
 | [`stripe__subscription_item_mrr_report`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Changed data | Discount sourced from `discount` table | Discount sourced from `subscription_discount` table | Affects discount-based MRR calculations for subscriptions with active coupons. |
-| [`stg_stripe__subscription_discount`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount) | New Staging Model |  |  | Staging model for subscription discount data. This table can be disabled via variable configurability. See the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disable-models-for-non-existent-sources) for more details.|
+| [`stg_stripe__subscription_discount`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount) | New Staging Model |  |  | Staging model for subscription discount data. This table is enabled by default, and can be disabled via variable configurability. See the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#disable-models-for-non-existent-sources) for more details.|
 | [`stg_stripe__subscription_discount_tmp`](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stg_stripe__subscription_discount_tmp) | New Temp Model |  |  |  |
 
 ## Bug Fixes
