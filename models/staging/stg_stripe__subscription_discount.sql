@@ -25,7 +25,7 @@ final as (
     
     select
         id as subscription_discount_id,
-        checkout_session_id,
+        checkout_session as checkout_session_id,
         coupon_id,
         customer_id,
         cast(end_at as {{ dbt.type_timestamp() }}) as end_at, -- renamed in macro get_subscription_discount_columns, source column name: end

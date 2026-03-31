@@ -2,7 +2,7 @@
 
 {% set columns = [
     {"name": "_fivetran_synced", "datatype": dbt.type_timestamp()},
-    {"name": "checkout_session_id", "datatype": dbt.type_string()},
+    {"name": "checkout_session", "datatype": dbt.type_string()},
     {"name": "coupon_id", "datatype": dbt.type_string()},
     {"name": "customer_id", "datatype": dbt.type_string()},
     {"name": "id", "datatype": dbt.type_string()},
