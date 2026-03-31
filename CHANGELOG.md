@@ -1,6 +1,6 @@
 # dbt_stripe v1.6.1
 
-[PR #144](https://github.com/fivetran/dbt_stripe/pull/144) includes the following updates:
+[PR #144](https://github.com/fivetran/dbt_stripe/pull/144) includes the following update:
 
 ## Bug Fix
 - Updates the `subscription_discount` source column reference from `checkout_session_id` to `checkout_session` to match the raw Stripe source naming convention. The output column name `checkout_session_id` is preserved as an alias in the staging layer, so there is no downstream impact.
