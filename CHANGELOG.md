@@ -1,3 +1,10 @@
+# dbt_stripe v1.6.2
+
+[PR #145](https://github.com/fivetran/dbt_stripe/pull/145) includes the following update:
+
+## Bug Fixes
+- Aligns union columns in `stripe__customer_overview` when `stripe__customer_metadata` is enabled so every branch of the `union all` exposes the same schema, preventing column-order and type mismatches.
+
 # dbt_stripe v1.6.1
 
 [PR #144](https://github.com/fivetran/dbt_stripe/pull/144) includes the following update:
