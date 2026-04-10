@@ -246,6 +246,7 @@ vars:
     stripe:
         stripe__using_invoice_line_sub_filter: false # Default = true
 ```
+
 #### Pivoting Out and Using Metadata Properties
 Oftentimes you may have custom fields within your source tables stored as a JSON object via the `metadata` column that you wish to pass through to your analytics models. By leveraging the `metadata` variables, this package will pivot out fields into their own columns within the respective staging models and for supported variables those columns will persist in end models with prefixed column names.
 
