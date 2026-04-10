@@ -20,30 +20,11 @@
       and subscription_item.source_relation = subscription.source_relation
   {%- endset -%}
 
-  {%- set last_month_query -%}
-    select coalesce(
-      max(
-        cast(
-          {{ dbt.date_trunc(
-              'month',
-              "coalesce(subscription_item.current_period_end, subscription.current_period_end)"
-          ) }} as date
-        )
-      ),
-      cast({{ dbt.date_trunc('month', 'current_date') }} as date)
-    ) as max_month
-    from {{ ref('stg_stripe__subscription_item') }} as subscription_item
-    left join {{ ref('stg_stripe__subscription') }} as subscription
-      on subscription_item.subscription_id = subscription.subscription_id
-      and subscription_item.source_relation = subscription.source_relation
-  {%- endset -%}
-
   {# dbt_utils.get_single_value returns a string, so cast it back to date #}
   {% set first_month_pre = dbt_utils.get_single_value(first_month_query) %}
-  {% set last_month_pre  = dbt_utils.get_single_value(last_month_query) %}
 
   {% set first_month = "cast('" ~ first_month_pre ~ "' as date)" %}
-  {% set last_month  = "cast('"  ~ last_month_pre  ~ "' as date)" %}
+  {% set last_month  = dbt.date_trunc('month', 'current_date') %}
 
 {% else %}
 
@@ -99,7 +80,7 @@ date_spine as (
     {{ dbt_utils.date_spine(
         datepart = "month",
         start_date = first_month,
-        end_date = dbt.dateadd("month", 4, last_month)
+        end_date = dbt.dateadd("month", 1, last_month)
     ) }}
 
 ),
