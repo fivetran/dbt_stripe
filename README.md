@@ -80,7 +80,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=1.6.0", "<1.7.0"]
+    version: [">=1.7.0", "<1.8.0"]
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
@@ -246,6 +246,7 @@ vars:
     stripe:
         stripe__using_invoice_line_sub_filter: false # Default = true
 ```
+
 #### Pivoting Out and Using Metadata Properties
 Oftentimes you may have custom fields within your source tables stored as a JSON object via the `metadata` column that you wish to pass through to your analytics models. By leveraging the `metadata` variables, this package will pivot out fields into their own columns within the respective staging models and for supported variables those columns will persist in end models with prefixed column names.
 

@@ -1,3 +1,10 @@
+# dbt_stripe v1.7.0
+
+[PR #XXX](https://github.com/fivetran/dbt_stripe/pull/XXX) includes the following updates:
+
+## Under the Hood
+- Updates `stripe__subscription_item_mrr_report` to cap the MRR date spine at the end of the current month instead of deriving it from the maximum `current_period_end` across all subscriptions. Because `current_period_end` is a future timestamp for active subscriptions, the previous approach generated rows for months that have not yet occurred. The model now reflects only months up to and including the current month.
+
 # dbt_stripe v1.6.1
 
 [PR #144](https://github.com/fivetran/dbt_stripe/pull/144) includes the following update:
