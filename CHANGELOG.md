@@ -6,7 +6,7 @@
 - Updates `stripe__subscription_item_mrr_report` to cap the MRR date spine at the end of the current month instead of deriving it from the maximum `current_period_end` across all subscriptions. Because `current_period_end` is a future timestamp for active subscriptions, the previous approach generated rows for months that have not yet occurred. The model now reflects only months up to and including the current month. See the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#mrr-date-spine-capped-at-the-current-month) for more details.
 
 ## Bug Fix
-- Removes stripe__customer_metadata variable from the dbt_utils.star exception list in the `customer_transactions_overview` CTE of `stripe__customer_overview` when `stripe__customer_metadata` is enabled, preventing column-count mismatches when unioned that caused model run failures.
+- Fixes a bug affecting a small number of customers due to the `stripe__customer_metadata` variable being erroneously included in the `dbt_utils.star` exception list of the `customer_transactions_overview` CTE of `stripe__customer_overview`. When the `stripe__customer_metadata` was enabled, it had the potential to cause model run failures due to column-count mismatches with union all branch.
 
 # dbt_stripe v1.6.1
 
