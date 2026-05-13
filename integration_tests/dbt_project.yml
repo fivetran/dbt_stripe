@@ -85,10 +85,12 @@ seeds:
         amount_refunded: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         application_fee_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         outcome_risk_score: "{{ 'float' if target.type in ('redshift','postgres') else 'FLOAT64' if target.type == 'bigquery' else 'float'}}"
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     credit_note_data:
       +column_types:
         _fivetran_synced: timestamp
         created: timestamp
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     credit_note_line_item_data:
       +column_types:
         _fivetran_synced: timestamp
@@ -120,9 +122,11 @@ seeds:
         number: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         post_payment_credit_notes_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         pre_payment_credit_notes_amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     invoice_line_item_data:
       +column_types:
         _fivetran_synced: timestamp
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     payment_intent_data:
       +column_types:
         _fivetran_synced: timestamp
@@ -190,11 +194,13 @@ seeds:
         _fivetran_synced: timestamp
         end: timestamp
         amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     discount_data_snowflake:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'snowflake' else false }}"
       +column_types:
         _fivetran_synced: timestamp
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     discount_data_postgres:
       +alias: discount_data
       +enabled: "{{ true if target.type == 'postgres' else false }}"
@@ -202,22 +208,26 @@ seeds:
         _fivetran_synced: timestamp
         end: timestamp
         amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     subscription_discount_data:
       +enabled: "{{ true if target.type not in ('snowflake', 'postgres') else false }}"
       +column_types:
         _fivetran_synced: timestamp
         end: timestamp
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     subscription_discount_data_snowflake:
       +alias: subscription_discount_data
       +enabled: "{{ true if target.type == 'snowflake' else false }}"
       +column_types:
         _fivetran_synced: timestamp
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     subscription_discount_data_postgres:
       +alias: subscription_discount_data
       +enabled: "{{ true if target.type == 'postgres' else false }}"
       +column_types:
         _fivetran_synced: timestamp
         end: timestamp
+        invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
 
 
 dispatch:
