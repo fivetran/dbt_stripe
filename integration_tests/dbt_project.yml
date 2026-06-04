@@ -53,7 +53,7 @@ seeds:
   +docs:
     show: False
   stripe_integration_tests:
-    +quote_columns: "{{ target.type == 'redshift' or not var('using_deliberate_quoting', true) }}"
+    +quote_columns: "{{ target.type in ('redshift', 'postgres') or var('fivetran_using_source_casing', false) }}"
     account_data:
       +column_types:
         _fivetran_synced: timestamp
@@ -190,7 +190,7 @@ seeds:
         _fivetran_synced: timestamp
         created: timestamp
     discount_data:
-      +enabled: "{{ target.type not in ('snowflake', 'postgres') or not var('using_deliberate_quoting', true) }}"
+      +enabled: "{{ target.type not in ('snowflake', 'postgres') or var('fivetran_using_source_casing', false) }}"
       +column_types:
         _fivetran_synced: timestamp
         end: timestamp
@@ -198,33 +198,33 @@ seeds:
         invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     discount_data_snowflake:
       +alias: discount_data
-      +enabled: "{{ target.type == 'snowflake' and var('using_deliberate_quoting', true) }}"
+      +enabled: "{{ target.type == 'snowflake' and not var('fivetran_using_source_casing', false) }}"
       +column_types:
         _fivetran_synced: timestamp
         invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     discount_data_postgres:
       +alias: discount_data
-      +enabled: "{{ target.type == 'postgres' and var('using_deliberate_quoting', true) }}"
+      +enabled: "{{ target.type == 'postgres' and not var('fivetran_using_source_casing', false) }}"
       +column_types:
         _fivetran_synced: timestamp
         end: timestamp
         amount: "{{ 'bigint' if target.type in ('redshift','postgres') else 'INT64' if target.type == 'bigquery' else 'bigint'}}"
         invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     subscription_discount_data:
-      +enabled: "{{ target.type not in ('snowflake', 'postgres') or not var('using_deliberate_quoting', true) }}"
+      +enabled: "{{ target.type not in ('snowflake', 'postgres') or var('fivetran_using_source_casing', false) }}"
       +column_types:
         _fivetran_synced: timestamp
         end: timestamp
         invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     subscription_discount_data_snowflake:
       +alias: subscription_discount_data
-      +enabled: "{{ target.type == 'snowflake' and var('using_deliberate_quoting', true) }}"
+      +enabled: "{{ target.type == 'snowflake' and not var('fivetran_using_source_casing', false) }}"
       +column_types:
         _fivetran_synced: timestamp
         invoice_id: "{{ 'varchar(500)' if target.type in ('redshift','postgres') else 'string'}}"
     subscription_discount_data_postgres:
       +alias: subscription_discount_data
-      +enabled: "{{ target.type == 'postgres' and var('using_deliberate_quoting', true) }}"
+      +enabled: "{{ target.type == 'postgres' and not var('fivetran_using_source_casing', false) }}"
       +column_types:
         _fivetran_synced: timestamp
         end: timestamp
