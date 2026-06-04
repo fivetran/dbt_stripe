@@ -1,3 +1,7 @@
+# dbt_stripe v1.8.0
+
+TBD
+
 # dbt_stripe v1.7.0
 
 [PR #147](https://github.com/fivetran/dbt_stripe/pull/147) includes the following updates:

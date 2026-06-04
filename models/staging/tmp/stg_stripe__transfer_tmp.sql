@@ -1,8 +1,8 @@
 {{ config(enabled=var('stripe__using_transfers', True)) }}
 
-{% if var('stripe_sources') != [] %}
+{% if var('stripe_sources',[]) != [] %}
 {{
-    stripe.stripe_union_connections(
+    fivetran_utils.union_connections(
         connection_dictionary='stripe_sources',
         single_source_name='stripe',
         single_table_name='transfer'

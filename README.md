@@ -161,46 +161,10 @@ vars:
 
 > Previous versions of this package employed two separate, mutually exclusive variables for unioning: `union_schemas` and `union_databases`. While these variables are still supported, `stripe_sources` is the recommended variable to configure.
 
-##### Recommended: Incorporate unioned sources into DAG
-> *If you are running the package through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore), the below step is necessary in order to synchronize model runs with your Stripe connections. Alternatively, you may choose to run the package through Fivetran [Quickstart](https://fivetran.com/docs/transformations/quickstart), which would create separate sets of models for each Stripe source rather than one set of unioned models.*
+#### Optional: Incorporate unioned sources into DAG
 
-By default, this package defines one single-connection source, called `stripe`, which will be disabled if you are unioning multiple connections. This means that your DAG will not include your Stripe sources, though the package will run successfully.
+If you use [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore) and are unioning multiple Stripe connections, you can define your sources in a property `.yml` file, [using this as a template](https://github.com/fivetran/dbt_stripe/blob/main/models/staging/stripe.yml). Set the variable `has_defined_sources: true` under the Stripe namespace in your `dbt_project.yml`. Otherwise, your Stripe connections won't appear in your DAG. See the `union_connections` macro [documentation](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#optional-union-connections-defined-sources-configuration) for full configuration details.
 
-To properly incorporate all of your Stripe connections into your project's DAG:
-1. Define each of your sources in a `.yml` file in your project. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions from the package's `src_stripe.yml` [file](https://github.com/fivetran/dbt_stripe/blob/main/models/staging/src_stripe.yml).
-
-```yml
-# a .yml file in your root project models folder
-
-version: 2
-
-sources:
-  - name: <name> # ex: Should match name in stripe_sources
-    schema: <schema_name>
-    database: <database_name>
-    loader: fivetran
-    config:
-      loaded_at_field: _fivetran_synced
-      freshness: # feel free to adjust to your liking
-        warn_after: {count: 72, period: hour}
-        error_after: {count: 168, period: hour}
-
-    tables: # copy and paste from stripe/models/staging/src_stripe.yml - see https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/ for how to use anchors to only do so once
-```
-2. Set the `has_defined_sources` variable (scoped to the `stripe` package) to `True` in your root project, like such:
-```yml
-# dbt_project.yml
-vars:
-  stripe:
-    has_defined_sources: true
-```
-#### Considerations: Unioning Multiple Schemas
-Please note, If the source table is not found in any of the provided schemas/databases, union_data will return a completely empty table (ie limit 0) with just one string column (_dbt_source_relation). A compiler warning message will be output, highlighting that the expected source table was not found and its respective staging model is empty. The compiler warning can be turned off by the end user by setting the `fivetran__remove_empty_table_warnings` variable to True.
-```yml
-# dbt_project.yml
-vars:
-  fivetran__remove_empty_table_warnings: true  # false by default
-```
 #### Leveraging Plan vs Price Sources
 
 Customers using Fivetran with the newer [Stripe Price API](https://stripe.com/docs/billing/migration/migrating-prices) will have a `price` table, and possibly a `plan` table if that was used previously. Therefore to accommodate two different source tables we added logic to check if there exists a `price` table by default. If not, it will leverage the `plan` table. However if you wish to use the `plan` table instead, you may set `stripe__using_price` to `false` in your `dbt_project.yml` to override the macro.

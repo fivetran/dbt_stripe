@@ -4,10 +4,10 @@
     if var('stripe__using_price', stripe.does_table_exist('price')=='exists')
     else 'plan' -%}
 
-{% if var('stripe_sources') != [] %}
+{% if var('stripe_sources',[]) != [] %}
 
 {{
-    stripe.stripe_union_connections(
+    fivetran_utils.union_connections(
         connection_dictionary='stripe_sources',
         single_source_name='stripe',
         single_table_name=price_or_plan
