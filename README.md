@@ -126,7 +126,7 @@ vars:
 
 #### Optional: Incorporate unioned sources into DAG
 
-If you use [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore) and are unioning multiple Stripe connections, you can define your sources in a property `.yml` file, [using this as a template](https://github.com/fivetran/dbt_stripe/blob/main/models/staging/stripe.yml). Set the variable `has_defined_sources: true` under the Stripe namespace in your `dbt_project.yml`. Otherwise, your Stripe connections won't appear in your DAG. See the `union_connections` macro [documentation](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#optional-union-connections-defined-sources-configuration) for full configuration details.
+If you use [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore) and are unioning multiple Stripe connections, you can define your sources in a property `.yml` file, [using this as a template](https://github.com/fivetran/dbt_stripe/blob/main/models/staging/src_stripe.yml). Set the variable `has_defined_sources: true` under the Stripe namespace in your `dbt_project.yml`. Otherwise, your Stripe connections won't appear in your DAG. See the `union_connections` macro [documentation](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#optional-union-connections-defined-sources-configuration) for full configuration details.
 
 ### Disable models for non-existent sources
 This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, `subscription_discount`, `transfer`, `payout`, `payout_balance_transaction`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
@@ -309,6 +309,14 @@ If an individual source table has a different name than the package expects, add
 ```yml
 vars:
     stripe_<default_source_table_name>_identifier: your_table_name 
+```
+
+#### Source casing for case-sensitive destinations
+By default, the package applies case-insensitive comparisons when resolving `source_relation` values. If your destination is case-sensitive and you want downstream transformations to respect the exact casing of your source database and schema names, set the following variable:
+
+```yml
+vars:
+    fivetran_using_source_casing: true
 ```
 
 </details>
