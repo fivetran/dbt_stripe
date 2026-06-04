@@ -93,43 +93,6 @@ dispatch:
 ```
 
 ### Define database and schema variables
-By default, this package runs using your destination and the `stripe` schema. If this is not where your stripe data is (for example, if your stripe schema is named `stripe_fivetran`), add the following configuration to your root `dbt_project.yml` file:
-
-```yml
-vars:
-    stripe_database: your_destination_name
-    stripe_schema: your_schema_name 
-```
-
-### Disable models for non-existent sources
-This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, `subscription_discount`, `transfer`, `payout`, `payout_balance_transaction`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
-
-```yml
-# dbt_project.yml
-
-...
-vars:
-    stripe__using_invoices:                False  #Disable if you are not using the invoice and invoice_line_item tables.
-    stripe__using_payment_method:          False  #Disable if you are not using the payment_method and payment_method_card tables.
-    stripe__using_subscriptions:           False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
-    stripe__using_coupons:                 False  #Disable if you are not using coupon codes to apply discounts.
-    stripe__using_subscription_discounts:  False  #Disable if you are not using the subscription_discount table.
-    stripe__using_credit_notes:            True   #Enable if you are using the credit note tables.
-    stripe__using_transfers:               False  #Disable to turn off the transfer table temporarily.
-    stripe__using_payouts:                 False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
-```
-### (Optional) Additional configurations
-<details open><summary>Expand to view configurations</summary>
-
-#### Enabling Standardized Billing Model
-This package contains the `stripe__line_item_enhanced` model which constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It's designed to align with the schema of the `*__line_item_enhanced` model found in Recurly, Recharge, Stripe, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). This model is enabled by default. To disable it, set the `stripe__standardized_billing_model_enabled` variable to `false` in your `dbt_project.yml`:
-
-```yml
-vars:
-  stripe__standardized_billing_model_enabled: false # true by default.
-```
-> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
-
 #### Option A: Single connection
 By default, this package runs using your destination and the `stripe` schema. If this is not where your Stripe data is (for example, if your Stripe schema is named `stripe_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
@@ -164,6 +127,35 @@ vars:
 #### Optional: Incorporate unioned sources into DAG
 
 If you use [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore) and are unioning multiple Stripe connections, you can define your sources in a property `.yml` file, [using this as a template](https://github.com/fivetran/dbt_stripe/blob/main/models/staging/stripe.yml). Set the variable `has_defined_sources: true` under the Stripe namespace in your `dbt_project.yml`. Otherwise, your Stripe connections won't appear in your DAG. See the `union_connections` macro [documentation](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#optional-union-connections-defined-sources-configuration) for full configuration details.
+
+### Disable models for non-existent sources
+This package takes into consideration that not every Stripe account utilizes the `invoice`, `invoice_line_item`, `payment_method`, `payment_method_card`, `plan`, `price`, `subscription`, `coupon`, `subscription_discount`, `transfer`, `payout`, `payout_balance_transaction`, or `credit_note` features, and allows you to disable the corresponding functionality. By default, all variables' values are assumed to be `true` with the exception of `credit_note`. Add variables for only the tables you want to disable or enable respectively:
+
+```yml
+# dbt_project.yml
+
+...
+vars:
+    stripe__using_invoices:                False  #Disable if you are not using the invoice and invoice_line_item tables.
+    stripe__using_payment_method:          False  #Disable if you are not using the payment_method and payment_method_card tables.
+    stripe__using_subscriptions:           False  #Disable if you are not using the subscription, subscription_item, and plan/price tables.
+    stripe__using_coupons:                 False  #Disable if you are not using coupon codes to apply discounts.
+    stripe__using_subscription_discounts:  False  #Disable if you are not using the subscription_discount table.
+    stripe__using_credit_notes:            True   #Enable if you are using the credit note tables.
+    stripe__using_transfers:               False  #Disable to turn off the transfer table temporarily.
+    stripe__using_payouts:                 False  #Disable to turn off the payout or payout_balance_transaction table temporarily.
+```
+### (Optional) Additional configurations
+<details open><summary>Expand to view configurations</summary>
+
+#### Enabling Standardized Billing Model
+This package contains the `stripe__line_item_enhanced` model which constructs a comprehensive, denormalized analytical table that enables reporting on key revenue, subscription, customer, and product metrics from your billing platform. It's designed to align with the schema of the `*__line_item_enhanced` model found in Recurly, Recharge, Stripe, Shopify, and Zuora, offering standardized reporting across various billing platforms. To see the kinds of insights this model can generate, explore example visualizations in the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/). This model is enabled by default. To disable it, set the `stripe__standardized_billing_model_enabled` variable to `false` in your `dbt_project.yml`:
+
+```yml
+vars:
+  stripe__standardized_billing_model_enabled: false # true by default.
+```
+> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
 #### Leveraging Plan vs Price Sources
 
