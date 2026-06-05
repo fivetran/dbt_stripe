@@ -7,7 +7,7 @@
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ------------- | ----------- | --- | --- | ----- |
-| All staging models | `source_relation` value for `stripe_sources` users | `<stripe_database>.<stripe_schema>` | `<stripe_database>.<stripe_schema>.<stripe_table>` | Only affects customers using the `stripe_sources` variable to union multiple connections. |
+| All models | `source_relation` value for single-connection users | `''` (empty string) | `<database>.<schema>` | Affects customers not using any union variable (`stripe_sources`, `union_schemas`, or `union_databases`). |
 
 ## Under the Hood
 - Adds the `fivetran_using_source_casing` variable for case-sensitive destination support. When enabled, downstream transformations respect source casing to ensure consistent results. See the [Additional Configurations](https://github.com/fivetran/dbt_stripe/blob/main/README.md#source-casing-for-case-sensitive-destinations) section of the README for details.
