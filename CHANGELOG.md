@@ -2,19 +2,17 @@
 
 [PR #150](https://github.com/fivetran/dbt_stripe/pull/150) includes the following updates:
 
-## Schema/Data Change
+## Schema/Data Change (--full-refresh required after upgrading)
 **1 total change • 1 possible breaking change**
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ------------- | ----------- | --- | --- | ----- |
-| All models | `source_relation` value for `stripe_union_schemas` and `stripe_union_databases` users | `<database>.<schema>`  | `<schema>` per row for `stripe_union_schemas` / `<database>` per row for `stripe_union_databases` | Bug fix: Migrated `apply_source_relation` macro now checking for `stripe_union_schemas`/`stripe_union_databases` variables, ensuring correct attribution to proper database or schema. |
+| All models | `source_relation` field (when leveraging `stripe_union_schemas` or `stripe_union_databases`) | `<database>.<schema>`  | `<schema>` or `<database>` respectively | **Bug fix**:  `stripe_union_schemas`/`stripe_union_databases` variables now use correct attribution to proper database or schema. |
 
 ## Under the Hood
 - Adds the `fivetran_using_source_casing` variable for case-sensitive destination support. When enabled, downstream transformations respect source casing to ensure consistent results. See the [Additional Configurations](https://github.com/fivetran/dbt_stripe/blob/main/README.md#source-casing-for-case-sensitive-destinations) section of the README for details.
 - Migrates the `union_connections`, `apply_source_relation`, and `partition_by_source_relation` macros to the `dbt_fivetran_utils` package.
 
-## Documentation Fix
-- Updated syntax to reflect `stripe_union_schemas` and `stripe_union_databases` is the only alternative way to union multiple connections. (It is recommended to use `stripe_sources` for union data).
 
 # dbt_stripe v1.7.0
 
