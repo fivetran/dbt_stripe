@@ -1,6 +1,18 @@
 # dbt_stripe v1.8.0
 
-TBD
+[PR #150](https://github.com/fivetran/dbt_stripe/pull/150) includes the following updates:
+
+## Schema/Data Change (--full-refresh required after upgrading)
+**1 total change • 1 possible breaking change**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ------------- | ----------- | --- | --- | ----- |
+| All models | `source_relation` field (when leveraging `stripe_union_schemas` or `stripe_union_databases`) | `<database>.<schema>`  | `<schema>` or `<database>` respectively | **Bug fix**:  `stripe_union_schemas`/`stripe_union_databases` variables now use correct attribution to proper database or schema. |
+
+## Under the Hood
+- Adds the `fivetran_using_source_casing` variable for case-sensitive destination support. When enabled, downstream transformations respect source casing to ensure consistent results. See the [Additional Configurations](https://github.com/fivetran/dbt_stripe/blob/main/README.md#source-casing-for-case-sensitive-destinations) section of the README for details.
+- Migrates the `union_connections`, `apply_source_relation`, and `partition_by_source_relation` macros to the `dbt_fivetran_utils` package.
+
 
 # dbt_stripe v1.7.0
 
