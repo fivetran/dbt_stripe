@@ -15,7 +15,7 @@ fields as (
             )
         }}
 
-        {{ stripe.apply_source_relation() }}
+        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
 
     from base
 ),

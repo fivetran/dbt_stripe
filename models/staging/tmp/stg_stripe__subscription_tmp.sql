@@ -3,17 +3,7 @@
     if var('stripe__using_subscription_history', stripe.does_table_exist('subscription_history')=='exists')
     else 'subscription' -%}
 
-{% if var('stripe_sources') != [] %}
-
-{{
-    stripe.stripe_union_connections(
-        connection_dictionary='stripe_sources',
-        single_source_name='stripe',
-        single_table_name=history_or_subscription
-    )
-}}
-
-{% else %}
+{% if var('stripe_union_schemas', []) | length > 0 or var('stripe_union_databases', []) | length > 0 %}
 
 {{
     fivetran_utils.union_data(
@@ -26,6 +16,16 @@
         union_schema_variable='stripe_union_schemas',
         union_database_variable='stripe_union_databases'
 
+    )
+}}
+
+{% else %}
+
+{{
+    fivetran_utils.union_connections(
+        connection_dictionary='stripe_sources',
+        single_source_name='stripe',
+        single_table_name=history_or_subscription
     )
 }}
 

@@ -47,3 +47,9 @@ test_scenarios:
       stripe__using_credit_notes: true
       stripe__standardized_billing_model_enabled: true
     include_incremental: false
+
+  - name: "MDLS"
+    vars:
+      fivetran_using_source_casing: true
+    include_incremental: false
+    include_dbt_seed: true

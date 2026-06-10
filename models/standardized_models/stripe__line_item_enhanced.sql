@@ -117,7 +117,7 @@ with invoice_line_item as (
     select
         invoice_line_item.invoice_id as header_id,
         cast(invoice_line_item.invoice_line_item_id as {{ dbt.type_string() }}) as line_item_id,
-        row_number() over (partition by invoice_line_item.invoice_id order by invoice_line_item.amount desc) as line_item_index,
+        row_number() over (partition by invoice_line_item.invoice_id{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }} order by invoice_line_item.amount desc) as line_item_index,
         invoice.created_at as created_at,
         cast(invoice_line_item.currency as {{ dbt.type_string() }}) as currency,
         cast(invoice.status as {{ dbt.type_string() }}) as header_status,
