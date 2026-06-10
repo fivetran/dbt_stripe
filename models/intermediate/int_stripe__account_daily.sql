@@ -40,7 +40,7 @@ with date_spine as (
             then balance_transaction.balance_transaction_amount
             else 0 end) as total_daily_gross_transaction_amount,
         sum(case when balance_transaction.balance_transaction_type <> 'payout' and balance_transaction.balance_transaction_type not like '%transfer%' 
-            then balance_transaction.balance_transaction_net 
+            then balance_transaction_net 
             else 0 end) as total_daily_net_transactions_amount,
         sum(case when balance_transaction.balance_transaction_type = 'payout' or balance_transaction.balance_transaction_type like '%transfer%' 
             then balance_transaction_fee * -1.0
