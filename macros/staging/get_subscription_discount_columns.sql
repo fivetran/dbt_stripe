@@ -11,7 +11,7 @@
     {"name": "subscription_id", "datatype": dbt.type_string()}
 ] %}
 
-{% if target.type == 'snowflake' %}
+{% if target.type == 'snowflake' and not var('fivetran_using_source_casing', false) %}
     {{ columns.append({"name": "END", "datatype": dbt.type_string(), "quote": True, "alias": "end_at"}) }},
     {{ columns.append({"name": "START", "datatype": dbt.type_string(), "quote": True, "alias": "start_at"}) }}
 {% else %}

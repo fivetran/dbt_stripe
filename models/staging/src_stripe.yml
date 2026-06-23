@@ -23,7 +23,7 @@ sources:
           - name: amount
             description: Gross amount of the transaction, in cents.
           - name: available_on
-            description: The date the transaction’s net funds will become available in the Stripe balance.
+            description: The date the transaction's net funds will become available in the Stripe balance.
           - name: connected_account_id
             description: The ID of the account connected to the transaction.
           - name: created
@@ -43,7 +43,7 @@ sources:
           - name: source
             description: The Stripe object to which this transaction is related.
           - name: status
-            description: If the transaction’s net funds are available in the Stripe balance yet. Either 'available' or 'pending'.
+            description: If the transaction's net funds are available in the Stripe balance yet. Either 'available' or 'pending'.
           - name: type
             description: The type of transaction.  Possible values are adjustment, advance, advance_funding, application_fee, application_fee_refund, charge, connect_collection_transfer, issuing_authorization_hold, issuing_authorization_release, issuing_dispute, issuing_transaction, payment, payment_failure_refund, payment_refund, payout, payout_cancel, payout_failure, refund, refund_failure, reserve_transaction, reserved_funds, stripe_fee, stripe_fx_fee, tax_fee, topup, topup_reversal, transfer, transfer_cancel, transfer_failure, or transfer_refund.
 
@@ -70,7 +70,7 @@ sources:
           - name: brand
             description: Card brand. Can be American Express, Diners Club, Discover, JCB, MasterCard, UnionPay, Visa, or Unknown.
           - name: country
-            description: Two-letter ISO code representing the country of the card. You could use this attribute to get a sense of the international breakdown of cards you’ve collected.
+            description: Two-letter ISO code representing the country of the card. You could use this attribute to get a sense of the international breakdown of cards you've collected.
           - name: created
             description: '{{ doc("created") }}'
           - name: customer_id
@@ -161,7 +161,7 @@ sources:
           - name: source_transfer
             description: The transfer ID which created this charge. Only present if the charge came from another Stripe account.
           - name: statement_descriptor
-            description: Extra information about a source. This will appear on your customer’s statement every time you charge the source.
+            description: Extra information about a source. This will appear on your customer's statement every time you charge the source.
           - name: invoice_id
             description: The id of the invoice associated with this charge.
           - name: currency
@@ -173,7 +173,7 @@ sources:
           - name: payment_method_id
             description: Unique identifier for the payment method object used in this charge.
           - name: calculated_statement_descriptor
-            description: The full statement descriptor that is passed to card networks, and that is displayed on your customers’ credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
+            description: The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements. Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
           - name: billing_detail_address_city
             description: City, district, suburb, town, or village.
           - name: billing_detail_address_country
@@ -227,11 +227,11 @@ sources:
           - name: default_card_id
             description: ID for the default card used by the customer.
           - name: delinquent
-            description: When the customer’s latest invoice is billed by charging automatically, delinquent is true if the invoice’s latest charge is failed. When the customer’s latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
+            description: When the customer's latest invoice is billed by charging automatically, delinquent is true if the invoice's latest charge is failed. When the customer's latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
           - name: description
             description: An arbitrary string attached to the object. Often useful for displaying to users.
           - name: email
-            description: The customer’s email address.
+            description: The customer's email address.
           - name: metadata
             description: Custom metadata added to the record, in JSON string format
           - name: name
@@ -286,7 +286,7 @@ sources:
           - name: evidence_cancellation_policy_disclosure
             description: An explanation of how and when the customer was shown your refund policy prior to purchase. Has a maximum character count of 20,000.
           - name: evidence_cancellation_rebuttal
-            description: A justification for why the customer’s subscription was not canceled. Has a maximum character count of 20,000.
+            description: A justification for why the customer's subscription was not canceled. Has a maximum character count of 20,000.
           - name: evidence_customer_communication
             description: (ID of a file upload) Any communication with the customer that you feel is relevant to your case. Examples include emails proving that the customer received the product or service, or demonstrating their use of or satisfaction with the product or service.
           - name: evidence_customer_email_address
@@ -296,9 +296,9 @@ sources:
           - name: evidence_customer_purchase_ip
             description: The IP address that the customer used when making the purchase.
           - name: evidence_customer_signature
-            description: (ID of a file upload) A relevant document or contract showing the customer’s signature.
+            description: (ID of a file upload) A relevant document or contract showing the customer's signature.
           - name: evidence_details_due_by
-            description: Date by which evidence must be submitted in order to successfully challenge dispute. Will be 0 if the customer’s bank or credit card company doesn’t allow a response for this particular dispute.
+            description: Date by which evidence must be submitted in order to successfully challenge dispute. Will be 0 if the customer's bank or credit card company doesn't allow a response for this particular dispute.
           - name: evidence_details_has_evidence
             description: Whether evidence has been staged for this dispute.
           - name: evidence_details_past_due
@@ -332,7 +332,7 @@ sources:
           - name: evidence_shipping_date
             description: The date on which a physical product began its route to the shipping address, in a clear human-readable format.
           - name: evidence_shipping_documentation
-            description: (ID of a file upload) Documentation showing proof that a product was shipped to the customer at the same address the customer provided to you. This could include a copy of the shipment receipt, shipping label, etc. It should show the customer’s full shipping address, if possible.
+            description: (ID of a file upload) Documentation showing proof that a product was shipped to the customer at the same address the customer provided to you. This could include a copy of the shipment receipt, shipping label, etc. It should show the customer's full shipping address, if possible.
           - name: evidence_shipping_tracking_number
             description: The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, please separate them with commas.
           - name: evidence_uncategorized_file
@@ -392,7 +392,7 @@ sources:
           - name: cancellation_reason
             description: Reason for cancellation of this PaymentIntent, either user-provided (duplicate, fraudulent, requested_by_customer, or abandoned) or generated by Stripe internally (failed_invoice, void_invoice, or automatic).
           - name: capture_method
-            description: Controls when the funds will be captured from the customer’s account.
+            description: Controls when the funds will be captured from the customer's account.
           - name: confirmation_method
             description: Whether confirmed automatically or manually
           - name: currency
@@ -408,7 +408,7 @@ sources:
           - name: receipt_email
             description: Email address that the receipt for the resulting payment will be sent to.
           - name: statement_descriptor
-            description: For non-card charges, you can use this value as the complete description that appears on your customers’ statements.
+            description: For non-card charges, you can use this value as the complete description that appears on your customers' statements.
           - name: status
             description: Status of this PaymentIntent, one of requires_payment_method, requires_confirmation, requires_action, processing, requires_capture, canceled, or succeeded.
           - name: livemode
@@ -418,7 +418,7 @@ sources:
         identifier: "{{ var('stripe_payment_method_card_identifier', 'payment_method_card')}}"
         description: Table with the relationships between a payment method and a card
         config:
-          enabled: "{{ var('stripe__using_payment_method', true) }}"
+          enabled: "{{ var('stripe__using_payment_method', true) and var('stripe_sources', []) == [] }}"
         columns:
           - name: payment_method_id
             description: ID of the payment method
@@ -437,7 +437,7 @@ sources:
         identifier: "{{ var('stripe_payment_method_identifier', 'payment_method')}}"
         description: PaymentMethod objects represent your customer's payment instruments. They can be used with PaymentIntents to collect payments or saved to Customer objects to store instrument details for future payments.
         config:
-          enabled: "{{ var('stripe__using_payment_method', true) }}"
+          enabled: "{{ var('stripe__using_payment_method', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id
@@ -457,7 +457,7 @@ sources:
         identifier: "{{ var('stripe_payout_identifier', 'payout')}}"
         description: A Payout object is created when you receive funds from Stripe, or when you initiate a payout to either a bank account or debit card of a connected Stripe account.
         config:
-          enabled: "{{ var('stripe__using_payouts', true) }}"
+          enabled: "{{ var('stripe__using_payouts', true) and var('stripe_sources', []) == [] }}"
         columns:
           - name: id
             description: Unique identifier for the object.
@@ -498,7 +498,7 @@ sources:
           Table that contains the complete mapping between `payout_id` and `balance_transaction_id`.
           The payout to balance_transaction relationship is 1:many.
         config:
-          enabled: "{{ var('stripe__using_payouts', true) }}"
+          enabled: "{{ var('stripe__using_payouts', true) and var('stripe_sources', []) == [] }}"
         columns:
           - name: payout_id
             description: Unique identifier for the payout.
@@ -544,7 +544,7 @@ sources:
         identifier: "{{ var('stripe_invoice_line_item_identifier', 'invoice_line_item')}}"
         description: The different items that an invoice contains
         config:
-          enabled: "{{ var('stripe__using_invoices', true) }}"
+          enabled: "{{ var('stripe__using_invoices', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id
@@ -584,13 +584,13 @@ sources:
         identifier: "{{ var('stripe_invoice_identifier', 'invoice')}}"
         description: Invoices are statements of amounts owed by a customer, and are either generated one-off, or generated periodically from a subscription.
         config:
-          enabled: "{{ var('stripe__using_invoices', true) }}"
+          enabled: "{{ var('stripe__using_invoices', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id
             description: Unique identifier for the object.
           - name: amount_due
-            description: Final amount due at this time for this invoice. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
+            description: Final amount due at this time for this invoice. If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. If there is a positive starting_balance for the invoice (the customer owes money), the amount_due will also take that into account. The charge that gets generated for the invoice will be for the amount specified in amount_due.
           - name: amount_paid
             description: The amount, in cents, that was paid.
           - name: amount_remaining
@@ -598,7 +598,7 @@ sources:
           - name: attempt_count
             description: Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
           - name: auto_advance
-            description: Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice’s state will not automatically advance without an explicit action.
+            description: Controls whether Stripe will perform automatic collection of the invoice. When false, the invoice's state will not automatically advance without an explicit action.
           - name: billing_reason
             description: Indicates the reason why the invoice was created.
           - name: charge_id
@@ -610,15 +610,15 @@ sources:
           - name: customer_id
             description: The ID of the customer who will be billed.
           - name: description
-            description: An arbitrary string attached to the object. Often useful for displaying to users. Referenced as ‘memo’ in the Dashboard.
+            description: An arbitrary string attached to the object. Often useful for displaying to users. Referenced as 'memo' in the Dashboard.
           - name: due_date
             description: The date on which payment for this invoice is due. This value will be null for invoices where collection_method=charge_automatically.
           - name: metadata
             description: Custom metadata added to the record, in JSON string format
           - name: number
-            description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer’s unique invoice_prefix if it is specified.
+            description: A unique, identifying string that appears on emails sent to the customer for this invoice. This starts with the customer's unique invoice_prefix if it is specified.
           - name: paid
-            description: Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer’s account balance.
+            description: Whether payment was successfully collected for this invoice. An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
           - name: receipt_number
             description: This is the transaction number that appears on email receipts sent for this invoice.
           - name: status
@@ -806,9 +806,9 @@ sources:
 
       - name: credit_note
         identifier: "{{ var('stripe_credit_note_identifier', 'credit_note')}}"
-        description: Credit notes are documents that decrease the amount owed on an invoice. They’re the only way to adjust the amount of a finalized invoice other than voiding and recreating the invoice.
+        description: Credit notes are documents that decrease the amount owed on an invoice. They're the only way to adjust the amount of a finalized invoice other than voiding and recreating the invoice.
         config:
-          enabled: "{{ var('stripe__using_credit_notes', true) }}"
+          enabled: "{{ var('stripe__using_credit_notes', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id
@@ -854,7 +854,7 @@ sources:
         identifier: "{{ var('stripe_credit_note_line_item_identifier', 'credit_note_line_item')}}"
         description: The different items that a credit note contains.
         config:
-          enabled: "{{ var('stripe__using_credit_notes', true) }}"
+          enabled: "{{ var('stripe__using_credit_notes', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id
@@ -958,15 +958,15 @@ sources:
           - name: company_address_state
             description: State, county, province, or region.
           - name: company_name
-            description: The company’s legal name.
+            description: The company's legal name.
           - name: company_phone
-            description: The company’s phone number (used for verification).
+            description: The company's phone number (used for verification).
           - name: country
             description: The account's country.
           - name: created
             description: '{{ doc("created") }}'
           - name: default_currency
-            description: Three-letter ISO currency code representing the default currency for the account. This must be a currency that Stripe supports in the account’s country.
+            description: Three-letter ISO currency code representing the default currency for the account. This must be a currency that Stripe supports in the account's country.
           - name: email
             description: An email address associated with the account. You can treat this as metadata; it is not used for authentication or messaging account holders.
           - name: is_deleted
@@ -983,7 +983,7 @@ sources:
         identifier: "{{ var('stripe_transfer_identifier', 'transfer')}}"
         description: A Transfer object is created when you move funds between Stripe accounts as part of Connect. Before April 6, 2017, transfers also represented movement of funds from a Stripe account to a card or bank account. That has since been moved to the Payout object. The Payout object represents money moving from a Stripe account to an external account (bank or debit card). The Transfer object now only represents money moving between Stripe accounts on a Connect platform.
         config:
-          enabled: "{{ var('stripe__using_transfers', true) }}"
+          enabled: "{{ var('stripe__using_transfers', true) and var('stripe_sources', []) == [] }}"
         columns:
           - name: id
             description: Unique identifier for the object.
@@ -1039,7 +1039,7 @@ sources:
           - name: deactivate_on
             description: List of dates when the product will be deactivated.
           - name: description
-            description: The product’s description, meant to be displayable to the customer.
+            description: The product's description, meant to be displayable to the customer.
           - name: images
             description: A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
           - name: is_deleted
@@ -1047,11 +1047,11 @@ sources:
           - name: livemode
             description: Indicates if this is a test product.
           - name: name
-            description: The product’s name, meant to be displayable to the customer.
+            description: The product's name, meant to be displayable to the customer.
           - name: shippable
             description: Whether this product is shipped (i.e., physical goods).
           - name: statement_descriptor
-            description: Extra information about a product which will appear on your customer’s credit card statement.
+            description: Extra information about a product which will appear on your customer's credit card statement.
           - name: type
             description: The type of the product (e.g., good, service).
           - name: unit_label
@@ -1071,7 +1071,7 @@ sources:
           - name: id
             description: The ID of the discount object.
           - name: type
-            description: String representing the object’s type.
+            description: String representing the object's type.
           - name: type_id
             description: Identifier of the related object type (e.g., coupon ID, promotion code).
           - name: amount
@@ -1089,9 +1089,9 @@ sources:
           - name: end
             description: If the coupon has a duration of repeating, the date that this discount will end. If the coupon has a duration of once or forever, this attribute will be null.
           - name: invoice_id
-            description: The invoice that the discount’s coupon was applied to, if it was applied directly to a particular invoice.
+            description: The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
           - name: invoice_item_id
-            description: The invoice item id (or invoice line item id for invoice line items of type=‘subscription’) that the discount’s coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
+            description: The invoice item id (or invoice line item id for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
           - name: promotion_code
             description: The promotion code applied to create this discount.
           - name: start
@@ -1103,7 +1103,7 @@ sources:
         identifier: "{{ var('stripe_subscription_discount_identifier', 'subscription_discount') }}"
         description: A subscription discount represents the application of a coupon or promotion code specifically applied to a subscription. It contains information about when the discount began, when it will end, and what it is applied to.
         config:
-          enabled: "{{ var('stripe__using_subscription_discounts', true) }}"
+          enabled: "{{ var('stripe__using_subscription_discounts', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id
@@ -1117,9 +1117,9 @@ sources:
           - name: end
             description: If the coupon has a duration of repeating, the date that this discount will end. If the coupon has a duration of once or forever, this attribute will be null.
           - name: invoice_id
-            description: The invoice that the discount’s coupon was applied to, if it was applied directly to a particular invoice.
+            description: The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
           - name: invoice_item_id
-            description: The invoice item id (or invoice line item id for invoice line items of type=‘subscription’) that the discount’s coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
+            description: The invoice item id (or invoice line item id for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
           - name: start
             description: The date that the coupon was applied.
           - name: subscription_id
@@ -1129,7 +1129,7 @@ sources:
         identifier: "{{ var('stripe_coupon_identifier', 'coupon') }}"
         description: A coupon represents a discount that can be applied to a subscription or invoice. It contains information about the coupon's duration, amount, and applicability.
         config:
-          enabled: "{{ var('stripe__using_coupons', true) }}"
+          enabled: "{{ var('stripe__using_coupons', true) and var('stripe_sources', []) == [] }}"
           freshness: null
         columns:
           - name: id

@@ -44,7 +44,7 @@ with subscription_item as (
 subscription as (
 
     select *,
-         row_number() over (partition by subscription_id {{ stripe.partition_by_source_relation() }}
+         row_number() over (partition by subscription_id {{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}
              order by created_at desc) as rn
     from {{ ref('stg_stripe__subscription') }}
 ),
