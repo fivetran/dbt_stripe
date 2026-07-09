@@ -4,20 +4,10 @@
 
   {%- set first_month_query -%}
     select coalesce(
-      min(
-        cast(
-          {{ dbt.date_trunc(
-              'month',
-              "coalesce(subscription_item.current_period_start, subscription.current_period_start)" 
-          ) }} as date
-        )
-      ),
+      min(cast({{ dbt.date_trunc('month', 'start_date_at') }} as date)),
       cast({{ dbt.dateadd('month', -1, 'current_date') }} as date)
     ) as min_month
-    from {{ ref('stg_stripe__subscription_item') }} as subscription_item
-    left join {{ ref('stg_stripe__subscription') }} as subscription
-      on subscription_item.subscription_id = subscription.subscription_id
-      and subscription_item.source_relation = subscription.source_relation
+    from {{ ref('stg_stripe__subscription') }}
   {%- endset -%}
 
   {# dbt_utils.get_single_value returns a string, so cast it back to date #}
@@ -56,7 +46,7 @@ subscription_deduped as (
     where rn = 1
 ),
 
---deduping is necessary in cases where subscription_history table is used, multiple records can exist for the same subscription
+--deduping above keeps one current-state row per subscription for metadata (customer_id, status, start_date_at).
 
 price_plan as (
 
@@ -103,6 +93,7 @@ base as (
         subscription_item.subscription_id,
         subscription.customer_id,
         subscription.status as subscription_status,
+        subscription.start_date_at,
         coalesce(subscription_item.current_period_start, subscription.current_period_start) as current_period_start,
         coalesce(subscription_item.current_period_end, subscription.current_period_end) as current_period_end,
         subscription_item.quantity,
@@ -129,6 +120,7 @@ normalized as (
         subscription_id,
         customer_id,
         subscription_status,
+        start_date_at,
         current_period_start,
         current_period_end,
         product_id,
@@ -175,7 +167,7 @@ subscription_item_periods as (
         price_plan_id,
         subscription_status,
         currency,
-        min(cast({{ dbt.date_trunc('month', 'current_period_start') }} as date)) as first_active_month,
+        min(cast({{ dbt.date_trunc('month', 'start_date_at') }} as date)) as first_active_month,
         cast({{ dbt.dateadd('month', 3, 'max(cast(' ~ dbt.date_trunc('month', 'current_period_end') ~ ' as date))') }} as date) as last_month_to_track
     from normalized
     {{ dbt_utils.group_by(8) }}
@@ -223,7 +215,7 @@ item_months as (
         on all_item_months.source_relation = normalized.source_relation
         and all_item_months.subscription_item_id = normalized.subscription_item_id
         and all_item_months.price_plan_id = normalized.price_plan_id
-        and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
+        and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.start_date_at') }} as date)
         and all_item_months.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
 
 ),
