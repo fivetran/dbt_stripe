@@ -1,3 +1,14 @@
+# dbt_stripe v1.9.0
+
+[PR #XXX](https://github.com/fivetran/dbt_stripe/pull/XXX) includes the following updates:
+
+## Schema/Data Change
+**1 total change • 1 possible breaking change**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ------------- | ----------- | --- | --- | ----- |
+| `stripe__subscription_item_mrr_report` (possible breaking change) | Changed model | Date spine starts at `current_period_start`, every month uses the current quantity, and the model runs with only `stripe__using_subscriptions`. | Date spine anchors to each item's `created_at`; historical months use the invoiced quantity (from `invoice_line_item`), the current month the live quantity. Now also requires `stripe__using_invoices`. | See the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#mrr-history-anchored-to-each-subscription-items-creation-date). |
+
 # dbt_stripe v1.8.0
 
 [PR #152](https://github.com/fivetran/dbt_stripe/pull/152) includes the following updates:

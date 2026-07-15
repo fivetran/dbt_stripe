@@ -45,7 +45,7 @@ By default, this package materializes the following final tables:
 | [stripe__ending_balance_reconciliation_itemized_4](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__ending_balance_reconciliation_itemized_4) | Matches bank payouts with unsettled Stripe transactions.<br><br>**Example Analytics Questions:**<br><ul><li>Which transactions remain unsettled as of the last payout?</li><li>Do all automatic payouts reconcile fully with balance changes?</li></ul> |
 | [stripe__payout_itemized_3](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__payout_itemized_3) | Details expected and actual payout amounts and statuses.<br><br>**Example Analytics Questions:**<br><ul><li>When should I expect my next payout, and for how much?</li><li>Are there any delayed or failed payouts that need follow-up?</li></ul> |
 | [stripe__line_item_enhanced](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__line_item_enhanced) | Provides unified reporting across billing platforms on product, customer, and revenue metrics. See the [Fivetran Billing Model Streamlit App](https://fivetran-billing-model.streamlit.app/) for more details.<br><br>**Example Analytics Questions:**<br><ul><li>What are the top revenue-generating products or SKUs?</li><li>What is the average revenue per user (ARPU) by subscription plan?</li></ul> |
-| [stripe__subscription_item_mrr_report](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Shows both contracted and billed MRR (monthly recurring revenue) with discounts applied at the subscription item level. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged.<br><br>**Example Analytics Questions:**<br><ul><li>What percentage of subscription customers are churning each month as compared to new?</li><li>How much subscription revenue was lost last year due to discounts?</li></ul> |
+| [stripe__subscription_item_mrr_report](https://fivetran.github.io/dbt_stripe/#!/model/model.stripe.stripe__subscription_item_mrr_report) | Shows both contracted and billed MRR (monthly recurring revenue) with discounts applied at the subscription item level. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged. Relies on `invoice_line_item` for historical quantity, so it requires `stripe__using_invoices` (enabled by default) and does not build when that variable is disabled.<br><br>**Example Analytics Questions:**<br><ul><li>What percentage of subscription customers are churning each month as compared to new?</li><li>How much subscription revenue was lost last year due to discounts?</li></ul> |
 
 ¹ Each Quickstart transformation job run materializes these models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 
@@ -80,7 +80,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=1.8.0", "<1.9.0"]
+    version: [">=1.9.0", "<1.10.0"]
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 

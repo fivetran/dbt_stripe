@@ -1,4 +1,4 @@
-{{ config(enabled=var('stripe__using_subscriptions', True)) }}
+{{ config(enabled=var('stripe__using_subscriptions', True) and var('stripe__using_invoices', True)) }}
 
 {% if execute and flags.WHICH in ('run', 'build') %}
 
@@ -8,7 +8,7 @@
         cast(
           {{ dbt.date_trunc(
               'month',
-              "coalesce(subscription_item.current_period_start, subscription.current_period_start)" 
+              "coalesce(subscription_item.created_at, subscription.created_at)"
           ) }} as date
         )
       ),
@@ -65,6 +65,16 @@ price_plan as (
 
 ),
 
+-- Actual billed quantity per period; provides quantity history subscription_item lacks. Prorations excluded.
+invoice_line_item as (
+
+    select *
+    from {{ ref('stg_stripe__invoice_line_item') }}
+    where subscription_item_id is not null
+        and not coalesce(proration, false)
+
+),
+
 {% if var('stripe__using_coupons', True) and var('stripe__using_subscription_discounts', True) %}
 subscription_discount as (
 
@@ -95,6 +105,36 @@ date_dimensions as (
 
 ),
 
+-- Map each billed quantity to every month its period overlaps, keeping the latest line per month.
+invoiced_quantity_by_month as (
+
+    select
+        invoice_line_item.source_relation,
+        invoice_line_item.subscription_item_id,
+        date_dimensions.subscription_month,
+        invoice_line_item.quantity,
+        row_number() over (
+            partition by
+                invoice_line_item.source_relation,
+                invoice_line_item.subscription_item_id,
+                date_dimensions.subscription_month
+            order by invoice_line_item.period_start desc
+        ) as rn
+    from invoice_line_item
+    inner join date_dimensions
+        on date_dimensions.subscription_month >= cast({{ dbt.date_trunc('month', 'invoice_line_item.period_start') }} as date)
+        and date_dimensions.subscription_month < cast({{ dbt.date_trunc('month', 'invoice_line_item.period_end') }} as date)
+
+),
+
+invoiced_quantity_deduped as (
+
+    select source_relation, subscription_item_id, subscription_month, quantity
+    from invoiced_quantity_by_month
+    where rn = 1
+
+),
+
 base as (
 
     select
@@ -103,9 +143,10 @@ base as (
         subscription_item.subscription_id,
         subscription.customer_id,
         subscription.status as subscription_status,
+        coalesce(subscription_item.created_at, subscription.created_at) as item_created_at,
         coalesce(subscription_item.current_period_start, subscription.current_period_start) as current_period_start,
         coalesce(subscription_item.current_period_end, subscription.current_period_end) as current_period_end,
-        subscription_item.quantity,
+        subscription_item.quantity as current_quantity,
         price_plan.product_id,
         price_plan.price_plan_id,
         price_plan.recurring_interval,
@@ -129,8 +170,10 @@ normalized as (
         subscription_id,
         customer_id,
         subscription_status,
+        item_created_at,
         current_period_start,
         current_period_end,
+        current_quantity,
         product_id,
         price_plan_id,
         recurring_interval,
@@ -175,7 +218,7 @@ subscription_item_periods as (
         price_plan_id,
         subscription_status,
         currency,
-        min(cast({{ dbt.date_trunc('month', 'current_period_start') }} as date)) as first_active_month,
+        min(cast({{ dbt.date_trunc('month', 'item_created_at') }} as date)) as first_active_month,
         cast({{ dbt.dateadd('month', 3, 'max(cast(' ~ dbt.date_trunc('month', 'current_period_end') ~ ' as date))') }} as date) as last_month_to_track
     from normalized
     {{ dbt_utils.group_by(8) }}
@@ -203,6 +246,47 @@ all_item_months as (
 
 ),
 
+-- attach the invoiced quantity to each month, then carry the most recent invoiced
+-- quantity forward across any months missing an invoice (gap months)
+item_month_invoiced as (
+
+    select
+        all_item_months.*,
+        invoiced_quantity_deduped.quantity as invoiced_quantity
+    from all_item_months
+    left join invoiced_quantity_deduped
+        on all_item_months.source_relation = invoiced_quantity_deduped.source_relation
+        and all_item_months.subscription_item_id = invoiced_quantity_deduped.subscription_item_id
+        and all_item_months.subscription_month = invoiced_quantity_deduped.subscription_month
+
+),
+
+-- increment a group id each time an invoiced quantity appears; gap months inherit the prior group
+item_month_grouped as (
+
+    select
+        *,
+        sum(case when invoiced_quantity is not null then 1 else 0 end) over (
+            partition by source_relation, subscription_item_id
+            order by subscription_month
+            rows between unbounded preceding and current row
+        ) as invoiced_group
+    from item_month_invoiced
+
+),
+
+-- within each group the single invoiced value carries forward to the gap months
+item_month_carried as (
+
+    select
+        *,
+        max(invoiced_quantity) over (
+            partition by source_relation, subscription_item_id, invoiced_group
+        ) as carried_quantity
+    from item_month_grouped
+
+),
+
 -- Join back to normalized to determine if subscription was active in each month
 item_months as (
 
@@ -217,13 +301,22 @@ item_months as (
         all_item_months.currency,
         all_item_months.subscription_year,
         all_item_months.subscription_month,
-        coalesce(normalized.mrr, 0) as mrr
-    from all_item_months
+        {% set effective_quantity %}
+            case
+                when all_item_months.subscription_month = cast({{ last_month }} as date)
+                    then coalesce(normalized.current_quantity, 1)
+                else coalesce(all_item_months.carried_quantity, normalized.current_quantity, 1)
+            end
+        {% endset %}
+        -- current month uses live quantity, history uses the carried-forward invoiced quantity
+        coalesce(normalized.mrr, 0)
+            * {{ dbt_utils.safe_divide(effective_quantity, "coalesce(normalized.current_quantity, 1)") }} as mrr
+    from item_month_carried as all_item_months
     left join normalized
         on all_item_months.source_relation = normalized.source_relation
         and all_item_months.subscription_item_id = normalized.subscription_item_id
         and all_item_months.price_plan_id = normalized.price_plan_id
-        and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.current_period_start') }} as date)
+        and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.item_created_at') }} as date)
         and all_item_months.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
 
 ),
