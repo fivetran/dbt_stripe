@@ -63,6 +63,22 @@ date(
 
 {%- endmacro %}
 
+{% macro duckdb__date_timezone(column) -%}
+
+{% set converted_date %}
+
+{% if var('stripe_timezone', none) %}
+    timezone('{{ var("stripe_timezone") }}', {{ column }})
+{% else %}
+    {{ column }}
+{% endif %}
+
+{% endset %}
+
+{{ dbt.date_trunc('day',converted_date) }}
+
+{%- endmacro %}
+
 {% macro spark__date_timezone(column) -%}
 
 {% set converted_date %}
