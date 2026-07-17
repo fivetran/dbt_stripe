@@ -967,7 +967,10 @@ models:
         description: "{{ doc('source_relation') }}"
 
   - name: stripe__subscription_item_mrr_report
-    description: Each record represents a subscription item for a given month with monthly recurring revenue (MRR) metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged.
+    description: >
+      Each record represents a subscription item for a given month with monthly recurring revenue (MRR) metrics and movement classification. Tracks MRR changes over time, classifying each month as new, expansion, contraction, churned, reactivation, or unchanged.
+      Reconstructs historical MRR amount changes from invoice line items and anchors each item's timeline to its creation date. Requires `stripe__using_invoices`: true to build.
+      See the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md) for full details.
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"

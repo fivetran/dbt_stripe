@@ -1,6 +1,6 @@
 ## MRR History Anchored to Each Subscription Item's Creation Date
 
-The `stripe__subscription_item_mrr_report` model anchors each item's MRR timeline to that item's `created_at`, reporting MRR from when the item was added through the current month. It previously anchored to `current_period_start`, which Stripe overwrites every billing cycle, so all months before the current period were dropped.
+The `stripe__subscription_item_mrr_report` model anchors each item's MRR timeline to that item's `created_at`, reporting MRR from when the item was added through the current month. 
 
 Because `subscription_item` retains only the current state of each item, we reconstruct historical quantity from `invoice_line_item`, which records the quantity actually billed for each period. For each month, we use the quantity from the most recent invoice line whose period overlaps that month (proration adjustment lines excluded); the current month uses the live `subscription_item` quantity. This lets the report surface real `expansion` and `contraction` between months rather than back-projecting today's quantity across all history.
 
@@ -10,7 +10,7 @@ Because this model depends on `invoice_line_item` for historical quantity, it re
 
 The `stripe__subscription_item_mrr_report` model keeps a month for an item only when the subscription is still active at month-end. We enforce this by truncating `current_period_end` to its month in the timeline's upper bound, so a month is kept only while its first day is before the start of the `current_period_end` month.
 
-The effect is that a subscription paid through the middle of a month is not on the books at that month's end and drops out entirely. For example, a monthly subscription whose last paid period runs May 15 to June 15 keeps May (a full month) but drops June, because it has lapsed by June 30.
+The effect is that a subscription paid through the middle of a month is not on the books at that month's end and is considered to have churned, so MRR is not recognized for that month. For example, a monthly subscription whose last paid period runs May 15 to June 15 recognizes MRR for May (a full month) but considers June as a churned month ($0 MRR), because it has lapsed by June 30.
 
 ## Stripe Subscription and Item Start-Date Fields
 

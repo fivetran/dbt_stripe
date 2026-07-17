@@ -105,7 +105,8 @@ date_dimensions as (
 
 ),
 
--- Map each billed quantity to every month its period overlaps, keeping the latest line per month.
+-- Anchor each billed quantity to its period_start month, keeping the latest line per month.
+-- Months the period spans beyond period_start are filled later by the carry-forward logic.
 invoiced_quantity_by_month as (
 
     select
@@ -122,14 +123,17 @@ invoiced_quantity_by_month as (
         ) as rn
     from invoice_line_item
     inner join date_dimensions
-        on date_dimensions.subscription_month >= cast({{ dbt.date_trunc('month', 'invoice_line_item.period_start') }} as date)
-        and date_dimensions.subscription_month < cast({{ dbt.date_trunc('month', 'invoice_line_item.period_end') }} as date)
+        on date_dimensions.subscription_month = cast({{ dbt.date_trunc('month', 'invoice_line_item.period_start') }} as date)
 
 ),
 
 invoiced_quantity_deduped as (
 
-    select source_relation, subscription_item_id, subscription_month, quantity
+    select 
+        source_relation, 
+        subscription_item_id, 
+        subscription_month, 
+        quantity
     from invoiced_quantity_by_month
     where rn = 1
 
@@ -291,33 +295,34 @@ item_month_carried as (
 item_months as (
 
     select
-        all_item_months.source_relation,
-        all_item_months.subscription_item_id,
-        all_item_months.subscription_id,
-        all_item_months.customer_id,
-        all_item_months.product_id,
-        all_item_months.price_plan_id,
-        all_item_months.subscription_status,
-        all_item_months.currency,
-        all_item_months.subscription_year,
-        all_item_months.subscription_month,
+        item_month_carried.source_relation,
+        item_month_carried.subscription_item_id,
+        item_month_carried.subscription_id,
+        item_month_carried.customer_id,
+        item_month_carried.product_id,
+        item_month_carried.price_plan_id,
+        item_month_carried.subscription_status,
+        item_month_carried.currency,
+        item_month_carried.subscription_year,
+        item_month_carried.subscription_month,
+        -- set once to stay DRY; reused in the mrr calculation below
         {% set effective_quantity %}
             case
-                when all_item_months.subscription_month = cast({{ last_month }} as date)
+                when item_month_carried.subscription_month = cast({{ last_month }} as date)
                     then coalesce(normalized.current_quantity, 1)
-                else coalesce(all_item_months.carried_quantity, normalized.current_quantity, 1)
+                else coalesce(item_month_carried.carried_quantity, normalized.current_quantity, 1)
             end
         {% endset %}
         -- current month uses live quantity, history uses the carried-forward invoiced quantity
         coalesce(normalized.mrr, 0)
             * {{ dbt_utils.safe_divide(effective_quantity, "coalesce(normalized.current_quantity, 1)") }} as mrr
-    from item_month_carried as all_item_months
+    from item_month_carried
     left join normalized
-        on all_item_months.source_relation = normalized.source_relation
-        and all_item_months.subscription_item_id = normalized.subscription_item_id
-        and all_item_months.price_plan_id = normalized.price_plan_id
-        and all_item_months.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.item_created_at') }} as date)
-        and all_item_months.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
+        on item_month_carried.source_relation = normalized.source_relation
+        and item_month_carried.subscription_item_id = normalized.subscription_item_id
+        and item_month_carried.price_plan_id = normalized.price_plan_id
+        and item_month_carried.subscription_month >= cast({{ dbt.date_trunc('month', 'normalized.item_created_at') }} as date)
+        and item_month_carried.subscription_month < cast({{ dbt.date_trunc('month', 'normalized.current_period_end') }} as date)
 
 ),
 
