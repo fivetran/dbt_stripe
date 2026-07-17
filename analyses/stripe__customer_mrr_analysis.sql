@@ -1,4 +1,4 @@
-{{ config(enabled=var('stripe__using_subscriptions', True)) }}
+{{ config(enabled=var('stripe__using_subscriptions', True) and var('stripe__using_invoices', True)) }}
 
 with item_mrr as (
     select *
