@@ -35,7 +35,7 @@ final as (
         coalesce(total_daily_failed_charge_amount,0) as total_daily_failed_charge_amount,
         {% for f in rolling_fields %}
         coalesce({{ f }},   
-            first_value({{ f }}) over (partition by {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
+            first_value({{ f }}) over (partition by account_id, source_relation, {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
         {%- if not loop.last -%},{%- endif -%}
         {% endfor %}
 

@@ -1,3 +1,18 @@
+# dbt_stripe v1.9.1
+
+[PR #156](https://github.com/fivetran/dbt_stripe/pull/156) includes the following updates:
+
+## Bug Fixes
+**1 total change • 1 possible breaking change**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ------------- | ----------- | --- | --- | ----- |
+| `stripe__daily_overview` (possible breaking change) | Bug fix | Every `rolling_*` column accumulated across all accounts, because the window functions behind them had no `partition by`. | Each `rolling_*` column is the running total of its own `account_id` and `source_relation`. | Only affects destinations with more than one account or more than one unioned connector. Single-account output is byte-for-byte unchanged. See [#155](https://github.com/fivetran/dbt_stripe/issues/155). |
+
+## Under the Hood
+- Added `integrity_daily_overview_rolling_totals`, which asserts every `rolling_*` column equals the running total of its own account's daily values. It fails on 4,021 of 4,022 rows against the pre-fix models.
+- Added a second account to `account_data.csv` so the integration fixtures can express a multi-account destination at all. The previous single-account seed made this class of bug invisible to every existing test.
+
 # dbt_stripe v1.9.0
 
 [PR #153](https://github.com/fivetran/dbt_stripe/pull/153) includes the following updates:
