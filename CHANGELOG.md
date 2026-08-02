@@ -8,10 +8,13 @@
 | Data Model(s) | Change type | Old | New | Notes |
 | ------------- | ----------- | --- | --- | ----- |
 | `stripe__daily_overview` (possible breaking change) | Bug fix | Every `rolling_*` column accumulated across all accounts, because the window functions behind them had no `partition by`. | Each `rolling_*` column is the running total of its own `account_id` and `source_relation`. | Only affects destinations with more than one account or more than one unioned connector. Single-account output is byte-for-byte unchanged. See [#155](https://github.com/fivetran/dbt_stripe/issues/155). |
+| `int_stripe__account_daily`, `stripe__daily_overview` (possible breaking change) | Bug fix | The date spine joined balance transactions and failed charges on `date_day` and `source_relation` only, so every account counted every other account's activity as its own. | Both joins also match on the account, falling back to the spine's own account when the transaction does not name one. | A transaction whose `connected_account_id` is null cannot be attributed from the source, so it still counts for every account; that is unchanged and is every non-Connect destination. Single-account output is byte-for-byte unchanged. |
+| `stripe__daily_overview.account_daily_id` (breaking change) | Changed column | `generate_surrogate_key(['account_id','date_day'])`. | `generate_surrogate_key(['source_relation','account_id','date_day'])`. | Two unioned connectors sharing an account id and a date produced the same key. Key VALUES change for every row, including single-connector destinations. |
 
 ## Under the Hood
 - Added `integrity_daily_overview_rolling_totals`, which asserts every `rolling_*` column equals the running total of its own account's daily values. It fails on 4,021 of 4,022 rows against the pre-fix models.
-- Added a second account to `account_data.csv` so the integration fixtures can express a multi-account destination at all. The previous single-account seed made this class of bug invisible to every existing test.
+- Added `integrity_daily_overview_account_attribution`, which asserts no account reports more activity than the transactions attributable to it. It fails against the pre-fix models.
+- Added a second account to `account_data.csv`, and gave three balance transactions a `connected_account_id`, so the integration fixtures can express a multi-account destination at all. The previous seed had one account and no attributed transactions, which made this whole class of bug invisible to every existing test.
 
 # dbt_stripe v1.9.0
 

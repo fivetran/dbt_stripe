@@ -10,7 +10,11 @@ final as (
 
     select
         account_id,
-        {{ dbt_utils.generate_surrogate_key(['account_id','date_day']) }} as account_daily_id,
+        -- source_relation belongs in the key: without it, two unioned connectors
+        -- sharing an account id and a date collide on the same
+        -- account_daily_id, and the model's own uniqueness test cannot see it
+        -- because a single-connector destination never produces the collision.
+        {{ dbt_utils.generate_surrogate_key(['source_relation','account_id','date_day']) }} as account_daily_id,
 
         date_day,        
         date_week,
