@@ -14,7 +14,7 @@ final as (
         sum(case when {{ f }} is null  
             then 0  
             else 1  
-                end) over (order by date_day rows unbounded preceding) as {{ f }}_partition
+                end) over (partition by account_id, source_relation order by date_day rows unbounded preceding) as {{ f }}_partition
         {%- if not loop.last -%},{%- endif -%}
         {% endfor %}                  
     from account_rolling_totals
