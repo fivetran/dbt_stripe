@@ -1,10 +1,18 @@
+## Daily Overview Attribution for Transactions Without a Connected Account
+
+The `stripe__daily_overview` model attributes each balance transaction and failed charge to the account named in its `connected_account_id`. When that field is null, the transaction counts toward every account on the destination.
+
+Stripe populates `connected_account_id` only for Connect activity tied to a connected account, so a null means the activity belongs to the platform account. The `account` source table gives us no reliable way to identify that platform account, so we do not guess. For a single-account destination this is correct, since every transaction is null. For a Connect destination, each connected account's own activity is attributed only to it, but platform activity still counts toward every account and can overstate those totals. If this affects your reporting, please open a [feature request](https://github.com/fivetran/dbt_stripe/issues/new?template=feature-request.yml).
+
 ## MRR History Anchored to Each Subscription Item's Creation Date
 
 The `stripe__subscription_item_mrr_report` model anchors each item's MRR timeline to that item's `created_at`, reporting MRR from when the item was added through the current month. 
 
 Because `subscription_item` retains only the current state of each item, we reconstruct historical quantity from `invoice_line_item`, which records the quantity actually billed for each period. For each month, we use the quantity from the most recent invoice line whose period overlaps that month (proration adjustment lines excluded); the current month uses the live `subscription_item` quantity. This lets the report surface real `expansion` and `contraction` between months rather than back-projecting today's quantity across all history.
 
-Because this model depends on `invoice_line_item` for historical quantity, it requires `stripe__using_invoices` (enabled by default) and does not build when that variable is disabled. Stripe generates an invoice each billing period, so gaps are not expected, but when a month has no invoice line we carry the most recent prior invoiced quantity forward rather than snapping to today's quantity (which would invent phantom changes in the gap). A month falls back to the current `subscription_item` quantity only when no earlier invoice exists (months before the first invoice). Prices are not back-filled — historical months apply the item's current price.
+Because this model depends on `invoice_line_item` for historical quantity, it requires `stripe__using_invoices` (enabled by default) and does not build when that variable is disabled. Stripe generates an invoice each billing period, so gaps are not expected, but when a month has no invoice line we carry the most recent prior invoiced quantity forward rather than snapping to today's quantity (which would invent phantom changes in the gap). A month falls back to the current `subscription_item` quantity only when no earlier invoice exists (months before the first invoice).
+
+Price is reconstructed the same way. Each month uses the `unit_amount_excluding_tax` from the invoice line that billed it, carried forward across gap months, so a price change is reflected from the month it took effect rather than applied backwards across all history. The current month uses the live `price_plan` unit amount. A month falls back to the live `price_plan` unit amount when no earlier invoice line carries a unit amount, which includes invoices synced before Stripe began populating the field.
 
 ## MRR Timeline Uses an End-of-Month Snapshot
 

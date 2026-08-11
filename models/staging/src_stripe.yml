@@ -557,6 +557,8 @@ sources:
             description: ID of the price object this item pertains to
           - name: amount
             description: The amount, in cents.
+          - name: unit_amount_excluding_tax
+            description: The amount in cents representing the unit amount for this line item, excluding all tax and discounts. Stripe sends this as a decimal string.
           - name: currency
             description: Three-letter ISO currency code, in lowercase.
           - name: description

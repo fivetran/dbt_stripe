@@ -504,7 +504,7 @@ models:
       - name: account_id
         description: The ID of the account tied to the balance.
       - name: account_daily_id
-        description: A surrogate key made up of account_id and date_day.
+        description: A surrogate key made up of source_relation, account_id, and date_day.
       - name: date_day
         description: Day of record, taken from the date of each balance transaction.
       - name: date_week
@@ -993,7 +993,7 @@ models:
       - name: subscription_year
         description: Year of the subscription period.
       - name: month_contract_mrr
-        description: Contracted monthly recurring revenue for this subscription item for this subscription month before discounts are applied. Historical months use current price with historical quantity. "{{ doc('convert_values') }}"
+        description: Contracted monthly recurring revenue for this subscription item for this subscription month before discounts are applied. Historical months use the price and quantity from the invoice line that billed them. "{{ doc('convert_values') }}"
       - name: month_discount_applied
         description: Discount amount applied to this subscription item for this month, allocated proportionally based on the item's share of the subscription's total contracted MRR. "{{ doc('convert_values') }}"
       - name: month_billed_mrr

@@ -28,6 +28,7 @@ final as (
         invoice_id,
         invoice_item_id,
         {{ stripe.convert_values('amount') }},
+        {{ stripe.convert_values('cast(unit_amount_excluding_tax as ' ~ dbt.type_numeric() ~ ')', alias='unit_amount_excluding_tax') }},
         currency,
         description,
         discountable as is_discountable,

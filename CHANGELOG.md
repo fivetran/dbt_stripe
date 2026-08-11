@@ -1,20 +1,17 @@
-# dbt_stripe v1.9.1
+# dbt_stripe v1.10.0
 
-[PR #156](https://github.com/fivetran/dbt_stripe/pull/156) includes the following updates:
+[PR #158](https://github.com/fivetran/dbt_stripe/pull/158) includes the following updates:
 
-## Bug Fixes
-**1 total change • 1 possible breaking change**
+## Schema/Data Change
+**5 total changes • 4 possible breaking changes**
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ------------- | ----------- | --- | --- | ----- |
-| `stripe__daily_overview` (possible breaking change) | Bug fix | Every `rolling_*` column accumulated across all accounts, because the window functions behind them had no `partition by`. | Each `rolling_*` column is the running total of its own `account_id` and `source_relation`. | Only affects destinations with more than one account or more than one unioned connector. Single-account output is byte-for-byte unchanged. See [#155](https://github.com/fivetran/dbt_stripe/issues/155). |
-| `int_stripe__account_daily`, `stripe__daily_overview` (possible breaking change) | Bug fix | The date spine joined balance transactions and failed charges on `date_day` and `source_relation` only, so every account counted every other account's activity as its own. | Both joins also match on the account, falling back to the spine's own account when the transaction does not name one. | A transaction whose `connected_account_id` is null cannot be attributed from the source, so it still counts for every account; that is unchanged and is every non-Connect destination. Single-account output is byte-for-byte unchanged. |
-| `stripe__daily_overview.account_daily_id` (breaking change) | Changed column | `generate_surrogate_key(['account_id','date_day'])`. | `generate_surrogate_key(['source_relation','account_id','date_day'])`. | Two unioned connectors sharing an account id and a date produced the same key. Key VALUES change for every row, including single-connector destinations. |
-
-## Under the Hood
-- Added `integrity_daily_overview_rolling_totals`, which asserts every `rolling_*` column equals the running total of its own account's daily values. It fails on 4,021 of 4,022 rows against the pre-fix models.
-- Added `integrity_daily_overview_account_attribution`, which asserts no account reports more activity than the transactions attributable to it. It fails against the pre-fix models.
-- Added a second account to `account_data.csv`, and gave three balance transactions a `connected_account_id`, so the integration fixtures can express a multi-account destination at all. The previous seed had one account and no attributed transactions, which made this whole class of bug invisible to every existing test.
+| `stripe__daily_overview` (breaking change) | Changed field | `account_daily_id` is a surrogate key of `account_id` and `date_day`. | `account_daily_id` is a surrogate key of `source_relation`, `account_id`, and `date_day`. | Two unioned connectors that share an account ID and a date previously produced the same key. Key values change for every row, including single-connector destinations. |
+| `stripe__daily_overview` (possible breaking change) | Changed field | Each `rolling_*` column accumulates across all accounts. | Each `rolling_*` column is the running total of its own `account_id` and `source_relation`. | Only affects destinations with more than one account or more than one unioned connector. Single-account output is unchanged. See [#155](https://github.com/fivetran/dbt_stripe/issues/155). |
+| `int_stripe__account_daily`, `stripe__daily_overview` (possible breaking change) | Changed model | Balance transactions and failed charges join to the date spine on the date and `source_relation` only, so every account counts every other account's activity as its own. | Both joins also match on the account. | Only affects destinations with more than one account. Transactions with no `connected_account_id` still count toward every account; see the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#daily-overview-attribution-for-transactions-without-a-connected-account) for why. Single-account output is unchanged. |
+| `stripe__subscription_item_mrr_report` (possible breaking change) | Changed model | Historical months apply the item's current `price_plan` unit amount. | Historical months apply the `unit_amount_excluding_tax` from the invoice line that billed them, carried forward across gap months. | MRR now reflects a price change from the month it took effect instead of applying today's price across all history, so historical `month_contract_mrr`, `month_discount_applied`, `month_billed_mrr`, and `contract_mrr_type` values change. Months with no invoiced unit amount still use the live `price_plan` unit amount. See the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#mrr-history-anchored-to-each-subscription-items-creation-date). |
+| `stg_stripe__invoice_line_item` | New field |  | `unit_amount_excluding_tax` |  |
 
 # dbt_stripe v1.9.0
 
