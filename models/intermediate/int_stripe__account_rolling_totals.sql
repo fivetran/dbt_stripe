@@ -17,7 +17,7 @@ with date_spine as (
         *
 
         {% for t in total_fields %}
-        , sum({{ t }}) over (partition by account_id, source_relation order by date_day rows unbounded preceding) as rolling_{{ t }}
+        , sum({{ t }}) over (partition by account_id{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }} order by date_day rows unbounded preceding) as rolling_{{ t }}
         {% endfor %}
 
     from account_daily_balances_by_type

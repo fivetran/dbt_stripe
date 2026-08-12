@@ -12,7 +12,9 @@ Because `subscription_item` retains only the current state of each item, we reco
 
 Because this model depends on `invoice_line_item` for historical quantity, it requires `stripe__using_invoices` (enabled by default) and does not build when that variable is disabled. Stripe generates an invoice each billing period, so gaps are not expected, but when a month has no invoice line we carry the most recent prior invoiced quantity forward rather than snapping to today's quantity (which would invent phantom changes in the gap). A month falls back to the current `subscription_item` quantity only when no earlier invoice exists (months before the first invoice).
 
-Price is reconstructed the same way. Each month uses the `unit_amount_excluding_tax` from the invoice line that billed it, carried forward across gap months, so a price change is reflected from the month it took effect rather than applied backwards across all history. The current month uses the live `price_plan` unit amount. A month falls back to the live `price_plan` unit amount when no earlier invoice line carries a unit amount, which includes invoices synced before Stripe began populating the field.
+Price is reconstructed the same way. Each month uses the most recent invoiced `unit_amount_excluding_tax`, carried forward across gap months, so a price change is reflected from the month it took effect rather than applied backwards across all history. The current month uses the live `price_plan` unit amount. A month falls back to the live `price_plan` unit amount when no earlier invoice line carries a unit amount, which includes invoices synced before Stripe began populating the field.
+
+Price and quantity carry forward independently, so each month uses the most recent value available for each. When an invoice line records one but not the other, a month can take its price and its quantity from different invoice lines. Where both are present, which is the normal case, both come from the same line.
 
 ## MRR Timeline Uses an End-of-Month Snapshot
 

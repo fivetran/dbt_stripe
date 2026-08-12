@@ -10,10 +10,6 @@ final as (
 
     select
         account_id,
-        -- source_relation belongs in the key: without it, two unioned connectors
-        -- sharing an account id and a date collide on the same
-        -- account_daily_id, and the model's own uniqueness test cannot see it
-        -- because a single-connector destination never produces the collision.
         {{ dbt_utils.generate_surrogate_key(['source_relation','account_id','date_day']) }} as account_daily_id,
 
         date_day,        
@@ -39,7 +35,7 @@ final as (
         coalesce(total_daily_failed_charge_amount,0) as total_daily_failed_charge_amount,
         {% for f in rolling_fields %}
         coalesce({{ f }},   
-            first_value({{ f }}) over (partition by account_id, source_relation, {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
+            first_value({{ f }}) over (partition by account_id{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}, {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
         {%- if not loop.last -%},{%- endif -%}
         {% endfor %}
 

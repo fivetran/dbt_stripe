@@ -247,16 +247,22 @@ item_month_invoiced as (
 
 ),
 
--- increment a group id each time an invoiced quantity appears; gap months inherit the prior group
+-- increment a group id each time an invoiced value appears; gap months inherit the prior group.
+-- quantity and unit amount group separately so each carries forward independently
 item_month_grouped as (
 
     select
         *,
         sum(case when invoiced_quantity is not null then 1 else 0 end) over (
-            partition by source_relation, subscription_item_id
+            partition by subscription_item_id{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}
             order by subscription_month
             rows between unbounded preceding and current row
-        ) as invoiced_group
+        ) as invoiced_quantity_group,
+        sum(case when invoiced_unit_amount is not null then 1 else 0 end) over (
+            partition by subscription_item_id{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}
+            order by subscription_month
+            rows between unbounded preceding and current row
+        ) as invoiced_unit_amount_group
     from item_month_invoiced
 
 ),
@@ -267,10 +273,10 @@ item_month_carried as (
     select
         *,
         max(invoiced_quantity) over (
-            partition by source_relation, subscription_item_id, invoiced_group
+            partition by subscription_item_id, invoiced_quantity_group{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}
         ) as carried_quantity,
         max(invoiced_unit_amount) over (
-            partition by source_relation, subscription_item_id, invoiced_group
+            partition by subscription_item_id, invoiced_unit_amount_group{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}
         ) as carried_unit_amount
     from item_month_grouped
 
@@ -311,7 +317,7 @@ item_months as (
             case
                 when lower(normalized.recurring_interval) = 'week' then
                     {{ dbt_utils.safe_divide(
-                        effective_amount ~ " * " ~ dbt_utils.safe_divide('52', '12'),
+                        effective_amount ~ " * 52 / 12",
                         "coalesce(normalized.recurring_interval_count, 1)"
                     ) }}
 
