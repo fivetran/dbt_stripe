@@ -13,6 +13,9 @@
 | `stripe__subscription_item_mrr_report` (possible breaking change) | Changed model | Historical months apply the item's current `price_plan` unit amount. | Historical months apply the `unit_amount_excluding_tax` from the invoice line that billed them, carried forward across gap months. | MRR now reflects a price change from the month it took effect instead of applying today's price across all history, so historical `month_contract_mrr`, `month_discount_applied`, `month_billed_mrr`, and `contract_mrr_type` values change. Months with no invoiced unit amount still use the live `price_plan` unit amount. See the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#mrr-history-anchored-to-each-subscription-items-creation-date). |
 | `stg_stripe__invoice_line_item` | New field |  | `unit_amount_excluding_tax` |  |
 
+## Contributors
+- [@rasinmuhammed](https://github.com/rasinmuhammed) ([PR #156](https://github.com/fivetran/dbt_stripe/pull/156))
+
 # dbt_stripe v1.9.0
 
 [PR #153](https://github.com/fivetran/dbt_stripe/pull/153) includes the following updates:
