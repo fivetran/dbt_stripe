@@ -64,17 +64,25 @@ with date_spine as (
     left join balance_transaction
         on cast({{ dbt.date_trunc('day', 'balance_transaction.date') }} as date) = date_spine.date_day
         and balance_transaction.source_relation = date_spine.source_relation
+        and coalesce(balance_transaction.connected_account_id, date_spine.account_id) = date_spine.account_id
     group by 1,2,3
 
 ), daily_failed_charges as (
 
     select
-        {{ date_timezone('created_at') }} as date,
-        source_relation,
-        count(*) as total_daily_failed_charge_count,
-        sum(amount) as total_daily_failed_charge_amount
-    from incomplete_charges
-    group by 1,2
+        date_spine.date_day,
+        date_spine.account_id,
+        date_spine.source_relation,
+        sum(case when incomplete_charges.created_at is not null
+            then 1
+            else 0 end) as total_daily_failed_charge_count,
+        sum(incomplete_charges.amount) as total_daily_failed_charge_amount
+    from date_spine
+    left join incomplete_charges
+        on cast({{ date_timezone('incomplete_charges.created_at') }} as date) = date_spine.date_day
+        and incomplete_charges.source_relation = date_spine.source_relation
+        and coalesce(incomplete_charges.connected_account_id, date_spine.account_id) = date_spine.account_id
+    group by 1,2,3
 )
 
 select
@@ -99,5 +107,6 @@ select
 
 from daily_account_balance_transactions
 left join daily_failed_charges
-    on daily_account_balance_transactions.date_day = daily_failed_charges.date
+    on daily_account_balance_transactions.date_day = daily_failed_charges.date_day
+    and daily_account_balance_transactions.account_id = daily_failed_charges.account_id
     and daily_account_balance_transactions.source_relation = daily_failed_charges.source_relation
