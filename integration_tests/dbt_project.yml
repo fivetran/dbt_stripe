@@ -2,7 +2,7 @@ config-version: 2
 
 name: 'stripe_integration_tests'
 
-version: '1.8.1'
+version: '1.10.1'
 
 profile: 'integration_tests'
 

@@ -49,6 +49,12 @@ test_scenarios:
       stripe__standardized_billing_model_enabled: true
     include_incremental: false
 
+  - name: "subscriptions without invoices"
+    vars:
+      stripe__using_subscriptions: true
+      stripe__using_invoices: false
+    include_incremental: false
+
   - name: "MDLS"
     vars:
       fivetran_using_source_casing: true
