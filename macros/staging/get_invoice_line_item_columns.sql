@@ -20,7 +20,8 @@
     {"name": "subscription_id", "datatype": dbt.type_string()},
     {"name": "subscription_item_id", "datatype": dbt.type_string()},
     {"name": "type", "datatype": dbt.type_string()},
-    {"name": "unique_id", "datatype": dbt.type_string()}
+    {"name": "unique_id", "datatype": dbt.type_string()},
+    {"name": "unit_amount_excluding_tax", "datatype": dbt.type_string()}
 ] %}
 
 {{ return(columns) }}

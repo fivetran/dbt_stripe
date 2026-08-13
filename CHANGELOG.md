@@ -5,6 +5,24 @@
 ## Feature Updates
 - Adds DuckDB as a supported destination.
 
+# dbt_stripe v1.10.0
+
+[PR #158](https://github.com/fivetran/dbt_stripe/pull/158) includes the following updates:
+
+## Schema/Data Change
+**5 total changes • 4 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ------------- | ----------- | --- | --- | ----- |
+| `stripe__daily_overview` | Changed field (**breaking change**) | surrogate key hashed on `account_id` and `date_day`. | surrogate key hashed on `source_relation`, `account_id`, and `date_day`. | Two unioned connectors that share an account ID and a date previously produced the same key. |
+| `stripe__daily_overview` | Possible changed data (possible breaking change)| Each `rolling_*` column accumulated across all accounts. | Each `rolling_*` column is the running total of its own `account_id` and `source_relation`. | Only affects destinations with more than one account or more than one unioned connector. Single-account output is unchanged. See [#155](https://github.com/fivetran/dbt_stripe/issues/155). |
+| `stripe__daily_overview`<br>`int_stripe__account_daily` | Changed join (possible breaking change) | Balance transactions and failed charges join to the date spine on the date and `source_relation` only, so every account counts every other account's activity as its own. | Both joins also match on the account. | Only affects destinations with more than one account. Transactions with no `connected_account_id` still count toward every account; see the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#daily-overview-attribution-for-transactions-without-a-connected-account) for why. Single-account output is unchanged. |
+| `stripe__subscription_item_mrr_report` | Changed model (possible breaking change) | Historical months apply the item's current `price_plan` unit amount. | Historical months apply the `unit_amount_excluding_tax` from the invoice line that billed them, carried forward across gap months. | MRR now reflects a price change from the month it took effect instead of applying today's price across all history, so historical `month_contract_mrr`, `month_discount_applied`, `month_billed_mrr`, and `contract_mrr_type` values change. Months with no invoiced unit amount still use the live `price_plan` unit amount. See the [DECISIONLOG](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md#mrr-history-anchored-to-each-subscription-items-creation-date). |
+| `stg_stripe__invoice_line_item` | New field |  | `unit_amount_excluding_tax` |  |
+
+## Contributors
+- [@rasinmuhammed](https://github.com/rasinmuhammed) ([PR #156](https://github.com/fivetran/dbt_stripe/pull/156))
+
 # dbt_stripe v1.9.0
 
 [PR #153](https://github.com/fivetran/dbt_stripe/pull/153) includes the following updates:

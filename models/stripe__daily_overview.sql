@@ -10,7 +10,7 @@ final as (
 
     select
         account_id,
-        {{ dbt_utils.generate_surrogate_key(['account_id','date_day']) }} as account_daily_id,
+        {{ dbt_utils.generate_surrogate_key(['source_relation','account_id','date_day']) }} as account_daily_id,
 
         date_day,        
         date_week,
@@ -35,7 +35,7 @@ final as (
         coalesce(total_daily_failed_charge_amount,0) as total_daily_failed_charge_amount,
         {% for f in rolling_fields %}
         coalesce({{ f }},   
-            first_value({{ f }}) over (partition by {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
+            first_value({{ f }}) over (partition by account_id{{ fivetran_utils.partition_by_source_relation(package_name='stripe') }}, {{ f }}_partition order by date_day rows unbounded preceding)) as {{ f }}
         {%- if not loop.last -%},{%- endif -%}
         {% endfor %}
 

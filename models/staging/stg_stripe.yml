@@ -456,6 +456,8 @@ models:
         description: ID of the price object this item pertains to
       - name: amount
         description: The amount. "{{ doc('convert_values') }}"
+      - name: unit_amount_excluding_tax
+        description: The unit amount for this line item, excluding all tax and discounts. "{{ doc('convert_values') }}"
       - name: currency
         description: Three-letter ISO currency code, in lowercase.
       - name: description
