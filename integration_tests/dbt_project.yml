@@ -2,7 +2,7 @@ config-version: 2
 
 name: 'stripe_integration_tests'
 
-version: '1.10.0'
+version: '1.10.1'
 
 profile: 'integration_tests'
 
@@ -51,7 +51,7 @@ vars:
 seeds:
   +docs:
     show: False
-  +quote_columns: "{{ target.type in ('redshift','postgres') or var('fivetran_using_source_casing', false) }}"
+  +quote_columns: "{{ target.type in ('redshift','postgres', 'duckdb') or var('fivetran_using_source_casing', false) }}"
   stripe_integration_tests:
     account_data:
       +column_types:

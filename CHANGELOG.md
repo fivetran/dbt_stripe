@@ -1,3 +1,10 @@
+# dbt_stripe v1.10.1
+
+[PR #157](https://github.com/fivetran/dbt_stripe/pull/157) includes the following updates:
+
+## Feature Updates
+- Adds DuckDB as a supported destination.
+
 # dbt_stripe v1.10.0
 
 [PR #158](https://github.com/fivetran/dbt_stripe/pull/158) includes the following updates:
