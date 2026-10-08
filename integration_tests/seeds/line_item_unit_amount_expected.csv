@@ -1,0 +1,6 @@
+line_item_id,unit_amount
+ad1111,4.2
+ba222,16.25
+ba3333,0
+unit_amount_negative,-4.2
+unit_amount_zero,0
