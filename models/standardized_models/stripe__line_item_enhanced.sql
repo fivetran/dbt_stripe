@@ -104,8 +104,19 @@ with invoice_line_item as (
 
 ), refund as (
 
-    select *
-    from {{ ref('stg_stripe__refund') }} 
+    select
+        refund.charge_id,
+        refund.source_relation,
+        sum(refund.amount) as amount,
+        sum(balance_transaction.fee) as fee,
+        max(balance_transaction.balance_transaction_id) as balance_transaction_id,
+        max(balance_transaction.type) as type,
+        max(balance_transaction.connected_account_id) as connected_account_id
+    from {{ ref('stg_stripe__refund') }} as refund
+    left join balance_transaction
+        on refund.balance_transaction_id = balance_transaction.balance_transaction_id
+        and refund.source_relation = balance_transaction.source_relation
+    group by 1, 2
 
 ), customer as (
 
@@ -127,10 +138,10 @@ with invoice_line_item as (
         cast({{ "product.type" if var('stripe__using_subscriptions', True) else 'null' }} as {{ dbt.type_string() }}) as product_type,
 
         case 
-            when bt_refund.balance_transaction_id is not null and bt_charge.balance_transaction_id is not null then 'charge + refund'
+            when refund.balance_transaction_id is not null and bt_charge.balance_transaction_id is not null then 'charge + refund'
             when bt_charge.balance_transaction_id is not null then 'charge'
-            when bt_refund.balance_transaction_id is not null then 'payment intent + refund'
-            else coalesce(bt_charge.type, bt_refund.type)
+            when refund.balance_transaction_id is not null then 'payment intent + refund'
+            else coalesce(bt_charge.type, refund.type)
         end as transaction_type,
             
         cast(invoice_line_item.type as {{ dbt.type_string() }}) as billing_type,
@@ -150,7 +161,7 @@ with invoice_line_item as (
         cast({{ "payment_method.payment_method_id" if var('stripe__using_payment_method', True) else 'null' }} as {{ dbt.type_string() }}) as payment_method_id,
         cast({{ "payment_method.type" if var('stripe__using_payment_method', True) else 'null' }} as {{ dbt.type_string() }}) as payment_method,
         cast(charge.created_at as {{ dbt.type_timestamp() }}) as payment_at,
-        cast(coalesce(bt_charge.fee, 0) as {{ dbt.type_numeric() }}) + cast(coalesce(bt_refund.fee, 0) as {{ dbt.type_numeric() }}) as fee_amount,
+        cast(coalesce(bt_charge.fee, 0) as {{ dbt.type_numeric() }}) + cast(coalesce(refund.fee, 0) as {{ dbt.type_numeric() }}) as fee_amount,
         cast(refund.amount as {{ dbt.type_numeric() }}) as refund_amount,
         cast(invoice.subscription_id as {{ dbt.type_string() }}) as subscription_id,
 
@@ -192,17 +203,13 @@ with invoice_line_item as (
         on charge.balance_transaction_id = bt_charge.balance_transaction_id
         and charge.source_relation = bt_charge.source_relation
 
-    left join balance_transaction bt_refund
-        on refund.balance_transaction_id = bt_refund.balance_transaction_id
-        and refund.source_relation = bt_refund.source_relation
-
     left join discount 
         on invoice.invoice_id = discount.invoice_id
         and invoice.source_relation = discount.source_relation
 
     left join account connected_account
-        on coalesce(bt_charge.connected_account_id, bt_refund.connected_account_id)  = connected_account.account_id
-        and coalesce(bt_charge.source_relation, bt_refund.source_relation) = connected_account.source_relation
+        on coalesce(bt_charge.connected_account_id, refund.connected_account_id)  = connected_account.account_id
+        and coalesce(bt_charge.source_relation, refund.source_relation) = connected_account.source_relation
 
     left join payment_intent
         on charge.payment_intent_id = payment_intent.payment_intent_id
