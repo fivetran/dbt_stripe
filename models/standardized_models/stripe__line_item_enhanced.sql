@@ -138,7 +138,7 @@ with invoice_line_item as (
 
         cast(case 
                 when invoice_line_item.quantity = 0 then 0
-                else (invoice_line_item.amount / invoice_line_item.quantity) 
+                else (cast(invoice_line_item.amount as {{ dbt.type_numeric() }}) / invoice_line_item.quantity)
             end as {{ dbt.type_numeric() }}) as unit_amount,
 
         cast(discount.total_discount_amount as {{ dbt.type_numeric() }}) as discount_amount,
