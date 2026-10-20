@@ -1,3 +1,13 @@
+# dbt_stripe v1.10.2
+
+[PR #164](https://github.com/fivetran/dbt_stripe/pull/164) includes the following updates:
+
+## Bug Fixes
+- Casts `invoice_line_item.amount` as `numeric` before dividing by `quantity` in `stripe__line_item_enhanced` to preserve fractional `unit_amount` values on destinations where integer division truncates the result.
+
+## Contributors
+- [@Bortlesboat](https://github.com/Bortlesboat) ([PR #163](https://github.com/fivetran/dbt_stripe/pull/163))
+
 # dbt_stripe v1.10.1
 
 [PR #157](https://github.com/fivetran/dbt_stripe/pull/157) includes the following updates:
