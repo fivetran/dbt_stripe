@@ -540,6 +540,34 @@ lagged as (
                 item_mrr_with_discounts.subscription_year,
                 item_mrr_with_discounts.subscription_month
         ) as prior_month_contract_mrr,
+        lag(item_mrr_with_discounts.month_contract_mrr, 2) over (
+            partition by
+                item_mrr_with_discounts.source_relation,
+                item_mrr_with_discounts.subscription_item_id,
+                item_mrr_with_discounts.price_plan_id
+            order by
+                item_mrr_with_discounts.subscription_year,
+                item_mrr_with_discounts.subscription_month
+        ) as prior_2_month_contract_mrr,
+        lag(item_mrr_with_discounts.month_contract_mrr, 3) over (
+            partition by
+                item_mrr_with_discounts.source_relation,
+                item_mrr_with_discounts.subscription_item_id,
+                item_mrr_with_discounts.price_plan_id
+            order by
+                item_mrr_with_discounts.subscription_year,
+                item_mrr_with_discounts.subscription_month
+        ) as prior_3_month_contract_mrr,
+        max(case when item_mrr_with_discounts.month_contract_mrr > 0 then 1 else 0 end) over (
+            partition by
+                item_mrr_with_discounts.source_relation,
+                item_mrr_with_discounts.subscription_item_id,
+                item_mrr_with_discounts.price_plan_id
+            order by
+                item_mrr_with_discounts.subscription_year,
+                item_mrr_with_discounts.subscription_month
+            rows between unbounded preceding and 1 preceding
+        ) as has_prior_positive_mrr,
         row_number() over (
             partition by
                 item_mrr_with_discounts.source_relation,
@@ -558,9 +586,15 @@ classified as (
     select
         *,
         case
-            when prior_month_contract_mrr is null 
+            when coalesce(has_prior_positive_mrr, 0) = 0
                 and month_contract_mrr > 0
                 then 'new'
+
+            when prior_month_contract_mrr = 0
+                and prior_2_month_contract_mrr = 0
+                and prior_3_month_contract_mrr = 0
+                and month_contract_mrr > 0
+                then 'reactivation'
 
             when month_contract_mrr > prior_month_contract_mrr
                 then 'expansion'
@@ -573,11 +607,6 @@ classified as (
                 and prior_month_contract_mrr > 0
                 then 'churned'
 
-            when prior_month_contract_mrr = 0
-                and month_contract_mrr > 0
-                and item_month_number >= 3
-                then 'reactivation'
-
             when month_contract_mrr = prior_month_contract_mrr
                 then 'unchanged'
 
@@ -586,5 +615,21 @@ classified as (
     from lagged
 )
 
-select *
+select
+    source_relation,
+    subscription_item_id,
+    subscription_id,
+    customer_id,
+    product_id,
+    price_plan_id,
+    subscription_status,
+    currency,
+    subscription_month,
+    subscription_year,
+    month_contract_mrr,
+    month_discount_applied,
+    month_billed_mrr,
+    prior_month_contract_mrr,
+    item_month_number,
+    contract_mrr_type
 from classified
