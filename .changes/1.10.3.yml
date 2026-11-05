@@ -1,0 +1,7 @@
+version: 1.10.3
+pr_number: 168
+
+under_the_hood:
+  - description: Removes the unused `payout_id` column from `get_balance_transaction_columns()` and the `balance_transaction_data` integration test seed.
+    details:
+      - Stripe will stop populating `BALANCE_TRANSACTION.payout_id` starting December 10, 2026. The package already sources `payout_id` from `PAYOUT_BALANCE_TRANSACTION`/`PAYOUT` in `stripe__balance_transactions` and never surfaced the `BALANCE_TRANSACTION` column downstream, so there is no change to model output.
