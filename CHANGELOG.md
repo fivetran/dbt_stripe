@@ -1,6 +1,6 @@
 # dbt_stripe v1.10.3
 
-[PR #167](https://github.com/fivetran/dbt_stripe/pull/167) includes the following updates:
+[PR #168](https://github.com/fivetran/dbt_stripe/pull/168) includes the following updates:
 
 ## Under the Hood
 - Removes the unused `payout_id` column from `get_balance_transaction_columns()` and the `balance_transaction_data` integration test seed. Stripe will stop populating `BALANCE_TRANSACTION.payout_id` starting December 10, 2026; the package already sources `payout_id` from `PAYOUT_BALANCE_TRANSACTION`/`PAYOUT` in `stripe__balance_transactions`, so no model output changes.
