@@ -17,6 +17,7 @@ vars:
   # enable when generating docs
   # stripe__using_credit_notes: true # @docs-include
   stripe_schema: stripe_integrations_tests
+  fivetran__remove_empty_table_warnings: true
   stripe:
     stripe_account_identifier: "account_data"
     stripe_group_identifier: "group_data"
