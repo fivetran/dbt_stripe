@@ -1,3 +1,11 @@
+# dbt_stripe v1.10.3
+
+## Under the Hood
+- **Documentation accuracy**: Aligns the staging model documentation with the columns each model actually outputs. Model logic and output are unchanged.
+  - Documents the `metadata` column in `stg_stripe__coupon`. The model already selects this column, but the documentation left it out.
+  - Removes `livemode` from `stg_stripe__credit_note`. The package filters on `livemode` rather than passing it through to the model output.
+  - Removes `invoice_item_id` from `stg_stripe__price_plan`. The source `price` table has this column, but the model does not select it.
+
 # dbt_stripe v1.10.2
 
 [PR #164](https://github.com/fivetran/dbt_stripe/pull/164) includes the following updates:
