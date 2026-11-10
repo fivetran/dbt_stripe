@@ -1,7 +1,6 @@
 with fields as (
 
-    select *
-    from {{ ref('stg_stripe__charge_tmp') }}
+    {{ stripe.resolve_source_columns(table_name='charge', staging_columns=stripe.get_charge_columns()) }}
 ),
 
 final as (

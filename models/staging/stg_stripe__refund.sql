@@ -1,8 +1,7 @@
 
 with fields as (
 
-    select *
-    from {{ ref('stg_stripe__refund_tmp') }}
+    {{ stripe.resolve_source_columns(table_name='refund', staging_columns=stripe.get_refund_columns()) }}
 ),
 
 final as (

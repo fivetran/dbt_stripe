@@ -49,7 +49,7 @@ vars:
 
     ## Simulates the payload Quickstart supplies, in the salesforce__source_config format: only
     ## exceptions are listed. These are the columns the get_*_columns macros expect that the seeds
-    ## don't have; each becomes cast(null as <datatype>) in the tmp models. With one connection the
+    ## don't have; each becomes cast(null as <datatype>) in the staging models. With one connection the
     ## only entry is used whatever its key, so CI schemas with other names still pick it up.
     stripe__source_config:
       stripe_integrations_tests:

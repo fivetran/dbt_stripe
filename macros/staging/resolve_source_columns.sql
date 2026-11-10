@@ -1,11 +1,12 @@
 {% macro resolve_source_columns(table_name, staging_columns, payload_key=none) %}
 {#
-    POC: builds the body of a `stg_stripe__<table>_tmp` model from the stripe__source_config
+    POC: builds the `fields` CTE of a `stg_stripe__<table>` model from the stripe__source_config
     payload var, with no warehouse introspection (no adapter.get_columns_in_relation or
     adapter.get_relation). Unions connections and resolves columns in one pass, since a
     `union all` needs every leg's column list aligned and that list comes from the payload.
-    Replaces fivetran_utils.union_connections/union_data in the tmp models and
-    fivetran_utils.fill_staging_columns/apply_source_relation in the staging models.
+    Replaces the old tmp models (fivetran_utils.union_connections/union_data) and
+    fivetran_utils.fill_staging_columns/apply_source_relation in the staging models. No tmp
+    model is needed, since nothing introspects a relation.
 
     Connections come from stripe_sources, else stripe_union_schemas / stripe_union_databases
     (each turned into a database + schema pair), else the single `stripe` source.
@@ -42,8 +43,10 @@
     When more than one leg is unioned, every column is cast to its declared datatype so the
     legs line up positionally even when one leg null-fills a column the other has.
 
-    Usage in models/staging/tmp/stg_stripe__customer_tmp.sql:
-        {{ stripe.resolve_source_columns(table_name='customer', staging_columns=stripe.get_customer_columns()) }}
+    Usage in models/staging/stg_stripe__customer.sql:
+        with fields as (
+            {{ stripe.resolve_source_columns(table_name='customer', staging_columns=stripe.get_customer_columns()) }}
+        ),
 #}
 {%- set payload_key = payload_key or table_name -%}
 {%- set identifier = var('stripe_' ~ table_name ~ '_identifier', table_name) -%}

@@ -1,9 +1,10 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
+{%- set history_or_subscription = 'subscription_history' if var('stripe__using_subscription_history', true) else 'subscription' -%}
+
 with fields as (
 
-    select *
-    from {{ ref('stg_stripe__subscription_tmp') }}
+    {{ stripe.resolve_source_columns(table_name=history_or_subscription, staging_columns=stripe.get_subscription_columns()) }}
 ),
 
 final as (

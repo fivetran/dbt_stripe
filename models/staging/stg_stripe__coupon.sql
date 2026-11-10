@@ -2,8 +2,7 @@
 
 with fields as (
 
-    select *
-    from {{ ref('stg_stripe__coupon_tmp') }}
+    {{ stripe.resolve_source_columns(table_name='coupon', staging_columns=stripe.get_coupon_columns()) }}
 ),
 
 final as (
