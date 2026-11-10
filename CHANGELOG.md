@@ -1,5 +1,7 @@
 # dbt_stripe v1.10.3
 
+[PR #172](https://github.com/fivetran/dbt_stripe/pull/172) includes the following updates:
+
 ## Under the Hood
 - Documents the `metadata` column in `stg_stripe__coupon`. The model already selects this column, but the documentation left it out.
 - Removes `livemode` from `stg_stripe__credit_note`. The package filters on `livemode` rather than passing it through to the model output.
