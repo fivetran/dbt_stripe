@@ -16,24 +16,12 @@
     {"name": "customer_id", "datatype": dbt.type_string()},
     {"name": "description", "datatype": dbt.type_string()},
     {"name": "id", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_charge_id", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_code", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_decline_code", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_doc_url", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_message", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_param", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_source_id", "datatype": dbt.type_string()},
-    {"name": "last_payment_error_type", "datatype": dbt.type_string()},
     {"name": "livemode", "datatype": "boolean"},
     {"name": "metadata", "datatype": dbt.type_string()},
-    {"name": "on_behalf_of", "datatype": dbt.type_string()},
     {"name": "payment_method_id", "datatype": dbt.type_string()},
     {"name": "receipt_email", "datatype": dbt.type_string()},
-    {"name": "source_id", "datatype": dbt.type_string()},
     {"name": "statement_descriptor", "datatype": dbt.type_string()},
-    {"name": "status", "datatype": dbt.type_string()},
-    {"name": "transfer_data_destination", "datatype": dbt.type_string()},
-    {"name": "transfer_group", "datatype": dbt.type_string()}
+    {"name": "status", "datatype": dbt.type_string()}
 ] %}
 
 {{ return(columns) }}

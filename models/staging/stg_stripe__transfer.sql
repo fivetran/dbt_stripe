@@ -1,24 +1,8 @@
 {{ config(enabled=var('stripe__using_transfers', True)) }}
 
-with base as (
+with fields as (
 
-    select * 
-    from {{ ref('stg_stripe__transfer_tmp') }}
-),
-
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__transfer_tmp')),
-                staging_columns=get_transfer_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-
-    from base
+    {{ stripe.resolve_source_columns(table_name='transfer', staging_columns=stripe.get_transfer_columns()) }}
 ),
 
 final as (

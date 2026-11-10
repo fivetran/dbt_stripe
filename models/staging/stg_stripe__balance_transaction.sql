@@ -1,20 +1,6 @@
-with base as (
-    select * 
-    from {{ ref('stg_stripe__balance_transaction_tmp') }}
-),
+with fields as (
 
-fields as (
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__balance_transaction_tmp')),
-                staging_columns=get_balance_transaction_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-
-    from base
+    {{ stripe.resolve_source_columns(table_name='balance_transaction', staging_columns=stripe.get_balance_transaction_columns()) }}
 ),
 
 final as (

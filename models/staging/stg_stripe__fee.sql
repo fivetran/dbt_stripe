@@ -1,23 +1,7 @@
 
-with base as (
+with fields as (
 
-    select * 
-    from {{ ref('stg_stripe__fee_tmp') }}
-),
-
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__fee_tmp')),
-                staging_columns=get_fee_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-
-    from base
+    {{ stripe.resolve_source_columns(table_name='fee', staging_columns=stripe.get_fee_columns()) }}
 ),
 
 final as (

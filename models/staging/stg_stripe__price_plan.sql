@@ -1,24 +1,10 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
-with price_plan as (
+{%- set price_or_plan = 'price' if var('stripe__using_price', true) else 'plan' -%}
 
-    select *
-    from {{ ref('stg_stripe__price_plan_tmp') }}
-),
+with fields as (
 
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__price_plan_tmp')),
-                staging_columns=get_price_plan_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-
-    from price_plan
+    {{ stripe.resolve_source_columns(table_name=price_or_plan, staging_columns=stripe.get_price_plan_columns()) }}
 ),
 
 final as (

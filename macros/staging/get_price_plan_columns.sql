@@ -1,6 +1,6 @@
 {% macro get_price_plan_columns() %}
 
-{% if var('stripe__using_price', stripe.does_table_exist('price')=='exists') %}
+{% if var('stripe__using_price', true) %}
 
 {% set columns = [
     {"name": "_fivetran_synced", "datatype": dbt.type_timestamp()},
@@ -18,8 +18,7 @@
     {"name": "recurring_interval", "datatype": dbt.type_string()},
     {"name": "recurring_interval_count", "datatype": dbt.type_int()},
     {"name": "recurring_usage_type", "datatype": dbt.type_string()},
-    {"name": "unit_amount", "datatype": dbt.type_int()},
-    {"name": "unit_amount_decimal", "datatype": dbt.type_string()}
+    {"name": "unit_amount", "datatype": dbt.type_int()}
 ] %}
 
 {% else %}

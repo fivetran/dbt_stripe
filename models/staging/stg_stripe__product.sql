@@ -1,24 +1,8 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
-with product as (
+with fields as (
 
-    select * 
-    from {{ ref('stg_stripe__product_tmp') }}
-),
-
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__product_tmp')),
-                staging_columns=get_product_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-
-    from product
+    {{ stripe.resolve_source_columns(table_name='product', staging_columns=stripe.get_product_columns()) }}
 ),
 
 final as (
