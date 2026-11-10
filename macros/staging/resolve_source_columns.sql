@@ -10,16 +10,17 @@
     Connections come from stripe_sources, else stripe_union_schemas / stripe_union_databases
     (each turned into a database + schema pair), else the single `stripe` source.
 
-    Payload shape (keyed by connection, then by the connector's own table name). `columns` is
-    sparse: it lists only the exceptions, keyed by the connector's own column name.
+    Payload shape, matching salesforce__source_config: keyed by connection, then by the
+    connector's own table name, then by the connector's own column name. Only exceptions are
+    listed; anything not listed is assumed synced under its own name.
 
         stripe__source_config:
           <schema>:                     # e.g. stripe_dbt
-            <payload_key>:              # e.g. customer; every synced table gets an entry
-              name: <destination table name>
-              columns:                  # optional
+            <payload_key>:              # e.g. charge
+              columns:
                 <source_column_name>: <current destination column name>   # renamed
-                <source_column_name>: null                                # not synced
+                <source_column_name>: "<fivetran_not_synced>"              # not synced
+            <payload_key>: "<fivetran_not_synced>"                         # whole table not synced
 
     Connections are keyed by schema. A `database.schema` key is also accepted and checked first,
     only to tell apart unioned connections that land in same-named schemas in different
@@ -27,13 +28,12 @@
     regardless of its key.
 
     Per connection:
-      - No payload entry for the connection at all -> every column is assumed present under its
-        own name (the connector's default, unrenamed behavior).
-      - Connection entry exists but has no entry for this table -> the connector doesn't sync the
-        table for that connection, so that union leg is skipped entirely.
-      - Table entry exists -> a column listed with a name is selected from that name, a column
-        listed as null becomes `cast(null as datatype)`, and an unlisted column is selected
-        under its own name.
+      - No entry for the connection or the table -> every column is selected under its own name.
+      - Table marked `<fivetran_not_synced>` -> that union leg is skipped entirely. (Stripe needs
+        this and Salesforce doesn't: unioning, and the price/plan and subscription_history/
+        subscription choice, depend on whether a connection syncs a table.)
+      - Column renamed -> selected from its current name. Column marked `<fivetran_not_synced>`
+        -> `cast(null as datatype)`. Unlisted column -> selected under its own name.
 
     A column's source name is `source_name` on its get_*_columns dict, defaulting to `name`.
     Stripe's connector columns are already snake_case, so nearly all match. Fivetran metadata
@@ -89,14 +89,12 @@
         {%- set connection_config = full_source_config.get(leg.schema | lower) -%}
     {%- endif -%}
 
-    {%- if connection_config is none -%}
-        {# no entry for this connection: every column present under its own name #}
-        {%- do resolved_legs.append({'leg': leg, 'columns': {}}) -%}
-    {%- elif payload_key in connection_config -%}
-        {%- set table_config = connection_config[payload_key] or {} -%}
-        {%- do resolved_legs.append({'leg': leg, 'columns': table_config.get('columns', {}) or {}}) -%}
+    {%- set table_config = (connection_config or {}).get(payload_key) -%}
+    {%- if table_config != '<fivetran_not_synced>' -%}
+        {# `or {}` covers keys present but empty in YAML #}
+        {%- do resolved_legs.append({'leg': leg, 'columns': ((table_config or {}).get('columns') or {})}) -%}
     {%- endif -%}
-    {# else: connection is configured but doesn't sync this table -> skip the leg #}
+    {# else: this connection doesn't sync the table -> skip the leg #}
 {%- endfor -%}
 
 {%- set cast_columns = resolved_legs | length > 1 -%}
@@ -121,7 +119,7 @@
         {%- else %}
             {%- set current_name = column.name %}
         {%- endif %}
-        {%- if current_name is none %}
+        {%- if current_name == '<fivetran_not_synced>' %}
         cast(null as {{ column.datatype }}) as {{ output_name }},
         {%- elif cast_columns %}
         cast({{ fivetran_utils.quote_column({"name": current_name, "quote": true}) | trim }} as {{ column.datatype }}) as {{ output_name }},
@@ -140,16 +138,17 @@
 {% macro source_config_has_table(payload_key) %}
 {#
     POC: answers "does the connector sync this table?" from the stripe__source_config payload,
-    with no warehouse introspection. True only if every configured connection syncs the table.
-    With no payload set, returns true: the connector's current default tables (`price`,
-    `subscription_history`) are assumed, and the stripe__using_* vars still override.
+    with no warehouse introspection. False if any configured connection marks the table
+    `<fivetran_not_synced>`, otherwise true. So with no payload set the connector's current
+    default tables (`price`, `subscription_history`) are assumed; the stripe__using_* vars
+    still override.
 #}
 {%- set full_source_config = var('stripe__source_config', {}) or {} -%}
 {%- if full_source_config | length == 0 -%}
     {{ return(true) }}
 {%- endif -%}
 {%- for connection_config in full_source_config.values() -%}
-    {%- if payload_key not in (connection_config or {}) -%}
+    {%- if (connection_config or {}).get(payload_key) == '<fivetran_not_synced>' -%}
         {{ return(false) }}
     {%- endif -%}
 {%- endfor -%}
