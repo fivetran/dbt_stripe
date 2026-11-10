@@ -311,7 +311,7 @@ left join payment_method
     and charge.source_relation = payment_method.source_relation
 left join payment_method_card 
     on payment_method_card.payment_method_id = payment_method.payment_method_id
-    and charge.source_relation = balance_transaction.source_relation
+    and payment_method.source_relation = payment_method_card.source_relation
 {% endif %}
 
 {% if var('stripe__using_invoices', True) %}
