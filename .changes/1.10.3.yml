@@ -1,9 +1,5 @@
 version: 1.10.3
 under_the_hood:
-- title: Documentation accuracy
-  description: Aligns the staging model documentation with the columns each model
-    actually outputs. Model logic and output are unchanged.
-  details:
   - Documents the `metadata` column in `stg_stripe__coupon`. The model already selects
     this column, but the documentation left it out.
   - Removes `livemode` from `stg_stripe__credit_note`. The package filters on `livemode`
