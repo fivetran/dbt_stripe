@@ -18,8 +18,7 @@
     {"name": "recurring_interval", "datatype": dbt.type_string()},
     {"name": "recurring_interval_count", "datatype": dbt.type_int()},
     {"name": "recurring_usage_type", "datatype": dbt.type_string()},
-    {"name": "unit_amount", "datatype": dbt.type_int()},
-    {"name": "unit_amount_decimal", "datatype": dbt.type_string()}
+    {"name": "unit_amount", "datatype": dbt.type_int()}
 ] %}
 
 {% else %}

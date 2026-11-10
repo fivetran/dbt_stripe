@@ -5,7 +5,6 @@
     {"name": "amount", "datatype": dbt.type_int()},
     {"name": "application", "datatype": dbt.type_string()},
     {"name": "balance_transaction_id", "datatype": dbt.type_string()},
-    {"name": "connected_account_id", "datatype": dbt.type_string()},
     {"name": "currency", "datatype": dbt.type_string()},
     {"name": "description", "datatype": dbt.type_string()},
     {"name": "index", "datatype": dbt.type_int()},

@@ -9,8 +9,6 @@
     {"name": "created", "datatype": dbt.type_timestamp()},
     {"name": "currency", "datatype": dbt.type_string()},
     {"name": "description", "datatype": dbt.type_string()},
-    {"name": "failure_balance_transaction_id", "datatype": dbt.type_string()},
-    {"name": "failure_reason", "datatype": dbt.type_string()},
     {"name": "id", "datatype": dbt.type_string()},
     {"name": "metadata", "datatype": dbt.type_string()},
     {"name": "reason", "datatype": dbt.type_string()},

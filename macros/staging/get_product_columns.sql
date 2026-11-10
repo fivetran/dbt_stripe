@@ -1,7 +1,6 @@
 {% macro get_product_columns() %}
 
 {% set columns = [
-    {"name": "fivetran_synced", "datatype": dbt.type_timestamp()},
     {"name": "id", "datatype": dbt.type_string()},
     {"name": "active", "datatype": "boolean","alias": "is_active"},
     {"name": "attributes", "datatype": dbt.type_string()},

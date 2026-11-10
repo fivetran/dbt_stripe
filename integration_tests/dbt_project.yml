@@ -76,30 +76,13 @@ vars:
             customer_balance_transaction: "<fivetran_not_synced>"
         invoice:
           columns:
-            application_fee_amount: "<fivetran_not_synced>"
-            attempted: "<fivetran_not_synced>"
-            billing: "<fivetran_not_synced>"
             charge_id: "<fivetran_not_synced>"
             created: "<fivetran_not_synced>"
-            date: "<fivetran_not_synced>"
-            default_source_id: "<fivetran_not_synced>"
-            ending_balance: "<fivetran_not_synced>"
-            finalized_at: "<fivetran_not_synced>"
-            footer: "<fivetran_not_synced>"
-            hosted_invoice_url: "<fivetran_not_synced>"
-            invoice_pdf: "<fivetran_not_synced>"
-            next_payment_attempt: "<fivetran_not_synced>"
             payment_intent_id: "<fivetran_not_synced>"
-            starting_balance: "<fivetran_not_synced>"
-            statement_descriptor: "<fivetran_not_synced>"
             status_transitions_finalized_at: "<fivetran_not_synced>"
             status_transitions_marked_uncollectible_at: "<fivetran_not_synced>"
             status_transitions_paid_at: "<fivetran_not_synced>"
             status_transitions_voided_at: "<fivetran_not_synced>"
-            subscription_proration_date: "<fivetran_not_synced>"
-            tax_percent: "<fivetran_not_synced>"
-            threshold_reason_amount_gte: "<fivetran_not_synced>"
-            webhooks_delivered_at: "<fivetran_not_synced>"
         invoice_line_item:
           columns:
             invoice_item_id: "<fivetran_not_synced>"
@@ -121,7 +104,6 @@ vars:
             metadata: "<fivetran_not_synced>"
         product:
           columns:
-            fivetran_synced: "<fivetran_not_synced>"
             attributes: "<fivetran_not_synced>"
             deactivate_on: "<fivetran_not_synced>"
             images: "<fivetran_not_synced>"
