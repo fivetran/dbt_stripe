@@ -661,8 +661,6 @@ models:
         description: Describes how to compute the price per period. Either per_unit or tiered. per_unit indicates that the fixed amount (specified in unit_amount or unit_amount_decimal) will be charged per unit in quantity (for prices with usage_type=licensed), or per unit of total usage (for prices with usage_type=metered). tiered indicates that the unit pricing will be computed using a tiering strategy as defined using the tiers and tiers_mode attributes.
       - name: created_at
         description: Time at which the object was created. Measured in seconds since the Unix epoch.
-      - name: invoice_item_id
-        description: The ID of the invoice item this record is a part of.
       - name: is_deleted
         description: Whether record has been deleted.
       - name: source_relation
@@ -687,8 +685,6 @@ models:
         description: The integer amount in currency units representing the amount of the credit note, excluding tax and invoice level discounts. "{{ doc('convert_values') }}"
       - name: credit_note_total
         description: The integer amount in currency units representing the total amount of the credit note, including tax and all discount. "{{ doc('convert_values') }}"
-      - name: livemode
-        description: Has the value true if the object exists in live mode or the value false if the object exists in test mode.
       - name: memo
         description: Customer-facing text that appears on the credit note PDF.
       - name: metadata
@@ -1033,6 +1029,8 @@ models:
         description: If the coupon does not last forever, the duration in months you can apply it. For a forever coupon, this attribute is null.
       - name: max_redemptions
         description: The maximum number of times this coupon can be redeemed.
+      - name: metadata
+        description: Custom metadata added to the record, in JSON string format
       - name: coupon_name
         description: Name of the coupon or promotion.
       - name: percent_off
