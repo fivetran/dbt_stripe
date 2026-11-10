@@ -1,23 +1,7 @@
 
-with base as (
+with fields as (
 
-    select * 
-    from {{ ref('stg_stripe__refund_tmp') }}
-),
-
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__refund_tmp')),
-                staging_columns=get_refund_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-        
-    from base
+    {{ stripe.resolve_source_columns(table_name='refund', staging_columns=stripe.get_refund_columns()) }}
 ),
 
 final as (

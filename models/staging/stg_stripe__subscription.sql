@@ -1,25 +1,10 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
-with base as (
+{%- set history_or_subscription = 'subscription_history' if var('stripe__using_subscription_history', stripe.does_table_exist('subscription_history')=='exists') else 'subscription' -%}
 
-    select * 
-    from {{ ref('stg_stripe__subscription_tmp') }}
+with fields as (
 
-),
-
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__subscription_tmp')),
-                staging_columns=get_subscription_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-        
-    from base
+    {{ stripe.resolve_source_columns(table_name=history_or_subscription, staging_columns=stripe.get_subscription_columns()) }}
 ),
 
 final as (
