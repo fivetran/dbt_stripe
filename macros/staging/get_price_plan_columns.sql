@@ -1,6 +1,6 @@
 {% macro get_price_plan_columns() %}
 
-{% if var('stripe__using_price', stripe.does_table_exist('price')=='exists') %}
+{% if var('stripe__using_price', stripe.source_config_has_table('price')) %}
 
 {% set columns = [
     {"name": "_fivetran_synced", "datatype": dbt.type_timestamp()},

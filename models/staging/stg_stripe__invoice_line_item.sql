@@ -2,7 +2,8 @@
 
 with fields as (
 
-    {{ stripe.resolve_source_columns(table_name='invoice_line_item', staging_columns=stripe.get_invoice_line_item_columns()) }}
+    select *
+    from {{ ref('stg_stripe__invoice_line_item_tmp') }}
 ),
 
 final as (

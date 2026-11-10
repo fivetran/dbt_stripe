@@ -2,7 +2,8 @@
 
 with fields as (
 
-    {{ stripe.resolve_source_columns(table_name='payout', staging_columns=stripe.get_payout_columns()) }}
+    select *
+    from {{ ref('stg_stripe__payout_tmp') }}
 ),
 
 final as (

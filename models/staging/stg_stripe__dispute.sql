@@ -1,7 +1,8 @@
 
 with fields as (
 
-    {{ stripe.resolve_source_columns(table_name='dispute', staging_columns=stripe.get_dispute_columns()) }}
+    select *
+    from {{ ref('stg_stripe__dispute_tmp') }}
 ),
 
 final as (

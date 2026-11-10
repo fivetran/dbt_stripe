@@ -1,9 +1,14 @@
 {% macro resolve_source_columns(table_name, staging_columns, payload_key=none) %}
 {#
-    POC: builds the full body of a staging model's `fields` CTE from the stripe__source_config
-    payload var, with no adapter.get_columns_in_relation introspection. Replaces the
-    `stg_stripe__<table>_tmp` view + fivetran_utils.fill_staging_columns + apply_source_relation
-    combination, and handles unioning (stripe_sources) in the same pass.
+    POC: builds the body of a `stg_stripe__<table>_tmp` model from the stripe__source_config
+    payload var, with no warehouse introspection (no adapter.get_columns_in_relation or
+    adapter.get_relation). Unions connections and resolves columns in one pass, since a
+    `union all` needs every leg's column list aligned and that list comes from the payload.
+    Replaces fivetran_utils.union_connections/union_data in the tmp models and
+    fivetran_utils.fill_staging_columns/apply_source_relation in the staging models.
+
+    Connections come from stripe_sources, else stripe_union_schemas / stripe_union_databases
+    (each turned into a database + schema pair), else the single `stripe` source.
 
     Payload shape (keyed by connection, then by the connector's own table name, then by the
     connector's own column name -> the column's current destination name):
@@ -35,15 +40,22 @@
     When more than one leg is unioned, every column is cast to its declared datatype so the
     legs line up positionally even when one leg null-fills a column the other has.
 
-    Usage in a model's `fields` CTE:
-        with fields as (
-            {{ stripe.resolve_source_columns(table_name='customer', staging_columns=stripe.get_customer_columns()) }}
-        ),
+    Usage in models/staging/tmp/stg_stripe__customer_tmp.sql:
+        {{ stripe.resolve_source_columns(table_name='customer', staging_columns=stripe.get_customer_columns()) }}
 #}
 {%- set payload_key = payload_key or table_name -%}
 {%- set identifier = var('stripe_' ~ table_name ~ '_identifier', table_name) -%}
 {%- set full_source_config = var('stripe__source_config', {}) or {} -%}
 {%- set connections = var('stripe_sources', []) or [] -%}
+{%- if connections | length == 0 -%}
+    {%- set connections = [] -%}
+    {%- for schema in var('stripe_union_schemas', []) -%}
+        {%- do connections.append({'database': var('stripe_database', target.database), 'schema': schema}) -%}
+    {%- endfor -%}
+    {%- for database in var('stripe_union_databases', []) -%}
+        {%- do connections.append({'database': database, 'schema': var('stripe_schema', 'stripe')}) -%}
+    {%- endfor -%}
+{%- endif -%}
 {%- set using_unioning = connections | length > 0 -%}
 
 {# One entry per union leg: where it lives, and the column map that applies to it. #}
@@ -52,7 +64,7 @@
     {%- for connection in connections -%}
         {%- set database = connection.database or target.database -%}
         {%- set schema = connection.schema or 'stripe' -%}
-        {%- if var('has_defined_sources', false) -%}
+        {%- if var('has_defined_sources', false) and connection.name -%}
             {%- set relation = source(connection.name, table_name) -%}
         {%- else -%}
             {%- set relation = api.Relation.create(database=database, schema=schema, identifier=identifier) -%}
@@ -124,13 +136,14 @@
 
 {% macro source_config_has_table(payload_key) %}
 {#
-    POC: payload-driven replacement for does_table_exist. Returns true/false when
-    stripe__source_config is set (true only if every configured connection syncs the table),
-    or none when it isn't, so callers can fall back to introspection.
+    POC: answers "does the connector sync this table?" from the stripe__source_config payload,
+    with no warehouse introspection. True only if every configured connection syncs the table.
+    With no payload set, returns true: the connector's current default tables (`price`,
+    `subscription_history`) are assumed, and the stripe__using_* vars still override.
 #}
 {%- set full_source_config = var('stripe__source_config', {}) or {} -%}
 {%- if full_source_config | length == 0 -%}
-    {{ return(none) }}
+    {{ return(true) }}
 {%- endif -%}
 {%- for connection_config in full_source_config.values() -%}
     {%- if payload_key not in (connection_config or {}) -%}

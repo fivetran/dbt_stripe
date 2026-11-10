@@ -1,10 +1,9 @@
 {{ config(enabled=var('stripe__using_subscriptions', True)) }}
 
-{%- set history_or_subscription = 'subscription_history' if var('stripe__using_subscription_history', stripe.does_table_exist('subscription_history')=='exists') else 'subscription' -%}
-
 with fields as (
 
-    {{ stripe.resolve_source_columns(table_name=history_or_subscription, staging_columns=stripe.get_subscription_columns()) }}
+    select *
+    from {{ ref('stg_stripe__subscription_tmp') }}
 ),
 
 final as (
@@ -38,7 +37,7 @@ final as (
 
     from fields
     {{ livemode_predicate() }}
-    {% if var('stripe__using_subscription_history', stripe.does_table_exist('subscription_history')=='exists') %}
+    {% if var('stripe__using_subscription_history', stripe.source_config_has_table('subscription_history')) %}
         and coalesce(_fivetran_active, true)
     {% endif %}
 )

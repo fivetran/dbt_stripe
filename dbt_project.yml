@@ -17,6 +17,8 @@ models:
     staging:
       +materialized: table
       +schema: stg_stripe
+      tmp:
+        +materialized: view
 
 vars:
   stripe:

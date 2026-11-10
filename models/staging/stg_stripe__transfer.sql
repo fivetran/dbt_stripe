@@ -2,7 +2,8 @@
 
 with fields as (
 
-    {{ stripe.resolve_source_columns(table_name='transfer', staging_columns=stripe.get_transfer_columns()) }}
+    select *
+    from {{ ref('stg_stripe__transfer_tmp') }}
 ),
 
 final as (
