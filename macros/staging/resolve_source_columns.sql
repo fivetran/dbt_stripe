@@ -29,9 +29,9 @@
 
     Per connection:
       - No entry for the connection or the table -> every column is selected under its own name.
-      - Table marked `<fivetran_not_synced>` -> that union leg is skipped entirely. (Stripe needs
-        this and Salesforce doesn't: unioning, and the price/plan and subscription_history/
-        subscription choice, depend on whether a connection syncs a table.)
+      - Table marked `<fivetran_not_synced>` -> that connection contributes no rows. If no
+        connection syncs it, the model is an empty table of typed nulls, as with the old union
+        macros. (Stripe-only: Salesforce doesn't union.)
       - Column renamed -> selected from its current name. Column marked `<fivetran_not_synced>`
         -> `cast(null as datatype)`. Unlisted column -> selected under its own name.
 
@@ -132,25 +132,4 @@
     {% if not loop.last %}union all{% endif %}
 {%- endfor %}
 
-{%- endmacro %}
-
-
-{% macro source_config_has_table(payload_key) %}
-{#
-    POC: answers "does the connector sync this table?" from the stripe__source_config payload,
-    with no warehouse introspection. False if any configured connection marks the table
-    `<fivetran_not_synced>`, otherwise true. So with no payload set the connector's current
-    default tables (`price`, `subscription_history`) are assumed; the stripe__using_* vars
-    still override.
-#}
-{%- set full_source_config = var('stripe__source_config', {}) or {} -%}
-{%- if full_source_config | length == 0 -%}
-    {{ return(true) }}
-{%- endif -%}
-{%- for connection_config in full_source_config.values() -%}
-    {%- if (connection_config or {}).get(payload_key) == '<fivetran_not_synced>' -%}
-        {{ return(false) }}
-    {%- endif -%}
-{%- endfor -%}
-{{ return(true) }}
 {%- endmacro %}

@@ -37,7 +37,7 @@ final as (
 
     from fields
     {{ livemode_predicate() }}
-    {% if var('stripe__using_subscription_history', stripe.source_config_has_table('subscription_history')) %}
+    {% if var('stripe__using_subscription_history', true) %}
         and coalesce(_fivetran_active, true)
     {% endif %}
 )

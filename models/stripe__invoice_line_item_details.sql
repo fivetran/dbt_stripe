@@ -83,7 +83,7 @@ left join subscription
 
 left join price_plan
 
-{% if var('stripe__using_price', stripe.source_config_has_table('price')) %}
+{% if var('stripe__using_price', true) %}
     on invoice_line_item.price_id = price_plan.price_plan_id
 {% else %}
     on invoice_line_item.plan_id = price_plan.price_plan_id
