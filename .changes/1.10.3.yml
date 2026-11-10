@@ -1,0 +1,8 @@
+version: 1.10.3
+
+bug_fixes:
+  - title: Unioned connections with overlapping IDs
+    description: Adds `source_relation` to joins that were missing it, so records from one unioned connection no longer match records from another connection with the same ID.
+    details:
+      - "`stripe__subscription_details`: Invoice line items now join to invoices on both `invoice_id` and `source_relation`. Before this fix, `average_line_item_amount` and `avg_num_line_items` could be inflated when unioned connections shared invoice IDs."
+      - "`stripe__balance_transactions`: Payment method cards now join to payment methods on both `payment_method_id` and `source_relation`. Before this fix, rows could be duplicated, or `payment_method_brand` and `payment_method_funding` could come from another connection, when unioned connections shared payment method IDs."
