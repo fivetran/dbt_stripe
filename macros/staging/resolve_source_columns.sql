@@ -10,28 +10,30 @@
     Connections come from stripe_sources, else stripe_union_schemas / stripe_union_databases
     (each turned into a database + schema pair), else the single `stripe` source.
 
-    Payload shape (keyed by connection, then by the connector's own table name, then by the
-    connector's own column name -> the column's current destination name):
+    Payload shape (keyed by connection, then by the connector's own table name). `columns` is
+    sparse: it lists only the exceptions, keyed by the connector's own column name.
 
         stripe__source_config:
-          <database>.<schema>:          # or just <schema> when the schema name is unique
-            <payload_key>:              # e.g. customer
+          <schema>:                     # e.g. stripe_dbt
+            <payload_key>:              # e.g. customer; every synced table gets an entry
               name: <destination table name>
-              columns:
-                <source_column_name>: <current destination column name>
+              columns:                  # optional
+                <source_column_name>: <current destination column name>   # renamed
+                <source_column_name>: null                                # not synced
 
-    Connection keys are `database.schema` first, then `schema` alone. Schema alone isn't enough
-    once you union: two Stripe connections in different projects/databases can both land in a
-    schema called `stripe`. When the var has exactly one entry and you aren't unioning, that
-    entry is used regardless of its key.
+    Connections are keyed by schema. A `database.schema` key is also accepted and checked first,
+    only to tell apart unioned connections that land in same-named schemas in different
+    databases. When the var has exactly one entry and you aren't unioning, that entry is used
+    regardless of its key.
 
     Per connection:
       - No payload entry for the connection at all -> every column is assumed present under its
         own name (the connector's default, unrenamed behavior).
       - Connection entry exists but has no entry for this table -> the connector doesn't sync the
         table for that connection, so that union leg is skipped entirely.
-      - Table entry exists -> each staging column is selected from its mapped current name, or
-        `cast(null as datatype)` when the column isn't in the payload.
+      - Table entry exists -> a column listed with a name is selected from that name, a column
+        listed as null becomes `cast(null as datatype)`, and an unlisted column is selected
+        under its own name.
 
     A column's source name is `source_name` on its get_*_columns dict, defaulting to `name`.
     Stripe's connector columns are already snake_case, so nearly all match. Fivetran metadata
@@ -88,8 +90,8 @@
     {%- endif -%}
 
     {%- if connection_config is none -%}
-        {# no entry for this connection: identity mapping #}
-        {%- do resolved_legs.append({'leg': leg, 'columns': none}) -%}
+        {# no entry for this connection: every column present under its own name #}
+        {%- do resolved_legs.append({'leg': leg, 'columns': {}}) -%}
     {%- elif payload_key in connection_config -%}
         {%- set table_config = connection_config[payload_key] or {} -%}
         {%- do resolved_legs.append({'leg': leg, 'columns': table_config.get('columns', {}) or {}}) -%}
@@ -113,10 +115,11 @@
     select
         {%- for column in staging_columns %}
         {%- set output_name = column.alias if 'alias' in column else fivetran_utils.quote_column(column) | trim %}
-        {%- if '_fivetran' in column.name or resolved.columns is none %}
-            {%- set current_name = column.name %}
+        {%- set source_column = column.source_name or column.name %}
+        {%- if '_fivetran' not in column.name and source_column in resolved.columns %}
+            {%- set current_name = resolved.columns[source_column] %}
         {%- else %}
-            {%- set current_name = resolved.columns.get(column.source_name or column.name) %}
+            {%- set current_name = column.name %}
         {%- endif %}
         {%- if current_name is none %}
         cast(null as {{ column.datatype }}) as {{ output_name }},
