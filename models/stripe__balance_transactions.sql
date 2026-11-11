@@ -110,8 +110,8 @@ with balance_transaction as (
     select
         charge_id,
         source_relation,
-        {{ fivetran_utils.string_agg('dispute_id', "','")}} as dispute_ids,
-        {{ fivetran_utils.string_agg('distinct dispute_reason', "','")}} as dispute_reasons,
+        {{ dbt.listagg('dispute_id', "','")}} as dispute_ids,
+        {{ dbt.listagg('distinct dispute_reason', "','")}} as dispute_reasons,
         count(dispute_id) as dispute_count
     from dispute
     group by 1,2
