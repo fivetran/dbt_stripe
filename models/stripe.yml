@@ -250,7 +250,7 @@ models:
       - name: default_card_id
         description: ID of the default card used by the customer.
       - name: shipping_name
-        description: Attribute of the customer's shipping address.
+        description: Name of the recipient on the customer's shipping address.
       - name: shipping_address_line_1
         description: Attribute of the customer's shipping address.
       - name: shipping_address_line_2
@@ -264,7 +264,7 @@ models:
       - name: shipping_address_postal_code
         description: Attribute of the customer's shipping address.
       - name: shipping_phone
-        description: Attribute of the customer's shipping address.
+        description: Phone number of the recipient on the customer's shipping address.
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: phone
@@ -590,7 +590,7 @@ models:
       - name: currency
         description: Three-letter ISO code for the currency in which the amount is defined.
       - name: amount
-        description: Amount of this activity.
+        description: Amount of this activity. "{{ doc('convert_values') }}"
       - name: charge_id
         description: The unique ID of the related charge, if any. For charges, this will be the charge itself; for refunds or disputes, this will be the original charge being refunded or disputed.
       - name: payment_intent_id
@@ -678,7 +678,7 @@ models:
       - name: statement_descriptor
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer. "{{ doc('convert_values') }}"
       - name: balance_transaction_description
         description: An arbitrary string attached to the balance transaction.
       - name: connected_account_id
@@ -714,7 +714,7 @@ models:
       - name: description
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer. "{{ doc('convert_values') }}"
       - name: customer_facing_currency
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
       - name: automatic_payout_id
@@ -838,7 +838,7 @@ models:
       - name: description
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer. "{{ doc('convert_values') }}"
       - name: customer_facing_currency
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
       - name: customer_id
@@ -934,7 +934,7 @@ models:
     description: Modeled after the [titular report](https://stripe.com/docs/reports/balance#schema-payouts-itemized-3) from Stripe, each record represents a payout and its additional details such as expected arrival date and current status. This report belongs to the class of Balance reports. The Balance report is similar to a bank statement, helping you to reconcile your Stripe balance at the end of the month. The Balance report is most useful if you treat Stripe like a bank account for accounting purposes, reconciling the balance at the end of each month. If you have automatic payouts enabled and prefer to reconcile the transactions settled in each payout, see the Payout reconciliation report instead. The Payout Itemized report information on each payout made to your bank account.
     columns:
       - name: payout_id
-        description: The Stripe object to which this transaction is related.
+        description: Unique identifier for the payout this transaction is part of.
       - name: effective_at
         description: For automatic payouts, this is the date we expect funds to arrive in your bank account. For manual payouts, this is the date the payout was initiated. In both cases, it's the date the paid-out funds are deducted from your Stripe balance. All dates in the requested timezone, or UTC if not provided.
       - name: currency

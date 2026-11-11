@@ -39,5 +39,5 @@ State, county, province, or region.
 {%- enddocs %}
 
 {% docs convert_values -%}
-Values can be expressed either in the smallest currency unit (default) or in the major currency unit (divided by 100), as determined by the `stripe__convert_values` variable. Refer to the [README]((https://github.com/fivetran/dbt_stripe_source?tab=readme-ov-file#enabling-cent-to-dollar-conversion)) for more information.
+Values can be expressed either in the smallest currency unit (default) or in the major currency unit (divided by 100), as determined by the `stripe__convert_values` variable. Refer to the [README](https://github.com/fivetran/dbt_stripe?tab=readme-ov-file#enabling-cent-to-dollar-conversion) for more information.
 {%- enddocs %}
