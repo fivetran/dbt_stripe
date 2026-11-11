@@ -6,6 +6,10 @@
 - Documents the `metadata` column in `stg_stripe__coupon`. The model already selects this column, but the documentation left it out.
 - Removes `livemode` from `stg_stripe__credit_note`. The package filters on `livemode` rather than passing it through to the model output.
 - Removes `invoice_item_id` from `stg_stripe__price_plan`. The source `price` table has this column, but the model does not select it.
+- Corrects the `convert_values` documentation link, which was malformed and pointed at the deprecated `stripe_source` package.
+- Documents that `amount` in `stripe__activity_itemized_2` and `customer_facing_amount` in the financial report models honor the `stripe__convert_values` variable.
+- Corrects the `payout_id` description in `stripe__payout_itemized_3`, which described a related Stripe object rather than the payout itself.
+- Corrects the `shipping_name` and `shipping_phone` descriptions in `stripe__customer_overview`, which both described a shipping address attribute.
 
 # dbt_stripe v1.10.2
 
