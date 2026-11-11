@@ -42,7 +42,7 @@ models:
     - name: balance_transaction_description
       description: An arbitrary string attached to the object. Often useful for displaying to users.
     - name: customer_facing_amount
-      description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+      description: The transaction amount that the customer sees. "{{ doc('convert_values') }}" If the customer was charged in a different currency than your account's default, this field will reflect the amount as seen by the customer.
     - name: customer_facing_currency
       description: Three-letter ISO currency code that the customer sees.
     - name: effective_at
@@ -678,7 +678,7 @@ models:
       - name: statement_descriptor
         description: The dynamic statement descriptor or suffix specified when the related charge was created.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: The transaction amount that the customer sees. "{{ doc('convert_values') }}" If the customer was charged in a different currency than your account's default, this field will reflect the amount as seen by the customer.
       - name: balance_transaction_description
         description: An arbitrary string attached to the balance transaction.
       - name: connected_account_id
@@ -714,7 +714,7 @@ models:
       - name: description
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: The transaction amount that the customer sees. "{{ doc('convert_values') }}" If the customer was charged in a different currency than your account's default, this field will reflect the amount as seen by the customer.
       - name: customer_facing_currency
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
       - name: automatic_payout_id
@@ -838,7 +838,7 @@ models:
       - name: description
         description: An arbitrary string attached to the balance transaction. Often useful for displaying to users.
       - name: customer_facing_amount
-        description: For transactions associated with charges, refunds, or disputes, the amount of the original charge, the refund, or the latest dispute. If the customer was charged in a different currency than your account’s default, this field will reflect the amount as seen by the customer.
+        description: The transaction amount that the customer sees. "{{ doc('convert_values') }}" If the customer was charged in a different currency than your account's default, this field will reflect the amount as seen by the customer.
       - name: customer_facing_currency
         description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
       - name: customer_id
