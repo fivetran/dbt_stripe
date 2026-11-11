@@ -1,26 +1,28 @@
 {#-
-    Compare the columns the package expects for a Stripe source table against the columns in the
-    SOURCE table(s) the staging layer reads from. The source is what changes, so it is read
-    directly, not through the built stg_stripe__<table>_tmp view (only a copy that goes stale).
+    get_column_diffs() compares the columns the package expects for each Stripe source table
+    (get_<table>_columns()) with the columns in the source table(s) the package is configured to read,
+    and returns only the sources that differ, keyed by source table name:
 
-    Everything is keyed by the source table name exactly as in src_stripe.yml (account, price,
-    plan, subscription, subscription_history, ...), never by staging model name.
+        {source table: {missing, extra, source_missing, source_schemas}}
 
-    get_column_diff(source_name) returns only the differences, as a dict:
-      missing:        expected columns absent from the source (fill_staging_columns null-fills these)
+      missing:        expected columns the source lacks (fill_staging_columns null-fills these)
       extra:          source columns the package doesn't model
-      source_missing: true if no source table was found (then `missing` is every expected column)
-      source_schemas: schema(s) the source was found in (more than one when schemas are unioned)
+      source_missing: no source table was found (then `missing` is every expected column)
+      source_schemas: schema(s) the source was found in (several when connections are unioned)
 
-    When several source relations are unioned (schemas, databases, or connections), a column counts
-    as present if any of them has it, matching how the union is built.
+    It reads the source tables themselves, not the built stg_stripe__<table>_tmp views, which only
+    copy the source and go stale. With several connections a column counts as present if any of them
+    has it, as in the union.
 
-    At parse time (execute is false) the source can't be inspected, so empty lists are returned.
+    This is the package's entry point for the fivetran-source-config skill. Run with
+    `dbt run-operation stripe.get_column_diffs` it also logs the result as JSON, because run-operation
+    discards return values. It has to be started that way: only run-operation resolves var() in this
+    package's scope. Sibling macros are called as stripe.<macro>() so they resolve from outside it.
 -#}
 
-{#- Expected columns per source table name. A static map, so adding a table is one edit here next to
-    its get_<table>_columns() macro. price/plan and subscription/subscription_history share a list
-    because the staging model reads whichever of the pair exists. -#}
+{#- Expected columns per source table name (as in src_stripe.yml). One entry per get_<table>_columns().
+    price/plan and subscription/subscription_history share a list: the staging model reads whichever
+    of each pair exists, and a source that isn't there is simply reported as source_missing. -#}
 {% macro stripe_expected_columns() %}
     {{ return({
         'account': stripe.get_account_columns(),
@@ -53,137 +55,79 @@
     }) }}
 {% endmacro %}
 
-{#- The source table a staging model reads. Same as the staging name except where the _tmp model
-    chooses between two, using the same vars and does_table_exist default as that model:
-      price_plan   -> price | plan
-      subscription -> subscription_history | subscription -#}
-{% macro stripe_source_table_name(staging_table) %}
-    {% if staging_table == 'price_plan' %}
-        {{ return('price' if var('stripe__using_price', stripe.does_table_exist('price') == 'exists') else 'plan') }}
-    {% elif staging_table == 'subscription' %}
-        {{ return('subscription_history' if var('stripe__using_subscription_history', stripe.does_table_exist('subscription_history') == 'exists') else 'subscription') }}
-    {% endif %}
-    {{ return(staging_table) }}
+{#- dbt's own record (graph.sources) of a declared source table, or none. -#}
+{% macro stripe_source_node(source_name, table) %}
+    {% for node in graph.sources.values() if node.source_name == source_name and node.name == table %}
+        {{ return(node) }}
+    {% endfor %}
+    {{ return(none) }}
 {% endmacro %}
 
-{#- Resolve the source relation(s) for a source table the same way stg_stripe__<table>_tmp does, in the
-    same order: union schemas, union databases, stripe_sources connections, then the single source.
-    This mirrors fivetran_utils.union_data / union_connections, which don't expose the relations. -#}
-{% macro stripe_source_relations(source_name) %}
-    {% set relations = [] %}
-    {% set union_schemas = var('stripe_union_schemas', []) %}
-    {% set union_databases = var('stripe_union_databases', []) %}
-    {% set connections = var('stripe_sources', []) %}
-    {% set has_defined_sources = var('has_defined_sources', false) %}
-
-    {% if union_schemas | length > 0 %}
-        {% for schema in union_schemas %}
-            {% if has_defined_sources %}
-                {% set src = source(schema, source_name) %}
-                {% set rel = adapter.get_relation(database=src.database, schema=src.schema, identifier=src.identifier) %}
-            {% else %}
-                {% set rel = adapter.get_relation(database=var('stripe_database', target.database), schema=schema, identifier=source_name) %}
-            {% endif %}
-            {% if rel is not none %}{% do relations.append(rel) %}{% endif %}
+{#- The relation(s) holding a source table: one per connection, found as stg_stripe__<table>_tmp finds
+    them. Connections come from stripe_sources, else stripe_union_schemas / stripe_union_databases, else
+    the single `stripe` source. Where sources are declared in dbt (has_defined_sources, or the single
+    source) the declaration says where the table lives; otherwise the connection's database and schema
+    do, with the table named by its stripe_<table>_identifier var (the union_schemas and union_databases
+    modes name it by the plain source table name, as fivetran_utils.union_data does). Tables that aren't
+    there are skipped. -#}
+{% macro stripe_source_relations(table) %}
+    {% set defined = var('has_defined_sources', false) %}
+    {% set places = [] %}
+    {% if var('stripe_sources', []) %}
+        {% for c in var('stripe_sources') %}
+            {% do places.append({'source': c.name, 'database': c.database or target.database, 'schema': c.schema or 'stripe', 'declared': defined, 'by_var': true}) %}
         {% endfor %}
-
-    {% elif union_databases | length > 0 %}
-        {% for database in union_databases %}
-            {% if has_defined_sources %}
-                {% set src = source('stripe', source_name) %}
-                {% set rel = adapter.get_relation(database=src.database, schema=src.schema, identifier=src.identifier) %}
-            {% else %}
-                {% set rel = adapter.get_relation(database=database, schema=var('stripe_schema', 'stripe'), identifier=source_name) %}
-            {% endif %}
-            {% if rel is not none %}{% do relations.append(rel) %}{% endif %}
+    {% elif var('stripe_union_schemas', []) %}
+        {% for s in var('stripe_union_schemas') %}
+            {% do places.append({'source': s, 'database': var('stripe_database', target.database), 'schema': s, 'declared': defined, 'by_var': false}) %}
         {% endfor %}
-
-    {% elif connections | length > 0 %}
-        {% for connection in connections %}
-            {% if has_defined_sources %}
-                {% set src = source(connection.name, source_name) %}
-                {% set rel = adapter.get_relation(database=src.database, schema=src.schema, identifier=src.identifier) %}
-            {% else %}
-                {% set rel = adapter.get_relation(
-                    database=connection.database if connection.database else target.database,
-                    schema=connection.schema if connection.schema else 'stripe',
-                    identifier=var('stripe_' ~ source_name ~ '_identifier', source_name)) %}
-            {% endif %}
-            {% if rel is not none %}{% do relations.append(rel) %}{% endif %}
+    {% elif var('stripe_union_databases', []) %}
+        {% for d in var('stripe_union_databases') %}
+            {% do places.append({'source': 'stripe', 'database': d, 'schema': var('stripe_schema', 'stripe'), 'declared': false, 'by_var': false}) %}
         {% endfor %}
-
     {% else %}
-        {% set src = source('stripe', source_name) %}
-        {% set rel = adapter.get_relation(database=src.database, schema=src.schema, identifier=src.identifier) %}
-        {% if rel is not none %}{% do relations.append(rel) %}{% endif %}
+        {% do places.append({'source': 'stripe', 'database': var('stripe_database', target.database), 'schema': var('stripe_schema', 'stripe'), 'declared': true, 'by_var': true}) %}
     {% endif %}
 
+    {% set relations = [] %}
+    {% for p in places %}
+        {% set node = stripe.stripe_source_node(p.source, table) if p.declared else none %}
+        {% set relation = adapter.get_relation(
+            database=node.database if node else p.database,
+            schema=node.schema if node else p.schema,
+            identifier=node.identifier if node else (var('stripe_' ~ table ~ '_identifier', table) if p.by_var else table)) %}
+        {% if relation is not none %}{% do relations.append(relation) %}{% endif %}
+    {% endfor %}
     {{ return(relations) }}
 {% endmacro %}
 
-{% macro get_column_diff(source_name) %}
-    {% if not execute %}
-        {{ return({'missing': [], 'extra': [], 'source_missing': false, 'source_schemas': []}) }}
-    {% endif %}
-
-    {% set expected_by_source = stripe.stripe_expected_columns() %}
-    {% if source_name not in expected_by_source %}
-        {{ exceptions.raise_compiler_error("get_column_diff: unknown source table '" ~ source_name ~ "'. Expected one of: " ~ expected_by_source.keys() | sort | join(', ')) }}
-    {% endif %}
-
-    {% set relations = stripe.stripe_source_relations(source_name) %}
-    {% set actual = [] %}
-    {% for relation in relations %}
-        {% for column in adapter.get_columns_in_relation(relation) %}
-            {% do actual.append(column.name | lower) %}
-        {% endfor %}
-    {% endfor %}
-    {% set actual = actual | unique | list %}
-    {% set expected = expected_by_source[source_name] | map(attribute='name') | map('lower') | list %}
-
-    {{ return({
-        'missing': expected | reject('in', actual) | list,
-        'extra': actual | reject('in', expected) | list,
-        'source_missing': relations | length == 0,
-        'source_schemas': relations | map(attribute='schema') | unique | list
-    }) }}
-{% endmacro %}
-
-{#-
-    Source tables the package reads right now. Staging models come from the graph, so disabled ones
-    (e.g. credit notes unless enabled) are skipped; each is mapped to the source table it reads, so
-    price_plan gives price or plan, and subscription gives subscription or subscription_history.
--#}
-{% macro stripe_source_tables() %}
-    {% set expected_by_source = stripe.stripe_expected_columns() %}
-    {% set tables = [] %}
-    {% for node in graph.nodes.values() if node.resource_type == 'model' and node.package_name == 'stripe' and node.name.startswith('stg_stripe__') and node.name.endswith('_tmp') %}
-        {% set source_name = stripe.stripe_source_table_name(node.name[12:-4]) %}
-        {% if source_name in expected_by_source %}
-            {% do tables.append(source_name) %}
-        {% endif %}
-    {% endfor %}
-    {{ return(tables | sort) }}
-{% endmacro %}
-
-{#-
-    {source_name: {missing, extra, source_missing, source_schemas}} for every source table with any
-    difference. This is the package's entry point for the fivetran-source-config skill.
-
-    Run directly with `dbt run-operation stripe.get_column_diffs`, it also logs the result as JSON,
-    because run-operation discards return values. It has to be run that way (not called from another
-    package's macro or `dbt show`), since only run-operation resolves var() in this package's scope.
--#}
 {% macro get_column_diffs() %}
     {% set result = {} %}
-    {% for source_name in stripe.stripe_source_tables() %}
-        {% set diff = stripe.get_column_diff(source_name) %}
-        {% if diff.missing or diff.extra %}
-            {% do result.update({source_name: diff}) %}
+    {% if execute %}
+        {% set expected_by_source = stripe.stripe_expected_columns() %}
+        {% for source_name in expected_by_source.keys() | sort %}
+            {% set relations = stripe.stripe_source_relations(source_name) %}
+            {% set actual = [] %}
+            {% for relation in relations %}
+                {% for column in adapter.get_columns_in_relation(relation) %}
+                    {% do actual.append(column.name | lower) %}
+                {% endfor %}
+            {% endfor %}
+            {% set expected = expected_by_source[source_name] | map(attribute='name') | map('lower') | list %}
+            {% set missing = expected | reject('in', actual) | list %}
+            {% set extra = actual | unique | reject('in', expected) | list %}
+            {% if missing or extra %}
+                {% do result.update({source_name: {
+                    'missing': missing,
+                    'extra': extra,
+                    'source_missing': relations | length == 0,
+                    'source_schemas': relations | map(attribute='schema') | unique | list
+                }}) %}
+            {% endif %}
+        {% endfor %}
+        {% if flags.WHICH == 'run-operation' %}
+            {{ log(tojson(result), info=True) }}
         {% endif %}
-    {% endfor %}
-    {% if execute and flags.WHICH == 'run-operation' %}
-        {{ log(tojson(result), info=True) }}
     {% endif %}
     {{ return(result) }}
 {% endmacro %}
