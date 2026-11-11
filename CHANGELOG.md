@@ -1,3 +1,17 @@
+# dbt_stripe v1.10.3
+
+[PR #172](https://github.com/fivetran/dbt_stripe/pull/172) includes the following updates:
+
+## Under the Hood
+- Documents the `metadata` column in `stg_stripe__coupon`. The model already selects this column, but the documentation left it out.
+- Removes `livemode` from `stg_stripe__credit_note`. The package filters on `livemode` rather than passing it through to the model output.
+- Removes `invoice_item_id` from `stg_stripe__price_plan`. The source `price` table has this column, but the model does not select it.
+- Corrects the `convert_values` documentation link, which was malformed and pointed at the deprecated `stripe_source` package.
+- Documents that `amount` in `stripe__activity_itemized_2` honors the `stripe__convert_values` variable.
+- Corrects the `payout_id` description in `stripe__payout_itemized_3`, which described a related Stripe object rather than the payout itself.
+- Corrects the `shipping_name` and `shipping_phone` descriptions in `stripe__customer_overview`, which both described a shipping address attribute.
+- Standardizes the `customer_facing_amount` and `customer_facing_currency` descriptions across `stripe__balance_transactions` and the financial report models, which previously documented the same values several different ways.
+
 # dbt_stripe v1.10.2
 
 [PR #164](https://github.com/fivetran/dbt_stripe/pull/164) includes the following updates:
