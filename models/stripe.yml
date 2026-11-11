@@ -716,7 +716,7 @@ models:
       - name: customer_facing_amount
         description: The transaction amount that the customer sees. "{{ doc('convert_values') }}" If the customer was charged in a different currency than your account's default, this field will reflect the amount as seen by the customer.
       - name: customer_facing_currency
-        description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
+        description: Three-letter ISO currency code that the customer sees.
       - name: automatic_payout_id
         description: ID of the automatically created payout associated with this balance transaction (only set if your account is on an automatic payout schedule).
       - name: automatic_payout_effective_at
@@ -840,7 +840,7 @@ models:
       - name: customer_facing_amount
         description: The transaction amount that the customer sees. "{{ doc('convert_values') }}" If the customer was charged in a different currency than your account's default, this field will reflect the amount as seen by the customer.
       - name: customer_facing_currency
-        description: For transactions associated with charges, refunds, or disputes, the three-letter ISO currency code for customer_facing_amount.
+        description: Three-letter ISO currency code that the customer sees.
       - name: customer_id
         description: The unique ID of the related customer, if any.
       - name: customer_email

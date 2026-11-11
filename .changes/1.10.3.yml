@@ -15,7 +15,7 @@ under_the_hood:
   a related Stripe object rather than the payout itself.
 - Corrects the `shipping_name` and `shipping_phone` descriptions in `stripe__customer_overview`,
   which both described a shipping address attribute.
-- Standardizes the `customer_facing_amount` description across `stripe__balance_transactions`
-  and the three financial report models, which previously documented the same value four
-  different ways.
+- Standardizes the `customer_facing_amount` and `customer_facing_currency` descriptions
+  across `stripe__balance_transactions` and the financial report models, which previously
+  documented the same values several different ways.
 date: '2026-11-10'
