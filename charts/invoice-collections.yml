@@ -1,0 +1,87 @@
+title: Stripe Invoice Collections
+text: |
+  Invoice status and collections by invoice creation date. Amounts follow
+  `stripe__convert_values` and are shown separately for each currency.
+  Outstanding balances exclude draft and void invoices. Requires invoices.
+variables:
+  period:
+    input: daterange
+    label: Invoices created
+queries:
+  summary:
+    dialect: duckdb
+    formats:
+      paid_share: percent
+    sql: |
+      select count(*) as invoices,
+        sum(case when status = 'paid' then 1 else 0 end) as paid_invoices,
+        sum(case when status = 'open' then 1 else 0 end) as open_invoices,
+        sum(case when status = 'paid' then 1.0 else 0.0 end) / nullif(count(*), 0) as paid_share
+      from {{ ref('stripe__invoice_details') }}
+      where {{ filter_date_range('invoice_created_at', period) }}
+  monthly:
+    dialect: duckdb
+    sql: |
+      select date_trunc('month', invoice_created_at) as month,
+        upper(currency) as currency, sum(amount_paid) as amount_paid
+      from {{ ref('stripe__invoice_details') }}
+      where {{ filter_date_range('invoice_created_at', period) }}
+        and status not in ('draft', 'void')
+      group by 1, 2
+      order by 1, 2
+  status:
+    dialect: duckdb
+    sql: |
+      select status, count(*) as invoices
+      from {{ ref('stripe__invoice_details') }}
+      where {{ filter_date_range('invoice_created_at', period) }}
+      group by 1
+      order by 2 desc
+  balances:
+    dialect: duckdb
+    sql: |
+      select upper(currency) as currency, status, count(*) as invoices,
+        sum(amount_due) as amount_due, sum(amount_paid) as amount_paid,
+        sum(amount_remaining) as amount_remaining
+      from {{ ref('stripe__invoice_details') }}
+      where {{ filter_date_range('invoice_created_at', period) }}
+        and status not in ('draft', 'void')
+      group by 1, 2
+      order by 1, 2
+charts:
+  invoices:
+    type: kpi
+    label: Invoices
+    query: summary
+    value: invoices
+  paid:
+    type: kpi
+    label: Paid invoices
+    query: summary
+    value: paid_invoices
+  open:
+    type: kpi
+    label: Open invoices
+    query: summary
+    value: open_invoices
+  paid_share:
+    type: kpi
+    label: Paid share of invoices
+    query: summary
+    value: paid_share
+  payments:
+    type: line
+    title: Amount Paid by Invoice Month and Currency
+    query: monthly
+  statuses:
+    type: bar
+    title: Invoice Status
+    query: status
+  balances:
+    type: table
+    title: Collections by Currency and Status
+    query: balances
+rows:
+  - cols: [invoices, paid, open, paid_share]
+  - payments
+  - cols: [statuses, balances]

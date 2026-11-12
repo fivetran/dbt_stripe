@@ -1,0 +1,68 @@
+title: Stripe Subscription Revenue
+text: |
+  Contracted and billed MRR from the package's subscription-item report.
+  Amounts follow `stripe__convert_values`; currencies stay separate and no
+  exchange-rate conversion is applied. Requires subscriptions and invoices.
+variables:
+  period:
+    input: daterange
+    label: Subscription months
+queries:
+  monthly:
+    dialect: duckdb
+    sql: |
+      select subscription_month as month, upper(currency) as currency,
+        sum(month_contract_mrr) as contracted_mrr,
+        sum(month_billed_mrr) as billed_mrr,
+        sum(month_discount_applied) as discounts
+      from {{ ref('stripe__subscription_item_mrr_report') }}
+      where subscription_month <= date_trunc('month', current_date)
+        and {{ filter_date_range('subscription_month', period) }}
+      group by 1, 2
+      order by 1, 2
+  latest:
+    dialect: duckdb
+    sql: |
+      select currency, month, contracted_mrr, billed_mrr, discounts
+      from {{ queries.monthly }}
+      where month = (select max(month) from {{ queries.monthly }})
+      order by currency
+  movement:
+    dialect: duckdb
+    sql: |
+      select subscription_month as month, upper(currency) as currency,
+        contract_mrr_type as movement,
+        sum(coalesce(month_contract_mrr, 0) - coalesce(prior_month_contract_mrr, 0)) as mrr_change
+      from {{ ref('stripe__subscription_item_mrr_report') }}
+      where subscription_month <= date_trunc('month', current_date)
+        and {{ filter_date_range('subscription_month', period) }}
+        and contract_mrr_type in ('new', 'expansion', 'contraction', 'churned', 'reactivation')
+      group by 1, 2, 3
+      order by 1 desc, 2, 3
+charts:
+  contracted:
+    type: line
+    title: Contracted MRR by Currency
+    query: monthly
+    x: month
+    y: contracted_mrr
+    color: currency
+  billed:
+    type: line
+    title: Billed MRR by Currency
+    query: monthly
+    x: month
+    y: billed_mrr
+    color: currency
+  snapshot:
+    type: table
+    title: Latest Selected Month
+    query: latest
+  movements:
+    type: table
+    title: Monthly MRR Movements
+    query: movement
+rows:
+  - snapshot
+  - cols: [contracted, billed]
+  - movements
