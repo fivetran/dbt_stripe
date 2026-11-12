@@ -239,6 +239,3 @@ flags:
   send_anonymous_usage_stats: False
 
   use_colors: True
-
-  # install the package's ./skills into .claude/skills on `dbt deps`
-  ai_provider: claude
