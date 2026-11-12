@@ -140,6 +140,37 @@ with balance_transaction_joined as (
     from incomplete_charges
     group by 1,2
 
+), unassociated_transactions_grouped as (
+
+    -- Adds up every transaction with no matching customer record into one row per source_relation.
+    -- customer_id is set to null so the join in transactions_not_associated_with_customer never matches.
+    select
+      cast(null as {{ dbt.type_string() }}) as customer_id,
+      transactions_grouped.source_relation,
+      sum(transactions_grouped.total_sales) as total_sales,
+      sum(transactions_grouped.total_refunds) as total_refunds,
+      sum(transactions_grouped.total_gross_transaction_amount) as total_gross_transaction_amount,
+      sum(transactions_grouped.total_fees) as total_fees,
+      sum(transactions_grouped.total_net_transaction_amount) as total_net_transaction_amount,
+      sum(transactions_grouped.total_sales_count) as total_sales_count,
+      sum(transactions_grouped.total_refund_count) as total_refund_count,
+      sum(transactions_grouped.sales_this_month) as sales_this_month,
+      sum(transactions_grouped.refunds_this_month) as refunds_this_month,
+      sum(transactions_grouped.gross_transaction_amount_this_month) as gross_transaction_amount_this_month,
+      sum(transactions_grouped.fees_this_month) as fees_this_month,
+      sum(transactions_grouped.net_transaction_amount_this_month) as net_transaction_amount_this_month,
+      sum(transactions_grouped.sales_count_this_month) as sales_count_this_month,
+      sum(transactions_grouped.refund_count_this_month) as refund_count_this_month,
+      min(transactions_grouped.first_sale_date) as first_sale_date,
+      max(transactions_grouped.most_recent_sale_date) as most_recent_sale_date
+
+    from transactions_grouped
+    left join customer 
+        on transactions_grouped.customer_id = customer.customer_id
+        and transactions_grouped.source_relation = customer.source_relation
+    where customer.customer_id is null and customer.description is null
+    group by transactions_grouped.source_relation
+
 ), transactions_not_associated_with_customer as (
 
     select
@@ -148,33 +179,33 @@ with balance_transaction_joined as (
       customer.created_at as customer_created_at,
       customer.currency as customer_currency,
       {{ dbt_utils.star(from=ref('stg_stripe__customer'), relation_alias='customer', except=['customer_id','description','created_at','currency','metadata','source_relation']) }},
-      coalesce(transactions_grouped.total_sales, 0) as total_sales,
-      coalesce(transactions_grouped.total_refunds, 0) as total_refunds,
-      coalesce(transactions_grouped.total_gross_transaction_amount, 0) as total_gross_transaction_amount,
-      coalesce(transactions_grouped.total_fees, 0) as total_fees,
-      coalesce(transactions_grouped.total_net_transaction_amount, 0) as total_net_transaction_amount,
-      coalesce(transactions_grouped.total_sales_count, 0) as total_sales_count,
-      coalesce(transactions_grouped.total_refund_count, 0) as total_refund_count,    
-      coalesce(transactions_grouped.sales_this_month, 0) as sales_this_month,
-      coalesce(transactions_grouped.refunds_this_month, 0) as refunds_this_month,
-      coalesce(transactions_grouped.gross_transaction_amount_this_month, 0) as gross_transaction_amount_this_month,
-      coalesce(transactions_grouped.fees_this_month, 0) as fees_this_month,
-      coalesce(transactions_grouped.net_transaction_amount_this_month, 0) as net_transaction_amount_this_month,
-      coalesce(transactions_grouped.sales_count_this_month, 0) as sales_count_this_month,
-      coalesce(transactions_grouped.refund_count_this_month, 0) as refund_count_this_month,
-      transactions_grouped.first_sale_date,
-      transactions_grouped.most_recent_sale_date,
+      coalesce(unassociated_transactions_grouped.total_sales, 0) as total_sales,
+      coalesce(unassociated_transactions_grouped.total_refunds, 0) as total_refunds,
+      coalesce(unassociated_transactions_grouped.total_gross_transaction_amount, 0) as total_gross_transaction_amount,
+      coalesce(unassociated_transactions_grouped.total_fees, 0) as total_fees,
+      coalesce(unassociated_transactions_grouped.total_net_transaction_amount, 0) as total_net_transaction_amount,
+      coalesce(unassociated_transactions_grouped.total_sales_count, 0) as total_sales_count,
+      coalesce(unassociated_transactions_grouped.total_refund_count, 0) as total_refund_count,    
+      coalesce(unassociated_transactions_grouped.sales_this_month, 0) as sales_this_month,
+      coalesce(unassociated_transactions_grouped.refunds_this_month, 0) as refunds_this_month,
+      coalesce(unassociated_transactions_grouped.gross_transaction_amount_this_month, 0) as gross_transaction_amount_this_month,
+      coalesce(unassociated_transactions_grouped.fees_this_month, 0) as fees_this_month,
+      coalesce(unassociated_transactions_grouped.net_transaction_amount_this_month, 0) as net_transaction_amount_this_month,
+      coalesce(unassociated_transactions_grouped.sales_count_this_month, 0) as sales_count_this_month,
+      coalesce(unassociated_transactions_grouped.refund_count_this_month, 0) as refund_count_this_month,
+      unassociated_transactions_grouped.first_sale_date,
+      unassociated_transactions_grouped.most_recent_sale_date,
       0 as total_failed_charge_count,
       0 as total_failed_charge_amount,
       0 as failed_charge_count_this_month,
       0 as failed_charge_amount_this_month,
-      transactions_grouped.source_relation
+      unassociated_transactions_grouped.source_relation
 
-    from transactions_grouped
+    -- Never matches (customer_id is null); only supplies the customer columns as nulls for the union below
+    from unassociated_transactions_grouped
     left join customer 
-        on transactions_grouped.customer_id = customer.customer_id
-        and transactions_grouped.source_relation = customer.source_relation
-    where customer.customer_id is null and customer.description is null
+        on unassociated_transactions_grouped.customer_id = customer.customer_id
+        and unassociated_transactions_grouped.source_relation = customer.source_relation
 
 
 ), customer_transactions_overview as (
