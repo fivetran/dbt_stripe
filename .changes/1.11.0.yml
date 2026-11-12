@@ -1,0 +1,12 @@
+version: 1.11.0
+pr_number: 174
+
+schema_data_changes:
+  entries:
+    - models:
+        - stripe__customer_overview
+      change_type: "Changed field/model"
+      old: One `No Customer ID` row for each customer ID that has transactions but no matching customer record
+      new: One `No Customer ID` row per `source_relation` that adds up all transactions with no matching customer record
+      is_breaking: false
+      notes: "Matches the intended behavior from the original fix: all transactions without a customer roll up into a single `No Associated Customer` record. Totals across the model don't change, but the model now has one row per `source_relation` and `customer_id`."
