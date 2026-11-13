@@ -3,6 +3,12 @@ version: 2
 models:
   - name: stg_stripe__balance_transaction
     description: Balance transactions represent funds moving through your Stripe account. They're created for every type of transaction that comes into or flows out of your Stripe account balance.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - balance_transaction_id
     columns:
       - name: balance_transaction_id
         description: Unique identifier for the object.
@@ -39,6 +45,12 @@ models:
 
   - name: stg_stripe__card
     description: Details of a credit card that has been saved to the system.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - card_id
     columns:
       - name: card_id
         description: Unique identifier for the object.
@@ -80,6 +92,12 @@ models:
 
   - name: stg_stripe__charge
     description: To charge a credit or a debit card, you create a Charge object. You can retrieve and refund individual charges as well as list all charges. Charges are identified by a unique, random ID.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - charge_id
     columns:
       - name: charge_id
         description: Unique identifier for the object.
@@ -181,6 +199,12 @@ models:
 
   - name: stg_stripe__customer
     description: Customer objects allow you to perform recurring charges, and to track multiple charges, that are associated with the same customer.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - customer_id
     columns:
       - name: customer_id
         description: Unique identifier for the object.
@@ -245,6 +269,13 @@ models:
 
   - name: stg_stripe__fee
     description: The details of a fee associated with a balance transaction
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - balance_transaction_id
+              - index
     columns:
       - name: balance_transaction_id
         description: ID of the balance transaction entry the fee applies to
@@ -267,6 +298,12 @@ models:
 
   - name: stg_stripe__payment_intent
     description: A Payment Intent guides you through the process of collecting a payment from your customer.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - payment_intent_id
     columns:
       - name: payment_intent_id
         description: Unique identifier for the object.
@@ -313,6 +350,12 @@ models:
 
   - name: stg_stripe__payment_method_card
     description: Table with the relationships between a payment method and a card
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - payment_method_id
     columns:
       - name: payment_method_id
         description: ID of the payment method
@@ -341,6 +384,12 @@ models:
 
   - name: stg_stripe__payment_method
     description: PaymentMethod objects represent your customer's payment instruments. They can be used with PaymentIntents to collect payments or saved to Customer objects to store instrument details for future payments.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - payment_method_id
     columns:
       - name: payment_method_id
         description: Unique identifier for the object.
@@ -359,6 +408,12 @@ models:
 
   - name: stg_stripe__payout
     description: A Payout object is created when you receive funds from Stripe, or when you initiate a payout to either a bank account or debit card of a connected Stripe account.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - payout_id
     columns:
       - name: payout_id
         description: Unique identifier for the object.
@@ -401,6 +456,13 @@ models:
     description: >
       Table that contains the complete mapping between `payout_id` and `balance_transaction_id`.
       The payout to balance_transaction relationship is 1:many.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - payout_id
+              - balance_transaction_id
     columns:
       - name: payout_id
         description: Unique identifier for the payout.
@@ -411,6 +473,12 @@ models:
 
   - name: stg_stripe__refund
     description: Details of transactions that have been refunded
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - refund_id
     columns:
       - name: refund_id
         description: Unique identifier for the object.
@@ -443,6 +511,13 @@ models:
 
   - name: stg_stripe__invoice_line_item
     description: The different items that an invoice contains
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - invoice_line_item_id
+              - invoice_id
     columns:
       - name: invoice_line_item_id
         description: Unique identifier for the object. Note that the same line item can be shown across different invoices, so this value can appear multiple times.
@@ -487,6 +562,12 @@ models:
 
   - name: stg_stripe__invoice
     description: Invoices are statements of amounts owed by a customer, and are either generated one-off, or generated periodically from a subscription.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - invoice_id
     columns:
       - name: invoice_id
         description: Unique identifier for the object.
@@ -562,6 +643,12 @@ models:
 
   - name: stg_stripe__subscription
     description: Subscriptions allow you to charge a customer on a recurring basis. Please note that the more recent `subscription_history` table replaced the `subscription` table, so the source used in this model depends on which one you have.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - subscription_id
     columns:
       - name: subscription_id
         description: Unique identifier for the object.
@@ -610,6 +697,12 @@ models:
 
   - name: stg_stripe__subscription_item
     description: Subscription items allow you to create customer subscriptions with more than one plan, making it easy to represent complex billing relationships.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - subscription_item_id
     columns:
       - name: subscription_item_id
         description: Unique identifier for the object.
@@ -634,6 +727,12 @@ models:
 
   - name: stg_stripe__price_plan
     description: This model defines the base price, currency, and billing cycle for recurring purchases of products. Please note that the Prices API replaced the Plans API in Stripe, so if you have migrated and choose to use the Price object then these columns come from the Price object. Otherwise, these will come from the Plan object. For how to configure, refer to the README.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - price_plan_id
     columns:
       - name: price_plan_id
         description: The ID of the record. If you have opted to use the Prices API, this will be the ID from the price object. If you opted not to, this will be the ID from the plan object.
@@ -670,6 +769,12 @@ models:
 
   - name: stg_stripe__credit_note
     description: Credit notes are documents that decrease the amount owed on an invoice. They’re the only way to adjust the amount of a finalized invoice other than voiding and recreating the invoice.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - credit_note_id
     columns:
       - name: credit_note_id
         description: Unique identifier for the object.
@@ -716,6 +821,12 @@ models:
 
   - name: stg_stripe__credit_note_line_item
     description: The different items that a credit note contains.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - credit_note_line_item_id
     columns:
       - name: credit_note_line_item_id
         description: Unique identifier for the object.
@@ -742,6 +853,12 @@ models:
 
   - name: stg_stripe__account
     description: Properties belonging to a Stripe account.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - account_id
     columns:
       - name: account_id
         description: Unique identifier for the object.
@@ -792,6 +909,12 @@ models:
 
   - name: stg_stripe__dispute
     description: Properties belonging to a Stripe dispute.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - dispute_id
     columns:
       - name: dispute_id
         description: Unique identifier for the object.
@@ -882,6 +1005,12 @@ models:
 
   - name: stg_stripe__transfer
     description: Properties belonging to a Stripe transfer.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - transfer_id
     columns:
       - name: transfer_id
         description: Unique identifier for the object.
@@ -920,6 +1049,12 @@ models:
 
   - name: stg_stripe__product
     description: Properties belonging to a Stripe product.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - product_id
     columns:
       - name: product_id
         description: Unique identifier for the object.
@@ -958,6 +1093,14 @@ models:
 
   - name: stg_stripe__discount
     description: Properties belonging to a Stripe discount.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - discount_id
+              - type
+              - type_id
     columns:
       - name: discount_id
         description: The ID of the discount object.
@@ -994,6 +1137,12 @@ models:
   
   - name: stg_stripe__subscription_discount
     description: Properties belonging to a Stripe subscription discount.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - subscription_discount_id
     columns:
       - name: subscription_discount_id
         description: The ID of the subscription discount object.
@@ -1018,6 +1167,12 @@ models:
 
   - name: stg_stripe__coupon
     description: Properties belonging to a Stripe coupon.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - coupon_id
     columns:
       - name: coupon_id
         description: Unique identifier for the object.
