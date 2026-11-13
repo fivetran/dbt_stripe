@@ -15,7 +15,7 @@ This dbt package transforms data from Fivetran's Stripe connector into analytics
   - [DAG](https://fivetran.github.io/dbt_stripe/#!/overview?g_v=1)
   - [Changelog](https://github.com/fivetran/dbt_stripe/blob/main/CHANGELOG.md)
 - dbt Core™ supported versions
-  - `>=1.3.0, <3.0.0`
+  - `>=1.10.0, <3.0.0`
   - [Decisionlog](https://github.com/fivetran/dbt_stripe/blob/main/DECISIONLOG.md)
 
 ## What does this dbt package do?
@@ -80,7 +80,7 @@ Include the following stripe package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/stripe
-    version: [">=1.10.0", "<1.11.0"]
+    version: [">=1.11.0", "<1.12.0"]
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/stripe_source` in your `packages.yml` since this package has been deprecated.
 
