@@ -23,7 +23,7 @@
 {#- Expected columns per source table name (as in src_stripe.yml). One entry per get_<table>_columns().
     price/plan and subscription/subscription_history share a list: the staging model reads whichever
     of each pair exists, and a source that isn't there is simply reported as source_missing. -#}
-{% macro stripe_expected_columns() %}
+{% macro expected_columns() %}
     {{ return({
         'account': stripe.get_account_columns(),
         'balance_transaction': stripe.get_balance_transaction_columns(),
@@ -56,7 +56,7 @@
 {% endmacro %}
 
 {#- dbt's own record (graph.sources) of a declared source table, or none. -#}
-{% macro stripe_source_node(source_name, table) %}
+{% macro source_node(source_name, table) %}
     {% for node in graph.sources.values() if node.source_name == source_name and node.name == table %}
         {{ return(node) }}
     {% endfor %}
@@ -70,7 +70,7 @@
     do, with the table named by its stripe_<table>_identifier var (the union_schemas and union_databases
     modes name it by the plain source table name, as fivetran_utils.union_data does). Tables that aren't
     there are skipped. -#}
-{% macro stripe_source_relations(table) %}
+{% macro source_relations(table) %}
     {% set defined = var('has_defined_sources', false) %}
     {% set places = [] %}
     {% if var('stripe_sources', []) %}
@@ -91,7 +91,7 @@
 
     {% set relations = [] %}
     {% for p in places %}
-        {% set node = stripe.stripe_source_node(p.source, table) if p.declared else none %}
+        {% set node = stripe.source_node(p.source, table) if p.declared else none %}
         {% set relation = adapter.get_relation(
             database=node.database if node else p.database,
             schema=node.schema if node else p.schema,
@@ -104,9 +104,9 @@
 {% macro get_column_diffs() %}
     {% set result = {} %}
     {% if execute %}
-        {% set expected_by_source = stripe.stripe_expected_columns() %}
+        {% set expected_by_source = stripe.expected_columns() %}
         {% for source_name in expected_by_source.keys() | sort %}
-            {% set relations = stripe.stripe_source_relations(source_name) %}
+            {% set relations = stripe.source_relations(source_name) %}
             {% set actual = [] %}
             {% for relation in relations %}
                 {% for column in adapter.get_columns_in_relation(relation) %}
