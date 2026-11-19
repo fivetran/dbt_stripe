@@ -5,22 +5,5 @@ new_features:
 - description: Adds `dbt_utils.unique_combination_of_columns` tests to staging and
     end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_stripe/issues/new/choose).
 under_the_hood:
-- description: Adds `metadata` to the `stg_stripe__coupon` model of the `stg_stripe.yml`
-    file.
-- description: Removes `livemode` from the `stg_stripe__credit_note` model of the
-    `stg_stripe.yml` file.
-- description: Removes `invoice_item_id` from the `stg_stripe__price_plan` model of
-    the `stg_stripe.yml` file.
-- description: Updates the `amount` description in the `stripe__activity_itemized_2`
-    model of the `stripe.yml` file.
-- description: Updates the `payout_id` description in the `stripe__payout_itemized_3`
-    model of the `stripe.yml` file.
-- description: Updates the `shipping_name` and `shipping_phone` descriptions in the
-    `stripe__customer_overview` model of the `stripe.yml` file.
-- description: Updates the `customer_facing_amount` description in the `stripe__balance_transactions`
-    and `stripe__activity_itemized_2` models, and the `customer_facing_amount` and
-    `customer_facing_currency` descriptions in the `stripe__balance_change_from_activity_itemized_3`
-    and `stripe__ending_balance_reconciliation_itemized_4` models of the `stripe.yml`
-    file.
-- description: Updates the `convert_values` doc block in the `docs.md` file.
+- description: Updates yml column documentation to match model output.
 date: '2026-11-18'
