@@ -5,21 +5,22 @@ new_features:
 - description: Adds `dbt_utils.unique_combination_of_columns` tests to staging and
     end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_stripe/issues/new/choose).
 under_the_hood:
-- Documents the `metadata` column in `stg_stripe__coupon`. The model already selects
-  this column, but the documentation left it out.
-- Removes `livemode` from `stg_stripe__credit_note`. The package filters on `livemode`
-  rather than passing it through to the model output.
-- Removes `invoice_item_id` from `stg_stripe__price_plan`. The source `price` table
-  has this column, but the model does not select it.
-- Corrects the `convert_values` documentation link, which was malformed and pointed
-  at the deprecated `stripe_source` package.
-- Documents that `amount` in `stripe__activity_itemized_2` honors the `stripe__convert_values`
-  variable.
-- Corrects the `payout_id` description in `stripe__payout_itemized_3`, which described
-  a related Stripe object rather than the payout itself.
-- Corrects the `shipping_name` and `shipping_phone` descriptions in `stripe__customer_overview`,
-  which both described a shipping address attribute.
-- Standardizes the `customer_facing_amount` and `customer_facing_currency` descriptions
-  across `stripe__balance_transactions` and the financial report models, which previously
-  documented the same values several different ways.
+- description: Adds `metadata` to the `stg_stripe__coupon` model of the `stg_stripe.yml`
+    file.
+- description: Removes `livemode` from the `stg_stripe__credit_note` model of the
+    `stg_stripe.yml` file.
+- description: Removes `invoice_item_id` from the `stg_stripe__price_plan` model of
+    the `stg_stripe.yml` file.
+- description: Updates the `amount` description in the `stripe__activity_itemized_2`
+    model of the `stripe.yml` file.
+- description: Updates the `payout_id` description in the `stripe__payout_itemized_3`
+    model of the `stripe.yml` file.
+- description: Updates the `shipping_name` and `shipping_phone` descriptions in the
+    `stripe__customer_overview` model of the `stripe.yml` file.
+- description: Updates the `customer_facing_amount` description in the `stripe__balance_transactions`
+    and `stripe__activity_itemized_2` models, and the `customer_facing_amount` and
+    `customer_facing_currency` descriptions in the `stripe__balance_change_from_activity_itemized_3`
+    and `stripe__ending_balance_reconciliation_itemized_4` models of the `stripe.yml`
+    file.
+- description: Updates the `convert_values` doc block in the `docs.md` file.
 date: '2026-11-18'
