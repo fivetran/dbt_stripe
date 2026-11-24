@@ -516,7 +516,7 @@ models:
           arguments:
             combination_of_columns:
               - source_relation
-              - invoice_line_item_id
+              - unique_invoice_line_item_id
               - invoice_id
     columns:
       - name: invoice_line_item_id
@@ -703,6 +703,7 @@ models:
             combination_of_columns:
               - source_relation
               - subscription_item_id
+              - subscription_id
     columns:
       - name: subscription_item_id
         description: Unique identifier for the object.
@@ -823,6 +824,7 @@ models:
             combination_of_columns:
               - source_relation
               - credit_note_line_item_id
+              - credit_note_id
     columns:
       - name: credit_note_line_item_id
         description: Unique identifier for the object.
@@ -1139,6 +1141,7 @@ models:
             combination_of_columns:
               - source_relation
               - subscription_discount_id
+              - subscription_id
     columns:
       - name: subscription_discount_id
         description: The ID of the subscription discount object.
