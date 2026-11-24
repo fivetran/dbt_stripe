@@ -17,7 +17,6 @@
     {"name": "country", "datatype": dbt.type_string()},
     {"name": "created", "datatype": dbt.type_timestamp()},
     {"name": "default_currency", "datatype": dbt.type_string()},
-    {"name": "details_submitted", "datatype": "boolean"},
     {"name": "email", "datatype": dbt.type_string()},
     {"name": "id", "datatype": dbt.type_string()},
     {"name": "is_deleted", "datatype": "boolean"},

@@ -166,7 +166,7 @@ vars:
 ```
 #### Leveraging Plan vs Price Sources
 
-Customers using Fivetran with the newer [Stripe Price API](https://stripe.com/docs/billing/migration/migrating-prices) will have a `price` table, and possibly a `plan` table if that was used previously. Therefore to accommodate two different source tables we added logic to check if there exists a `price` table by default. If not, it will leverage the `plan` table. However if you wish to use the `plan` table instead, you may set `stripe__using_price` to `false` in your `dbt_project.yml` to override the macro.
+Customers using Fivetran with the newer [Stripe Price API](https://stripe.com/docs/billing/migration/migrating-prices) will have a `price` table, and possibly a `plan` table if that was used previously. By default, the package uses the `price` table. If your connection syncs the `plan` table instead, set `stripe__using_price` to `false` in your `dbt_project.yml`.
 
 ```yml
 # dbt_project.yml

@@ -12,7 +12,6 @@
     {"name": "fee", "datatype": dbt.type_int()},
     {"name": "id", "datatype": dbt.type_string()},
     {"name": "net", "datatype": dbt.type_int()},
-    {"name": "payout_id", "datatype": dbt.type_string()},
     {"name": "reporting_category", "datatype": dbt.type_string()},
     {"name": "source", "datatype": dbt.type_string()},
     {"name": "status", "datatype": dbt.type_string()},

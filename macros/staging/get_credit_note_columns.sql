@@ -20,7 +20,7 @@
     {"name": "voided_at", "datatype": dbt.type_timestamp()},
     {"name": "customer_balance_transaction", "datatype": dbt.type_int()},
     {"name": "invoice_id", "datatype": dbt.type_string()},
-    {"name": "refund_id", "datatype": dbt.type_string()},
+    {"name": "refund_id", "datatype": dbt.type_string()}
 ] %}
 
 {{ return(columns) }}

@@ -1,24 +1,8 @@
 {{ config(enabled=var('stripe__using_payment_method', True)) }}
 
-with base as (
+with fields as (
 
-    select * 
-    from {{ ref('stg_stripe__payment_method_tmp') }}
-),
-
-fields as (
-
-    select
-        {{
-            fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_stripe__payment_method_tmp')),
-                staging_columns=get_payment_method_columns()
-            )
-        }}
-
-        {{ fivetran_utils.apply_source_relation(package_name='stripe') }}
-        
-    from base
+    {{ stripe.resolve_source_columns(table_name='payment_method', staging_columns=stripe.get_payment_method_columns()) }}
 ),
 
 final as (
