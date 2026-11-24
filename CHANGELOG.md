@@ -1,3 +1,14 @@
+# dbt_stripe v1.11.0
+
+[PR #175](https://github.com/fivetran/dbt_stripe/pull/175) includes the following updates:
+
+## Feature Update
+- **Breaking change**: Raises the minimum dbt version to 1.10.0.
+- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_stripe/issues/new/choose).
+
+## Under the Hood
+- Updates yml column documentation to match model output.
+
 # dbt_stripe v1.10.2
 
 [PR #164](https://github.com/fivetran/dbt_stripe/pull/164) includes the following updates:
